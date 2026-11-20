@@ -708,7 +708,7 @@
   "join.code.have": "هل لديك رمز؟",
   "join.code.back": "اختر فصلي بدلًا من ذلك",
   "join.code.label": "رمز الانضمام",
-  "join.code.name": "ما اسمك؟",
+  "join.code.name": "ما اسمك الأول؟",
   "join.code.name.placeholder": "سارة أ.",
   "join.code.name.hint": "اسمك الأول وأول حرف من اسم عائلتك.",
   "join.code.bad": "هذا الرمز لا يطابق شيئًا مباشرًا.",
@@ -956,5 +956,9 @@
   "self.pick": "اختر",
   "self.code": "رمز الصف (اسأل معلّمك)",
   "self.back": "رجوع",
-  "self.submit": "أرسل إجاباتي"
+  "self.submit": "أرسل إجاباتي",
+  "join.code.confirmed": "رمز الصف",
+  "join.code.change": "تغيير",
+  "join.code.enter": "رمز الصف",
+  "join.or": "أو ابحث عن فصلي"
 }

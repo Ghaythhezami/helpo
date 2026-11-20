@@ -77,6 +77,7 @@ function mock(page, state) {
 }
 
 const SIZES = [
+  { name: "mobile320", w: 320, h: 568 },
   { name: "desktop", w: 1440, h: 900 },
   { name: "laptop", w: 1280, h: 720 },
   { name: "mobile390", w: 390, h: 844 },
@@ -134,6 +135,10 @@ async function hit(p, which) {
 }
 
 const screens = {
+  login: async (p) => { await p.goto(`${BASE}/login`); await p.waitForSelector(".authcard"); },
+  signup: async (p) => { await p.goto(`${BASE}/signup`); await p.waitForSelector(".authcard"); },
+  joincode: async (p) => { await p.goto(`${BASE}/join?code=395550`); await p.waitForSelector(".code-chip"); await p.fill("#join-name", "Sara A."); },
+  joinnocode: async (p) => { await p.goto(`${BASE}/join`); await p.waitForSelector("#join-code"); },
   create: async (p) => { await p.goto(`${BASE}/app`); await p.waitForSelector(".create", { timeout: 20000 }); await p.waitForSelector(".prev-strip"); },
   workspace: async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-center .sl, .ws-center .doc", { timeout: 20000 }); },
   "ws-quiz": async (p) => { await p.goto(`${BASE}/app/lessons/l1?tab=quiz`); await p.waitForSelector(".ws-head"); await p.getByRole("tab").nth(2).click(); await p.waitForSelector(".ws-center .doc"); },

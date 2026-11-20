@@ -1,6 +1,6 @@
 import { RESOURCE_KINDS, type QuizContent, type ResourceKind, type WorksheetContent } from "@helpo/shared";
 import { isDemoMode, type LessonContext } from "./ai.provider";
-import { CONTENT_SCHEMAS, contentProblems, countStatements, getItemText, setItemText, worksheetItems, type ResourceContent } from "./content";
+import { CONTENT_SCHEMAS, contentProblems, countStatements, dropUngrounded, getItemText, setItemText, worksheetItems, type ResourceContent } from "./content";
 import { DemoAiProvider, placeholderTranslate, simplifyText } from "./demo.provider";
 
 const ctx = (title: string, locale: "en" | "ar" = "en"): LessonContext => ({
@@ -186,7 +186,6 @@ describe("DemoAiProvider grounding (any topic)", () => {
   it.each(["Water cycle grade 4", "Fractions: adding unlike denominators", "Photosynthesis"])(
     "keeps every card and question grounded in its own blueprint for %s",
     async (title) => {
-      const { dropUngrounded } = await import("./content");
       const c = ctx(title);
       const bp = await ai.analyze(c);
       for (const kind of ["CARDS", "QUIZ"] as const) {
@@ -199,7 +198,6 @@ describe("DemoAiProvider grounding (any topic)", () => {
 
 describe("DemoAiProvider grounding after an auto title change", () => {
   it("keeps cards grounded when generation runs with a different title than analysis", async () => {
-    const { dropUngrounded } = await import("./content");
     const bp = await ai.analyze(ctx("Grade 4 science, 45 min: the water cycle (evaporation, condensation, precipitation)"));
     const cards = await gen("CARDS", { ...ctx("Water cycle grade 4"), blueprint: bp } as LessonContext);
     expect(dropUngrounded("CARDS", cards, bp).dropped).toBe(0);

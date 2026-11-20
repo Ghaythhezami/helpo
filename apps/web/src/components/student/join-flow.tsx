@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { MAX_GRADE, MIN_GRADE, bandForGrade, normalizeJoinCode, type JoinOption, type JoinResult } from "@helpo/shared";
-import { Clock } from "lucide-react";
+import { Check, Clock, Radio } from "lucide-react";
 import { api, errorMessage } from "@/lib/api";
 import { bandAttr } from "@/lib/band";
 import { useI18n, type TFunction } from "@/lib/i18n";
@@ -44,7 +44,7 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
   const [grade, setGrade] = useState<number | null>(null);
   const [classId, setClassId] = useState<string | null>(null);
   const [studentId, setStudentId] = useState<string | null>(null);
-  const [codeOpen, setCodeOpen] = useState(Boolean(initialCode));
+  const [changing, setChanging] = useState(false);
   const [code, setCode] = useState(initialCode ?? "");
   const [name, setName] = useState("");
   const [waiting, setWaiting] = useState(false);
@@ -60,7 +60,8 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
   }, [grade, onBand]);
 
   const option = classes.data?.find((c) => c.classId === classId) ?? null;
-  const usingCode = codeOpen && Boolean(digits);
+  const usingCode = Boolean(digits) && !byCode.isError;
+  const confirmed = usingCode && byCode.isSuccess && !changing;
   const live: Live = usingCode ? (byCode.data?.live ?? null) : (option?.live ?? null);
 
   const join = useMutation({
@@ -100,8 +101,22 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
         <h1 style={{ fontSize: "clamp(26px,4vw,38px)", fontWeight: 900, marginBottom: 4 }}>{t("join.title")}</h1>
         <p className="muted join-sub">{t("join.subtitle")}</p>
 
+        {confirmed ? (
+          <p className="code-chip" role="status">
+            <span>{t("join.code.confirmed")} <bdi dir="ltr">{digits}</bdi></span>
+            <Check className="ic" aria-hidden="true" />
+            <button type="button" className="lnk" onClick={() => { setChanging(true); setTimeout(() => document.getElementById("join-code")?.focus(), 0); }}>{t("join.code.change")}</button>
+          </p>
+        ) : (
+          <div className="codef">
+            <label htmlFor="join-code">{t("join.code.enter")}</label>
+            <input id="join-code" dir="ltr" inputMode="numeric" autoComplete="off" value={code} maxLength={7} onChange={(e) => { setCode(e.target.value); setChanging(false); }} placeholder="482 913" />
+          </div>
+        )}
+
         {!usingCode ? (
           <>
+            <p className="or-line">{t("join.or")}</p>
             <section className="jstep" aria-labelledby="j1">
               <div className="sth"><span className="num" aria-hidden="true">1</span><h2 id="j1">{t("join.grade")}</h2><ReadAloud text={t("join.grade")} compact /></div>
               <div className="gchips" role="group" aria-labelledby="j1">
@@ -164,7 +179,7 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
         <div className={`livebox ${live ? "" : "off"}`} role="status" aria-live="polite">
           {live ? (
             <>
-              <Illus name={live.type === "LIVE_QUIZ" ? "res-quiz" : "res-game"} size={48} />
+              <span className="live-ic" aria-hidden="true"><Radio className="ic" /></span>
               <span>{live.type === "LIVE_QUIZ" ? t("join.live.quiz", { title: live.lessonTitle }) : t("join.live.game", { title: live.lessonTitle })}</span>
             </>
           ) : (
@@ -181,17 +196,6 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
         {join.isError && <p className="err" role="alert">{errorMessage(join.error)}</p>}
         {!ready && <p className="hint" style={{ justifyContent: "center", marginTop: 6 }}>{usingCode ? t("join.why.code") : t("join.why.pick")}</p>}
 
-        <p style={{ textAlign: "center", marginTop: 6 }}>
-          <button type="button" className="lnk" aria-expanded={codeOpen} onClick={() => setCodeOpen((v) => !v)}>
-            {codeOpen ? t("join.code.back") : t("join.code.have")}
-          </button>
-        </p>
-        {codeOpen && (
-          <div className="codef">
-            <label className="sr" htmlFor="join-code">{t("join.code.label")}</label>
-            <input id="join-code" dir="ltr" inputMode="numeric" autoComplete="off" value={code} maxLength={7} onChange={(e) => setCode(e.target.value)} placeholder="482 913" />
-          </div>
-        )}
         <p className="muted small join-safe">{t("join.safe")}</p>
       </div>
     </div>

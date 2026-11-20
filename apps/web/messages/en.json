@@ -708,7 +708,7 @@
   "join.code.have": "Have a code?",
   "join.code.back": "Pick my class instead",
   "join.code.label": "Join code",
-  "join.code.name": "What's your name?",
+  "join.code.name": "What's your first name?",
   "join.code.name.placeholder": "Sara A.",
   "join.code.name.hint": "Your first name and the first letter of your last name.",
   "join.code.bad": "That code doesn't match anything live.",
@@ -956,5 +956,9 @@
   "self.pick": "Choose",
   "self.code": "Class code (ask your teacher)",
   "self.back": "Back",
-  "self.submit": "Send my answers"
+  "self.submit": "Send my answers",
+  "join.code.confirmed": "Class code",
+  "join.code.change": "Change",
+  "join.code.enter": "Class code",
+  "join.or": "or find my class"
 }

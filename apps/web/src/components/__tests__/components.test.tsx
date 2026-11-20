@@ -65,7 +65,7 @@ describe("join flow", () => {
       "POST /play/code/482913/join": (b) => ({ body: { participantId: "p", displayName: (b as { name: string }).name, sessionId: "se1", next: "quiz" } }),
     });
     renderWithProviders(<JoinFlow initialCode="482913" />, { scope: "student" });
-    await userEvent.type(await screen.findByLabelText("What's your name?"), "Sara A.");
+    await userEvent.type(await screen.findByLabelText("What's your first name?"), "Sara A.");
     await userEvent.click(await screen.findByRole("button", { name: "Join the quiz" }));
     await waitFor(() => expect(push).toHaveBeenCalledWith("/play/quiz/se1"));
   });
