@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Educator Helper · Learning Path</title>
+<meta name="description" content="Educator Helper v3, direction H: Learning Path. A unit is a path with stops. Teachers plan and check along it, students walk their own path. Grades 2 to 12.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230F6E7A'/%3E%3Cpath d='M6 23c6 0 6-10 10-10s4 6 10 6' fill='none' stroke='%232CA6B8' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='9' cy='20' r='2.5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{--page:#F2F7F8;--surf:#fff;--sunk:#E7F0F2;--line:#D5E4E7;--line2:#B5CDD3;--ink:#102A33;--ink2:#36535D;--ink3:#4B6670;--pri:#0F6E7A;--prih:#0B5862;--pris:#DDF0F2;--lag:#2CA6B8;--h1:#CFE9EE;--h2:#B5DCE4;--ok:#1D6B57;--oks:#DDF2EA;--flag:#7A5200;--flags:#FFF3D6;--r1:8px;--r2:12px;--r3:20px;--sh:0 1px 2px rgba(16,32,64,.06),0 8px 24px -12px rgba(16,32,64,.18);--ease:cubic-bezier(.16,1,.3,1);--hh:64px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font-family:'Andika',system-ui,sans-serif;font-size:1rem;line-height:1.55;font-variant-numeric:tabular-nums;padding-bottom:96px;caret-color:var(--pri);scrollbar-color:var(--line2) var(--page)}
+::selection{background:#B7E0E6;color:var(--ink)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line2);border-radius:99px;border:2px solid var(--page)}::-webkit-scrollbar-track{background:transparent}
+h1,h2,h3{font-family:'Baloo 2','Andika',sans-serif;font-weight:700;line-height:1.15;margin:0;color:var(--ink)}
+h1{font-size:clamp(1.6rem,3.2vw,2.1rem)}h2{font-size:1.3rem}h3{font-size:1.05rem;font-weight:600}
+p{margin:0}a{color:var(--prih)}
+svg.lucide{width:1.15em;height:1.15em;flex:none;stroke-width:1.75;vertical-align:-.2em}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+:focus-visible{outline:3px solid var(--pri);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.muted{color:var(--ink3)}.small{font-size:.875rem}
+/* top bar */
+.top{position:sticky;top:0;z-index:50;height:var(--hh);display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--surf);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Baloo 2';font-weight:700;font-size:1.2rem;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand svg{width:32px;height:32px}
+.sw{position:relative;display:flex;align-items:center}
+.sw select{appearance:none;min-height:44px;padding:0 36px 0 14px;border:1px solid var(--line2);border-radius:var(--r2);background:var(--surf);color:var(--ink);font:700 .95rem 'Andika';cursor:pointer;max-width:100%}
+.sw svg{position:absolute;right:12px;pointer-events:none}
+.srch{position:relative;flex:1;max-width:420px;min-width:0;margin-left:auto}
+.srch svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink3)}
+.srch input,.srch input[type=text]{width:100%;min-height:44px;padding:0 12px 0 40px;border:1px solid var(--line2);border-radius:var(--r2);font:inherit;background:var(--surf);color:var(--ink)}
+.avatar{width:44px;height:44px;border-radius:50%;border:1px solid var(--line2);background:var(--pris);color:var(--prih);font:700 .95rem 'Baloo 2';cursor:pointer;flex:none}
+/* app grid */
+.app{display:grid;grid-template-columns:288px minmax(0,1fr);min-height:calc(100vh - var(--hh))}
+.app.solo{grid-template-columns:minmax(0,1fr)}.app.solo .rail{display:none}
+.rail{background:var(--sunk);border-right:1px solid var(--line);padding:20px 20px 28px}
+.rail-t{font:700 1.15rem 'Baloo 2'}.rail-s{font-size:.85rem;color:var(--ink3);margin-bottom:8px}
+.railH{display:none}
+.main{min-width:0;padding:28px 32px 20px;max-width:1240px;width:100%}
+.main>section{min-width:0}
+.ctx{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:14px;font-size:.9rem;color:var(--ink2)}
+.ctx strong{color:var(--ink)}
+.phead{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px 20px;margin-bottom:20px}
+.phead .pt{min-width:0;flex:1 1 320px}.phead .pt p{margin-top:6px;color:var(--ink2);max-width:62ch}
+.pact{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:var(--r3);padding:24px;box-shadow:var(--sh);min-width:0}
+.panel+.panel,.stack>*+*{margin-top:20px}
+.cols{display:grid;gap:20px;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start}
+.cols.eq{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.hd{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.hd h2 svg{color:var(--pri)}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.note{font-size:.875rem;color:var(--ink3)}
+.foot{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink3);display:grid;gap:4px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:var(--r2);border:1px solid var(--line2);background:var(--surf);color:var(--ink);font:700 .95rem 'Andika';cursor:pointer;text-decoration:none;transition:background .2s var(--ease),transform .1s var(--ease)}
+.btn:hover{background:var(--pris)}.btn:active,.tile:active,.tfb button:active,.gc:active,.stopt:active,.spk:active{transform:scale(.97)}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}.btn.pri:hover{background:var(--prih)}
+.btn.sm{min-height:44px;padding:0 14px;font-size:.9rem}
+.btn[aria-disabled=true]{opacity:.55;cursor:not-allowed}
+.btn.on{background:var(--oks);color:var(--ok);border-color:var(--ok)}
+.btn.lnk{border:0;background:transparent;color:var(--prih);text-decoration:underline;padding:0 8px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:2px 12px;border-radius:99px;background:var(--sunk);color:var(--ink);font-weight:700;font-size:.82rem;white-space:nowrap}
+.chip.pri{background:var(--pris);color:var(--prih)}.chip.ok{background:var(--oks);color:var(--ok)}.chip.wk{background:var(--flags);color:var(--flag)}
+.fld{display:block;font-weight:700;font-size:.9rem;margin-bottom:6px}
+input[type=text],textarea,select.f{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--line2);border-radius:var(--r1);font:inherit;background:var(--surf);color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+.form>*+*{margin-top:22px}
+.help{font-size:.875rem;color:var(--ink3);margin-top:6px}
+.vmsg{display:flex;gap:8px;align-items:center;margin-top:8px;font-weight:700;font-size:.9rem}
+.vmsg.ok{color:var(--ok)}.vmsg.bad{color:var(--flag);background:var(--flags);padding:8px 12px;border-radius:var(--r1)}
+.opts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.opt{position:relative;display:flex;align-items:center;gap:10px;min-height:52px;padding:10px 14px;border:1px solid var(--line2);border-radius:var(--r2);background:var(--surf);cursor:pointer}
+.opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opt:has(input:checked){border-color:var(--pri);background:var(--pris);box-shadow:inset 0 0 0 1px var(--pri)}
+.opt:has(input:focus-visible){outline:3px solid var(--pri);outline-offset:2px}
+.opt .tk{margin-left:auto;opacity:0;color:var(--pri)}.opt:has(input:checked) .tk{opacity:1}
+.opt b{display:block;font-size:.95rem}.opt small{color:var(--ink3);font-size:.8rem;display:block;line-height:1.3}
+.seg2{display:inline-flex;border:1px solid var(--line2);border-radius:var(--r2);overflow:hidden;background:var(--surf)}
+.seg2 button{min-height:44px;padding:0 16px;border:0;background:transparent;font:700 .9rem 'Andika';color:var(--ink);cursor:pointer}
+.seg2 button[aria-pressed=true]{background:var(--pri);color:#fff}
+details.opd{border:1px solid var(--line);border-radius:var(--r2);padding:0 16px}
+details.opd summary{min-height:48px;display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700}
+details.opd[open]{padding-bottom:14px}
+/* path rail + maps */
+.pv{position:relative;width:248px;height:552px}
+.pv svg.bg{position:absolute;inset:0}
+.stli{position:absolute;width:0;height:0}
+.stop{text-decoration:none;color:var(--ink)}
+.num{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font:700 1.25rem 'Baloo 2';isolation:isolate;border:3px solid var(--surf);background:var(--surf);color:var(--ink);box-shadow:0 1px 2px rgba(16,32,64,.1)}
+.num::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:var(--lag);transform:scale(1);transition:transform .5s var(--ease);z-index:-1}
+.st-next .num,.st-wait .num{border:3px dashed var(--ink3);color:var(--ink3)}
+.st-next .num::before,.st-wait .num::before{transform:scale(0)}
+.st-cur .num{color:#fff;box-shadow:0 0 0 5px var(--pris)}.st-cur .num::before{background:var(--pri)}
+.st-fail .num{border:3px solid var(--flag);color:var(--flag)}.st-fail .num::before{transform:scale(0)}
+.stop:focus-visible{outline:0}.stop:focus-visible .num{outline:3px solid var(--pri);outline-offset:3px}
+.lab{position:absolute;font-weight:700;font-size:.85rem;line-height:1.25;color:var(--ink)}
+.lab small{display:block;font-weight:400;font-size:.8rem;color:var(--ink2)}
+.pv .lab{left:36px;top:-20px;width:128px}
+.fls{position:absolute;display:flex;flex-direction:column;gap:4px;align-items:center;left:0;transform:translateX(-50%);bottom:36px}
+.pv .fls{bottom:auto;left:36px;top:24px;transform:none;align-items:flex-start;width:128px}
+.fl{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:99px;font-weight:700;font-size:.78rem;white-space:nowrap;min-height:24px}
+.fl.ok{background:var(--oks);color:var(--ok)}.fl.wk{background:var(--flags);color:var(--flag);border:1px solid var(--flag)}.fl.rt{background:var(--pris);color:var(--prih);border:1px solid var(--pri)}
+.fl.new{animation:pop .5s var(--ease) both}
+.wscroll{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--line);background:var(--surf)}
+.wmap{position:relative;min-width:760px;aspect-ratio:1000/360}
+.wmap>svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.wmap .lab{top:34px;left:-64px;width:128px;text-align:center}
+.strip{display:flex;gap:4px;list-style:none;margin:0;padding:6px 0 6px;overflow-x:auto}
+.strip a{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:76px;min-height:44px;padding:4px 6px;text-decoration:none;color:var(--ink);font-size:.78rem;text-align:center;line-height:1.2;border-radius:var(--r1)}
+.strip .n{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:700 1rem 'Baloo 2';background:var(--lag);border:2px solid var(--surf)}
+.strip .st-cur .n{background:var(--pri);color:#fff}.strip .st-next .n{background:var(--surf);border:2px dashed var(--ink3);color:var(--ink3)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px;font-size:.85rem;color:var(--ink2)}
+/* progress pill */
+.seg{--n:5;--g:4px;position:relative;display:grid;grid-template-columns:repeat(var(--n),1fr);gap:var(--g);padding:5px 0}
+.seg i{height:10px;border-radius:99px;background:var(--line2);display:block}
+.seg i.d{background:var(--lag)}
+.seg .pill{position:absolute;left:0;top:0;height:20px;width:calc((100% - (var(--n) - 1)*var(--g))/var(--n));border-radius:99px;background:var(--pri);transform:translateX(calc(var(--i)*100% + var(--i)*var(--g)));transition:transform .45s var(--ease)}
+.seg.thin i{height:3px}.seg.thin .pill{height:3px;top:5px;border-radius:2px}.seg.thin{padding:5px 0}
+.seg.big i{height:18px}.seg.big .pill{height:28px}
+/* generic lists */
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line)}
+.list li:first-child{border-top:0}
+.list .t{min-width:0;flex:1 1 200px}
+.meter{height:10px;border-radius:99px;background:var(--sunk);overflow:hidden;position:relative;flex:1;min-width:80px}
+.meter i{display:block;height:100%;background:var(--lag);border-radius:99px}
+.tg{position:absolute;top:-2px;bottom:-2px;left:70%;width:2px;background:var(--ink)}
+.mrow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.6fr) auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.mrow:first-child{border-top:0}
+.tscroll{overflow:auto;border:1px solid var(--line);border-radius:var(--r2);max-width:100%}
+table{border-collapse:separate;border-spacing:0;width:100%}
+th,td{position:relative;padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:.92rem;vertical-align:middle}
+thead th{background:var(--sunk);position:sticky;top:0;z-index:2;font-size:.82rem}
+tr.mis td,tr.mis th{background:var(--flags)}
+.gridscroll{max-height:440px}
+.gridscroll table{min-width:680px;width:max-content}
+.gridscroll tbody th{position:sticky;left:0;background:var(--surf);z-index:1;white-space:nowrap;box-shadow:1px 0 0 var(--line)}
+.gridscroll thead th:first-child{left:0;z-index:3}
+.gridscroll td{text-align:center;padding:8px}
+.gridscroll .y{color:#2E8F63}.gridscroll .n{color:#2457D6}.gridscroll .pp{color:#A36F0D}
+.na i{display:inline-block;width:18px;height:18px;border:2px dotted var(--ink3);border-radius:50%}
+.key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.85rem;color:var(--ink2);margin-bottom:10px}.key span{display:inline-flex;gap:6px;align-items:center}
+/* tabs */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.tabs button{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:0;border-bottom:3px solid transparent;background:transparent;font:700 .92rem 'Andika';color:var(--ink2);cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected=true]{color:var(--prih);border-bottom-color:var(--pri)}
+.doc{background:var(--surf);border:1px solid var(--line);border-radius:var(--r2);padding:18px}
+.stage{aspect-ratio:16/9;border:1px solid var(--line);border-radius:var(--r2);background:var(--surf);padding:6% 7%;position:relative;display:flex;flex-direction:column;justify-content:center;gap:10px;overflow:hidden}
+.stage h4{margin:0;font:700 clamp(1.1rem,2.4vw,1.7rem) 'Baloo 2'}
+.stage .sn{position:absolute;right:12px;bottom:8px;font-size:.78rem;color:var(--ink3)}
+.eq{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:700 clamp(.85rem,1.6vw,1.15rem) 'Baloo 2'}
+.eq .b{background:var(--pris);color:var(--prih);padding:4px 12px;border-radius:99px}
+.thumbs{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.thumbs button{min-height:44px;padding:0 14px;border-radius:var(--r1);border:1px solid var(--line2);background:var(--surf);font:700 .85rem 'Andika';cursor:pointer}
+.thumbs button[aria-pressed=true]{background:var(--pri);color:#fff;border-color:var(--pri)}
+.ol{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.ol li{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:var(--r1)}
+.ol li.ok{border-color:var(--ok);background:var(--oks)}
+.ol .l{width:28px;height:28px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-weight:700;font-size:.8rem;flex:none}
+.blank{display:inline-block;min-width:90px;border-bottom:2px solid var(--ink);height:1.1em;vertical-align:baseline}
+.gloss{margin-top:12px;padding:12px 14px;border-radius:var(--r1);background:var(--pris);border:1px solid var(--pri)}
+.gloss.sug{background:var(--flags);border:1px dashed var(--flag)}
+.flip{width:100%;min-height:150px;border:1px solid var(--line2);border-radius:var(--r2);background:var(--pris);font:700 1.4rem 'Baloo 2';color:var(--ink);cursor:pointer;padding:16px}
+.flip small{display:block;font:400 .8rem 'Andika';color:var(--ink2);margin-top:6px}
+.pairs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.pairs div{display:flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:var(--r1);font-size:.9rem}
+.chk{padding:16px 0;border-top:1px solid var(--line)}.chk:first-of-type{border-top:0;padding-top:0}
+.chk[aria-current=true]{background:var(--pris);margin:0 -12px;padding:16px 12px;border-radius:var(--r2);border-top-color:transparent}
+.chk h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chk.res h3{color:var(--ok)}
+.kbd{display:inline-block;min-width:24px;padding:0 6px;border:1px solid var(--line2);border-bottom-width:2px;border-radius:6px;background:var(--surf);font:700 .78rem 'Andika';text-align:center}
+.cov{display:flex;gap:8px;flex-wrap:wrap}
+.conf{margin-top:14px;padding:16px;border-radius:var(--r2);background:var(--pris);border:1px solid var(--pri)}
+.conf.warn{background:var(--flags);border-color:var(--flag)}
+/* projector */
+.proj{background:var(--ink);color:#fff;border-radius:var(--r3);padding:clamp(20px,4vw,40px);display:grid;gap:22px;min-width:0}
+.proj h2,.proj h3{color:#fff}
+.code{font:700 clamp(2.6rem,8vw,5.5rem)/1 'Baloo 2';letter-spacing:.06em;color:#fff}
+.projtop{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center}
+.qr{width:150px;height:150px;background:#fff;padding:8px;border-radius:var(--r2)}.qr svg{width:100%;height:100%;display:block}
+.pq{font:700 clamp(1.4rem,3.4vw,2.4rem)/1.2 'Baloo 2';color:#fff}
+.dots{display:flex;gap:6px;flex-wrap:wrap}.dots i{width:18px;height:18px;border-radius:50%;background:var(--lag)}.dots i.e{background:transparent;border:2px solid #9FB8BF}
+.proj .tf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.proj .tf span{padding:14px;border:2px solid #9FB8BF;border-radius:var(--r2);font:700 1.4rem 'Baloo 2';text-align:center}
+.switch{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 14px;border:1px solid #9FB8BF;border-radius:99px;background:transparent;color:#fff;font:700 .9rem 'Andika';cursor:pointer}
+.switch[aria-checked=true] .kn{transform:translateX(18px)}
+.switch .tr{width:40px;height:22px;border-radius:99px;background:var(--lag);position:relative;flex:none}
+.switch .kn{position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--ink);transition:transform .25s var(--ease)}
+.switch[aria-checked=false] .tr{background:#6F8A92}
+.panel .switch{color:var(--ink);border-color:var(--line2)}.panel .switch .kn{background:#fff}
+/* stickers */
+.stk{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stk .opt{flex-direction:column;text-align:center;padding:14px 10px;gap:8px}
+.badge{width:48px;height:48px;border-radius:50%;background:var(--lag);display:grid;place-items:center;color:var(--ink);border:3px solid var(--surf);box-shadow:0 0 0 1px var(--lag)}
+.stk .opt .tk{position:absolute;top:8px;right:8px;margin:0}
+/* band preview */
+.bp{border-radius:var(--r2);border:1px solid var(--line);padding:18px;display:grid;gap:12px;min-width:0}
+.bp.ex{background:var(--pris);font-family:'Andika'}
+.bp.nv{background:var(--surf)}
+.bp.st{background:var(--surf);font-family:'Atkinson Hyperlegible','Andika',sans-serif;border-radius:var(--r1)}
+.bp .q{font-weight:700;font-size:1.1rem}.bp.ex .q{font-size:1.3rem}
+.bp .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bp .tiles span,.bp .tf span{display:flex;align-items:center;justify-content:center;gap:8px;min-height:64px;border-radius:var(--r2);background:var(--surf);border:2px solid var(--line2);font-weight:700}
+.bp .tf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bp.st .opl{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.bp.st .opl li{display:flex;gap:10px;padding:8px 10px;border:1px solid var(--line2);border-radius:6px;font-size:.95rem}
+.bp.st .opl b{width:22px;text-align:center;color:var(--ink3)}
+.bpv{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+/* student frames */
+.sbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:16px}
+.bands{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line2);border-radius:var(--r2);background:var(--surf);max-width:100%;overflow-x:auto}
+.bands a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:var(--r1);color:var(--ink);text-decoration:none;font-weight:700;font-size:.9rem;white-space:nowrap}
+.bands a[aria-current=page]{background:var(--pri);color:#fff}
+.fit{position:relative;margin:0 auto;overflow:hidden}
+.frame{position:absolute;left:0;top:0;transform-origin:0 0;background:var(--page);border:8px solid var(--ink);border-radius:36px;overflow:hidden;display:flex;flex-direction:column;color:var(--ink)}
+.frame.tablet{width:1024px;height:700px;border-radius:28px}.frame.phone{width:390px;height:780px}
+body.dys .frame,body.dys .frame h2,body.dys .frame button{font-family:'Atkinson Hyperlegible',sans-serif!important}
+.fr-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.9rem;font-weight:700}
+.who{display:flex;align-items:center;gap:8px;color:var(--ink2)}
+.who i{width:26px;height:26px;border-radius:50%;background:var(--lag);display:inline-block}
+.spk{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:44px;min-height:44px;padding:0 12px;border-radius:99px;border:1px solid var(--line2);background:var(--surf);color:var(--prih);font:700 .9rem 'Andika';cursor:pointer}
+.spk[aria-pressed=true]{background:var(--pri);color:#fff}
+.fb{padding:12px 16px;border-radius:var(--r2);font-weight:700;display:flex;gap:10px;align-items:center;min-height:52px}
+.fb.good{background:var(--oks);color:var(--ok)}.fb.no{background:var(--pris);color:var(--prih)}.fb.neu{background:var(--sunk);color:var(--ink2)}
+.ex-body{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;padding:26px 32px;flex:1;min-height:0}
+.guide{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;position:relative;background:var(--pris);border-radius:var(--r3);padding:18px 10px;font-weight:700;color:var(--prih)}
+.guide svg.sd{width:160px;height:200px}
+.leaf{transform-box:fill-box;transform-origin:50% 100%;transform:scale(0);opacity:0;transition:transform .5s var(--ease),opacity .3s var(--ease)}
+.leaf.on{transform:scale(1);opacity:1}
+.qa{display:flex;flex-direction:column;gap:16px;min-width:0}
+.qa .qt{font:700 2rem/1.2 'Andika';display:flex;gap:14px;align-items:flex-start;justify-content:space-between}
+.qa .qt span{min-width:0}
+.tiles4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:150px;padding:14px;border:3px solid var(--line2);border-radius:var(--r3);background:var(--surf);font:700 1.5rem 'Andika';color:var(--ink);cursor:pointer;transition:transform .1s var(--ease)}
+.tile svg.lucide{width:56px;height:56px;stroke-width:1.5;color:var(--pri)}
+.tile[aria-pressed=true]{border-color:var(--pri);background:var(--pris);box-shadow:inset 0 0 0 2px var(--pri)}
+.tile .ck{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:var(--pri);color:#fff;display:none;place-items:center}
+.tile[aria-pressed=true] .ck{display:grid}.tile .ck svg{width:18px;height:18px;color:#fff}
+.tile[aria-disabled=true]{cursor:default}
+.bigbtn{min-height:64px;padding:0 32px;border-radius:var(--r3);font-size:1.3rem}
+.pops{position:absolute;inset:0;pointer-events:none}
+.pops i{position:absolute;left:50%;top:40%;width:14px;height:14px;border-radius:50%;background:var(--lag);animation:pop2 .65s var(--ease) both}
+.pops i:nth-child(even){background:var(--pri);border-radius:3px}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes pop2{0%{transform:translate(0,0) scale(.3);opacity:1}100%{transform:translate(var(--x),var(--y)) scale(1);opacity:0}}
+.ph{padding:18px 18px 16px;display:flex;flex-direction:column;gap:14px;flex:1;min-height:0}
+.ph .qcard{background:var(--surf);border:1px solid var(--line);border-radius:var(--r3);padding:18px;box-shadow:var(--sh)}
+.ph .qcard h2{font:700 1.45rem/1.25 'Andika'}
+.ph .low{margin-top:auto;display:grid;gap:12px}
+.tfb{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tfb button{min-height:72px;border-radius:var(--r3);border:3px solid var(--line2);background:var(--surf);font:700 1.4rem 'Andika';color:var(--ink);cursor:pointer}
+.tfb button[aria-pressed=true]{border-color:var(--pri);background:var(--pris);box-shadow:inset 0 0 0 2px var(--pri)}
+.ph.studio{background:var(--surf);font-family:'Atkinson Hyperlegible','Andika',sans-serif}
+.ph.studio .qcard{border:0;box-shadow:none;padding:0}
+.ph.studio .qcard h2{font:700 1.35rem/1.3 'Atkinson Hyperlegible','Andika'}
+.stopt{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 14px;border:1px solid var(--line2);border-radius:var(--r1);background:var(--surf);font:400 1rem 'Atkinson Hyperlegible',sans-serif;color:var(--ink);text-align:left;cursor:pointer}
+.stopt b{width:26px;height:26px;border-radius:6px;background:var(--sunk);display:grid;place-items:center;font-size:.85rem;flex:none}
+.stopt[aria-pressed=true]{border-color:var(--pri);background:var(--pris)}
+.stopt.right{border-color:var(--ok);background:var(--oks)}
+.gp{display:flex;align-items:center;justify-content:space-between;position:relative;padding:6px 8px}
+.gp::before{content:'';position:absolute;left:24px;right:24px;top:50%;border-top:3px dotted var(--ink3)}
+.gp span{position:relative;width:34px;height:34px;border-radius:50%;background:var(--surf);border:3px dashed var(--ink3);display:grid;place-items:center;color:var(--ink)}
+.gp span.d{background:var(--lag);border:3px solid var(--surf)}.gp span.here{border:3px solid var(--pri);background:var(--pris)}
+.gcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gcols div{display:grid;gap:10px;align-content:start}
+.gc{min-height:64px;padding:8px 10px;border-radius:var(--r2);border:2px solid var(--line2);background:var(--surf);font:700 .98rem 'Andika';color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center}
+.gc[aria-pressed=true]{border-color:var(--pri);background:var(--pris)}
+.gc.m{background:var(--oks);border-color:var(--ok);color:var(--ok);cursor:default}
+.gc.fail{background:var(--flags);color:var(--flag);border-color:var(--flag)}
+/* generating */
+.gres{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.gres div{padding:12px 0;border-top:1px solid var(--line)}
+.bar{height:10px;border-radius:99px;background:var(--sunk);overflow:hidden}.bar i{display:block;height:100%;width:100%;background:var(--pri);transform-origin:0 50%;transform:scaleX(0);transition:transform .5s var(--ease)}
+/* toast + picker */
+.toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,16px);max-width:calc(100vw - 24px);display:flex;gap:12px;align-items:center;background:var(--ink);color:#fff;padding:10px 12px 10px 18px;border-radius:var(--r2);box-shadow:var(--sh);opacity:0;pointer-events:none;transition:opacity .15s ease-in,transform .15s ease-in;z-index:90;font-weight:700;font-size:.92rem}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto;transition:opacity .25s var(--ease),transform .25s var(--ease)}
+.toast button{min-height:44px;padding:0 14px;border-radius:var(--r1);border:1px solid #9FB8BF;background:transparent;color:#fff;font:700 .9rem 'Andika';cursor:pointer}
+.picker{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:2px;max-width:calc(100vw - 24px);overflow-x:auto;padding:5px;background:var(--surf);border:1px solid var(--line2);border-radius:99px;box-shadow:var(--sh);z-index:80}
+.picker a{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border-radius:99px;color:var(--ink);text-decoration:none;font-size:.82rem;font-weight:700;white-space:nowrap}
+.picker a:hover{background:var(--pris)}
+.picker a[aria-current=page]{background:var(--pri);color:#fff}
+.picker .sep{width:1px;background:var(--line2);margin:6px 4px;flex:none}
+@media (max-width:1100px){.cols{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:860px){
+ .app{grid-template-columns:minmax(0,1fr)}
+ .rail{border-right:0;border-bottom:1px solid var(--line);padding:10px 16px}
+ .rail-s,.pvw{display:none}.railH{display:block}
+ .main{padding:20px 16px}
+ .mrow{grid-template-columns:minmax(0,1fr)}
+ .projtop{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+ .top{padding:0 12px;gap:8px}.brand span{display:none}
+ .sw select{padding-left:10px;font-size:.85rem}
+ .panel{padding:18px}
+}
+@media (prefers-reduced-motion:reduce){
+ *{transition-duration:.01ms!important;animation-duration:.01ms!important}
+ .seg .pill{transition:opacity .2s}
+ .pops i{animation:none!important;opacity:0}
+}
+</style>
+</head>
+<body>
+<header class="top">
+ <a class="brand" href="#dashboard" aria-label="Educator Helper home"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0F6E7A"/><path d="M6 23c6 0 6-10 10-10s4 6 10 6" fill="none" stroke="#2CA6B8" stroke-width="3" stroke-linecap="round"/><circle cx="9" cy="20" r="2.5" fill="#fff"/></svg><span>Educator Helper</span></a>
+ <div class="sw"><select id="cls" aria-label="6B · Navigator, switch class"><option value="6B">6B · Navigator</option><option value="6A">6A · Navigator</option><option value="7C">7C · Navigator</option><option value="3A">3A · Explorer</option><option value="11S">11S · Studio</option></select><i data-lucide="chevrons-up-down" aria-hidden="true"></i></div>
+ <form class="srch" id="srchF" role="search"><i data-lucide="search" aria-hidden="true"></i><input type="text" id="srch" aria-label="Search lessons" placeholder="Search lessons"></form>
+ <button class="avatar" type="button" aria-label="AG, Alex Green account" id="avatar">AG</button>
+</header>
+
+<div class="app" id="app">
+ <nav class="rail" aria-label="Unit 3 path">
+  <p class="rail-t">Unit 3 path</p><p class="rail-s">Plants and energy · 6 lessons</p>
+  <div class="pvw" id="railV"></div>
+  <div class="railH" id="railH"></div>
+ </nav>
+
+ <main class="main" id="main">
+  <div class="ctx" id="ctx" hidden></div>
+
+  <!-- DASHBOARD -->
+  <section data-screen="dashboard" hidden>
+   <div class="phead"><div class="pt"><h1>Good morning, Alex</h1><p>Thursday 14 November, Riverside Middle School, Term 1, Week 11. Your school: Grades 2–12, 38 classes.</p></div><div class="pact"><a class="btn pri" href="#create"><i data-lucide="plus" aria-hidden="true"></i>New lesson</a></div></div>
+   <div class="panel">
+    <div class="hd"><h2>Unit 3: Plants and energy</h2><span class="chip pri">3 of 6 lessons taught</span></div>
+    <div class="wscroll" tabindex="0" role="region" aria-label="Unit 3 path map, scrolls sideways"><div id="mapDash"></div></div>
+    <div class="legend"><span><i data-lucide="flag" aria-hidden="true"></i> Mastery flag at each taught stop</span><span>Dotted line: not taught yet</span></div>
+    <hr>
+    <div class="row" style="justify-content:space-between"><p><strong>O3 is the weak spot (58%).</strong> Lesson 5 is a good place to re-teach it.</p><button class="btn" id="dashAdd" aria-pressed="false"><i data-lucide="plus" aria-hidden="true"></i><span>Add O3 re-teach to Lesson 5</span></button></div>
+   </div>
+   <div class="cols eq" style="margin-top:20px">
+    <div class="panel"><h2>Next lesson</h2><p style="margin-top:10px"><strong>Lesson 4: Photosynthesis: how plants make food</strong></p><p class="muted">6B, Thursday 14 November, Period 3, 10:40–11:25 (45 min)</p>
+     <ul class="list" style="margin-top:12px"><li><span class="t">Kit: 5 resources</span><span class="chip" id="dashKit">3 to check</span></li></ul>
+     <div class="row" style="margin-top:12px"><a class="btn" href="#review"><i data-lucide="list-checks" aria-hidden="true"></i>Check the kit</a><a class="btn" href="#teach"><i data-lucide="monitor" aria-hidden="true"></i>Teach</a></div></div>
+    <div class="panel"><h2>Recent results</h2><ul class="list" style="margin-top:6px"><li><span class="t">States of matter · 6B · last week</span><strong>92%</strong></li><li><span class="t">The water cycle · 6A · 2 weeks ago</span><strong>81%</strong></li><li><span class="t">Food chains · 7C</span><span class="chip">Draft</span></li></ul></div>
+   </div>
+  </section>
+
+  <!-- CREATE -->
+  <section data-screen="create" hidden>
+   <div class="phead"><div class="pt"><h1>Make a lesson</h1><p>Add your source and pick the class. We set the grade, length and age band for you.</p></div><div class="pact"><button class="btn pri" id="makeBtn"><i data-lucide="sparkles" aria-hidden="true"></i>Make lesson kit</button></div></div>
+   <div class="cols">
+    <form class="panel form" id="createF" onsubmit="return false">
+     <div><span class="fld" id="srcL">Source</span><div class="seg2" role="group" aria-labelledby="srcL"><button type="button" id="srcFile" aria-pressed="true">Upload a file</button><button type="button" id="srcDesc" aria-pressed="false">Describe it</button></div>
+      <div id="srcFileBox" style="margin-top:12px"><p><i data-lucide="file-text" aria-hidden="true"></i> <strong>Plants_Unit3_Photosynthesis.pdf</strong> · 14 pages</p><p class="vmsg ok"><i data-lucide="check" aria-hidden="true"></i>File read. Source trace is on.</p></div>
+      <div id="srcDescBox" hidden style="margin-top:12px"><label class="fld" for="descT">Describe your lesson</label><textarea id="descT">Photosynthesis: how plants make food, Grade 6, 45 minutes.</textarea></div></div>
+     <div><span class="fld" id="clL">Class</span><div class="opts" id="clPick" role="radiogroup" aria-labelledby="clL"></div></div>
+     <div><span class="fld" id="bdL">Age band <span class="muted" style="font-weight:400">(set from the class, you can change it)</span></span><div class="opts" id="bdPick" role="radiogroup" aria-labelledby="bdL">
+      <label class="opt"><input type="radio" name="bd" value="explorer"><span><b>Explorer</b><small>Grades 2–5</small></span><i class="tk" data-lucide="circle-check" aria-hidden="true"></i></label>
+      <label class="opt"><input type="radio" name="bd" value="navigator" checked><span><b>Navigator</b><small>Grades 6–8</small></span><i class="tk" data-lucide="circle-check" aria-hidden="true"></i></label>
+      <label class="opt"><input type="radio" name="bd" value="studio"><span><b>Studio</b><small>Grades 9–12</small></span><i class="tk" data-lucide="circle-check" aria-hidden="true"></i></label></div></div>
+     <div><span class="fld" id="obL">Objectives · NGSS MS-LS1-6</span><div class="stack" id="objs" role="group" aria-labelledby="obL" style="display:grid;gap:8px"></div><div id="objMsg" role="status"></div></div>
+     <details class="opd"><summary><i data-lucide="settings-2" aria-hidden="true"></i>Options <span class="muted" style="font-weight:400">· English · 3 levels · all 5 resources</span></summary><p class="help">Language: English. Levels: Support, Core, Stretch. Resources: slides, worksheet, quiz, mini-game and cards.</p></details>
+    </form>
+    <aside class="panel" aria-label="Preview">
+     <h2 id="prevH">What 6B will see</h2><p class="muted small" id="prevS" style="margin:4px 0 14px">Grade 6 · Navigator style</p>
+     <div id="createPrev"></div>
+     <hr><ul class="list"><li><span class="t">Objectives found</span><span class="chip ok" id="rdO"><i data-lucide="check" aria-hidden="true"></i>3 of 3</span></li><li><span class="t">Grade level set</span><span class="chip ok"><i data-lucide="check" aria-hidden="true"></i>Grade 6</span></li></ul>
+     <p class="note" style="margin-top:12px"><i data-lucide="sparkles" aria-hidden="true"></i> The assistant only uses your file and the standard you pick.</p><p class="note" style="margin-top:8px"><i data-lucide="shield-check" aria-hidden="true"></i> Built for children: no ads, no public profiles, no rankings.</p>
+    </aside>
+   </div>
+  </section>
+
+  <!-- GENERATING -->
+  <section data-screen="generating" hidden>
+   <div class="phead"><div class="pt"><h1>Making your kit</h1><p id="genNow" role="status">Reading Plants_Unit3_Photosynthesis.pdf</p></div><div class="pact"><a class="btn pri" id="genGo" href="#review" aria-disabled="true"><i data-lucide="list-checks" aria-hidden="true"></i>Check the kit</a></div></div>
+   <div class="panel">
+    <div class="wscroll" tabindex="0" role="region" aria-label="Kit path, scrolls sideways"><div id="genMap"></div></div>
+    <div class="row" style="margin-top:16px;justify-content:space-between"><p><strong id="genPct">0%</strong> · <span id="genEta">About 40 seconds</span></p><p class="muted small">Source trace: <strong id="trace">0</strong> of 44 statements traced to your file</p></div>
+    <div class="bar" role="progressbar" aria-label="Kit progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="genBarW" style="margin-top:10px"><i id="genBar"></i></div>
+    <div id="genProblem" class="conf warn" role="alert" hidden><p><strong>The mini-game couldn't be made.</strong> The other four resources are fine.</p><div class="row" style="margin-top:10px"><button class="btn pri" id="genRetry">Try again</button><button class="btn" id="genSkip">Skip for now</button></div></div>
+    <div id="genDone" class="conf" role="status" hidden><h2>Your kit is ready · made in 38 s</h2><p class="muted" style="margin-top:4px">41 of 44 statements traced to your file; 3 need your check.</p></div>
+    <p class="note" style="margin-top:14px">Usually takes about 40 seconds. AI can make mistakes. Nothing reaches students until you approve it.</p>
+    <div class="row" style="margin-top:8px"><button class="btn lnk" id="replay">Replay</button></div>
+   </div>
+  </section>
+
+  <!-- CHECK (review) -->
+  <section data-screen="review" hidden>
+   <div class="phead"><div class="pt"><h1>Check your kit</h1><p>Look at each resource, then answer the 3 checks. <span id="rvCount" style="font-weight:700">0 of 3 checked</span></p></div><div class="pact"><button class="btn pri" id="approveBtn" aria-disabled="true"><i data-lucide="monitor" aria-hidden="true"></i>Approve and teach</button></div></div>
+   <div class="cols">
+    <div class="panel">
+     <div class="tabs" role="tablist" aria-label="Kit resources" id="tabs"></div>
+     <div id="tabBody" role="tabpanel" tabindex="0" aria-label="Resource preview"></div>
+     <form id="ask" style="margin-top:18px"><label class="fld" for="askIn">Ask for a change</label><div class="row" style="flex-wrap:wrap"><input type="text" id="askIn" style="flex:1;min-width:200px;width:auto"><button class="btn" type="submit"><i data-lucide="send" aria-hidden="true"></i>Send request</button></div><p class="help" id="askOut" role="status">For example: use a garden example.</p></form>
+     <div class="row" style="margin-top:14px"><span class="small muted">Change this resource</span><button class="btn sm" data-ai="Simpler">Simpler</button><button class="btn sm" data-ai="Add example">Add example</button><button class="btn sm" data-ai="Translate">Translate</button><button class="btn sm" data-ai="Regenerate">Regenerate</button></div>
+    </div>
+    <aside class="stack">
+     <div class="panel"><div class="hd"><h2><i data-lucide="flag" aria-hidden="true"></i> 3 checks</h2><span class="small muted" aria-label="Shortcuts"><span class="kbd">A</span> accept <span class="kbd">E</span> edit <span class="kbd">D</span> dismiss <span class="kbd">→</span> next</span></div><div id="checks"></div></div>
+     <div class="panel"><h2>Objectives covered</h2><div id="cov" style="margin-top:10px;display:grid;gap:10px"></div><p class="note" style="margin-top:12px">41 of 44 statements traced to your file; 3 need your check. Standard: NGSS MS-LS1-6.</p></div>
+    </aside>
+   </div>
+  </section>
+
+  <!-- DIFFERENTIATE -->
+  <section data-screen="differentiate" hidden>
+   <div class="phead"><div class="pt"><h1>Set levels</h1><p>One activity at three levels, who gets which, and what each age band looks like.</p></div><div class="pact"><a class="btn pri" href="#teach"><i data-lucide="monitor" aria-hidden="true"></i>Continue to teach</a></div></div>
+   <div class="panel"><h2>Worksheet A2: Word equation</h2>
+    <div class="cols eq" style="margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+     <div class="doc"><h3>Support</h3><p style="margin-top:8px">Fill the gaps in the word equation. Word bank: glucose, oxygen, water, carbon dioxide. Sentence starter: "Plants take in carbon dioxide and ____."</p></div>
+     <div class="doc"><h3>Core</h3><p style="margin-top:8px">Fill the gaps: <span class="blank"></span> + water → glucose + <span class="blank"></span> (with light energy, in chlorophyll).</p></div>
+     <div class="doc"><h3>Stretch</h3><p style="margin-top:8px">Complete the word equation from memory. Explain why a plant kept in the dark loses mass.</p></div>
+    </div></div>
+   <div class="cols" style="margin-top:20px">
+    <div class="panel"><div class="hd"><h2>Who gets which level</h2><span class="chip" id="unas">24 of 24 assigned</span></div><div id="lvls"></div></div>
+    <div class="panel"><h2>Accommodations</h2><p class="note" style="margin-bottom:6px">Teacher only. Never shown on the projector.</p><ul class="list" id="acc"></ul></div>
+   </div>
+   <div class="panel" style="margin-top:20px"><div class="hd"><h2>Age band preview</h2><div class="seg2" id="dfBand" role="group" aria-label="Preview band"><button type="button" data-b="explorer" aria-pressed="false">Explorer</button><button type="button" data-b="navigator" aria-pressed="true">Navigator</button><button type="button" data-b="studio" aria-pressed="false">Studio</button></div></div><p class="muted small" id="dfNote" style="margin-bottom:12px">6B is Grade 6, so students see Navigator style.</p><div id="dfPrev" style="max-width:560px"></div></div>
+  </section>
+
+  <!-- TEACH -->
+  <section data-screen="teach" hidden>
+   <div class="phead"><div class="pt"><h1>Teach lesson 4</h1><p>Show this on the board. Students join with the code on their own devices.</p></div><div class="pact"><button class="btn pri" id="nextQ">Next question</button></div></div>
+   <div class="cols">
+    <div class="stack">
+     <div class="proj" aria-label="Projector view">
+      <div class="projtop"><div><h2>Join with this code</h2><p class="code" style="margin-top:8px">482 913</p></div><div class="qr" id="qr" role="img" aria-label="QR code to join"></div></div>
+      <div><p style="margin-bottom:8px"><strong><span id="joined">18</span> of 24 joined</strong></p><div class="dots" id="jdots" aria-hidden="true"></div></div>
+      <div><p class="small" style="color:#C9DADF">Question 4 of 10</p><p class="pq" style="margin:6px 0 14px">True or false: Plants get their food from the soil.</p><div class="tf"><span>True</span><span>False</span></div></div>
+     </div>
+     <div id="endBox"></div>
+    </div>
+    <aside class="stack">
+     <div class="panel"><h2>On the board</h2><div style="margin-top:12px"><button class="switch" id="hideNames" role="switch" aria-checked="true" style="color:var(--ink);border-color:var(--line2)"><span class="tr"><span class="kn"></span></span><span id="namesState">Names hidden</span></button></div>
+      <p class="note" style="margin-top:10px"><i data-lucide="eye-off" aria-hidden="true"></i> Student data stays in your school's region. Names are never shown on the projector.</p></div>
+     <div class="panel"><h2>Assign instead</h2><div class="form"><div><label class="fld" for="asCls">Class</label><select class="f" id="asCls"><option>6B</option><option>6A</option><option>7C</option></select></div><div><label class="fld" for="due">Due</label><input type="text" id="due" value="Fri 15 Nov, 08:00"></div></div>
+      <div class="row" style="margin-top:16px"><button class="btn" id="assignBtn"><span>Assign to 6B</span></button><button class="btn" id="endBtn"><i data-lucide="square" aria-hidden="true"></i>End quiz</button></div>
+      <p class="note" style="margin-top:12px">Export: Google Classroom · Microsoft Teams · PDF · PowerPoint.</p></div>
+    </aside>
+   </div>
+  </section>
+
+  <!-- STUDENT -->
+  <section data-screen="student-g3" hidden><div class="phead"><div class="pt"><h1>Student view: Grade 3 · Explorer</h1><p>Class 3A. Big targets, picture and word answers, read-aloud, no timers.</p></div></div><div id="sb3"></div><div class="fit" data-w="1024" data-h="700"><div class="frame tablet" id="g3"></div></div><p class="note" style="margin-top:14px;text-align:center">Built for children: no ads, no public profiles, no rankings. Only the teacher sees names.</p></section>
+  <section data-screen="student-g7" hidden><div class="phead"><div class="pt"><h1>Student view: Grade 7 · Navigator</h1><p>Class 6B level. A progress path, big answer buttons, answers saved.</p></div></div><div id="sb7"></div><div class="fit" data-w="390" data-h="780"><div class="frame phone" id="g7"></div></div><p class="note" style="margin-top:14px;text-align:center">Built for children: no ads, no public profiles, no rankings. Only the teacher sees names.</p></section>
+  <section data-screen="student-g11" hidden><div class="phead"><div class="pt"><h1>Student view: Grade 11 · Studio</h1><p>Class 11S. Calm and minimal. Press 1–4 to answer.</p></div></div><div id="sb11"></div><div class="fit" data-w="390" data-h="780"><div class="frame phone" id="g11"></div></div><p class="note" style="margin-top:14px;text-align:center">Built for children and teens: no ads, no public profiles, no rankings.</p></section>
+  <section data-screen="game" hidden><div class="phead"><div class="pt"><h1>Mini-game: Plant parts match</h1><p>Each match moves your marker one stop along the path.</p></div></div><div class="fit" data-w="390" data-h="780"><div class="frame phone" id="gm"></div></div><p class="note" style="margin-top:14px;text-align:center">No timers, no scores shown to others. Built for children: no ads, no rankings.</p></section>
+
+  <!-- RESULTS -->
+  <section data-screen="results" hidden>
+   <div class="phead"><div class="pt"><h1 id="resH">22 of 24 answered. 6B knows plant parts well and needs another look at the word equation.</h1><p>Average 74%. Q4 shows a common misconception: "plants get their food from the soil".</p></div><div class="pact"><button class="btn pri" id="syncBtn"><i data-lucide="refresh-cw" aria-hidden="true"></i><span>Sync scores to gradebook</span></button></div></div>
+   <div class="panel"><h2>Where 6B is on the path</h2><div class="wscroll" tabindex="0" role="region" aria-label="Class path with mastery flags, scrolls sideways" style="margin-top:12px"><div id="mapRes"></div></div></div>
+   <div class="cols eq" style="margin-top:20px">
+    <div class="panel"><div class="hd"><h2>Mastery by objective</h2><button class="btn sm" id="mtT" aria-pressed="false">View as table</button></div><div id="mastery"></div><div class="tscroll" id="mastTbl" hidden><table><thead><tr><th scope="col">Objective</th><th scope="col">Mastery</th><th scope="col">Target</th></tr></thead><tbody><tr><th scope="row">O1</th><td>68%</td><td>70%</td></tr><tr><th scope="row">O2</th><td>85%</td><td>70%</td></tr><tr><th scope="row">O3</th><td>58%</td><td>70%</td></tr></tbody></table></div></div>
+    <div class="panel"><h2>Needs help</h2><p class="note">Below 60%. Only you see names.</p><ul class="list" id="needs"></ul><h3 style="margin-top:14px">Not submitted</h3><ul class="list" id="nosub"></ul></div>
+   </div>
+   <div class="panel" style="margin-top:20px"><h2>Question breakdown</h2><div class="tscroll" style="margin-top:12px"><table><thead><tr><th scope="col">Q</th><th scope="col">Question</th><th scope="col">Objective</th><th scope="col">Correct</th><th scope="col">Note</th></tr></thead><tbody id="qtBody"></tbody></table></div></div>
+   <div class="panel" style="margin-top:20px"><h2>Student by question</h2><p class="note" style="margin:4px 0 10px">Alphabetical, not ranked. Hover a cell for detail.</p><div class="key" aria-label="Key"><span style="color:#17704A"><i data-lucide="check" aria-hidden="true"></i>Correct</span><span style="color:#2457D6"><i data-lucide="x" aria-hidden="true"></i>Not yet</span><span style="color:#7A5200"><i data-lucide="minus" aria-hidden="true"></i>Partly correct</span><span class="na"><i aria-hidden="true"></i>Not answered</span></div><div class="tscroll gridscroll" tabindex="0" role="region" aria-label="Student by question grid, scrolls both ways"><table id="sg"></table></div></div>
+   <div class="cols eq" style="margin-top:20px">
+    <div class="panel"><h2>Send a sticker</h2><div class="stk" id="stk" role="radiogroup" aria-label="Sticker" style="margin-top:12px"></div><div class="row" style="margin-top:14px"><div style="flex:1;min-width:160px"><label class="fld" for="stTo">To</label><select class="f" id="stTo"><option>The whole class</option><option>Sara Ahmed</option><option>Fatma Trabelsi</option><option>Mia Lopez</option><option>Youssef Haddad</option></select></div><button class="btn pri" id="stSend" style="align-self:flex-end">Send sticker</button></div><p class="help" id="stOut" role="status"></p></div>
+    <div class="panel"><h2>Re-teach plan</h2><ul class="list" id="rt"></ul>
+     <hr><h3>Families</h3><div style="margin-top:8px"><button class="switch" id="famSw" role="switch" aria-checked="false" style="color:var(--ink);border-color:var(--line2)"><span class="tr"><span class="kn"></span></span><span>Share progress with families: Off</span></button></div><div id="famBox"></div><p class="note" style="margin-top:8px">Families see a friendly summary of personal progress, never a rank.</p></div>
+   </div>
+   <div class="panel" style="margin-top:20px;text-align:left"><h2>Next step</h2><p class="muted" style="margin:6px 0 12px">Add the 5-minute warm-up on "plants don't eat soil" to Lesson 5.</p><button class="btn pri rtbtn" data-rt="warm" aria-pressed="false"><i data-lucide="plus" aria-hidden="true"></i><span>Add to Lesson 5</span></button></div>
+  </section>
+
+  <!-- LESSON STOP -->
+  <section data-screen="lesson" hidden>
+   <div class="phead"><div class="pt"><h1 id="lsH">Lesson</h1><p id="lsP"></p></div></div>
+   <div class="panel" id="lsBody"></div>
+  </section>
+
+  <div class="foot"><p><i data-lucide="shield-check" aria-hidden="true"></i> Built for children: no ads, no public profiles, no rankings. Student data stays in your school's region. Names are never shown on the projector.</p><p><i data-lucide="sparkles" aria-hidden="true"></i> AI can make mistakes. Nothing reaches students until you approve it.</p></div>
+ </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<nav class="picker" aria-label="Mockup screens">
+ <a href="#dashboard">Dashboard</a><a href="#create">Create</a><a href="#generating">Generating</a><a href="#review">Check</a><a href="#differentiate">Differentiate</a><a href="#teach">Teach</a><a href="#student-g3">Grade 3</a><a href="#student-g7">Grade 7</a><a href="#student-g11">Grade 11</a><a href="#game">Game</a><a href="#results">Results</a><span class="sep"></span><a href="#generating-problem">Show a problem</a><a href="../index.html">All v3 versions</a>
+</nav>
+
+<script>
+(function(){
+var $=function(s,r){return(r||document).querySelector(s)},$$=function(s,r){return[].slice.call((r||document).querySelectorAll(s))};
+var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function ic(n){return '<i data-lucide="'+n+'" aria-hidden="true"></i>'}
+function icons(){try{window.lucide&&lucide.createIcons()}catch(e){}}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+var tt;
+function toast(m,undo){var t=$('#toast');t.innerHTML='<span>'+esc(m)+'</span>'+(undo?'<button type="button">Undo</button>':'');if(undo)$('button',t).addEventListener('click',function(){undo();t.classList.remove('show')});t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},undo?6000:3600)}
+function speak(t){try{if(window.speechSynthesis){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(t))}}catch(e){}}
+function saved(){var s=$('#svd');if(!s)return;s.textContent='Saving…';setTimeout(function(){s.textContent='Saved just now'},500)}
+
+/* ---------- state ---------- */
+var CLS={'6B':['Grade 6','24 students','navigator'],'6A':['Grade 6','26 students','navigator'],'7C':['Grade 7','22 students','navigator'],'3A':['Grade 3','27 students','explorer'],'11S':['Grade 11','21 students','studio']};
+var BN={explorer:'Explorer',navigator:'Navigator',studio:'Studio'};
+var cls='6B',band='navigator';
+var RT={warm:false,group:false},justAdded=null;
+var ST={q4:'flag',q9:'flag',a5:'flag'},TXT={},EDIT={},curChk=0;
+var openCount=function(){return Object.keys(ST).filter(function(k){return ST[k]!=='flag'}).length};
+
+/* ---------- winding path ---------- */
+var YS=[230,180,225,170,220,165];
+function pts(n){var a=[],st=n>1?840/(n-1):0;for(var i=0;i<n;i++)a.push([80+i*st,YS[i%6]]);return a}
+function pathD(p,upto){var d='M'+p[0][0]+' '+p[0][1];for(var i=1;i<=upto;i++){var a=p[i-1],b=p[i],m=(a[0]+b[0])/2;d+=' C'+m+' '+a[1]+' '+m+' '+b[1]+' '+b[0]+' '+b[1]}return d}
+function hills(){return '<path d="M0 250C150 190 300 200 450 240S750 170 1000 230V360H0Z" fill="#CFE9EE"/><path d="M0 300C200 250 380 290 560 285S850 250 1000 285V360H0Z" fill="#B5DCE4"/><path d="M0 338C200 322 330 350 520 336S820 322 1000 340V360H0Z" fill="#2CA6B8" opacity=".55"/><circle cx="905" cy="62" r="24" fill="#DDF0F2" stroke="#2CA6B8" stroke-width="3"/><path d="M60 110h70M90 125h50M780 90h90" stroke="#B5DCE4" stroke-width="6" stroke-linecap="round"/>'}
+function flagHTML(f){return '<span class="fl '+f.k+(f.nw?' new':'')+'">'+ic(f.i||'flag')+esc(f.t)+'</span>'}
+function stopLi(s,x,y,vertical){
+ var st='st-'+s.st,pos=vertical?'left:'+x+'px;top:'+y+'px':'left:'+(x/10)+'%;top:'+(y/360*100)+'%';
+ var h='<li class="stli" style="'+pos+'" data-i="'+s.n+'"><a class="stop '+st+'" href="'+s.href+'"'+(s.gate?' data-gate="1"':'')+'><span class="num">'+s.n+'</span><span class="lab">'+esc(s.label)+'<small>'+(s.subHTML||esc(s.sub||''))+'</small></span></a>';
+ if(s.flags&&s.flags.length)h+='<span class="fls">'+s.flags.map(flagHTML).join('')+'</span>';
+ return h+'</li>'}
+function mapHTML(stops,doneTo){
+ var p=pts(stops.length);
+ return '<div class="wmap"><svg viewBox="0 0 1000 360" preserveAspectRatio="none" aria-hidden="true">'+hills()+'<path d="'+pathD(p,p.length-1)+'" fill="none" stroke="#4B6670" stroke-width="5" stroke-dasharray="1 12" stroke-linecap="round"/>'+(doneTo>0?'<path d="'+pathD(p,doneTo)+'" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round"/><path d="'+pathD(p,doneTo)+'" fill="none" stroke="#2CA6B8" stroke-width="7" stroke-linecap="round"/>':'')+'</svg><ol class="list" style="margin:0;padding:0">'+stops.map(function(s,i){return stopLi(s,p[i][0],p[i][1],false)}).join('')+'</ol></div>'}
+var NAMES=['What plants need','Leaves','Roots and stems','Photosynthesis','Lesson 5','Lesson 6'],MS=[88,84,79];
+function unitStops(mode){
+ var left=3-openCount(),any=RT.warm||RT.group;
+ return NAMES.map(function(t,i){var n=i+1,o={n:n,label:t,st:n<4?'done':n===4?'cur':'next',href:n===4?'#review':'#lesson-'+n,flags:[]};
+  if(n<4){o.sub='Taught';o.flags.push({k:'ok',t:MS[i]+'%'});o.subHTML='Taught'}
+  if(n===4){o.sub=left?'Ready · '+left+' to check':'Ready · all checked';if(mode==='res')o.sub='Taught · 74%'}
+  if(n>4){o.sub=n===5&&any?'Re-teach planned':'Not planned'}
+  if(mode==='dash'&&n===3)o.flags.push({k:'wk',t:'O3 weak spot · 58%'});
+  if(mode==='res'&&n===4){o.flags=[{k:'wk',t:'O1 68% · below 70'},{k:'ok',t:'O2 85%'},{k:'wk',t:'O3 58% · weak spot'}];o.flags[0].k='rt';}
+  if(mode!=='rail'&&n===5){if(RT.warm)o.flags.push({k:'rt',i:'repeat',t:'Re-teach · O1 warm-up',nw:justAdded==='warm'});if(RT.group)o.flags.push({k:'rt',i:'repeat',t:'Re-teach · O3 group',nw:justAdded==='group'})}
+  return o})}
+function railV(){
+ var P=[];for(var i=0;i<6;i++)P.push([i%2?88:44,45+i*92]);
+ var d='M'+P[0][0]+' '+P[0][1];for(i=1;i<6;i++){var m=(P[i-1][1]+P[i][1])/2;d+=' C'+P[i-1][0]+' '+m+' '+P[i][0]+' '+m+' '+P[i][0]+' '+P[i][1]}
+ var d3='M'+P[0][0]+' '+P[0][1];for(i=1;i<=3;i++){m=(P[i-1][1]+P[i][1])/2;d3+=' C'+P[i-1][0]+' '+m+' '+P[i][0]+' '+m+' '+P[i][0]+' '+P[i][1]}
+ var S=unitStops('rail');
+ return '<div class="pv"><svg class="bg" viewBox="0 0 248 552" width="248" height="552" aria-hidden="true"><path d="'+d+'" fill="none" stroke="#4B6670" stroke-width="4" stroke-dasharray="1 10" stroke-linecap="round"/><path d="'+d3+'" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/><path d="'+d3+'" fill="none" stroke="#2CA6B8" stroke-width="6" stroke-linecap="round"/></svg><ol class="list" style="margin:0;padding:0">'+S.map(function(s,i){var o=stopLi(s,P[i][0],P[i][1],true);return o}).join('')+'</ol></div>'}
+function railH(){return '<ol class="strip">'+unitStops('rail').map(function(s){return '<li><a class="st-'+s.st+'" href="'+s.href+'"><span class="n">'+s.n+'</span>'+esc(s.label)+'<span class="small muted" style="font-size:.72rem">'+esc(s.sub||'')+(s.n<4?' '+MS[s.n-1]+'%':'')+'</span></a></li>'}).join('')+'</ol>'}
+function renderPaths(){
+ $('#railV').innerHTML=railV();$('#railH').innerHTML=railH();
+ $('#mapDash').innerHTML=mapHTML(unitStops('dash'),3);
+ $('#mapRes').innerHTML=mapHTML(unitStops('res'),3);
+ var a=$('#dashAdd');a.setAttribute('aria-pressed',RT.group);$('span',a).textContent=RT.group?'O3 re-teach added to Lesson 5':'Add O3 re-teach to Lesson 5';
+ $$('.rtbtn').forEach(function(b){var on=RT[b.dataset.rt];b.setAttribute('aria-pressed',on);b.classList.toggle('on',on);b.classList.toggle('pri',!on);b.innerHTML=ic(on?'check':'plus')+'<span>'+(on?'Added to Lesson 5':'Add to Lesson 5')+'</span>'});
+ $('#dashKit').textContent=(3-openCount())?(3-openCount())+' to check':'All checked';
+ icons();justAdded=null}
+function toggleRT(k){RT[k]=!RT[k];justAdded=RT[k]?k:null;renderPaths();renderRt();saved();toast(RT[k]?'Added to Lesson 5. A re-teach marker is now at stop 5.':'Removed from Lesson 5.',function(){RT[k]=!RT[k];renderPaths();renderRt()})}
+document.addEventListener('click',function(e){var b=e.target.closest('.rtbtn');if(b){toggleRT(b.dataset.rt)}var g=e.target.closest('[data-gate]');if(g&&g.getAttribute('aria-disabled')==='true'){e.preventDefault();toast('Not finished yet. It opens when it is ready.')}});
+$('#dashAdd').addEventListener('click',function(){toggleRT('group')});
+
+/* ---------- progress pill ---------- */
+function seg(n,i,cls){var h='<div class="seg '+(cls||'')+'" style="--n:'+n+';--i:'+i+'" role="img" aria-label="Step '+(i+1)+' of '+n+'">';for(var k=0;k<n;k++)h+='<i class="'+(k<i?'d':'')+'"></i>';return h+'<span class="pill"></span></div>'}
+
+/* ---------- band preview ---------- */
+function bandPrev(b){
+ if(b==='explorer')return '<div class="bp ex"><div class="row" style="justify-content:space-between"><span class="q">What does a plant need to make its food?</span><span class="spk">'+ic('volume-2')+'Listen</span></div><div class="tiles"><span>'+ic('sun')+'Sunlight</span><span>'+ic('droplets')+'Water</span></div>'+seg(5,1,'')+'<span class="small">Question 2 of 5 · big buttons, read-aloud, "Not yet, try again"</span></div>';
+ if(b==='studio')return '<div class="bp st">'+seg(10,3,'thin')+'<span class="q">Which stage produces ATP and NADPH?</span><ol class="opl"><li><b>1</b>Light-dependent reactions</li><li><b>2</b>Calvin cycle</li><li><b>3</b>Glycolysis</li><li><b>4</b>Krebs cycle</li></ol><span class="small muted">Press 1–4 · precise feedback · no illustrations</span></div>';
+ return '<div class="bp nv">'+seg(10,3,'')+'<span class="small"><strong>Question 4 of 10</strong></span><span class="q">Plants get their food from the soil.</span><div class="tf"><span>True</span><span>False</span></div><span class="small muted">Progress path, answer saved, optional read-aloud</span></div>'}
+
+/* ---------- create ---------- */
+var OBJ=[['O1','Explain that plants use light, water and carbon dioxide to make glucose and oxygen.','Understand · p. 4'],['O2','Describe the roles of leaves, roots and stem.','Remember · p. 7'],['O3','Read and complete the word equation for photosynthesis.','Apply · p. 9']];
+$('#clPick').innerHTML=Object.keys(CLS).map(function(k,i){return '<label class="opt"><input type="radio" name="cl" value="'+k+'"'+(i?'':' checked')+'><span><b>'+k+'</b><small>'+CLS[k][0]+' · '+CLS[k][1]+'</small></span><i class="tk" data-lucide="circle-check" aria-hidden="true"></i></label>'}).join('');
+$('#objs').innerHTML=OBJ.map(function(o,i){return '<label class="opt" style="align-items:flex-start"><input type="checkbox" checked data-o="'+i+'"><span><b><span class="chip pri">'+o[0]+'</span> '+o[1]+'</b><small>'+o[2]+'</small></span><i class="tk" data-lucide="circle-check" aria-hidden="true"></i></label>'}).join('');
+function setClass(k,fromTop){cls=k;band=CLS[k][2];var r=$('#clPick input[value="'+k+'"]');if(r)r.checked=true;var b=$('#bdPick input[value="'+band+'"]');if(b)b.checked=true;$('#cls').value=k;$('#cls').setAttribute('aria-label',k+' · '+BN[band]+', switch class');updCreate();updCtx();renderPaths()}
+function updCreate(){$('#prevH').textContent='What '+cls+' will see';$('#prevS').textContent=CLS[cls][0]+' · '+BN[band]+' style';$('#createPrev').innerHTML=bandPrev(band);$('#dfNote').textContent=cls+' is '+CLS[cls][0]+', so students see '+BN[band]+' style.';icons()}
+$$('#clPick input').forEach(function(r){r.addEventListener('change',function(){setClass(r.value)})});
+$$('#bdPick input').forEach(function(r){r.addEventListener('change',function(){band=r.value;updCreate();updCtx()})});
+$('#cls').addEventListener('change',function(){setClass(this.value)});
+$$('#objs input').forEach(function(c){c.addEventListener('change',objVal)});
+function objVal(){var n=$$('#objs input').filter(function(x){return x.checked}).length,m=$('#objMsg'),b=$('#makeBtn');
+ if(n){m.innerHTML='<p class="vmsg ok">'+ic('check')+n+' objective'+(n>1?'s':'')+' found</p>';$('#rdO').innerHTML=ic('check')+n+' of 3';$('#rdO').className='chip ok';b.setAttribute('aria-disabled','false')}
+ else{m.innerHTML='<p class="vmsg bad">'+ic('flag')+'Add at least one objective so the quiz has a goal.</p>';$('#rdO').innerHTML=ic('flag')+'0 of 3';$('#rdO').className='chip wk';b.setAttribute('aria-disabled','true')}icons()}
+$('#makeBtn').addEventListener('click',function(){if(this.getAttribute('aria-disabled')==='true'){toast('Add at least one objective first.');$('#objs input').focus();return}location.hash='#generating'});
+$('#srcFile').addEventListener('click',function(){srcSet(true)});$('#srcDesc').addEventListener('click',function(){srcSet(false)});
+function srcSet(f){$('#srcFile').setAttribute('aria-pressed',f);$('#srcDesc').setAttribute('aria-pressed',!f);$('#srcFileBox').hidden=!f;$('#srcDescBox').hidden=f}
+$('#srchF').addEventListener('submit',function(e){e.preventDefault();toast('Searching lessons for "'+$('#srch').value+'"… the mockup keeps Unit 3 as the example.')});
+$('#avatar').addEventListener('click',function(){toast('Alex Green · Riverside Middle School · Science')});
+
+/* ---------- context bar ---------- */
+function updCtx(){var c=$('#ctx');c.innerHTML='<span><strong>'+cls+'</strong>, '+CLS[cls][0]+', '+BN[band]+' style</span><span>Lesson 4 of 6: Photosynthesis</span><span class="chip ok" id="svd" aria-live="polite">'+ic('check')+'Saved</span>';icons()}
+
+/* ---------- generating ---------- */
+var GR=[['Slides','12 slides'],['Worksheet','8 activities'],['Quiz','10 questions'],['Mini-game','8 pairs'],['Cards','12 cards']],gi=0,gt=null,problem=false,skipped=false;
+function buildGen(){
+ var S=GR.map(function(g,i){return {n:i+1,label:g[0],sub:'Waiting',st:'wait',href:'#review',gate:true}});
+ $('#genMap').innerHTML=mapHTML(S,0);$$('#genMap .stop').forEach(function(a){a.setAttribute('aria-disabled','true')});icons()}
+function paintGen(k){
+ var lis=$$('#genMap .stli');
+ lis.forEach(function(li,i){var a=$('.stop',li),fail=problem&&i===3&&k>3&&!skipped;
+  a.className='stop '+(fail?'st-fail':i<k?'st-done':i===k?'st-cur':'st-wait');
+  $('small',li).textContent=fail?'Could not be made':(i<k?GR[i][1]+' · ready':(i===k?'Making…':'Waiting'));
+  a.setAttribute('aria-disabled',i<k&&!fail?'false':'true')});
+ var pct=Math.round(Math.min(k,5)/5*100);$('#genPct').textContent=pct+'%';$('#genBar').style.transform='scaleX('+pct/100+')';$('#genBarW').setAttribute('aria-valuenow',pct);
+ $('#trace').textContent=Math.round(41*k/5);$('#genEta').textContent=k>=5?'Done':'About '+Math.max(4,(5-k)*8)+' seconds';
+ $('#genNow').textContent=k>=5?(problem&&!skipped?'Four of five resources are ready.':'Your kit is ready.'):(k?'Making '+GR[Math.min(k,4)][0].toLowerCase()+'. '+GR[0][0]+' is ready to open.':'Reading Plants_Unit3_Photosynthesis.pdf');
+ var fin=k>=5,bad=fin&&problem&&!skipped;$('#genProblem').hidden=!bad;$('#genDone').hidden=!(fin&&!bad);
+ var go=$('#genGo');go.setAttribute('aria-disabled',!(fin&&!bad));go.classList.toggle('pri',fin&&!bad)}
+function startGen(){stopGen();buildGen();gi=0;skipped=false;paintGen(0);if(RM){paintGen(5);return}gt=setInterval(function(){gi++;paintGen(gi);if(gi>=5)stopGen()},900)}
+function stopGen(){if(gt){clearInterval(gt);gt=null}}
+$('#replay').addEventListener('click',function(){problem=false;startGen()});
+$('#genRetry').addEventListener('click',function(){problem=false;startGen()});
+$('#genSkip').addEventListener('click',function(){skipped=true;paintGen(5);toast('Skipped the mini-game. You can make it later.')});
+$('#genGo').addEventListener('click',function(e){if(this.getAttribute('aria-disabled')==='true'){e.preventDefault();toast('Not ready yet. It opens when the kit is finished.')}});
+
+/* ---------- check (review) ---------- */
+var CHK=[{id:'q4',loc:'Quiz Q4',t:'Fact check',txt:'The answer key says False. "From the soil" is a common misconception, so the question stays. AI confidence is low on the wording of the explanation.',src:'p. 6',edit:'Plants make their own food using light, water and carbon dioxide. Soil gives them water, not food.'},{id:'q9',loc:'Quiz Q9',t:'Reading level',txt:'Written at grade 8, above 6B (grade 6). Suggested rewrite: "Chlorophyll is the green part of the leaf that catches sunlight."',src:'p. 5',edit:'Chlorophyll is the green part of the leaf that catches sunlight.'},{id:'a5',loc:'Worksheet A5',t:'Used before introduced',txt:'"Glucose" appears before the slides introduce it. Suggested fix: add a glossary box.',src:'p. 10',edit:'Glucose: the sugar a plant makes for energy.'}];
+var LBL={accepted:'Accepted',edited:'Edited',dismissed:'Dismissed'};
+var TABS=[['slides','Slides','presentation'],['ws','Worksheet','file-text'],['quiz','Quiz','list-checks'],['game','Mini-game','gamepad-2'],['cards','Cards','layers']],tab='slides',slide=0,card=0,back=false;
+function renderTabs(){$('#tabs').innerHTML=TABS.map(function(t){return '<button role="tab" id="tb-'+t[0]+'" aria-selected="'+(t[0]===tab)+'" tabindex="'+(t[0]===tab?0:-1)+'" data-t="'+t[0]+'">'+ic(t[2])+t[1]+'</button>'}).join('');
+ $$('#tabs button').forEach(function(b,i){b.addEventListener('click',function(){tab=b.dataset.t;renderTabs();renderBody()});b.addEventListener('keydown',function(e){var n=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!n)return;tab=TABS[(i+n+5)%5][0];renderTabs();renderBody();$('#tb-'+tab).focus()})})}
+var LEAF='<svg viewBox="0 0 300 130" role="img" aria-label="Leaf cross-section with chloroplast, stomata and vein labelled" style="width:100%;max-height:62%"><rect x="6" y="6" width="190" height="12" rx="4" fill="#B5DCE4"/><rect x="6" y="20" width="190" height="36" rx="4" fill="#DDF0F2" stroke="#0F6E7A"/><g fill="#2CA6B8"><ellipse cx="30" cy="38" rx="9" ry="6"/><ellipse cx="70" cy="38" rx="9" ry="6"/><ellipse cx="110" cy="38" rx="9" ry="6"/><ellipse cx="150" cy="38" rx="9" ry="6"/></g><rect x="6" y="58" width="190" height="36" rx="4" fill="#fff" stroke="#0F6E7A"/><circle cx="100" cy="76" r="12" fill="#B5DCE4" stroke="#0F6E7A" stroke-width="2"/><rect x="6" y="96" width="190" height="12" rx="4" fill="#B5DCE4"/><g stroke="#102A33" fill="none"><path d="M150 38L212 20"/><path d="M92 102L212 108"/><path d="M100 76L212 64"/></g><g font-family="Andika,sans-serif" font-size="12" fill="#102A33"><text x="216" y="24">chloroplast</text><text x="216" y="112">stomata</text><text x="216" y="68">vein</text></g></svg>';
+var SLIDES=[['S1','Photosynthesis: how plants make food','<p class="muted">Grade 6 Science · Unit 3: Plants and energy · Lesson 4 of 6</p>',1],['S4','The word equation','<div class="eq"><span class="b">carbon dioxide</span>+<span class="b">water</span>→<span class="b">glucose</span>+<span class="b">oxygen</span></div><p class="muted small">with light energy, in chlorophyll</p>',4],['S6','Inside a leaf',LEAF,6]];
+function renderBody(){
+ var h='';
+ if(tab==='slides'){var s=SLIDES[slide];h='<p class="small muted" style="margin-bottom:8px">Presentation · 12 slides · slide '+s[3]+' shown</p><div class="stage"><h4>'+s[1]+'</h4>'+s[2]+'<span class="sn">'+s[3]+' / 12</span></div><div class="thumbs" role="group" aria-label="Slides">'+SLIDES.map(function(x,i){return '<button type="button" data-sl="'+i+'" aria-pressed="'+(i===slide)+'">'+x[0]+' '+x[1].split(':')[0]+'</button>'}).join('')+'</div>'}
+ if(tab==='ws'){var ok=ST.a5!=='flag';h='<p class="small muted" style="margin-bottom:8px">Worksheet · 8 activities · Core level shown</p><div class="doc"><h3>A1 · Label the plant</h3><p class="muted small">O2 · Remember</p><svg viewBox="0 0 260 120" role="img" aria-label="Plant outline with four blank label lines" style="width:100%;max-width:340px"><path d="M130 112V40" stroke="#0F6E7A" stroke-width="4"/><path d="M130 80C100 80 85 62 90 48C112 48 128 62 130 80Z" fill="#B5DCE4" stroke="#0F6E7A"/><path d="M130 62C160 62 175 44 170 30C148 30 132 44 130 62Z" fill="#B5DCE4" stroke="#0F6E7A"/><circle cx="130" cy="32" r="9" fill="#fff" stroke="#0F6E7A" stroke-width="2"/><g stroke="#102A33"><path d="M139 32h70M178 42h31M130 90h79M130 108h79"/></g></svg></div><div class="doc" style="margin-top:10px"><h3>A2 · Fill the gaps</h3><p style="margin-top:6px"><span class="blank"></span> + water → glucose + <span class="blank"></span></p></div><div class="doc" style="margin-top:10px"><h3>A5 · Which substance gives a plant energy?</h3><div class="gloss'+(ok?'':' sug')+'"><strong>Glossary</strong><br>'+esc(TXT.a5||CHK[2].edit)+'</div>'+(ok?'':'<p class="help">Suggested glossary box. It is added when you accept.</p>')+'</div>'}
+ if(tab==='quiz'){var q9=ST.q9!=='flag';h='<p class="small muted" style="margin-bottom:8px">Quiz · 10 questions · Q1 and Q4 shown</p><div class="doc"><h3>Q1. What does a plant need to make its own food?</h3><ul class="ol"><li class="ok"><span class="l">A</span>Sunlight, water and carbon dioxide '+ic('check')+'</li><li><span class="l">B</span>Soil and water only</li><li><span class="l">C</span>Oxygen and sugar</li><li><span class="l">D</span>Only sunlight</li></ul></div><div class="doc" style="margin-top:10px"><div class="row" style="justify-content:space-between"><h3>Q4. Plants get their food from the soil.</h3>'+(ST.q4==='flag'?'<span class="chip wk">'+ic('flag')+'Check</span>':'<span class="chip ok">'+ic('check')+LBL[ST.q4]+'</span>')+'</div><ul class="ol"><li><span class="l">T</span>True</li><li class="ok"><span class="l">F</span>False '+ic('check')+'</li></ul><p class="small" style="margin-top:10px"><strong>Explanation shown after answering:</strong> '+esc(TXT.q4||'Plants make food by photosynthesis. Soil gives water, not food.')+'</p></div><div class="doc" style="margin-top:10px"><h3>Q9. What does chlorophyll do?</h3><p class="small" style="margin-top:6px">Model answer: <em>'+esc(q9?(TXT.q9||CHK[1].edit):'Chlorophyll absorbs light energy.')+'</em> · reading level '+(q9?'grade 6':'grade 8')+'</p></div>'}
+ if(tab==='game')h='<p class="small muted" style="margin-bottom:8px">Mini-game · Plant parts match · 8 pairs</p><div class="pairs">'+[['Roots','take in water'],['Leaf','makes food'],['Stem','carries water'],['Flower','makes seeds'],['Chlorophyll','catches light'],['Stomata','let gases in and out'],['Glucose','food made by the plant'],['Oxygen','released into air']].map(function(p){return '<div><strong>'+p[0]+'</strong>'+ic('arrow-left-right')+'<span>'+p[1]+'</span></div>'}).join('')+'</div>';
+ if(tab==='cards'){var C=[['Photosynthesis','Plants use light, water and carbon dioxide to make glucose and oxygen.'],['Chlorophyll','The green part of the leaf that catches sunlight.'],['Glucose','The sugar a plant makes for energy.'],['Soil is not food','Soil gives a plant water and minerals, not food.']];h='<p class="small muted" style="margin-bottom:8px">Summary cards · 12 cards · card '+(card+1)+' of 4 shown here</p><button class="flip" id="flip" type="button" aria-label="'+(back?'Back: '+C[card][1]:'Front: '+C[card][0])+'. Flip card">'+(back?C[card][1]:C[card][0])+'<small>'+(back?'Back':'Front')+' · select to flip</small></button><div class="row" style="margin-top:10px"><button class="btn sm" id="cPrev">Previous</button><button class="btn sm" id="cNext">Next</button></div>'}
+ var b=$('#tabBody');b.setAttribute('aria-labelledby','tb-'+tab);b.innerHTML=h;icons();
+ $$('[data-sl]',b).forEach(function(x){x.addEventListener('click',function(){slide=+x.dataset.sl;renderBody()})});
+ var f=$('#flip');if(f){var C2=[['Photosynthesis','Plants use light, water and carbon dioxide to make glucose and oxygen.'],['Chlorophyll','The green part of the leaf that catches sunlight.'],['Glucose','The sugar a plant makes for energy.'],['Soil is not food','Soil gives a plant water and minerals, not food.']];f.addEventListener('click',function(){back=!back;renderBody()});$('#cPrev').addEventListener('click',function(){card=(card+3)%4;back=false;renderBody()});$('#cNext').addEventListener('click',function(){card=(card+1)%4;back=false;renderBody()})}}
+function renderChecks(){
+ var n=openCount();$('#rvCount').textContent=n+' of 3 checked';
+ var ab=$('#approveBtn');ab.setAttribute('aria-disabled',n<3);ab.classList.toggle('pri',n===3);
+ $('#checks').innerHTML=CHK.map(function(c,i){var s=ST[c.id],cur=i===curChk,src='<a href="#review" data-src="'+c.src+'">Plants_Unit3_Photosynthesis.pdf '+c.src+'</a>';
+  if(s==='flag'){var body=EDIT[c.id]?'<label class="fld" for="edt" style="margin-top:10px">Edit the text</label><textarea id="edt">'+esc(TXT[c.id]||c.edit)+'</textarea><div class="row" style="margin-top:8px"><button class="btn pri sm" data-e="save">Save edit</button><button class="btn sm" data-e="cancel">Cancel</button></div>':'<div class="row" style="margin-top:12px"><button class="btn pri sm" data-a="accepted" data-c="'+c.id+'">'+ic('check')+'Accept</button><button class="btn sm" data-a="edit" data-c="'+c.id+'">'+ic('pencil')+'Edit</button><button class="btn sm" data-a="dismissed" data-c="'+c.id+'">'+ic('x')+'Dismiss</button></div>';
+   return '<div class="chk" data-i="'+i+'"'+(cur?' aria-current="true"':'')+'><h3>'+ic('flag')+c.t+' <span class="chip wk">'+c.loc+'</span></h3><p style="margin-top:6px">'+c.txt+'</p><p class="small muted" style="margin-top:6px">Source: '+src+'</p>'+body+'</div>'}
+  return '<div class="chk res" data-i="'+i+'"><h3>'+ic('circle-check')+LBL[s]+': '+c.t+' <span class="chip">'+c.loc+'</span></h3><div class="row" style="margin-top:8px"><button class="btn sm" data-a="reopen" data-c="'+c.id+'">Reopen check</button></div></div>'}).join('');
+ $$('#checks [data-a]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.c,b.dataset.a)})});
+ $$('#checks [data-src]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();toast('Opening page '+a.dataset.src.replace('p. ','')+' of Plants_Unit3_Photosynthesis.pdf')})});
+ var sv=$('[data-e=save]');if(sv){sv.addEventListener('click',function(){var id=CHK[curChk].id;TXT[id]=$('#edt').value;EDIT[id]=false;ST[id]='edited';refreshCheck();toast('Edited '+CHK[curChk].loc+' · saved',function(){ST[id]='flag';TXT[id]=undefined;refreshCheck()})});$('[data-e=cancel]').addEventListener('click',function(){EDIT[CHK[curChk].id]=false;renderChecks();icons()});}
+ $('#cov').innerHTML=[['O1',5,'Explain'],['O2',3,'Plant parts'],['O3',2,'Word equation']].map(function(o){return '<div class="row" style="justify-content:space-between"><span><span class="chip pri">'+o[0]+'</span> '+o[2]+'</span><span class="small muted">'+o[1]+' questions</span></div>'}).join('');
+ icons()}
+function refreshCheck(){renderChecks();renderBody();renderPaths();saved()}
+function act(id,a){
+ var i=CHK.map(function(c){return c.id}).indexOf(id);curChk=i;
+ if(a==='edit'){EDIT[id]=true;renderChecks();var t=$('#edt');if(t)t.focus();return}
+ var prev=ST[id],c=CHK[i];
+ if(a==='reopen'){ST[id]='flag';TXT[id]=undefined;refreshCheck();return}
+ ST[id]=a;refreshCheck();
+ toast((a==='accepted'?'Checked ':'Dismissed ')+c.loc+' · '+(a==='accepted'?'accepted':'kept as written'),function(){ST[id]=prev;refreshCheck()});
+ var nx=CHK.findIndex(function(x,k){return ST[x.id]==='flag'&&k>i});if(nx>=0)curChk=nx;renderChecks()}
+document.addEventListener('keydown',function(e){
+ var sc=$('[data-screen].on');if(!sc)return;var id=sc.dataset.screen,tg=e.target.tagName;
+ if(tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT'||e.ctrlKey||e.metaKey||e.altKey)return;
+ if(id==='review'){var c=CHK[curChk],k=e.key.toLowerCase();
+  if(k==='arrowright'){curChk=(curChk+1)%3;renderChecks();e.preventDefault()}
+  else if(ST[c.id]==='flag'&&!EDIT[c.id]){if(k==='a')act(c.id,'accepted');else if(k==='e'){act(c.id,'edit');e.preventDefault()}else if(k==='d')act(c.id,'dismissed')}}
+ if(id==='student-g11'&&/^[1-4]$/.test(e.key))pickSt(+e.key-1)});
+$('#approveBtn').addEventListener('click',function(){if(this.getAttribute('aria-disabled')==='true'){toast((3-openCount())+' checks still need you.');return}location.hash='#teach'});
+$$('[data-ai]').forEach(function(b){b.addEventListener('click',function(){toast(b.dataset.ai+': a draft is ready. Check it before you accept.')})});
+$('#ask').addEventListener('submit',function(e){e.preventDefault();var v=$('#askIn').value.trim();$('#askOut').textContent=v?'Requested: "'+v+'". The change will be flagged for your check.':'Type what you would like changed first.';if(v)$('#askIn').value=''});
+
+/* ---------- differentiate ---------- */
+var LV={Support:6,Core:13,Stretch:5},LD={Support:'Word bank and sentence starters',Core:'Standard worksheet',Stretch:'Extension questions'};
+function renderLv(){$('#lvls').innerHTML='<ul class="list">'+Object.keys(LV).map(function(k){return '<li><span class="t"><strong>'+k+'</strong><br><span class="small muted">'+LD[k]+'</span></span><span class="row" role="group" aria-label="'+k+' students"><button class="btn sm" data-k="'+k+'" data-d="-1" aria-label="Fewer '+k+' students">−</button><output style="min-width:28px;text-align:center;font-weight:700" aria-live="polite">'+LV[k]+'</output><button class="btn sm" data-k="'+k+'" data-d="1" aria-label="More '+k+' students">+</button></span></li>'}).join('')+'</ul>';
+ $$('#lvls button').forEach(function(b){b.addEventListener('click',function(){var v=LV[b.dataset.k]+ +b.dataset.d;if(v<0)return;LV[b.dataset.k]=v;renderLv();saved()})});
+ var s=LV.Support+LV.Core+LV.Stretch,d=24-s,u=$('#unas');u.className='chip '+(d===0?'ok':'wk');u.textContent=d===0?'24 of 24 assigned':(d>0?d+' not yet assigned':(-d)+' too many')}
+var ACC=[['Read-aloud',2,'L. F., I. S.'],['Extra time',1,'T. M.'],['Arabic glossary',3,'Z. G., R. J., M. A.']];
+$('#acc').innerHTML=ACC.map(function(a,i){return '<li><span class="t"><strong>'+a[0]+'</strong></span><span class="chip">'+a[1]+(a[1]>1?' students':' student')+'</span><button class="btn sm" data-ac="'+i+'" aria-expanded="false">Open list</button><p class="small muted" data-al="'+i+'" hidden style="flex-basis:100%">'+a[2]+' · teacher only</p></li>'}).join('');
+$$('[data-ac]').forEach(function(b){b.addEventListener('click',function(){var p=$('[data-al="'+b.dataset.ac+'"]'),o=b.getAttribute('aria-expanded')==='true';p.hidden=o;b.setAttribute('aria-expanded',!o);b.textContent=o?'Open list':'Hide list'})});
+$$('#dfBand button').forEach(function(b){b.addEventListener('click',function(){$$('#dfBand button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});$('#dfPrev').innerHTML=bandPrev(b.dataset.b);icons()})});
+
+/* ---------- teach ---------- */
+(function(){var n=25,h='<rect width="25" height="25" fill="#fff"/>';function fp(x,y){return '<rect x="'+x+'" y="'+y+'" width="7" height="7" fill="#102A33"/><rect x="'+(x+1)+'" y="'+(y+1)+'" width="5" height="5" fill="#fff"/><rect x="'+(x+2)+'" y="'+(y+2)+'" width="3" height="3" fill="#102A33"/>'}
+ var seed=482913;function rnd(){seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff}
+ for(var y=0;y<n;y++)for(var x=0;x<n;x++){if((x<8&&y<8)||(x>16&&y<8)||(x<8&&y>16))continue;if(rnd()>.52)h+='<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="#102A33"/>'}
+ $('#qr').innerHTML='<svg viewBox="0 0 25 25" shape-rendering="crispEdges" aria-hidden="true">'+h+fp(0,0)+fp(18,0)+fp(0,18)+'</svg>';
+ var d='';for(var i=0;i<24;i++)d+='<i class="'+(i<18?'':'e')+'"></i>';$('#jdots').innerHTML=d})();
+$('#hideNames').addEventListener('click',function(){var on=this.getAttribute('aria-checked')==='true';this.setAttribute('aria-checked',!on);$('#namesState').textContent=on?'Names shown (teacher screen only)':'Names hidden';if(on)toast('Names are still never shown on the projector.')});
+$('#asCls').addEventListener('change',function(){$('#assignBtn span').textContent='Assign to '+this.value});
+$('#assignBtn').addEventListener('click',function(){$('span',this).textContent='Assigned · due '+$('#due').value;this.classList.add('on');saved();toast('Assigned. Students see it after you approve the kit.')});
+$('#nextQ').addEventListener('click',function(){toast('Question 5 of 10 is now on the board.')});
+$('#endBtn').addEventListener('click',function(){$('#endBox').innerHTML='<div class="conf warn" role="alert"><p><strong>End the quiz for 18 students?</strong> Answers so far are kept. Students see "Quiz finished".</p><div class="row" style="margin-top:10px"><button class="btn pri" id="endYes">End quiz</button><button class="btn" id="endNo">Keep going</button></div></div>';$('#endYes').focus();
+ $('#endYes').addEventListener('click',function(){$('#endBox').innerHTML='<div class="conf" role="status"><p><strong>Quiz ended.</strong> 18 of 24 answered.</p><a class="btn pri" href="#results" style="margin-top:10px">See results</a></div>'});
+ $('#endNo').addEventListener('click',function(){$('#endBox').innerHTML='';$('#endBtn').focus()})});
+
+/* ---------- students ---------- */
+function sbar(id,cur){return '<div class="sbar"><nav class="bands" aria-label="Student band"><a href="#student-g3"'+(cur===3?' aria-current="page"':'')+'>Grade 3 · Explorer</a><a href="#student-g7"'+(cur===7?' aria-current="page"':'')+'>Grade 7 · Navigator</a><a href="#student-g11"'+(cur===11?' aria-current="page"':'')+'>Grade 11 · Studio</a></nav><button class="btn sm dysb" aria-pressed="false">'+ic('type')+'Dyslexia-friendly font</button></div>'}
+['3','7','11'].forEach(function(g){$('#sb'+g).innerHTML=sbar('sb'+g,+g)});
+$$('.dysb').forEach(function(b){b.addEventListener('click',function(){var on=document.body.classList.toggle('dys');$$('.dysb').forEach(function(x){x.setAttribute('aria-pressed',on)})})});
+/* explorer */
+var SEED='<svg class="sd" viewBox="0 0 160 200" role="img" aria-label="Seedling in a pot; it grows a leaf for each step you finish"><path d="M80 140V80" stroke="#1D6B57" stroke-width="6" stroke-linecap="round"/><g class="leaf" data-l="0"><path d="M80 120C52 120 40 100 46 84C70 84 80 100 80 120Z" fill="#2CA6B8" stroke="#0F6E7A" stroke-width="2"/></g><g class="leaf" data-l="1"><path d="M80 100C108 100 120 80 114 64C90 64 80 80 80 100Z" fill="#2CA6B8" stroke="#0F6E7A" stroke-width="2"/></g><g class="leaf" data-l="2"><path d="M80 80C56 78 48 60 54 44C74 46 82 62 80 80Z" fill="#2CA6B8" stroke="#0F6E7A" stroke-width="2"/></g><g class="leaf" data-l="3"><path d="M80 66C102 62 110 46 104 30C86 34 78 48 80 66Z" fill="#2CA6B8" stroke="#0F6E7A" stroke-width="2"/></g><path d="M44 140h72l-8 48H52z" fill="#DDF0F2" stroke="#0F6E7A" stroke-width="3" stroke-linejoin="round"/><rect x="40" y="134" width="80" height="12" rx="6" fill="#B5DCE4" stroke="#0F6E7A" stroke-width="3"/><circle cx="68" cy="164" r="3.5" fill="#102A33"/><circle cx="92" cy="164" r="3.5" fill="#102A33"/><path d="M72 174q8 6 16 0" fill="none" stroke="#102A33" stroke-width="3" stroke-linecap="round"/></svg>';
+var T3=[['sun','Sunlight',1],['droplets','Water',1],['wind','Air',1],['candy','Candy',0]],pick3={},done3=false,cel=false,step3=1,fin3=false;
+function g3(){
+ var f=$('#g3'),sel=Object.keys(pick3).filter(function(k){return pick3[k]}),msg;
+ var h='<div class="fr-h" style="padding:14px 32px 0"><span class="who"><i></i>Maya K. · Class 3A</span><span class="chip pri">Plants</span></div><div class="ex-body"><aside class="guide">'+SEED+'<span>Your plant is growing! '+(step3+(done3?1:0))+' of 5 steps done.</span><span class="pops" id="pops"></span></aside><div class="qa">';
+ h+='<div><p style="font-weight:700;margin-bottom:6px">Question '+(fin3?'3':'2')+' of 5</p>'+seg(5,fin3?2:1,'big')+'</div>';
+ if(fin3)h+='<h2 class="qt"><span>Super! You finished the sample.</span></h2><div class="fb good" role="status">'+ic('circle-check')+'You got 1 of 1 today. Your plant grew 2 leaves!</div><div class="row"><button class="btn bigbtn" id="g3Again">Play again</button></div>';
+ else{
+ h+='<h2 class="qt"><span>What does a plant need to make its food?</span><button class="spk" id="g3Spk" aria-pressed="false">'+ic('volume-2')+'Listen</button></h2><p style="font-size:1.2rem">Choose all that help.</p><div class="tiles4" role="group" aria-label="Answers">'+T3.map(function(t,i){return '<button class="tile" data-i="'+i+'" aria-pressed="'+!!pick3[i]+'"'+(done3?' aria-disabled="true"':'')+'><span class="ck">'+ic('check')+'</span>'+ic(t[0])+t[1]+'</button>'}).join('')+'</div>';
+ if(done3)msg='<div class="fb good">'+ic('circle-check')+'Great thinking! Plants use sunlight, water and air.</div>';
+ else if(f.dataset.tried){msg=pick3[3]?'<div class="fb no">'+ic('refresh-cw')+'Not yet — try again. Candy is for people, not plants!</div>':(sel.length?'<div class="fb no">'+ic('refresh-cw')+'Not yet — try again. Can you find one more thing a plant needs?</div>':'<div class="fb neu">Pick the things a plant needs, then press the button.</div>')}
+ else msg='<div class="fb neu">Pick the things a plant needs, then press the button.</div>';
+ h+='<div role="status" aria-live="polite">'+msg+'</div><div class="row" style="margin-top:auto">'+(done3?'<button class="btn pri bigbtn" id="g3Next">Next question</button>':'<button class="btn pri bigbtn" id="g3Chk">Check my answer</button>')+'</div>'}
+ h+='</div></div>';f.innerHTML=h;icons();
+ var leaves=Math.min(4,step3+(done3||fin3?1:0));$$('.leaf',f).forEach(function(l,i){l.classList.toggle('on',i<leaves)});
+ $$('.tile',f).forEach(function(b){b.addEventListener('click',function(){if(done3)return;pick3[b.dataset.i]=!pick3[b.dataset.i];g3()})});
+ var c=$('#g3Chk');if(c)c.addEventListener('click',function(){f.dataset.tried='1';var ok=pick3[0]&&pick3[1]&&pick3[2]&&!pick3[3];if(ok){done3=true;g3();if(!cel&&!RM){cel=true;$('#pops').innerHTML=[[-70,-60],[70,-70],[-90,20],[90,10],[-30,-100],[40,-95]].map(function(p){return '<i style="--x:'+p[0]+'px;--y:'+p[1]+'px"></i>'}).join('')}}else g3()});
+ var s=$('#g3Spk');if(s)s.addEventListener('click',function(){s.setAttribute('aria-pressed','true');speak('What does a plant need to make its food? Choose all that help.');setTimeout(function(){s.setAttribute('aria-pressed','false')},1800)});
+ var n=$('#g3Next');if(n)n.addEventListener('click',function(){fin3=true;g3()});
+ var a=$('#g3Again');if(a)a.addEventListener('click',function(){pick3={};done3=false;fin3=false;delete f.dataset.tried;g3()})}
+/* navigator */
+var ans7=null;
+function g7(){
+ var f=$('#g7');
+ f.innerHTML='<div class="ph"><div class="fr-h"><span class="who"><i></i>Sara A. · Plant parts</span><button class="spk" id="g7Spk" aria-pressed="false">'+ic('volume-2')+'Listen</button></div><div><p style="font-weight:700;margin-bottom:6px">Question 4 of 10</p>'+seg(10,3,'')+'</div><div class="qcard"><h2>Plants get their food from the soil.</h2><p class="muted small" style="margin-top:6px">True or false?</p></div><div class="low"><div role="status" aria-live="polite">'+(ans7?'<div class="fb good">'+ic('circle-check')+'Answer saved. You chose '+ans7+'.</div>':'<p class="muted small" style="text-align:center">Pick one. You can change it until your teacher moves on.</p>')+'</div><div class="tfb" role="group" aria-label="Answer"><button data-a="True" aria-pressed="'+(ans7==='True')+'">True</button><button data-a="False" aria-pressed="'+(ans7==='False')+'">False</button></div><p class="small muted" style="text-align:center">You got 7 of 10 last time. Keep going, you are doing well.</p></div></div>';
+ icons();$$('.tfb button',f).forEach(function(b){b.addEventListener('click',function(){ans7=b.dataset.a;g7()})});
+ $('#g7Spk').addEventListener('click',function(){var s=this;s.setAttribute('aria-pressed','true');speak('Plants get their food from the soil. True or false?');setTimeout(function(){s.setAttribute('aria-pressed','false')},1800)})}
+/* studio */
+var pk11=null;
+var OP11=['Light-dependent reactions','Calvin cycle','Glycolysis','Krebs cycle'],FB11=['Correct: the light-dependent reactions make ATP and NADPH.','Not quite: the Calvin cycle uses ATP and NADPH; it does not make them.','Not quite: glycolysis splits glucose in the cytoplasm and is not part of photosynthesis.','Not quite: the Krebs cycle is part of cellular respiration, not photosynthesis.'];
+function g11(){
+ var f=$('#g11');
+ f.innerHTML='<div class="ph studio"><div class="fr-h"><span class="muted" style="font-weight:400">Photosynthesis: light-dependent reactions</span><span class="muted" style="font-weight:400">Sam R.</span></div><div>'+seg(10,2,'thin')+'<p class="small muted" style="margin-top:4px">3 of 10</p></div><div class="qcard"><h2>Which stage produces ATP and NADPH?</h2></div><div class="low"><div role="status" aria-live="polite">'+(pk11!==null?'<p style="font-weight:700;color:'+(pk11===0?'var(--ok)':'var(--prih)')+'">'+FB11[pk11]+'</p>':'<p class="muted small">Press 1–4 to answer.</p>')+'</div>'+OP11.map(function(o,i){return '<button class="stopt'+(pk11!==null&&i===0?' right':'')+'" data-i="'+i+'" aria-pressed="'+(pk11===i)+'"><b>'+(i+1)+'</b>'+o+'</button>'}).join('')+(pk11!==null?'<button class="btn pri" id="g11N" style="min-height:52px">Next</button>':'')+'</div></div>';
+ $$('.stopt',f).forEach(function(b){b.addEventListener('click',function(){pickSt(+b.dataset.i)})});
+ var n=$('#g11N');if(n)n.addEventListener('click',function(){pk11=null;g11();toast('Next question loads here in the live app.')})}
+function pickSt(i){if(pk11!==null)return;pk11=i;g11()}
+/* game */
+var GP=[['Roots','take in water'],['Leaf','makes food'],['Stem','carries water'],['Flower','makes seeds']],RIGHT=[3,0,2,1],gm={sel:null,done:{},msg:'',bad:null};
+function game(){
+ var f=$('#gm'),k=Object.keys(gm.done).length,fin=k===4;
+ var path='<div class="gp" role="img" aria-label="Path: '+k+' of 4 stops reached">'+[0,1,2,3,4].map(function(i){return '<span class="'+(i<k?'d':i===k?'here':'')+'">'+(i===k?ic('map-pin'):(i===4?ic('flag'):''))+'</span>'}).join('')+'</div>';
+ f.innerHTML='<div class="ph"><div class="fr-h"><span class="who"><i></i>Sara A.</span><span class="chip pri">Round 1 of 2</span></div><div class="qcard"><h2 style="font-size:1.3rem">Plant parts match</h2><p class="muted small" style="margin-top:4px">Pick a part, then its job.</p></div>'+path+'<div class="gcols"><div>'+GP.map(function(p,i){var m=gm.done[i];return '<button class="gc'+(m?' m':'')+'" data-l="'+i+'" aria-pressed="'+(gm.sel===i)+'"'+(m?' aria-disabled="true"':'')+'>'+(m?ic('check'):'')+p[0]+'</button>'}).join('')+'</div><div>'+RIGHT.map(function(r){var m=gm.done[r],bad=gm.bad===r;return '<button class="gc'+(m?' m':'')+(bad?' fail':'')+'" data-r="'+r+'"'+(m?' aria-disabled="true"':'')+'>'+(m?ic('check'):'')+GP[r][1]+'</button>'}).join('')+'</div></div><div class="low"><div role="status" aria-live="polite">'+(fin?'<div class="fb good">'+ic('circle-check')+'4 of 4 matched. You reached the flag!</div>':(gm.msg?'<div class="fb '+(gm.bad!==null?'no':'good')+'">'+gm.msg+'</div>':'<div class="fb neu">'+k+' of 4 matched</div>'))+'</div>'+(fin?'<p class="small muted" style="text-align:center">You matched all 4 with no timer. Round 2 is ready when you are.</p><button class="btn pri" id="gmNext" style="min-height:64px">Play round 2</button>':'')+'</div></div>';
+ icons();
+ $$('[data-l]',f).forEach(function(b){b.addEventListener('click',function(){var i=+b.dataset.l;if(gm.done[i])return;gm.sel=gm.sel===i?null:i;gm.bad=null;gm.msg='';game()})});
+ $$('[data-r]',f).forEach(function(b){b.addEventListener('click',function(){var r=+b.dataset.r;if(gm.done[r])return;if(gm.sel===null){gm.msg='Pick a part first.';gm.bad=null;game();return}if(gm.sel===r){gm.done[r]=true;gm.msg=GP[r][0]+' '+GP[r][1]+'. Nice!';gm.sel=null;gm.bad=null}else{gm.bad=r;gm.msg='Not yet — try again.'}game()})});
+ var n=$('#gmNext');if(n)n.addEventListener('click',function(){gm={sel:null,done:{},msg:'',bad:null};game();toast('Round 2 starts here in the live app.')})}
+
+/* ---------- results ---------- */
+var MAST=[['O1','Explain photosynthesis',68],['O2','Roles of leaves, roots and stem',85],['O3','Read the word equation',58]];
+$('#mastery').innerHTML=MAST.map(function(m){var lo=m[2]<70;return '<div class="mrow"><div><span class="chip pri">'+m[0]+'</span> '+m[1]+'</div><div class="meter" title="'+m[0]+': '+m[2]+'% mastery, target 70%" role="img" aria-label="'+m[0]+' mastery '+m[2]+' percent, target 70"><i style="width:'+m[2]+'%"></i><span class="tg"></span></div><div><strong>'+m[2]+'%</strong> '+(m[0]==='O3'?'<span class="chip wk">'+ic('flag')+'Weak spot</span>':(lo?'<span class="chip">'+ic('flag')+'Below target</span>':'<span class="chip ok">'+ic('check')+'On target</span>'))+'</div></div>'}).join('');
+var QT=['What does a plant need to make its own food?','Which part of a plant takes in water?','Which gas do plants take in from the air?','Plants get their food from the soil.','What is the main job of a leaf?','Which gas do plants release into the air?','Complete: carbon dioxide + water → ____ + oxygen','The stem carries water up to the leaves.','What does chlorophyll do?','Write the word equation for photosynthesis.'],QO=['O1','O2','O1','O1','O2','O1','O3','O2','O1','O3'],PQ=[92,86,81,41,77,82,58,79,68,76];
+$('#qtBody').innerHTML=QT.map(function(q,i){var mis=i===3;return '<tr'+(mis?' class="mis"':'')+'><th scope="row">Q'+(i+1)+'</th><td>'+esc(q)+(mis?'<div class="small" style="margin-top:4px"><strong>Misconception:</strong> "Plants get their food from the soil." Most common answer: True.</div>':'')+'</td><td>'+QO[i]+'</td><td><div class="row" style="flex-wrap:nowrap;min-width:150px"><div class="meter" title="Q'+(i+1)+': '+PQ[i]+'% correct"><i style="width:'+PQ[i]+'%"></i></div><strong>'+PQ[i]+'%</strong></div></td><td>'+(mis?'<span class="chip wk">'+ic('flag')+'Misconception</span>':'')+'</td></tr>'}).join('');
+var SGD=[["Sara Ahmed",100,"1111111111"],["Fatma Trabelsi",95,"111111111p"],["Lina Mansour",90,"1110111111"],["Hana Mourad",90,"1011111111"],["Karim Nasser",80,"1110111101"],["Layla Farouk",80,"1111010111"],["Ibrahim Sassi",80,"1100111111"],["Nora Dubois",80,"1110111011"],["Tariq Mansouri",80,"1110101111"],["Salma Khelifi",80,"1110110111"],["Jad Karray",80,"1110111101"],["Yara Bennani",80,"1101111101"],["Leo Martin",70,"1101110101"],["Zeinab Gharbi",70,"0111110011"],["Rayan Jaziri",70,"1111010011"],["Emma Collins",70,"0110111110"],["Malek Ayari",70,"1011111010"],["Sofia Rossi",60,"1110100110"],["Mia Lopez",55,"10101101p0"],["Ali Ben Salah",50,"1110001100"],["Omar Kacem",50,"1110010001"],["Youssef Haddad",40,"1100000110"]].sort(function(a,b){return a[0]<b[0]?-1:1});
+$('#sg').innerHTML='<thead><tr><th scope="col">Student</th>'+QT.map(function(q,i){return '<th scope="col">Q'+(i+1)+'</th>'}).join('')+'<th scope="col">Score</th></tr></thead><tbody>'+SGD.map(function(s){var lo=s[1]<60;var qi=0;return '<tr><th scope="row">'+(lo?ic('life-buoy')+'<span class="sr-only">Needs help: </span> ':'')+s[0]+'</th>'+s[2].split('').map(function(c){var k=c==='1'?['y','check','Correct']:(c==='0'?['n','x','Not yet']:['pp','minus','Partly correct']);return '<td class="'+k[0]+'" title="'+s[0]+', Q'+(++qi)+': '+k[2]+'">'+ic(k[1])+'<span class="sr-only">'+k[2]+'</span></td>'}).join('')+'<td><strong>'+s[1]+'%</strong></td></tr>'}).join('')+'</tbody>';
+$('#needs').innerHTML=[['Youssef Haddad',40],['Ali Ben Salah',50],['Omar Kacem',50],['Mia Lopez',55]].map(function(n){return '<li><span class="t">'+ic('life-buoy')+' '+n[0]+'</span><strong>'+n[1]+'%</strong></li>'}).join('');
+$('#nosub').innerHTML=['Adam Cherif','Noah Brown'].map(function(n){return '<li><span class="t">'+n+'</span><button class="btn sm rem">Send reminder</button></li>'}).join('');
+$('#mtT').addEventListener('click',function(){var on=this.getAttribute('aria-pressed')!=='true';this.setAttribute('aria-pressed',on);this.textContent=on?'View as bars':'View as table';$('#mastery').hidden=on;$('#mastTbl').hidden=!on});
+$$('.rem').forEach(function(b){b.addEventListener('click',function(){b.textContent='Reminder sent';b.classList.add('on')})});
+var STK=[['Great effort','thumbs-up'],['Super scientist','flask-conical'],['Kind helper','heart-handshake'],['Never gives up','mountain']];
+$('#stk').innerHTML=STK.map(function(s,i){return '<label class="opt"><input type="radio" name="stk" value="'+s[0]+'"'+(i===1?' checked':'')+'><span class="badge">'+ic(s[1])+'</span><b>'+s[0]+'</b><i class="tk" data-lucide="circle-check" aria-hidden="true"></i></label>'}).join('');
+$('#stSend').addEventListener('click',function(){var s=$('#stk input:checked').value,t=$('#stTo').value;$('#stOut').textContent=s+' sent to '+t+'. They will see it on their own screen.';saved();toast(s+' sent to '+t,function(){$('#stOut').textContent='Sticker withdrawn.'})});
+function renderRt(){$('#rt').innerHTML=[['warm','5-minute warm-up for Lesson 5 on "plants don\'t eat soil"'],['group','Small-group task for 4 students on the word equation (O3)']].map(function(r){return '<li><span class="t">'+r[1]+'</span><button class="btn sm rtbtn" data-rt="'+r[0]+'" aria-pressed="false"></button></li>'}).join('');renderPaths()}
+$('#syncBtn').addEventListener('click',function(){$('span',this).textContent='Scores synced · 22 of 24';this.classList.add('on');this.classList.remove('pri');toast('Scores synced to the gradebook. Not-submitted students are left blank.')});
+$('#famSw').addEventListener('click',function(){var on=this.getAttribute('aria-checked')==='true';if(on){this.setAttribute('aria-checked','false');$('span:last-child',this).textContent='Share progress with families: Off';$('#famBox').innerHTML='';return}
+ $('#famBox').innerHTML='<div class="conf warn" role="alert"><p><strong>Share progress with families?</strong> Parents see a friendly summary of their own child\'s progress. Nothing is shared until you confirm.</p><div class="row" style="margin-top:10px"><button class="btn pri" id="famYes">Share with families</button><button class="btn" id="famNo">Not now</button></div></div>';$('#famYes').focus();
+ $('#famYes').addEventListener('click',function(){$('#famSw').setAttribute('aria-checked','true');$('#famSw span:last-child').textContent='Share progress with families: On';$('#famBox').innerHTML='';saved();toast('Sharing is on.',function(){$('#famSw').setAttribute('aria-checked','false');$('#famSw span:last-child').textContent='Share progress with families: Off'})});
+ $('#famNo').addEventListener('click',function(){$('#famBox').innerHTML='';$('#famSw').focus()})});
+
+/* ---------- lesson stops ---------- */
+function lesson(n){
+ var h='Lesson '+n,p='',b='';
+ if(n<4){h='Lesson '+n+': '+NAMES[n-1];p='Taught. Mastery '+MS[n-1]+'%.';b='<h2>What the class showed</h2><ul class="list" style="margin-top:8px">'+(n===3?'<li><span class="t">O3 Read the word equation</span><span class="chip wk">'+ic('flag')+'58% · weak spot</span></li>':'')+'<li><span class="t">Class mastery</span><strong>'+MS[n-1]+'%</strong></li></ul><div class="row" style="margin-top:14px"><a class="btn" href="#dashboard">Back to the path</a></div>'}
+ else if(n===5){h='Lesson 5';p=(RT.warm||RT.group)?'Not planned yet, with re-teach added.':'Not planned yet.';
+  b=(RT.warm||RT.group)?'<h2>Re-teach added</h2><ul class="list" style="margin-top:8px">'+(RT.warm?'<li><span class="t">5-minute warm-up on "plants don\'t eat soil" (O1)</span></li>':'')+(RT.group?'<li><span class="t">Small-group task on the word equation (O3)</span></li>':'')+'</ul><div class="row" style="margin-top:14px"><a class="btn pri" href="#create">Plan Lesson 5</a></div>'
+   :'<h2>Plan Lesson 5</h2><p class="muted" style="margin:6px 0 14px">Nothing is planned yet. We suggest starting with the Q4 warm-up, because 41% of 6B chose "plants get their food from the soil".</p><div class="row"><button class="btn pri" id="l5Add">'+ic('plus')+'Add the Q4 warm-up</button><a class="btn" href="#create">Plan Lesson 5</a></div>'}
+ else{h='Lesson 6';p='Not planned yet.';b='<h2>Plan Lesson 6</h2><p class="muted" style="margin:6px 0 14px">Plan it after Lesson 5. The kit builder will use what 6B learned.</p><a class="btn" href="#create">Plan Lesson 6</a>'}
+ $('#lsH').textContent=h;$('#lsP').textContent=p;$('#lsBody').innerHTML=b;icons();var a=$('#l5Add');if(a)a.addEventListener('click',function(){toggleRT('warm');lesson(5)})}
+
+/* ---------- routing ---------- */
+var SC=['dashboard','create','generating','review','differentiate','teach','student-g3','student-g7','student-g11','game','results'],TITLE={review:'Check',generating:'Generating'};
+function fit(){$$('.fit').forEach(function(f){var w=+f.dataset.w,h=+f.dataset.h,av=f.parentNode.clientWidth;if(!av)return;var s=Math.min(1,av/w);f.style.width=w*s+'px';f.style.height=h*s+'px';f.firstElementChild.style.transform='scale('+s+')'})}
+function route(){
+ var raw=(location.hash||'#dashboard').slice(1),id=raw,m=/^lesson-(\d)$/.exec(raw);
+ if(raw==='student')id='student-g7';
+ problem=false;if(raw==='generating-problem'){id='generating';problem=true}
+ if(m){id='lesson';lesson(+m[1])}else if(SC.indexOf(id)<0)id='dashboard';
+ $$('[data-screen]').forEach(function(s){var on=s.dataset.screen===id;s.hidden=!on;s.classList.toggle('on',on)});
+ var solo=/^student|^game/.test(id);$('#app').classList.toggle('solo',solo);
+ $$('.picker a').forEach(function(a){if(a.getAttribute('href')==='#'+raw)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+ var ctx=$('#ctx'),showCtx=['create','generating','review','differentiate','teach','results'].indexOf(id)>=0;ctx.hidden=!showCtx;if(showCtx)updCtx();
+ document.title=(TITLE[id]||id.replace('-',' ').replace(/^./,function(c){return c.toUpperCase()}))+' · Educator Helper · Learning Path';
+ stopGen();
+ if(id==='generating')startGen();
+ if(id==='review'){renderTabs();renderBody();renderChecks()}
+ if(id==='student-g3'){g3()}if(id==='student-g7')g7();if(id==='student-g11')g11();if(id==='game')game();
+ if(id==='create'){objVal();updCreate()}
+ if(id==='differentiate'){$('#dfPrev').innerHTML=bandPrev($('#dfBand [aria-pressed=true]').dataset.b)}
+ renderPaths();icons();fit();window.scrollTo(0,0)}
+window.addEventListener('hashchange',route);window.addEventListener('resize',fit);
+renderLv();renderRt();setClass('6B');objVal();route();
+if(window.lucide===undefined)window.addEventListener('load',function(){icons()});
+window.addEventListener('load',fit);
+})();
+</script>
+<style>.gen-cancel{display:flex;width:max-content;align-items:center;gap:6px;min-height:40px;padding:0 14px;margin-top:8px;border:1px solid currentColor;border-radius:8px;color:inherit;font-weight:600;font-size:15px;text-decoration:none;opacity:.85}.gen-cancel:hover{opacity:1}.gen-cancel:focus-visible{outline:2px solid currentColor;outline-offset:2px}</style>
+<script>(function(){var t=null;function vis(e){return e.getClientRects().length>0}function ready(){return /kit is ready/i.test(document.body.innerText)}function add(){var on=/^#generating/.test(location.hash);var old=document.getElementById('genCancel');if(!on||ready()){if(old)old.remove();return}if(old)return;var hs=[].slice.call(document.querySelectorAll('h1,h2')).filter(vis);var h=hs.filter(function(e){return /^making/i.test(e.textContent.trim())})[0]||hs[0];if(!h)return;var b=document.createElement('a');b.id='genCancel';b.href='#create';b.className='gen-cancel';b.textContent='Stop making the kit';h.insertAdjacentElement('afterend',b)}function loop(){clearInterval(t);t=setInterval(function(){if(!/^#generating/.test(location.hash)){clearInterval(t);add();return}add()},400)}window.addEventListener('hashchange',function(){setTimeout(function(){add();loop()},60)});window.addEventListener('load',function(){setTimeout(function(){add();loop()},300)})})();</script>
+</body>
+</html>

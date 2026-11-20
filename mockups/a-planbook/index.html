@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Educator Helper mockup, direction A: a week planner with highlighter-style review of AI output.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%274%27 fill=%27%2317283A%27/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Educator Helper — Direction A: Planbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600;7..72,700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{
+  --page:#F5F6F2; --surface:#FFFFFF; --sunk:#EEF0EA; --line:#DFE3DA; --line-strong:#C6CDC0;
+  --ink:#17283A; --ink-2:#4A5868; --ink-3:#56616E;
+  --accent:#1D6F55; --accent-press:#165A45; --accent-soft:#E2EFE8; --accent-line:#B9D6C8;
+  --hl:#FFE36E; --hl-soft:#FFF6C9; --flag:#7A5200;
+  --red:#B4372B; --red-soft:#F8E5E2;
+  --serif:"Literata", Georgia, serif; --sans:"Figtree", system-ui, sans-serif;
+  --r-s:6px; --r-m:10px; --r-l:14px;
+  --shadow-1:0 1px 2px rgba(23,40,58,.06), 0 1px 1px rgba(23,40,58,.04);
+  --shadow-2:0 8px 24px -8px rgba(23,40,58,.18), 0 2px 6px rgba(23,40,58,.06);
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.5 var(--sans);caret-color:var(--accent)}
+::selection{background:var(--hl);color:var(--ink)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:10px;border:3px solid var(--page)}::-webkit-scrollbar-track{background:transparent}
+h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0;letter-spacing:-0.015em;text-wrap:balance;color:var(--ink)}
+p{margin:0}
+a{color:var(--accent);text-underline-offset:3px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.num{font-variant-numeric:tabular-nums}
+svg.lucide{width:18px;height:18px;stroke-width:1.75;flex:none}
+
+/* ---------- App frame ---------- */
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+.rail{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px;padding:20px 14px;border-right:1px solid var(--line);background:var(--page)}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 20px;font-weight:700;letter-spacing:-0.01em}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--ink);display:grid;place-items:center;color:#fff}
+.brand-mark svg{width:17px;height:17px}
+.nav a{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:8px;color:var(--ink-2);text-decoration:none;font-weight:500;font-size:15px}
+.nav a:hover{background:var(--sunk);color:var(--ink)}
+.nav a[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-1)}
+.nav .count{margin-left:auto;font-size:12px;font-weight:600;background:var(--hl);color:var(--ink);border-radius:20px;padding:1px 7px}
+.rail-section{margin:22px 10px 6px;font-size:13px;color:var(--ink-3);font-weight:500}
+.classes a{font-size:14px;padding:7px 10px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--line-strong);flex:none}
+.rail-foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid var(--line)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:13px}
+.who b{display:block;font-size:14px}.who span{font-size:13px;color:var(--ink-3)}
+
+main{min-width:0}
+.screen{display:none;padding:28px 40px 120px;max-width:1360px}
+.screen.on{display:block}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 16px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);font-weight:600;font-size:15px;text-decoration:none;color:var(--ink);transition:background .15s var(--ease),transform .1s var(--ease),border-color .15s}
+.btn:hover{background:var(--sunk)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-press)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{background:var(--sunk)}
+.btn.lg{min-height:48px;padding:0 22px;font-size:16px}
+.btn.sm{min-height:32px;padding:0 10px;font-size:14px;border-radius:7px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* ---------- Home ---------- */
+.home-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:28px}
+.home-head .date{color:var(--ink-3);font-size:15px;margin-bottom:4px}
+.home-head h1{font-size:40px;line-height:1.1}
+.next{display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);padding:22px 26px;box-shadow:var(--shadow-1);margin-bottom:36px}
+.next .when{padding-right:28px;border-right:1px solid var(--line)}
+.next .when b{display:block;font-family:var(--serif);font-size:30px;font-weight:600;line-height:1}
+.next .when span{font-size:14px;color:var(--ink-3)}
+.next h2{font-size:24px;margin-bottom:6px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--ink-2);font-size:14px}
+.meta span{display:inline-flex;align-items:center;gap:6px}
+.meta svg{width:15px;height:15px}
+.mark{background:linear-gradient(transparent 12%,var(--hl) 12%,var(--hl) 88%,transparent 88%);padding:0 3px;color:var(--ink);font-weight:600;border-radius:2px}
+.next .actions{display:flex;gap:10px}
+
+.week-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.week-head h2{font-size:22px}
+.week-nav{display:flex;align-items:center;gap:4px;color:var(--ink-2);font-size:14px}
+.week{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:var(--r-l);background:var(--surface);overflow:hidden}
+.day{border-right:1px solid var(--line);min-height:300px;display:flex;flex-direction:column}
+.day:last-child{border-right:0}
+.day-h{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;font-size:14px;color:var(--ink-2)}
+.day-h b{color:var(--ink);font-weight:600}
+.day.today{background:linear-gradient(var(--accent-soft),var(--accent-soft)) top/100% 3px no-repeat, #FBFCFA}
+.day.today .day-h b{color:var(--accent)}
+.slots{padding:10px;display:flex;flex-direction:column;gap:8px;flex:1;background-image:repeating-linear-gradient(transparent 0 35px,var(--sunk) 35px 36px)}
+.slot{display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;transition:border-color .15s,box-shadow .15s}
+a.slot:hover{border-color:var(--line-strong);box-shadow:var(--shadow-2)}
+.slot small{display:block;font-size:12.5px;color:var(--ink-3)}
+.slot b{display:block;font-family:var(--serif);font-weight:600;font-size:15.5px;line-height:1.3;margin:2px 0 6px}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--sunk);color:var(--ink-2)}
+.tag svg{width:13px;height:13px}
+.tag.ok{background:var(--accent-soft);color:var(--accent)}
+.tag.check{background:var(--hl-soft);color:var(--flag)}
+.slot.focus{border-color:var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft)}
+.slot.empty{border-style:dashed;background:transparent;color:var(--ink-2);display:flex;align-items:center;gap:8px;font-weight:500;font-size:14px;justify-content:center;min-height:56px}
+.slot.empty:hover{background:var(--surface);color:var(--accent)}
+
+/* ---------- Lesson header & stages ---------- */
+.lesson-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:6px}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-3)}
+.crumbs a{color:var(--ink-3);text-decoration:none;display:inline-flex;align-items:center;min-height:28px}.crumbs a:hover{color:var(--ink)}
+.crumbs svg{width:14px;height:14px}
+.lesson-title{font-size:30px;line-height:1.15;margin:6px 0 16px}
+.stages{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.stages a{position:relative;display:flex;align-items:center;gap:8px;padding:10px 16px 12px;color:var(--ink-2);text-decoration:none;font-weight:500;font-size:15px}
+.stages a .n{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-3)}
+.stages a.done .n{background:var(--accent);border-color:var(--accent);color:#fff}
+.stages a.done .n svg{width:13px;height:13px;stroke-width:3}
+.stages a[aria-current="step"]{color:var(--ink);font-weight:600}
+.stages a[aria-current="step"]::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--ink);border-radius:2px}
+.stages a[aria-current="step"] .n{border-color:var(--ink);color:var(--ink)}
+.stages a:hover{color:var(--ink)}
+.saved{font-size:13.5px;color:var(--ink-3);display:flex;align-items:center;gap:6px}
+.saved svg{width:15px;height:15px;color:var(--accent)}
+
+/* ---------- Create ---------- */
+.create{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:40px;align-items:start}
+.field{margin-bottom:26px}
+.label{display:block;font-weight:600;font-size:15px;margin-bottom:8px}
+.hint{font-size:14px;color:var(--ink-3);margin-top:6px}
+.input{width:100%;font:inherit;font-size:16px;padding:11px 14px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink)}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.title-input{font-family:var(--serif);font-size:26px;font-weight:600;padding:10px 0;border:0;border-bottom:1.5px solid var(--line-strong);border-radius:0;background:transparent}
+.title-input:focus{box-shadow:none;border-color:var(--accent)}
+.source{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.drop{border:1.5px dashed var(--line-strong);border-radius:var(--r-m);padding:18px;background:var(--surface);display:flex;gap:14px;align-items:center}
+.file-ic{width:42px;height:50px;border-radius:6px;background:var(--red-soft);color:var(--red);display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
+.drop b{display:block;font-size:15px;word-break:break-all}
+.drop span{font-size:13.5px;color:var(--ink-3)}
+.seg{display:inline-flex;padding:3px;background:var(--sunk);border-radius:9px;margin-bottom:12px}
+.seg button{border:0;background:transparent;padding:6px 14px;border-radius:7px;font-weight:600;font-size:14px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-1)}
+.classpick{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);font-weight:600;font-size:15px}
+.chip small{font-weight:500;color:var(--ink-3);font-size:13px}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.chip[aria-pressed="true"] small{color:var(--accent)}
+.derived{display:flex;gap:18px;margin-top:10px;font-size:14px;color:var(--ink-2)}
+.derived span{display:inline-flex;gap:6px;align-items:center}.derived svg{width:15px;height:15px;color:var(--ink-3)}
+.objectives{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:var(--r-m);background:var(--surface)}
+.objectives li{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);font-size:15.5px;align-items:flex-start}
+.objectives li:last-child{border-bottom:0}
+.objectives .k{font-family:var(--serif);font-weight:600;color:var(--ink-3);min-width:16px}
+.objectives .src{margin-left:auto;font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+details.opts{border-top:1px solid var(--line);padding-top:14px}
+details.opts summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+details.opts summary::-webkit-details-marker{display:none}
+details.opts summary .sum{font-weight:400;color:var(--ink-3);font-size:14px}
+details.opts summary svg{transition:transform .2s var(--ease)}
+details.opts[open] summary svg{transform:rotate(90deg)}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.aside-card{position:sticky;top:24px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);padding:22px;box-shadow:var(--shadow-1)}
+.aside-card .h3{font-size:19px;margin-bottom:14px}
+.kit-list{list-style:none;margin:0 0 18px;padding:0}
+.kit-list li{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.kit-list li:last-child{border-bottom:0}
+.kit-list .ic{width:32px;height:32px;border-radius:8px;background:var(--sunk);display:grid;place-items:center;color:var(--ink-2)}
+.kit-list small{display:block;color:var(--ink-3);font-size:13px}
+.switch{margin-left:auto;width:42px;height:26px;border-radius:20px;background:var(--accent);position:relative;border:0;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:19px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .18s var(--ease)}
+.switch[aria-checked="false"]{background:var(--line-strong)}
+.switch[aria-checked="false"]::after{left:3px}
+.checks{list-style:none;margin:0 0 18px;padding:14px 0 0;border-top:1px solid var(--line);display:grid;gap:6px;font-size:14px;color:var(--ink-2)}
+.checks li{display:flex;gap:8px;align-items:center}.checks svg{width:16px;height:16px;color:var(--accent)}
+.aside-card .btn{width:100%}
+.aside-card .fine{font-size:13px;color:var(--ink-3);text-align:center;margin-top:10px}
+
+/* ---------- Generating ---------- */
+.gen{display:grid;grid-template-columns:minmax(0,640px) 1fr;gap:48px;align-items:start}
+.gen h2{font-size:26px;margin-bottom:6px}
+.gen .sub{color:var(--ink-2);margin-bottom:22px}
+.bar{height:6px;background:var(--sunk);border-radius:6px;overflow:hidden;margin-bottom:26px}
+.bar i{display:block;height:100%;width:100%;background:var(--accent);border-radius:6px;transform-origin:left;transform:scaleX(0);transition:transform .6s var(--ease)}
+.gen-list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:var(--r-l);background:var(--surface);overflow:hidden}
+.gen-list li{display:grid;grid-template-columns:40px 1fr auto;gap:14px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.gen-list li:last-child{border-bottom:0}
+.gen-list .ic{width:40px;height:40px;border-radius:10px;background:var(--sunk);display:grid;place-items:center;color:var(--ink-3);transition:background .3s,color .3s}
+.gen-list b{display:block;font-size:16px}
+.gen-list .st{font-size:14px;color:var(--ink-3)}
+.gen-list li[data-state="done"] .ic{background:var(--accent-soft);color:var(--accent)}
+.gen-list li[data-state="work"] .ic{background:var(--hl-soft);color:var(--flag)}
+.gen-list li[data-state="work"] .st{color:var(--flag)}
+.gen-list li .go{opacity:0;transform:translateX(-6px);transition:opacity .25s var(--ease),transform .25s var(--ease);pointer-events:none}
+.gen-list li[data-state="done"] .go{opacity:1;transform:none;pointer-events:auto}
+.gen-list li[data-state="done"] .st-text{color:var(--accent)}
+.gen-list li.arrive{animation:arrive .45s var(--ease)}
+@keyframes arrive{from{background:var(--accent-soft)}to{background:var(--surface)}}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-side{border-left:1px solid var(--line);padding-left:32px;color:var(--ink-2);font-size:15px}
+.gen-side .h3{font-size:18px;margin-bottom:10px;color:var(--ink)}
+.gen-side ul{padding-left:18px;margin:0 0 20px;display:grid;gap:6px}
+
+/* ---------- Review ---------- */
+.review{display:grid;grid-template-columns:220px minmax(0,1fr) 300px;gap:28px;align-items:start}
+.res-list{list-style:none;margin:0;padding:0;position:sticky;top:20px;min-width:0;max-width:100%}
+.review > *{min-width:0}
+.res-list button{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;border:1px solid transparent;background:transparent;text-align:left}
+.res-list button:hover{background:var(--surface);border-color:var(--line)}
+.res-list button[aria-current="true"]{background:var(--surface);border-color:var(--line-strong);box-shadow:var(--shadow-1)}
+.res-list .t{flex:1;min-width:0}
+.res-list .t b{display:block;font-size:15px;font-weight:600}
+.res-list .t small{color:var(--ink-3);font-size:13px}
+.res-list .s{font-size:12px;font-weight:700;border-radius:20px;padding:1px 7px}
+.res-list .s.ok{color:var(--accent)}
+.res-list .s.ok svg{width:16px;height:16px;stroke-width:2.4}
+.res-list .s.check{background:var(--hl);color:var(--ink)}
+.res-list-foot{margin-top:16px;padding:14px 12px 0;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-3)}
+.progress-line{display:flex;align-items:center;gap:10px;margin-bottom:6px;color:var(--ink);font-weight:600;font-size:14px}
+.pips{display:flex;gap:4px}.pips i{width:18px;height:5px;border-radius:4px;background:var(--line-strong)}.pips i.on{background:var(--accent)}
+
+.doc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);box-shadow:var(--shadow-1)}
+.doc-bar{display:flex;align-items:center;gap:4px;padding:10px 14px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+body.shot .picker{display:none}
+.doc-bar .sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.doc-bar .grow{flex:1}
+.doc-body{padding:32px 44px 40px;font-family:var(--serif);font-size:17px;line-height:1.6}
+.doc-body h2{font-size:24px;margin-bottom:4px}
+.doc-body .doc-meta{font-family:var(--sans);font-size:14px;color:var(--ink-3);margin-bottom:28px}
+.q{position:relative;padding:18px 0;border-top:1px solid var(--line)}
+.q-h{display:flex;gap:12px;align-items:baseline;margin-bottom:12px}
+.q-n{font-family:var(--sans);font-weight:700;font-size:14px;color:var(--ink-3);min-width:28px}
+.q-type{margin-left:auto;font-family:var(--sans);font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.q-text{font-weight:500}
+.opts-list{list-style:none;margin:0 0 0 40px;padding:0;display:grid;gap:6px;font-family:var(--sans);font-size:15.5px}
+.opts-list li{display:flex;gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:8px}
+.opts-list .l{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-3)}
+.opts-list li.correct{border-color:var(--accent-line);background:var(--accent-soft)}
+.opts-list li.correct .l{background:var(--accent);border-color:var(--accent);color:#fff}
+.opts-list li.correct .why{margin-left:auto;font-size:13px;font-weight:600;color:var(--accent);display:flex;gap:4px;align-items:center}
+.opts-list li.correct .why svg{width:15px;height:15px;stroke-width:2.4}
+.hl{background:var(--hl);border-radius:2px;padding:1px 2px;box-shadow:0 0 0 2px var(--hl);cursor:pointer}
+.hl.resolved{background:transparent;box-shadow:none;text-decoration:underline wavy var(--accent-line) 1.5px;text-underline-offset:4px}
+.tf{display:flex;gap:8px;margin-left:40px;font-family:var(--sans);font-size:15px}
+.tf span{padding:7px 14px;border:1px solid var(--line);border-radius:8px}
+.tf span.correct{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent);font-weight:600}
+.explain{margin:10px 0 0 40px;font-family:var(--sans);font-size:14px;color:var(--ink-2)}
+.collapsed-q{font-family:var(--sans);font-size:14px;color:var(--ink-3);padding:12px 0;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center}
+.selbar{position:absolute;left:40px;top:-46px;display:flex;gap:2px;background:var(--ink);color:#fff;border-radius:9px;padding:4px;box-shadow:var(--shadow-2);font-family:var(--sans);font-size:13.5px;white-space:nowrap;z-index:2}
+.selbar button{border:0;background:transparent;color:#fff;padding:6px 10px;border-radius:6px;display:flex;gap:6px;align-items:center;font-weight:500}
+.selbar button:hover{background:rgba(255,255,255,.12)}
+.selbar svg{width:15px;height:15px}
+.selbar::after{content:"";position:absolute;left:24px;bottom:-5px;width:10px;height:10px;background:var(--ink);transform:rotate(45deg)}
+.sel{background:rgba(29,111,85,.16);border-radius:2px}
+
+.margin{position:sticky;top:20px;display:grid;gap:12px}
+.margin-h{display:flex;justify-content:space-between;align-items:baseline}
+.margin-h .h3{font-size:18px}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);padding:14px 14px 12px;box-shadow:var(--shadow-1);transition:opacity .2s var(--ease),transform .25s var(--ease),border-color .2s}
+.note.active{border-color:#E8C94A;box-shadow:0 0 0 3px var(--hl-soft),var(--shadow-1)}
+.note-h{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-3);margin-bottom:6px}
+.note-h .where{font-weight:700;color:var(--ink)}
+.note-h .swatch{width:10px;height:10px;border-radius:2px;background:var(--hl)}
+.note p{font-size:14.5px;line-height:1.45;margin-bottom:8px}
+.note .suggest{font-family:var(--serif);font-size:14.5px;background:var(--accent-soft);border-radius:7px;padding:8px 10px;margin-bottom:10px}
+.note .src{font-size:13px;color:var(--ink-3);display:flex;gap:6px;align-items:center;margin-bottom:10px}
+.note .src svg{width:14px;height:14px}
+.note-a{display:flex;gap:6px}
+.note.gone{opacity:0;transform:translateX(12px);pointer-events:none}
+.note.collapsed{display:none}
+.all-clear{display:none;text-align:center;padding:22px;border:1px dashed var(--accent-line);border-radius:var(--r-m);color:var(--accent);font-weight:600}
+.all-clear.on{display:block}
+
+/* ---------- Teach ---------- */
+.teach{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);padding:26px;box-shadow:var(--shadow-1)}
+.panel h2{font-size:23px;margin-bottom:6px}
+.panel > p{color:var(--ink-2);margin-bottom:20px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.res-checks{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin-bottom:22px;font-size:15px}
+.res-checks label{display:flex;gap:8px;align-items:center}
+input[type=checkbox]{accent-color:var(--accent);width:24px;height:24px}
+.res-checks label{min-height:32px}
+.live{background:var(--ink);color:#EDF1EE;border-color:var(--ink)}
+.live h2{color:#fff}
+.live > p{color:#C3CCD3}
+.projector{background:#0F1D2B;border-radius:var(--r-m);padding:22px;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;margin-bottom:18px}
+.qr{width:116px;height:116px;background:#fff;border-radius:8px;padding:8px}
+.code-label{font-size:14px;color:#AEBAC4}
+.code{font-family:var(--serif);font-size:46px;font-weight:600;letter-spacing:.04em;line-height:1.1;color:#fff}
+.url{font-size:14px;color:#C3CCD3}
+.joined{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.joined .num{font-size:15px}
+.joined .track{flex:1;height:6px;background:rgba(255,255,255,.14);border-radius:6px;overflow:hidden}
+.joined .track i{display:block;height:100%;width:75%;background:var(--hl);border-radius:6px}
+.live .btn.primary{background:var(--hl);border-color:var(--hl);color:var(--ink)}
+.live .btn.primary:hover{background:#F5D650}
+.live .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.28)}
+.live .btn:hover{background:rgba(255,255,255,.08)}
+.privacy{display:flex;gap:8px;align-items:center;font-size:14px;color:#C3CCD3;margin-top:14px}
+.privacy svg{width:16px;height:16px;color:var(--hl)}
+
+/* ---------- Results ---------- */
+.res-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:26px;flex-wrap:wrap}
+.res-head .lead{font-family:var(--serif);font-size:28px;line-height:1.3;font-weight:500;max-width:30ch}
+.res-head .lead b{font-weight:700}
+.results{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:start}
+.nextstep{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;background:var(--hl-soft);border:1px solid #EAD889;border-radius:var(--r-l);padding:20px 24px}
+.nextstep .h3{font-size:20px;margin-bottom:4px}
+.nextstep p{color:var(--ink-2);font-size:15px}
+.qrows{list-style:none;margin:0;padding:0}
+.qrows li{display:grid;grid-template-columns:42px minmax(0,1fr) 120px 48px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.qrows li:last-child{border-bottom:0}
+.qrows .qn{font-weight:700;color:var(--ink-3);font-size:14px}
+.qrows .qt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qrows .meter{height:8px;background:var(--sunk);border-radius:6px;overflow:hidden}
+.qrows .meter i{display:block;height:100%;background:var(--accent-line);border-radius:6px}
+.qrows .pc{text-align:right;font-weight:600}
+.qrows li.weak .meter i{background:var(--red)}
+.qrows li.weak .pc{color:var(--red)}
+.qrows li.weak .qt{font-weight:600}
+.qrows li.mid .meter i{background:#D9A93A}
+.people{list-style:none;margin:0;padding:0}
+.people li{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.people li:last-child{border-bottom:0}
+.people .av{width:34px;height:34px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.people b{font-weight:600;font-size:15px;display:block}
+.people small{color:var(--ink-3);font-size:13px}
+.people .pc{font-weight:700;color:var(--red);font-size:15px}
+.panel .h3{font-size:19px}
+.panel-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
+.panel-h span{font-size:13.5px;color:var(--ink-3)}
+.stack{display:grid;gap:24px}
+.top3{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.top3 .tag{font-size:13.5px}
+
+/* ---------- Screen picker ---------- */
+.picker{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:2px;background:var(--ink);padding:5px;border-radius:12px;box-shadow:var(--shadow-2);z-index:50;max-width:calc(100vw - 24px);overflow-x:auto}
+.picker a{color:#C7D0D8;text-decoration:none;font-size:13.5px;font-weight:600;padding:7px 12px;border-radius:8px;white-space:nowrap}
+.picker a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.picker a[aria-current="true"]{background:#fff;color:var(--ink)}
+.picker .lbl{color:#8D9AA6;font-size:12.5px;padding:7px 10px 7px 8px;white-space:nowrap}
+
+/* screen entrance */
+.screen.on{animation:fadein .28s var(--ease)}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1180px){
+  .review{grid-template-columns:minmax(0,1fr) 290px}
+  .res-list{position:static;display:flex;gap:6px;overflow-x:auto;grid-column:1/-1}
+  .res-list li{flex:none}
+  .res-list-foot{display:none}
+  .create{grid-template-columns:1fr}
+  .aside-card{position:static}
+}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .rail{position:fixed;bottom:0;top:auto;height:auto;width:100%;flex-direction:row;padding:6px 8px;border-right:0;border-top:1px solid var(--line);z-index:40;background:var(--surface)}
+  .rail .brand,.rail-section,.classes,.rail-foot{display:none}
+  .rail > .nav{display:flex;width:100%;justify-content:space-around}
+  .rail > .nav.classes{display:none}
+  .nav a{flex-direction:column;gap:2px;font-size:12px;padding:6px 8px;white-space:nowrap}
+  .stages a .n{display:none}
+  .stages a{padding:10px 9px 12px;font-size:14.5px}
+  .stages a.done{color:var(--accent)}
+  .nav .count{position:absolute;margin:0 0 0 18px}
+  .screen{padding:20px 18px 150px}
+  .picker{bottom:76px}
+  .next{grid-template-columns:1fr;gap:14px}
+  .next .when{border-right:0;padding-right:0;display:flex;gap:10px;align-items:baseline}
+  .week{grid-template-columns:1fr;}
+  .day{border-right:0;border-bottom:1px solid var(--line);min-height:0}
+  .slots{background-image:none}
+  .home-head{flex-direction:column;align-items:flex-start}
+  .home-head h1{font-size:32px}
+  .gen{grid-template-columns:1fr}
+  .gen-side{border-left:0;padding-left:0}
+  .review{grid-template-columns:1fr}
+  .margin{position:static}
+  .doc-body{padding:22px 18px}
+  .opts-list,.tf,.explain{margin-left:0}
+  .teach{grid-template-columns:1fr}
+  .results{grid-template-columns:1fr}
+  .nextstep{grid-template-columns:1fr}
+  .source,.opt-grid,.form-row{grid-template-columns:1fr}
+  .stages{overflow-x:auto}
+  .stages a{white-space:nowrap;padding:10px 10px 12px}
+  .lesson-title{font-size:25px}
+  .lesson-head .saved{display:none}
+  .res-head .lead{font-size:23px}
+  .qrows li{grid-template-columns:34px minmax(0,1fr) 64px 42px}
+  .selbar{left:0;top:-48px;overflow-x:auto;max-width:100%}
+  .projector{grid-template-columns:1fr;justify-items:start}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="rail" aria-label="Main">
+    <div class="brand"><span class="brand-mark"><i data-lucide="book-open"></i></span>Educator Helper</div>
+    <nav class="nav">
+      <a href="#home" data-nav="home"><i data-lucide="calendar-days"></i>This week</a>
+      <a href="#review" data-nav="lessons"><i data-lucide="library"></i>Lessons</a>
+      <a href="#results" data-nav="results" style="position:relative"><i data-lucide="clipboard-check"></i>Results<span class="count num">1</span></a>
+      <a href="#create" data-nav="create"><i data-lucide="plus"></i>New lesson</a>
+    </nav>
+    <div class="rail-section">Classes</div>
+    <nav class="nav classes">
+      <a href="#home"><span class="dot" style="background:#1D6F55"></span>6B <span style="color:var(--ink-3);font-weight:400">· 24</span></a>
+      <a href="#home"><span class="dot" style="background:#C08B1C"></span>6A <span style="color:var(--ink-3);font-weight:400">· 26</span></a>
+      <a href="#home"><span class="dot" style="background:#5B6FA8"></span>7C <span style="color:var(--ink-3);font-weight:400">· 22</span></a>
+    </nav>
+    <div class="rail-foot"><span class="avatar">AG</span><span class="who"><b>Alex Green</b><span>Science · Riverside MS</span></span></div>
+  </aside>
+
+  <main id="main">
+  <!-- ================= HOME ================= -->
+  <section class="screen" data-screen="home" aria-label="This week">
+    <div class="home-head">
+      <div>
+        <p class="date">Thursday 14 November</p>
+        <h1>Good morning, Alex.</h1>
+      </div>
+      <a class="btn primary lg" href="#create"><i data-lucide="plus"></i>New lesson</a>
+    </div>
+
+    <article class="next" aria-label="Next lesson">
+      <div class="when"><b class="num">10:40</b><span>Period 3 · in 1 h 12 min</span></div>
+      <div>
+        <h2>Photosynthesis: how plants make food</h2>
+        <div class="meta">
+          <span><i data-lucide="users"></i>6B · 24 students</span>
+          <span><i data-lucide="clock"></i>45 min</span>
+          <span><i data-lucide="layers"></i>Kit ready: 5 resources</span>
+          <span class="mark">2 things to check</span>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn" href="#teach"><i data-lucide="presentation"></i>Teach</a>
+        <a class="btn primary" href="#review">Check kit</a>
+      </div>
+    </article>
+
+    <div class="week-head">
+      <h2>Your week</h2>
+      <div class="week-nav"><button class="btn ghost sm" aria-label="Previous week"><i data-lucide="chevron-left"></i></button><span>11–15 November</span><button class="btn ghost sm" aria-label="Next week"><i data-lucide="chevron-right"></i></button></div>
+    </div>
+    <div class="week" role="list">
+      <div class="day" role="listitem"><div class="day-h"><b>Mon</b><span class="num">11</span></div>
+        <div class="slots">
+          <a class="slot" href="#results"><small>6B · Period 3</small><b>States of matter</b><span class="tag ok"><i data-lucide="check"></i><span class="num">Taught · 92%</span></span></a>
+        </div></div>
+      <div class="day" role="listitem"><div class="day-h"><b>Tue</b><span class="num">12</span></div>
+        <div class="slots">
+          <a class="slot" href="#results"><small>6A · Period 2</small><b>The water cycle</b><span class="tag ok"><i data-lucide="check"></i><span class="num">Taught · 81%</span></span></a>
+        </div></div>
+      <div class="day" role="listitem"><div class="day-h"><b>Wed</b><span class="num">13</span></div>
+        <div class="slots">
+          <a class="slot" href="#create"><small>7C · Period 1</small><b>Food chains</b><span class="tag"><i data-lucide="pencil-line"></i>Draft</span></a>
+        </div></div>
+      <div class="day today" role="listitem"><div class="day-h"><b>Thu · today</b><span class="num">14</span></div>
+        <div class="slots">
+          <a class="slot focus" href="#review"><small>6B · Period 3 · 10:40</small><b>Photosynthesis: how plants make food</b><span class="tag check"><i data-lucide="highlighter"></i>2 to check</span></a>
+          <a class="slot empty" href="#create"><i data-lucide="plus"></i>6A · Period 5</a>
+        </div></div>
+      <div class="day" role="listitem"><div class="day-h"><b>Fri</b><span class="num">15</span></div>
+        <div class="slots">
+          <a class="slot empty" href="#create"><i data-lucide="plus"></i>6B · Period 2</a>
+          <a class="slot empty" href="#create"><i data-lucide="plus"></i>7C · Period 4</a>
+        </div></div>
+    </div>
+  </section>
+
+  <!-- ================= CREATE ================= -->
+  <section class="screen" data-screen="create" aria-label="New lesson">
+    <div class="lesson-head"><div class="crumbs"><a href="#home">This week</a><i data-lucide="chevron-right"></i><span>Thu 14 Nov · 6B · Period 3</span></div><span class="saved"><i data-lucide="cloud-check"></i>Draft saved</span></div>
+    <h1 class="lesson-title">New lesson</h1>
+    <nav class="stages" aria-label="Lesson stages">
+      <a href="#create" aria-current="step"><span class="n">1</span>Prepare</a>
+      <a href="#review"><span class="n">2</span>Check</a>
+      <a href="#teach"><span class="n">3</span>Teach</a>
+      <a href="#results"><span class="n">4</span>Results</a>
+    </nav>
+
+    <div class="create">
+      <div>
+        <div class="field">
+          <label class="label" for="ltitle">What are you teaching?</label>
+          <input id="ltitle" class="input title-input" value="Photosynthesis: how plants make food">
+        </div>
+
+        <div class="field">
+          <span class="label">Start from</span>
+          <div class="seg" role="group" aria-label="Source"><button aria-pressed="true" data-seg="file">My file</button><button aria-pressed="false" data-seg="describe">Describe it</button></div>
+          <div class="source" data-src="file">
+            <div class="drop">
+              <span class="file-ic">PDF</span>
+              <div><b>Plants_Unit3_Photosynthesis.pdf</b><span class="num">14 pages · read in 3 s</span></div>
+            </div>
+            <div class="drop" style="justify-content:center;color:var(--ink-2)">
+              <i data-lucide="upload"></i><span style="font-size:14.5px;color:var(--ink-2)">Add another file<br><span style="font-size:13px;color:var(--ink-3)">PDF, Word, PowerPoint</span></span>
+            </div>
+          </div>
+          <div data-src="describe" hidden>
+            <textarea class="input" rows="4">How plants use sunlight, water and carbon dioxide to make glucose and oxygen. Parts of the plant and their jobs.</textarea>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label">For which class?</span>
+          <div class="classpick" role="group" aria-label="Class">
+            <button class="chip" aria-pressed="true" data-chip>6B <small>Science</small></button>
+            <button class="chip" aria-pressed="false" data-chip>6A <small>Science</small></button>
+            <button class="chip" aria-pressed="false" data-chip>7C <small>Science</small></button>
+          </div>
+          <div class="derived"><span><i data-lucide="graduation-cap"></i>Grade 6</span><span><i data-lucide="clock"></i>45 min</span><span><i data-lucide="users"></i>24 students</span><span><i data-lucide="calendar"></i>Thu 14 Nov, Period 3</span></div>
+        </div>
+
+        <div class="field">
+          <span class="label">Learning objectives</span>
+          <ol class="objectives">
+            <li><span class="k">1</span><span>Explain that plants use sunlight, water and carbon dioxide to make glucose and oxygen.</span><span class="src">From your file, p. 2</span></li>
+            <li><span class="k">2</span><span>Name the role of leaves, roots and stem.</span><span class="src">p. 2</span></li>
+            <li><span class="k">3</span><span>Read a simple word equation.</span><span class="src">p. 5</span></li>
+          </ol>
+          <p class="hint">Found in your file. Edit any line, or add your own.</p>
+        </div>
+
+        <details class="opts">
+          <summary><i data-lucide="chevron-right"></i>Options <span class="sum">English · Core and Stretch levels · usual length</span></summary>
+          <div class="opt-grid">
+            <label><span class="label">Language</span><select class="input"><option>English</option><option>English + Arabic glossary</option><option>French</option></select></label>
+            <label><span class="label">Levels</span><select class="input"><option>Core and Stretch</option><option>One level</option><option>Support, Core and Stretch</option></select></label>
+          </div>
+        </details>
+      </div>
+
+      <aside class="aside-card" aria-label="What you will get">
+        <h2 class="h3">Your lesson kit</h2>
+        <ul class="kit-list">
+          <li><span class="ic"><i data-lucide="presentation"></i></span><span>Presentation<small>About 12 slides</small></span><button class="switch" role="switch" aria-checked="true" aria-label="Presentation"></button></li>
+          <li><span class="ic"><i data-lucide="file-text"></i></span><span>Worksheet<small>Core and Stretch</small></span><button class="switch" role="switch" aria-checked="true" aria-label="Worksheet"></button></li>
+          <li><span class="ic"><i data-lucide="list-checks"></i></span><span>Quiz<small>10 questions</small></span><button class="switch" role="switch" aria-checked="true" aria-label="Quiz"></button></li>
+          <li><span class="ic"><i data-lucide="puzzle"></i></span><span>Mini-game<small>Match plant parts</small></span><button class="switch" role="switch" aria-checked="true" aria-label="Mini-game"></button></li>
+          <li><span class="ic"><i data-lucide="square-stack"></i></span><span>Summary cards<small>About 12 cards</small></span><button class="switch" role="switch" aria-checked="true" aria-label="Summary cards"></button></li>
+        </ul>
+        <ul class="checks">
+          <li><i data-lucide="check"></i>Objectives found</li>
+          <li><i data-lucide="check"></i>Grade level set from 6B</li>
+          <li><i data-lucide="check"></i>Source attached</li>
+        </ul>
+        <a class="btn primary lg" href="#generating"><i data-lucide="sparkles"></i>Make lesson kit</a>
+        <p class="fine">You check everything before students see it.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= GENERATING ================= -->
+  <section class="screen" data-screen="generating" aria-label="Making your kit">
+    <div class="lesson-head"><div class="crumbs"><a href="#home">This week</a><i data-lucide="chevron-right"></i><span>Thu 14 Nov · 6B · Period 3</span></div></div>
+    <h1 class="lesson-title">Photosynthesis: how plants make food</h1>
+    <nav class="stages" aria-label="Lesson stages">
+      <a href="#create" aria-current="step"><span class="n">1</span>Prepare</a>
+      <a href="#review"><span class="n">2</span>Check</a>
+      <a href="#teach"><span class="n">3</span>Teach</a>
+      <a href="#results"><span class="n">4</span>Results</a>
+    </nav>
+    <div class="gen">
+      <div>
+        <h2>Making your kit</h2>
+        <p class="sub" aria-live="polite"><span id="genStatus">Reading your file…</span> Usually takes about 40 seconds.</p>
+        <div class="bar" aria-hidden="true"><i id="genBar"></i></div>
+        <ul class="gen-list" id="genList">
+          <li data-state="wait"><span class="ic"><i data-lucide="presentation"></i></span><span><b>Presentation</b><span class="st"><span class="st-text">Waiting</span></span></span><a class="btn sm go" href="#review" tabindex="-1">Open</a></li>
+          <li data-state="wait"><span class="ic"><i data-lucide="file-text"></i></span><span><b>Worksheet</b><span class="st"><span class="st-text">Waiting</span></span></span><a class="btn sm go" href="#review" tabindex="-1">Open</a></li>
+          <li data-state="wait"><span class="ic"><i data-lucide="list-checks"></i></span><span><b>Quiz</b><span class="st"><span class="st-text">Waiting</span></span></span><a class="btn sm go" href="#review" tabindex="-1">Open</a></li>
+          <li data-state="wait"><span class="ic"><i data-lucide="puzzle"></i></span><span><b>Mini-game</b><span class="st"><span class="st-text">Waiting</span></span></span><a class="btn sm go" href="#review" tabindex="-1">Open</a></li>
+          <li data-state="wait"><span class="ic"><i data-lucide="square-stack"></i></span><span><b>Summary cards</b><span class="st"><span class="st-text">Waiting</span></span></span><a class="btn sm go" href="#review" tabindex="-1">Open</a></li>
+        </ul>
+      </div>
+      <aside class="gen-side">
+        <h2 class="h3">While you wait</h2>
+        <ul>
+          <li>Open any resource as soon as it says Ready.</li>
+          <li>Anything the assistant is unsure about is <span class="mark">highlighted</span> for you to check.</li>
+          <li>Nothing is shared with 6B until you choose to.</li>
+        </ul>
+        <a class="btn" href="#create"><i data-lucide="square"></i>Stop</a>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= REVIEW ================= -->
+  <section class="screen" data-screen="review" aria-label="Check the kit">
+    <div class="lesson-head"><div class="crumbs"><a href="#home">This week</a><i data-lucide="chevron-right"></i><span>Thu 14 Nov · 6B · Period 3</span></div><span class="saved"><i data-lucide="cloud-check"></i>All changes saved</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+      <h1 class="lesson-title">Photosynthesis: how plants make food</h1>
+      <div style="display:flex;gap:8px;margin-top:6px"><button class="btn"><i data-lucide="eye"></i>Student view</button><a class="btn primary" href="#teach">Teach or assign</a></div>
+    </div>
+    <nav class="stages" aria-label="Lesson stages">
+      <a href="#create" class="done"><span class="n"><i data-lucide="check"></i></span>Prepare</a>
+      <a href="#review" aria-current="step"><span class="n">2</span>Check</a>
+      <a href="#teach"><span class="n">3</span>Teach</a>
+      <a href="#results"><span class="n">4</span>Results</a>
+    </nav>
+
+    <div class="review">
+      <ul class="res-list" aria-label="Resources">
+        <li><button><span class="ic"><i data-lucide="presentation"></i></span><span class="t"><b>Presentation</b><small>12 slides</small></span><span class="s ok" aria-label="Ready"><i data-lucide="check"></i></span></button></li>
+        <li><button><span class="ic"><i data-lucide="file-text"></i></span><span class="t"><b>Worksheet</b><small>8 activities</small></span><span class="s check num" aria-label="1 to check">1</span></button></li>
+        <li><button aria-current="true"><span class="ic"><i data-lucide="list-checks"></i></span><span class="t"><b>Quiz</b><small>10 questions</small></span><span class="s check num" id="quizCount" aria-label="2 to check">2</span></button></li>
+        <li><button><span class="ic"><i data-lucide="puzzle"></i></span><span class="t"><b>Mini-game</b><small>8 pairs</small></span><span class="s ok" aria-label="Ready"><i data-lucide="check"></i></span></button></li>
+        <li><button><span class="ic"><i data-lucide="square-stack"></i></span><span class="t"><b>Summary cards</b><small>12 cards</small></span><span class="s ok" aria-label="Ready"><i data-lucide="check"></i></span></button></li>
+        <li class="res-list-foot">Made in 38 s from your file. Saved you about 2 hours.</li>
+      </ul>
+
+      <article class="doc" aria-label="Quiz">
+        <div class="doc-bar">
+          <button class="btn ghost sm"><i data-lucide="plus"></i>Question</button>
+          <span class="sep"></span>
+          <button class="btn ghost sm"><i data-lucide="baby"></i>Easier</button>
+          <button class="btn ghost sm"><i data-lucide="mountain"></i>Harder</button>
+          <span class="grow"></span>
+          <button class="btn ghost sm"><i data-lucide="refresh-cw"></i>Remake quiz</button>
+        </div>
+        <div class="doc-body">
+          <h2>Quiz: how plants make food</h2>
+          <p class="doc-meta num">10 questions · about 12 minutes · Grade 6 · answer key included</p>
+
+          <div class="q">
+            <div class="q-h"><span class="q-n">Q1</span><span class="q-text">What does a plant need to make its own food?</span><span class="q-type">Multiple choice</span></div>
+            <ul class="opts-list">
+              <li class="correct"><span class="l">A</span>Sunlight, water and carbon dioxide<span class="why"><i data-lucide="check"></i>Correct</span></li>
+              <li><span class="l">B</span>Soil and water only</li>
+              <li><span class="l">C</span>Oxygen and sugar</li>
+              <li><span class="l">D</span>Only sunlight</li>
+            </ul>
+          </div>
+
+          <p class="collapsed-q"><i data-lucide="chevrons-up-down"></i>Q2 – Q3 · no notes</p>
+
+          <div class="q" id="q4">
+            <div class="q-h"><span class="q-n">Q4</span><span class="q-text"><span class="hl" data-note="n1">Plants get their food from the soil.</span></span><span class="q-type">True or false</span></div>
+            <div class="tf"><span>True</span><span class="correct">False · answer</span></div>
+            <p class="explain">Explanation shown to students: “Plants make their own food in their leaves using sunlight. Roots take in water and minerals, not food.”</p>
+          </div>
+
+          <p class="collapsed-q"><i data-lucide="chevrons-up-down"></i>Q5 – Q8 · no notes</p>
+
+          <div class="q" id="q9" style="margin-top:56px">
+            <div class="selbar" role="toolbar" aria-label="Change selected text">
+              <button><i data-lucide="baby"></i>Simpler</button>
+              <button><i data-lucide="lightbulb"></i>Add example</button>
+              <button><i data-lucide="languages"></i>Translate</button>
+              <button><i data-lucide="refresh-cw"></i>Rewrite</button>
+            </div>
+            <div class="q-h"><span class="q-n">Q9</span><span class="q-text">Why are leaves green? <span class="hl sel" data-note="n2">Chlorophyll absorbs light energy.</span> Explain in one sentence.</span><span class="q-type">Short answer</span></div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="margin" aria-label="Things to check">
+        <div class="margin-h"><h2 class="h3">To check</h2><span class="progress-line"><span id="leftCount" class="num">3 left</span></span></div>
+        <div class="pips" aria-hidden="true"><i></i><i></i><i></i></div>
+
+        <div class="note active" id="n1">
+          <div class="note-h"><span class="swatch"></span><span class="where">Quiz · Q4</span><span>Fact check</span></div>
+          <p>“From the soil” is a common misconception. The answer is right; check the explanation is what you want students to read.</p>
+          <p class="src"><i data-lucide="file-text"></i>Your file, p. 6</p>
+          <div class="note-a"><button class="btn sm primary" data-resolve="n1">Looks right</button><button class="btn sm" data-edit="q4">Edit</button><button class="btn sm ghost" data-resolve="n1">Dismiss</button></div>
+        </div>
+
+        <div class="note" id="n2">
+          <div class="note-h"><span class="swatch"></span><span class="where">Quiz · Q9</span><span>Reading level 8</span></div>
+          <p>Above grade 6. Suggested wording:</p>
+          <p class="suggest">“Chlorophyll is the green part of the leaf that catches sunlight.”</p>
+          <div class="note-a"><button class="btn sm primary" data-accept="n2">Use this</button><button class="btn sm">Edit</button><button class="btn sm ghost" data-resolve="n2">Dismiss</button></div>
+        </div>
+
+        <div class="note" id="n3">
+          <div class="note-h"><span class="swatch"></span><span class="where">Worksheet · Activity 5</span><span>Order</span></div>
+          <p>Uses “glucose” before the slides introduce it.</p>
+          <p class="suggest">Add a glossary box: “Glucose — the sugar a plant makes for energy.”</p>
+          <div class="note-a"><button class="btn sm primary" data-resolve="n3">Add box</button><button class="btn sm">Edit</button><button class="btn sm ghost" data-resolve="n3">Dismiss</button></div>
+        </div>
+
+        <div class="all-clear" id="allClear"><i data-lucide="check-circle-2"></i><br>All checked. Ready for 6B.<br><a class="btn primary" style="margin-top:12px" href="#teach">Teach or assign</a></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= TEACH ================= -->
+  <section class="screen" data-screen="teach" aria-label="Teach or assign">
+    <div class="lesson-head"><div class="crumbs"><a href="#home">This week</a><i data-lucide="chevron-right"></i><span>Thu 14 Nov · 6B · Period 3</span></div></div>
+    <h1 class="lesson-title">Photosynthesis: how plants make food</h1>
+    <nav class="stages" aria-label="Lesson stages">
+      <a href="#create" class="done"><span class="n"><i data-lucide="check"></i></span>Prepare</a>
+      <a href="#review" class="done"><span class="n"><i data-lucide="check"></i></span>Check</a>
+      <a href="#teach" aria-current="step"><span class="n">3</span>Teach</a>
+      <a href="#results"><span class="n">4</span>Results</a>
+    </nav>
+    <div class="teach">
+      <section class="panel live" aria-label="Teach live">
+        <h2>Teach it live</h2>
+        <p>Show the slides on the board, then run the quiz with the class.</p>
+        <div class="projector">
+          <svg class="qr" id="qr" viewBox="0 0 25 25" shape-rendering="crispEdges" role="img" aria-label="QR code to join"></svg>
+          <div><p class="code-label">Join at edhelper.app with code</p><p class="code num">482 913</p><p class="url">Names stay hidden on the board</p></div>
+        </div>
+        <div class="joined"><span class="num"><b>18</b> of 24 joined</span><span class="track"><i></i></span></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a class="btn primary lg" href="#results"><i data-lucide="play"></i>Start live quiz</a>
+          <button class="btn lg"><i data-lucide="presentation"></i>Present slides</button>
+        </div>
+        <p class="privacy"><i data-lucide="eye-off"></i>Projector view never shows student names or scores.</p>
+      </section>
+
+      <section class="panel" aria-label="Assign">
+        <h2>Assign as homework</h2>
+        <p>Students open it on their own device. You get results as they finish.</p>
+        <div class="form-row">
+          <label><span class="label">Class</span><select class="input"><option>6B · 24 students</option></select></label>
+          <label><span class="label">Due</span><input class="input" value="Fri 15 Nov, 8:00"></label>
+        </div>
+        <span class="label">Include</span>
+        <div class="res-checks">
+          <label><input type="checkbox" checked>Worksheet</label>
+          <label><input type="checkbox" checked>Quiz</label>
+          <label><input type="checkbox" checked>Mini-game</label>
+          <label><input type="checkbox" checked>Summary cards</label>
+        </div>
+        <label style="display:block;margin-bottom:22px"><span class="label">Levels</span><select class="input"><option>Let students start at Core, unlock Stretch</option><option>Everyone gets Core</option><option>Choose per student</option></select></label>
+        <a class="btn primary lg" href="#results"><i data-lucide="send"></i>Assign to 6B</a>
+        <button class="btn lg ghost"><i data-lucide="link"></i>Copy link</button>
+      </section>
+    </div>
+  </section>
+
+  <!-- ================= RESULTS ================= -->
+  <section class="screen" data-screen="results" aria-label="Results">
+    <div class="lesson-head"><div class="crumbs"><a href="#home">This week</a><i data-lucide="chevron-right"></i><span>Thu 14 Nov · 6B · Period 3</span></div></div>
+    <h1 class="lesson-title">Photosynthesis: how plants make food</h1>
+    <nav class="stages" aria-label="Lesson stages">
+      <a href="#create" class="done"><span class="n"><i data-lucide="check"></i></span>Prepare</a>
+      <a href="#review" class="done"><span class="n"><i data-lucide="check"></i></span>Check</a>
+      <a href="#teach" class="done"><span class="n"><i data-lucide="check"></i></span>Teach</a>
+      <a href="#results" aria-current="step"><span class="n">4</span>Results</a>
+    </nav>
+
+    <div class="res-head">
+      <p class="lead num"><b>22 of 24</b> answered. Class average <b>74%</b>. Most of 6B got it, but Q4 shows a misconception.</p>
+      <button class="btn"><i data-lucide="download"></i>Export</button>
+    </div>
+
+    <div class="results">
+      <div class="nextstep">
+        <div><h2 class="h3">Fix it tomorrow in 5 minutes</h2><p>Only 41% got Q4 right: many students think plants get food from the soil. Make a short warm-up for Friday’s lesson.</p></div>
+        <button class="btn primary lg"><i data-lucide="sparkles"></i>Make warm-up</button>
+      </div>
+
+      <section class="panel" aria-label="Questions">
+        <div class="panel-h"><h2 class="h3">By question</h2><span>% of class correct</span></div>
+        <ul class="qrows num">
+          <li><span class="qn">Q1</span><span class="qt">What does a plant need to make its own food?</span><span class="meter"><i style="width:92%"></i></span><span class="pc">92%</span></li>
+          <li><span class="qn">Q2</span><span class="qt">Where in the plant does photosynthesis happen?</span><span class="meter"><i style="width:86%"></i></span><span class="pc">86%</span></li>
+          <li><span class="qn">Q3</span><span class="qt">Which gas do plants release?</span><span class="meter"><i style="width:81%"></i></span><span class="pc">81%</span></li>
+          <li class="weak"><span class="qn">Q4</span><span class="qt">Plants get their food from the soil.</span><span class="meter"><i style="width:41%"></i></span><span class="pc">41%</span></li>
+          <li><span class="qn">Q5</span><span class="qt">What job do roots do?</span><span class="meter"><i style="width:77%"></i></span><span class="pc">77%</span></li>
+          <li><span class="qn">Q6</span><span class="qt">What carries water up the plant?</span><span class="meter"><i style="width:82%"></i></span><span class="pc">82%</span></li>
+          <li class="mid"><span class="qn">Q7</span><span class="qt">Complete the word equation.</span><span class="meter"><i style="width:58%"></i></span><span class="pc">58%</span></li>
+          <li><span class="qn">Q8</span><span class="qt">True or false: plants need light.</span><span class="meter"><i style="width:79%"></i></span><span class="pc">79%</span></li>
+          <li><span class="qn">Q9</span><span class="qt">Why are leaves green?</span><span class="meter"><i style="width:68%"></i></span><span class="pc">68%</span></li>
+          <li><span class="qn">Q10</span><span class="qt">Name the sugar plants make.</span><span class="meter"><i style="width:76%"></i></span><span class="pc">76%</span></li>
+        </ul>
+      </section>
+
+      <div class="stack">
+        <section class="panel" aria-label="Needs help">
+          <div class="panel-h"><h2 class="h3">Needs help</h2><span>Below 60%</span></div>
+          <ul class="people num">
+            <li><span class="av">YH</span><span><b>Youssef Haddad</b><small>Missed Q4, Q7, Q9</small></span><span class="pc">40%</span></li>
+            <li><span class="av">AB</span><span><b>Ali Ben Salah</b><small>Missed Q4, Q7</small></span><span class="pc">50%</span></li>
+            <li><span class="av">OK</span><span><b>Omar Kacem</b><small>Missed Q4, Q10</small></span><span class="pc">50%</span></li>
+            <li><span class="av">ML</span><span><b>Mia Lopez</b><small>Missed Q4</small></span><span class="pc">55%</span></li>
+          </ul>
+          <button class="btn sm" style="margin-top:12px"><i data-lucide="users"></i>Make a small-group task</button>
+        </section>
+        <section class="panel" aria-label="Not submitted">
+          <div class="panel-h"><h2 class="h3">Not submitted</h2><button class="btn sm"><i data-lucide="bell"></i>Send reminder</button></div>
+          <p style="color:var(--ink-2)">Adam Cherif, Noah Brown</p>
+        </section>
+        <section class="panel" aria-label="Strongest">
+          <div class="panel-h"><h2 class="h3">Strongest</h2><span>Could help a partner</span></div>
+          <div class="top3 num"><span class="tag ok">Sara Ahmed 100%</span><span class="tag ok">Fatma Trabelsi 95%</span><span class="tag ok">Lina Mansour 90%</span></div>
+        </section>
+      </div>
+    </div>
+  </section>
+  </main>
+</div>
+
+<nav class="picker" aria-label="Mockup screens">
+  <span class="lbl">A · Planbook</span>
+  <a href="#home">Week</a><a href="#create">Prepare</a><a href="#generating">Making</a><a href="#review">Check</a><a href="#teach">Teach</a><a href="#results">Results</a>
+  <a href="../index.html" style="color:#8D9AA6">All versions</a>
+</nav>
+
+<script>
+(function(){
+  var screens = document.querySelectorAll('.screen');
+  var genTimers = [];
+  function show(id){
+    var found = false;
+    screens.forEach(function(s){ var on = s.dataset.screen === id; s.classList.toggle('on', on); if(on) found = true; });
+    if(!found){ id = 'home'; screens[0].classList.add('on'); }
+    document.querySelectorAll('.picker a[href^="#"]').forEach(function(a){ a.setAttribute('aria-current', a.getAttribute('href') === '#'+id ? 'true' : 'false'); });
+    var navMap = {home:'home', create:'create', generating:'create', review:'lessons', teach:'lessons', results:'results'};
+    document.querySelectorAll('.nav a[data-nav]').forEach(function(a){ if(a.dataset.nav === navMap[id]) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+    window.scrollTo(0,0);
+    if(id === 'generating') runGen(); else stopGen();
+  }
+  function route(){ show((location.hash || '#home').slice(1)); }
+  window.addEventListener('hashchange', route);
+
+  // Generating simulation
+  var steps = [
+    {i:0, work:'Writing 12 slides', done:'Ready · 12 slides', status:'Writing the presentation…'},
+    {i:1, work:'Writing Core and Stretch activities', done:'Ready · 8 activities', status:'Writing the worksheet…'},
+    {i:2, work:'Writing questions 7 of 10', done:'Ready · 10 questions · 2 to check', status:'Writing the quiz…'},
+    {i:3, work:'Building 8 pairs', done:'Ready · 8 pairs', status:'Building the mini-game…'},
+    {i:4, work:'Writing 12 cards', done:'Ready · 12 cards', status:'Writing summary cards…'}
+  ];
+  function stopGen(){ genTimers.forEach(clearTimeout); genTimers = []; }
+  function runGen(){
+    stopGen();
+    var items = document.querySelectorAll('#genList li');
+    var bar = document.getElementById('genBar');
+    var status = document.getElementById('genStatus');
+    items.forEach(function(li){ li.dataset.state='wait'; li.querySelector('.st-text').textContent='Waiting'; li.querySelector('.go').tabIndex=-1; });
+    bar.style.transform = 'scaleX(.04)'; status.textContent = 'Reading your file…';
+    var t = 700;
+    steps.forEach(function(s, k){
+      genTimers.push(setTimeout(function(){
+        var li = items[s.i]; li.dataset.state = 'work';
+        li.querySelector('.st-text').innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px">'+s.work+'</span>';
+        status.textContent = s.status;
+        bar.style.transform = 'scaleX(' + (8 + k*18)/100 + ')';
+      }, t));
+      t += 1300;
+      genTimers.push(setTimeout(function(){
+        var li = items[s.i]; li.dataset.state = 'done'; li.classList.remove('arrive'); void li.offsetWidth; li.classList.add('arrive');
+        li.querySelector('.st-text').textContent = s.done; li.querySelector('.go').tabIndex = 0;
+        bar.style.transform = 'scaleX(' + (20 + k*20)/100 + ')';
+        if(k === steps.length-1){ status.textContent = 'Your kit is ready. 2 things to check.'; }
+      }, t));
+      t += 200;
+    });
+  }
+
+  // Source toggle
+  document.querySelectorAll('[data-seg]').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('[data-seg]').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
+      document.querySelectorAll('[data-src]').forEach(function(p){ p.hidden = p.dataset.src !== b.dataset.seg; });
+    });
+  });
+  // Class chips
+  document.querySelectorAll('[data-chip]').forEach(function(b){
+    b.addEventListener('click', function(){ document.querySelectorAll('[data-chip]').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); }); });
+  });
+  // Switches
+  document.querySelectorAll('.switch').forEach(function(s){ s.addEventListener('click', function(){ s.setAttribute('aria-checked', s.getAttribute('aria-checked')==='true'?'false':'true'); }); });
+
+  // Review notes
+  var left = 3;
+  function updateLeft(){
+    var el = document.getElementById('leftCount'); el.textContent = left ? left + ' left' : 'Done';
+    document.querySelectorAll('.pips i').forEach(function(p, i){ p.classList.toggle('on', i < 3-left); });
+    var q = document.querySelectorAll('.note:not(.collapsed)');
+    q.forEach(function(n){ n.classList.remove('active'); });
+    if(q[0]) q[0].classList.add('active');
+    document.getElementById('allClear').classList.toggle('on', left === 0);
+  }
+  function resolve(id, accept){
+    var note = document.getElementById(id); if(!note || note.classList.contains('gone')) return;
+    note.classList.add('gone');
+    var mark = document.querySelector('[data-note="'+id+'"]');
+    if(mark){ if(accept && id==='n2'){ mark.textContent = 'Chlorophyll is the green part of the leaf that catches sunlight.'; } mark.classList.add('resolved'); mark.classList.remove('sel'); }
+    if(id === 'n2'){ var sb = document.querySelector('.selbar'); if(sb) sb.remove(); }
+    setTimeout(function(){ note.classList.add('collapsed'); left--; updateLeft();
+      var qc = document.getElementById('quizCount'); var quizLeft = ['n1','n2'].filter(function(x){ return !document.getElementById(x).classList.contains('collapsed'); }).length;
+      if(qc){ if(quizLeft){ qc.textContent = quizLeft; } else { qc.className='s ok'; qc.innerHTML='<i data-lucide="check"></i>'; lucide.createIcons(); } }
+    }, 200);
+  }
+  document.querySelectorAll('[data-resolve]').forEach(function(b){ b.addEventListener('click', function(){ resolve(b.dataset.resolve, false); }); });
+  document.querySelectorAll('[data-accept]').forEach(function(b){ b.addEventListener('click', function(){ resolve(b.dataset.accept, true); }); });
+  document.querySelectorAll('.hl[data-note]').forEach(function(h){ h.addEventListener('click', function(){ document.querySelectorAll('.note').forEach(function(n){ n.classList.toggle('active', n.id===h.dataset.note); }); }); });
+  updateLeft();
+
+  // QR pattern (decorative, deterministic)
+  (function(){
+    var svg = document.getElementById('qr'); if(!svg) return; var n=25, out='';
+    function finder(x,y){ out += '<rect x="'+x+'" y="'+y+'" width="7" height="7" fill="#0F1D2B"/><rect x="'+(x+1)+'" y="'+(y+1)+'" width="5" height="5" fill="#fff"/><rect x="'+(x+2)+'" y="'+(y+2)+'" width="3" height="3" fill="#0F1D2B"/>'; }
+    var seed = 482913; function rnd(){ seed = (seed*9301+49297)%233280; return seed/233280; }
+    for(var y=0;y<n;y++) for(var x=0;x<n;x++){
+      var inF = (x<8&&y<8)||(x>n-9&&y<8)||(x<8&&y>n-9); if(inF) continue;
+      if(rnd()>0.52) out += '<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="#0F1D2B"/>';
+    }
+    finder(0,0); finder(n-7,0); finder(0,n-7); svg.innerHTML = out;
+  })();
+
+  function init(){ if(/[?&]shot/.test(location.search)) document.body.classList.add('shot'); if(window.lucide) lucide.createIcons(); route(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
+</body>
+</html>

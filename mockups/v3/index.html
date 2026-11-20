@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Educator Helper v3: three kid-friendly redesign directions for grades 2 to 12, with student screens that adapt to age.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%232457D6'/%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23A9D6F5'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Educator Helper v3 — kid-friendly, grades 2 to 12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--page:#F5F8FC;--surface:#fff;--line:#DCE4EE;--ink:#14213D;--ink-2:#3A4A66;--ink-3:#52627D;--primary:#2457D6;--soft:#E8EEFC;--ice:#A9D6F5;--teal:#0B7373;--teal-bg:#E0F3F2;--leaf:#17704A;--leaf-bg:#DEF4EA;--ease:cubic-bezier(0.16,1,0.3,1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.6 "Lexend",system-ui,sans-serif}
+::selection{background:var(--ice)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:3px;border-radius:8px}
+h1,h2,h3{font-family:"Nunito",system-ui,sans-serif;font-weight:800;letter-spacing:-0.01em;margin:0;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding:48px 32px 96px}
+.back{display:inline-flex;gap:14px;margin-bottom:22px;font-size:15px}
+.back a{color:var(--ink-2);text-underline-offset:3px}
+header{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px;align-items:center;margin-bottom:44px}
+header h1{font-size:48px;line-height:1.08;margin-bottom:14px}
+header p{font-size:18px;color:var(--ink-2);max-width:58ch}
+.scene{width:100%;height:auto}
+h2.sec{font-size:30px;margin-bottom:18px}
+.bands{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:56px}
+.band{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:0 1px 2px rgba(16,32,64,.06),0 8px 24px -12px rgba(16,32,64,.18)}
+.band .g{display:inline-block;font-weight:600;font-size:14px;border-radius:20px;padding:3px 12px;margin-bottom:10px}
+.band h3{font-size:22px;margin-bottom:6px}
+.band p{color:var(--ink-2);font-size:15px}
+.g.e{background:var(--teal-bg);color:var(--teal)}.g.n{background:var(--soft);color:#1D46AD}.g.s{background:#E6EAF1;color:#2E3B55}
+.dir{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:40px;padding:40px 0;border-top:1px solid var(--line)}
+.dir h3{font-size:32px;margin-bottom:10px}
+.idea{font-size:17px;color:var(--ink-2);margin-bottom:18px}
+dl{margin:0 0 24px;display:grid;gap:12px;font-size:15px}
+dt{font-weight:600}
+dd{margin:2px 0 0;color:var(--ink-2)}
+.btn{display:inline-flex;align-items:center;min-height:46px;padding:0 20px;border-radius:12px;background:var(--primary);color:#fff;font-weight:600;text-decoration:none;transition:background .15s,transform .1s var(--ease)}
+.btn:hover{background:#1D46AD}.btn:active{transform:scale(.97)}
+.links{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.links a.plain{color:var(--ink-2);font-size:15px;text-underline-offset:3px}
+.shot{display:block;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface);box-shadow:0 1px 2px rgba(16,32,64,.06),0 8px 24px -12px rgba(16,32,64,.18);transition:transform .2s var(--ease)}
+.shot:hover{transform:translateY(-2px)}
+.shot img{display:block;width:100%;aspect-ratio:1440/900;object-fit:cover;object-position:top}
+.caption{font-size:13.5px;color:var(--ink-3);margin-top:6px}
+.rec{margin-top:24px;padding:32px;border-radius:20px;background:var(--ink);color:#E8EEF8}
+.rec h2{color:#fff;font-size:28px;margin-bottom:12px}
+.rec p{color:#C9D4E6;max-width:72ch;margin-bottom:12px}
+.rec ul{margin:0;padding-left:20px;display:grid;gap:8px}
+.rec b{color:#fff}
+@media (max-width:900px){
+  .wrap{padding:28px 18px 64px}
+  header{grid-template-columns:1fr;gap:18px}
+  header h1{font-size:34px}
+  .scene{max-width:240px}
+  .bands{grid-template-columns:1fr}
+  .dir{grid-template-columns:1fr;gap:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="back"><a href="../index.html">v1 versions</a><a href="../v2/index.html">v2 versions</a><a href="../v4/index.html">v4: Helpo style</a><a href="../v5/index.html">v5: Helpo gamified (teacher)</a><a href="../v5/play.html#home">v5: student app</a></p>
+  <header>
+    <div>
+      <h1>Educator Helper v3, friendly for every age</h1>
+      <p>Three kid-friendly, premium directions for grades 2 to 12, all in cool colours. The teacher screens are warm but still quick to use, and everything students see adapts to their age, from a 7-year-old's first quiz to a 17-year-old's revision.</p>
+    </div>
+    <svg class="scene" viewBox="0 0 300 220" role="img" aria-label="A seedling in a pot">
+      <circle cx="232" cy="58" r="34" fill="#A9D6F5"/>
+      <rect x="20" y="186" width="260" height="10" rx="5" fill="#DCE4EE"/>
+      <path d="M118 140h64l-8 46h-48z" fill="#2457D6"/>
+      <rect x="112" y="130" width="76" height="16" rx="6" fill="#1D46AD"/>
+      <path d="M150 130V86" stroke="#0B7373" stroke-width="6" stroke-linecap="round"/>
+      <path d="M150 100c-26 2-40-12-42-34 24-2 40 10 42 34z" fill="#3FB4A8"/>
+      <path d="M150 92c22-2 34-16 34-36-22 0-34 14-34 36z" fill="#1F9A90"/>
+      <circle cx="62" cy="120" r="7" fill="#9CC3F2"/><circle cx="80" cy="96" r="5" fill="#9CC3F2"/><circle cx="58" cy="82" r="4" fill="#9CC3F2"/>
+    </svg>
+  </header>
+
+  <h2 class="sec">One product, three age bands</h2>
+  <div class="bands">
+    <div class="band"><span class="g e">Grades 2–5</span><h3>Explorer</h3><p>Big picture answers, read-aloud on every question, an early-reader font, one thing per screen and gentle "Not yet, try again".</p></div>
+    <div class="band"><span class="g n">Grades 6–8</span><h3>Navigator</h3><p>Friendly and lively without being babyish: a progress path, encouraging feedback and optional read-aloud.</p></div>
+    <div class="band"><span class="g s">Grades 9–12</span><h3>Studio</h3><p>Calm and mature like a good productivity app: no cartoons, keyboard shortcuts and precise feedback.</p></div>
+  </div>
+
+  <h2 class="sec">Three directions</h2>
+
+  <section class="dir" aria-labelledby="dG">
+    <div>
+      <h3 id="dG">G. Sky Classroom</h3>
+      <p class="idea">Calm, premium and safe. The v2 flagship rebuilt with cool blues and teals, friendly rounded shapes and small drawn scenes, while the teacher flow stays fast.</p>
+      <dl>
+        <div><dt>Signature</dt><dd>A "What 6B will see" preview with an Explorer / Navigator / Studio switch, and a shelf of stickers the teacher can send.</dd></div>
+        <div><dt>Type and colour</dt><dd>Nunito and Lexend, Andika for young readers; ocean blue with teal and ice.</dd></div>
+      </dl>
+      <div class="links"><a class="btn" href="g-sky-classroom/index.html#dashboard">Open G. Sky Classroom</a><a class="plain" href="g-sky-classroom/index.html#student-g3">See the Grade 3 student</a></div>
+    </div>
+    <div><a class="shot" href="g-sky-classroom/index.html#dashboard"><img src="shots/g-sky-classroom-dashboard-desktop.png" alt="Sky Classroom dashboard" loading="lazy"></a><p class="caption">Today: a warm start to the teacher's day</p></div>
+  </section>
+
+  <section class="dir" aria-labelledby="dH">
+    <div>
+      <h3 id="dH">H. Learning Path</h3>
+      <p class="idea">A journey you can see. Each unit is a path with stops; teachers track the class along it and students walk their own, with no rankings.</p>
+      <dl>
+        <div><dt>Signature</dt><dd>An illustrated unit path with mastery flags at each stop, and a seedling that grows as young students answer.</dd></div>
+        <div><dt>Type and colour</dt><dd>Baloo 2 and Andika; deep teal, lagoon and glacier tones.</dd></div>
+      </dl>
+      <div class="links"><a class="btn" href="h-learning-path/index.html#dashboard">Open H. Learning Path</a><a class="plain" href="h-learning-path/index.html#results">Jump to Results</a></div>
+    </div>
+    <div><a class="shot" href="h-learning-path/index.html#dashboard"><img src="shots/h-learning-path-dashboard-desktop.png" alt="Learning Path dashboard with the unit path" loading="lazy"></a><p class="caption">Today: Unit 3 as a path with six stops</p></div>
+  </section>
+
+  <section class="dir" aria-labelledby="dI">
+    <div>
+      <h3 id="dI">I. Building Blocks</h3>
+      <p class="idea">Tactile and bold. A lesson is built from five chunky resource blocks, students answer on big tiles, and the look calms down for teenagers.</p>
+      <dl>
+        <div><dt>Signature</dt><dd>Resource blocks that snap into the lesson as the AI finishes them, and answer tiles sized by age band.</dd></div>
+        <div><dt>Type and colour</dt><dd>Fredoka and Atkinson Hyperlegible; sky, ice, mint, aqua and slate blocks with ink outlines.</dd></div>
+      </dl>
+      <div class="links"><a class="btn" href="i-building-blocks/index.html#dashboard">Open I. Building Blocks</a><a class="plain" href="i-building-blocks/index.html#student-g3">See the Grade 3 student</a></div>
+    </div>
+    <div><a class="shot" href="i-building-blocks/index.html#review"><img src="shots/i-building-blocks-review-desktop.png" alt="Building Blocks check screen" loading="lazy"></a><p class="caption">Check: the lesson as five blocks</p></div>
+  </section>
+
+  <section class="rec" aria-labelledby="rec">
+    <h2 id="rec">Recommendation</h2>
+    <p>Build <b>G. Sky Classroom</b> as the product. It keeps the v2 flow teachers found fastest and makes it welcoming. Take two pieces from the others:</p>
+    <ul>
+      <li><b>From H:</b> the learning path as the student home, so every child sees their own progress without being compared to anyone.</li>
+      <li><b>From I:</b> the chunky answer tiles for the Explorer band, because they are the easiest targets for 7-year-old fingers.</li>
+    </ul>
+  </section>
+</div>
+</body>
+</html>

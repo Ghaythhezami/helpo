@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Educator Helper v2: three serious, school-ready redesign directions with standards, differentiation and mastery built in.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%2313233A'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Educator Helper v2 — three school-ready directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{--page:#F5F6F8;--surface:#fff;--line:#DADFE6;--ink:#13233A;--ink-2:#45526A;--ink-3:#5A6478;--primary:#1E4D8F;--primary-soft:#E6EEF8;--hl:#FCE588;--ease:cubic-bezier(0.16,1,0.3,1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 "Public Sans",system-ui,sans-serif}
+::selection{background:var(--hl)}
+:focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:"Source Serif 4",Georgia,serif;font-weight:700;letter-spacing:-0.015em;margin:0;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding:56px 32px 96px}
+header{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:48px;align-items:end;margin-bottom:48px}
+header h1{font-size:46px;line-height:1.08;margin-bottom:16px}
+header p{font-size:18px;color:var(--ink-2);max-width:60ch}
+.back{display:inline-block;margin-bottom:22px;color:var(--ink-2);font-size:15px;text-underline-offset:3px}
+.std{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:18px 20px;font-size:15px}
+.std h2{font-size:18px;margin-bottom:6px}
+.std p{color:var(--ink-2)}
+.codes{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.code{font-weight:700;font-size:13px;border:1px solid #BFD0E8;color:var(--primary);background:var(--primary-soft);border-radius:5px;padding:2px 8px}
+h2.sec{font-size:28px;margin-bottom:18px}
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:64px}
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.feat h3{font-size:18px;margin-bottom:4px}
+.feat p{color:var(--ink-2);font-size:15px}
+.dir{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:40px;padding:40px 0;border-top:1px solid var(--line)}
+.dir h3{font-size:30px;margin-bottom:10px}
+.idea{font-size:17px;color:var(--ink-2);margin-bottom:20px}
+dl{margin:0 0 24px;display:grid;gap:12px;font-size:15px}
+dt{font-weight:600}
+dd{margin:2px 0 0;color:var(--ink-2)}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;background:var(--primary);color:#fff;font-weight:600;text-decoration:none;transition:background .15s,transform .1s var(--ease)}
+.btn:hover{background:#173E74}.btn:active{transform:scale(.97)}
+.links{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.links a.plain{color:var(--ink-2);font-size:15px;text-underline-offset:3px}
+.shot{display:block;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:0 6px 12px -6px rgba(19,35,58,.2);transition:transform .2s var(--ease)}
+.shot:hover{transform:translateY(-2px)}
+.shot img{display:block;width:100%;aspect-ratio:1440/900;object-fit:cover;object-position:top}
+.caption{font-size:13.5px;color:var(--ink-3);margin-top:6px}
+.rec{margin-top:24px;padding:32px;border-radius:14px;background:var(--ink);color:#E6EBF2}
+.rec h2{color:#fff;font-size:28px;margin-bottom:12px}
+.rec p{color:#C8D1DE;max-width:72ch;margin-bottom:12px}
+.rec ul{margin:0;padding-left:20px;display:grid;gap:8px}
+.rec b{color:#fff}
+@media (max-width:900px){
+  .wrap{padding:32px 18px 64px}
+  header{grid-template-columns:1fr;gap:20px}
+  header h1{font-size:34px}
+  .feats{grid-template-columns:1fr}
+  .dir{grid-template-columns:1fr;gap:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">v1 versions (A, B, C)</a> · <a class="back" href="../v3/index.html">v3: kid-friendly, grades 2–12</a>
+  <header>
+    <div>
+      <h1>Educator Helper v2, built for schools</h1>
+      <p>Three new directions that are more serious and more pedagogical than v1. Each one covers eight screens: today, new lesson, making the kit, checking it, levels, teaching live, the student's phone and results.</p>
+    </div>
+    <section class="std" aria-labelledby="lesson">
+      <h2 id="lesson">The lesson in every version</h2>
+      <p>Grade 6 Science, class 6B. Unit 3, Lesson 4 of 6: Photosynthesis. Aligned to NGSS MS-LS1-6.</p>
+      <div class="codes"><span class="code">O1 · Understand</span><span class="code">O2 · Remember</span><span class="code">O3 · Apply</span></div>
+    </section>
+  </header>
+
+  <h2 class="sec">What v2 adds</h2>
+  <div class="feats">
+    <div class="feat"><h3>Curriculum standards</h3><p>Each lesson is aligned to a standard and split into objectives that follow it through to the results.</p></div>
+    <div class="feat"><h3>Honest AI</h3><p>41 of 44 statements traced to the teacher's file. Only the 3 uncertain ones need a decision.</p></div>
+    <div class="feat"><h3>Differentiation</h3><p>Support, Core and Stretch versions of each activity, with accommodations kept teacher-only.</p></div>
+    <div class="feat"><h3>Bloom's balance</h3><p>4 Remember, 4 Understand, 2 Apply: the teacher sees whether the quiz only tests recall.</p></div>
+    <div class="feat"><h3>Projector-safe teaching</h3><p>Big join code, no student names on screen, controls within reach.</p></div>
+    <div class="feat"><h3>Mastery, not averages</h3><p>Results by objective, the Q4 misconception, and a re-teach plan added to Lesson 5.</p></div>
+  </div>
+
+  <h2 class="sec">Three directions</h2>
+
+  <section class="dir" aria-labelledby="dD">
+    <div>
+      <h3 id="dD">D. Lesson Desk</h3>
+      <p class="idea">The flagship. Calm and rigorous: the best of v1 combined. Objectives and AI checks are marked the way a teacher marks work.</p>
+      <dl>
+        <div><dt>Structure</dt><dd>Sidebar with classes; each lesson moves through Prepare, Check, Differentiate, Teach, Results.</dd></div>
+        <div><dt>Signature</dt><dd>Objective codes O1–O3 follow the lesson everywhere; uncertain lines are highlighted with notes in the margin.</dd></div>
+        <div><dt>Type and colour</dt><dd>Source Serif 4 with Public Sans; deep academic blue as the only action colour.</dd></div>
+      </dl>
+      <div class="links"><a class="btn" href="d-lesson-desk/index.html#dashboard">Open D. Lesson Desk</a><a class="plain" href="d-lesson-desk/index.html#review">Jump to Check</a></div>
+    </div>
+    <div><a class="shot" href="d-lesson-desk/index.html#review"><img src="shots/d-lesson-desk-review-desktop.png" alt="Lesson Desk check screen" loading="lazy"></a><p class="caption">Check: real previews, highlighted checks, objective codes</p></div>
+  </section>
+
+  <section class="dir" aria-labelledby="dE">
+    <div>
+      <h3 id="dE">E. Curriculum Map</h3>
+      <p class="idea">Planning first. Every lesson sits on a map of the unit's standards and objectives, so gaps and weak spots are visible.</p>
+      <dl>
+        <div><dt>Structure</dt><dd>Term → unit → lesson tree on the left; the kit as a structured outline with a preview beside it.</dd></div>
+        <div><dt>Signature</dt><dd>A coverage matrix of lessons against objectives, with mastery from results flowing back into it.</dd></div>
+        <div><dt>Type and colour</dt><dd>IBM Plex Sans and Serif, Plex Mono only for codes; teal ink as the action colour.</dd></div>
+      </dl>
+      <div class="links"><a class="btn" href="e-curriculum-map/index.html#dashboard">Open E. Curriculum Map</a><a class="plain" href="e-curriculum-map/index.html#results">Jump to Results</a></div>
+    </div>
+    <div><a class="shot" href="e-curriculum-map/index.html#dashboard"><img src="shots/e-curriculum-map-dashboard-desktop.png" alt="Curriculum Map dashboard with coverage matrix" loading="lazy"></a><p class="caption">Dashboard: Unit 3 coverage matrix</p></div>
+  </section>
+
+  <section class="dir" aria-labelledby="dF">
+    <div>
+      <h3 id="dF">F. Classroom Mode</h3>
+      <p class="idea">Teach first. Big, legible and touchable on an interactive board or tablet, with a dark projector mode that never shows names.</p>
+      <dl>
+        <div><dt>Structure</dt><dd>Three large modes: Prepare, Teach, Results, with the period clock always visible.</dd></div>
+        <div><dt>Signature</dt><dd>A full-width projector view with a huge join code and the current question, and 56px teacher controls.</dd></div>
+        <div><dt>Type and colour</dt><dd>Atkinson Hyperlegible throughout; board blue, with chalk yellow only for live status.</dd></div>
+      </dl>
+      <div class="links"><a class="btn" href="f-classroom-mode/index.html#dashboard">Open F. Classroom Mode</a><a class="plain" href="f-classroom-mode/index.html#teach">Jump to Teach</a></div>
+    </div>
+    <div><a class="shot" href="f-classroom-mode/index.html#teach"><img src="shots/f-classroom-mode-teach-desktop.png" alt="Classroom Mode projector view" loading="lazy"></a><p class="caption">Teach: projector-safe live quiz</p></div>
+  </section>
+
+  <section class="rec" aria-labelledby="rec">
+    <h2 id="rec">Recommendation</h2>
+    <p>Build <b>D. Lesson Desk</b> as the product. Take two pieces from the others:</p>
+    <ul>
+      <li><b>From E:</b> the coverage matrix as the unit page, so a teacher sees which objectives each lesson covers and where mastery is weak.</li>
+      <li><b>From F:</b> Classroom Mode as the Teach screen, because projector-safe, big-target live teaching is where a busy teacher feels the difference.</li>
+    </ul>
+  </section>
+</div>
+</body>
+</html>

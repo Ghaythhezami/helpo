@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Educator Helper · Curriculum Map (direction E)</title>
+<meta name="description" content="Educator Helper v2 mockup, direction E: a curriculum-map workspace where the unit tree, coverage matrix and Bloom's distribution guide lesson planning, review, teaching and results.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B6B66'/%3E%3Cpath d='M8 9h16M8 16h16M8 23h10' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{--page:#F3F4F6;--surface:#fff;--sunk:#ECEEF2;--line:#D9DDE3;--line2:#C2C8D1;--ink:#1A2230;--ink2:#4B5565;--ink3:#5B6474;--pri:#0B6B66;--pri-h:#08544F;--pri-s:#E2F1EF;--pri-l:#B5D9D5;--amb:#7A4A00;--amb-bg:#FDF0D2;--amb-line:#E3C27A;--ok:#1F6F43;--ok-bg:#E4F1E9;--bad:#A3322A;--bad-bg:#F8E5E2;--ease:cubic-bezier(.16,1,.3,1);--hh:56px;--hatch:repeating-linear-gradient(135deg,#ECEEF2 0 6px,#E0E3E9 6px 12px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:70px}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15.5px/1.5 "IBM Plex Sans",system-ui,sans-serif;font-variant-numeric:tabular-nums;caret-color:var(--pri);-webkit-font-smoothing:antialiased}
+::selection{background:var(--pri-l);color:var(--ink)}
+*{scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line2);border-radius:6px;border:2px solid transparent;background-clip:content-box}
+[hidden]{display:none!important}
+:has(>.sr-only){position:relative}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--pri);outline-offset:2px;border-radius:4px}
+.navy :focus-visible{outline-color:#fff}
+h1,h2{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;margin:0;letter-spacing:-.005em}
+h1{font-size:2.25rem;line-height:1.15;letter-spacing:-.015em}h2{font-size:1.3rem;line-height:1.3}
+h3{font:600 1rem/1.35 "IBM Plex Sans",sans-serif;margin:0}
+p{margin:0}
+.mono,.code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.875em;font-weight:500}
+.muted{color:var(--ink3)}.small{font-size:.875rem}
+a{color:var(--pri);text-underline-offset:3px}a:hover{color:var(--pri-h)}
+i[data-lucide],svg.lucide{width:1em;height:1em;flex:none;stroke-width:2}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 14px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);font:500 .9375rem/1 "IBM Plex Sans",sans-serif;border-radius:6px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background-color .15s var(--ease),border-color .15s var(--ease),transform .15s var(--ease)}
+.btn:hover{background:var(--sunk);color:var(--ink)}.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}.btn.pri:hover{background:var(--pri-h);border-color:var(--pri-h);color:#fff}
+.btn.sm{min-height:32px;padding:0 10px;font-size:.875rem}.btn.lg{min-height:48px;padding:0 20px;font-size:1rem}
+.btn[aria-disabled="true"],.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.on{background:var(--pri-s);border-color:var(--pri-l);color:var(--pri)}
+.btn.nv{background:transparent;border-color:#5B6474;color:#fff}.btn.nv:hover{background:#2A3447}
+.chip{display:inline-flex;align-items:center;gap:5px;min-height:24px;padding:0 8px;border-radius:4px;font-size:.8125rem;font-weight:500;background:var(--sunk);color:var(--ink2);white-space:nowrap}
+.chip.pri{background:var(--pri-s);color:var(--pri)}.chip.amb{background:var(--amb-bg);color:var(--amb)}.chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.bad{background:var(--bad-bg);color:var(--bad)}
+.chip i{width:14px;height:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.pad{padding:20px}.hd{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hd h2 i,.hd h3 i{vertical-align:-2px;margin-right:6px;color:var(--ink3)}
+.rule{border:0;border-top:1px solid var(--line);margin:16px 0}
+input[type=text],input[type=search],select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line2);border-radius:6px;min-height:40px;padding:0 12px;width:100%}
+textarea{padding:10px 12px;min-height:88px;resize:vertical}
+input[type=checkbox],input[type=radio]{accent-color:var(--pri);width:18px;height:18px;margin:0;flex:none}
+label.fld{display:block;font-weight:600;font-size:.875rem;margin-bottom:6px}
+/* app bar */
+.bar{position:sticky;top:0;z-index:60;height:var(--hh);display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{font:600 1.0625rem/1 "IBM Plex Serif",serif;color:var(--ink);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.brand b{display:grid;place-items:center;width:26px;height:26px;border-radius:5px;background:var(--pri);color:#fff;font:600 .8125rem "IBM Plex Sans",sans-serif}
+.term{position:relative}
+.term>button{min-height:36px}
+.menu{position:absolute;top:calc(100% + 6px);left:0;min-width:220px;background:var(--surface);border:1px solid var(--line2);border-radius:8px;box-shadow:0 8px 20px -8px rgba(26,34,48,.25);padding:4px;z-index:70}
+.menu button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:8px;min-height:40px;padding:0 10px;border:0;background:none;font:inherit;border-radius:5px;cursor:pointer;color:var(--ink);text-align:left}
+.menu button:hover{background:var(--sunk)}
+.search{position:relative;flex:1;max-width:420px;margin-left:auto}
+.search i,.search > svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink3);pointer-events:none}
+.search input{padding-left:34px;min-height:38px;background:var(--sunk);border-color:transparent}
+.search input:focus{background:#fff;border-color:var(--line2)}
+.avatar{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;font:600 .8125rem "IBM Plex Sans",sans-serif;border:0;cursor:pointer;flex:none}
+.only-sm{display:none}
+/* shell */
+.shell{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:calc(100vh - var(--hh))}
+.tree{position:sticky;top:var(--hh);height:calc(100vh - var(--hh));overflow-y:auto;background:var(--surface);border-right:1px solid var(--line);padding:16px 12px 90px;z-index:50}
+.tree .tt{display:flex;align-items:center;gap:8px;padding:0 8px 10px;font-weight:600}
+.tree .tt small{font-weight:400;color:var(--ink3);margin-left:auto}
+.tree ul{list-style:none;margin:0;padding:0}
+.t-unit,.t-les{display:flex;width:100%;align-items:center;gap:8px;border:0;background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer;border-radius:6px;min-height:40px;padding:4px 8px}
+.t-unit{font-weight:600}.t-unit:hover,.t-les:hover{background:var(--sunk)}
+.t-unit .chev{transition:transform .2s var(--ease);color:var(--ink3)}.t-unit[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.t-unit .st{margin-left:auto;font-weight:500;font-size:.8125rem;color:var(--ink3)}
+.t-note{padding:2px 8px 8px 34px;font-size:.875rem;color:var(--ink3)}
+.lessons{margin:2px 0 8px 14px!important;padding-left:8px!important;border-left:1px solid var(--line)}
+.t-les{min-height:46px;align-items:flex-start;padding:6px 8px}
+.t-les .n{font:500 .8125rem "IBM Plex Mono",monospace;color:var(--ink3);width:14px;padding-top:2px}
+.t-les .ti{flex:1;min-width:0;display:block;line-height:1.3}
+.t-les .ti small{display:block;color:var(--ink3);font-size:.8125rem}
+.t-les .r{display:flex;align-items:center;gap:4px;color:var(--ok);font-weight:600;font-size:.875rem;padding-top:1px}
+.t-les[aria-current="true"]{background:var(--pri-s);color:var(--ink);box-shadow:inset 0 0 0 1px var(--pri-l)}
+.t-les[aria-current="true"] .ti small{color:var(--pri);font-weight:500}
+.t-les.np .ti{color:var(--ink2)}
+.t-les.np .r{color:var(--ink3)}
+.swatch{display:inline-block;width:14px;height:14px;border-radius:3px;background:var(--hatch);border:1px solid var(--line2);flex:none}
+main{min-width:0;padding:24px 28px 110px}
+.crumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.875rem;color:var(--ink3);margin-bottom:8px}
+.crumb i{width:14px;height:14px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.top p{color:var(--ink2);margin-top:4px;max-width:70ch}
+.grid2{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;align-items:start}
+.grid2>*{min-width:0}
+.stack{display:grid;gap:20px}.stack>*{min-width:0}
+/* matrix */
+.scroll{overflow:auto;max-width:100%}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;vertical-align:middle}
+.mx{min-width:700px}
+.mx th,.mx td{padding:0;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.mx thead th{background:var(--sunk);padding:8px 10px;font-weight:600;font-size:.875rem;vertical-align:bottom}
+.mx thead th .sub{display:block;font-weight:400;color:var(--ink2);font-size:.8125rem}
+.mx tbody th{padding:6px 12px;font-weight:500;min-width:210px;background:var(--surface);height:44px}
+.mx tr.cur th,.mx tr.cur td.c{box-shadow:inset 0 0 0 0 transparent}
+.mx tr.cur th{background:var(--pri-s)}
+.mx td.c{height:44px;min-width:112px;padding:0}
+.mx th:last-child,.mx td:last-child{border-right:0}
+.cell{display:flex;align-items:center;justify-content:center;gap:5px;height:100%;min-height:44px;padding:4px 6px;font-size:.875rem;font-weight:500;text-align:center;line-height:1.2}
+.cell i{width:15px;height:15px}
+.cell.t{background:var(--ok-bg);color:var(--ok)}
+.cell.w{background:var(--amb-bg);color:var(--amb);font-weight:600}
+.cell.p{background:var(--pri-s);color:var(--pri)}
+.cell.g{background:var(--hatch);color:var(--ink2)}
+.cell.s{background:var(--hatch);color:var(--pri);font-weight:600;outline:2px dashed var(--pri);outline-offset:-3px}
+.cell.r{background:var(--pri);color:#fff;font-weight:600}
+.cell.n{color:var(--ink3)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px;font-size:.875rem;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .k{width:16px;height:16px;border-radius:3px;display:inline-block;border:1px solid var(--line2)}
+.note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amb-bg);color:var(--amb);border:1px solid var(--amb-line);border-radius:6px;font-weight:500}
+.note i{margin-top:3px}
+.note.pri{background:var(--pri-s);color:var(--pri);border-color:var(--pri-l)}
+/* bloom */
+.bloom{--gap:3px}
+.bloom .bar{display:flex;gap:var(--gap);height:16px}
+.bloom .seg{overflow:hidden;border-radius:3px;background:var(--sunk);min-width:0}
+.bloom .seg>i{display:block;height:100%;transform-origin:left;transform:scaleX(var(--f,1));transition:transform .25s var(--ease)}
+.bloom .lab{display:flex;gap:var(--gap);margin-top:6px;font-size:.875rem}
+.bloom .lab>div{min-width:0;line-height:1.25}
+.bloom .lab b{display:block;font-size:1.0625rem}
+.bloom .lab span{color:var(--ink2)}
+.bloom .bsw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+/* dashboard */
+.list{list-style:none;margin:0;padding:0}
+.list>li{display:flex;gap:12px;align-items:center;min-height:44px;padding:8px 0;border-top:1px solid var(--line)}
+.list>li:first-child{border-top:0}
+.time{font:500 .875rem "IBM Plex Mono",monospace;color:var(--ink2);width:92px;flex:none}
+.seg6{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:12px 0 6px}
+.seg6 div{height:34px;border-radius:4px;display:grid;place-items:center;font:500 .8125rem "IBM Plex Mono",monospace;border:1px solid var(--line2)}
+.seg6 .d{background:var(--ok-bg);color:var(--ok);border-color:transparent}.seg6 .rd{background:var(--pri);color:#fff;border-color:var(--pri)}.seg6 .x{background:var(--hatch);color:var(--ink2)}
+.kit{min-width:520px}.kit th,.kit td{padding:8px 10px;border-top:1px solid var(--line);height:44px}.kit thead th{font-size:.875rem;color:var(--ink2);background:var(--sunk);border-top:0}
+/* create */
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:6px;overflow:hidden;background:var(--surface)}
+.seg button{min-height:40px;padding:0 14px;border:0;background:none;font:500 .9375rem "IBM Plex Sans",sans-serif;color:var(--ink);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.seg button+button{border-left:1px solid var(--line2)}
+.seg button[aria-pressed="true"]{background:var(--pri);color:#fff}
+.file{display:flex;gap:12px;align-items:center;padding:12px;border:1px dashed var(--line2);border-radius:6px;background:var(--sunk)}
+.file i{width:22px;height:22px;color:var(--pri)}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:6px;cursor:pointer;background:var(--surface)}
+.opt:hover{background:var(--sunk)}
+.opt.sel{border-color:var(--pri);background:var(--pri-s)}
+.opt .b{flex:1;min-width:0}.opt .b small{display:block;color:var(--ink2)}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cols2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.obj{display:grid;grid-template-columns:20px 36px minmax(0,1fr) auto;gap:10px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+.obj:first-child{border-top:0}
+.obj .tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+details.opts>summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:center;gap:8px;list-style:none}
+details.opts>summary::-webkit-details-marker{display:none}
+details.opts[open]>summary i.chev{transform:rotate(90deg)}
+details.opts>summary i.chev{transition:transform .2s var(--ease)}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.checks li{display:flex;gap:10px;align-items:flex-start}
+.checks i{color:var(--ok);margin-top:4px}
+/* generating */
+.gen{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:start}
+.outline{max-height:620px;overflow:auto;padding:4px 16px 16px}
+.outline h3{position:sticky;top:0;background:var(--surface);padding:12px 0 6px;display:flex;justify-content:space-between;border-bottom:1px solid var(--line);z-index:1}
+.outline ol{list-style:none;margin:0;padding:0}
+.g-row{display:flex;align-items:center;gap:10px;min-height:36px;border-bottom:1px solid var(--line);color:var(--ink3);transition:opacity .2s var(--ease),transform .2s var(--ease)}
+.g-row.wait{opacity:.6}
+.g-row.done{color:var(--ink);animation:rowin .25s var(--ease)}
+.g-row .c{font:500 .8125rem "IBM Plex Mono",monospace;width:34px;flex:none}
+.g-row .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-row .m{font-size:.8125rem;color:var(--ink2)}
+.g-row i{width:16px;height:16px;color:var(--ink3)}.g-row.done i{color:var(--ok)}
+@keyframes rowin{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.prog{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.prog>i{display:block;height:100%;background:var(--pri);transform-origin:left;transform:scaleX(0);transition:transform .25s var(--ease)}
+.res-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;min-height:48px;border-top:1px solid var(--line)}
+.res-row:first-child{border-top:0}
+/* review */
+.rv{display:grid;grid-template-columns:360px minmax(0,1fr);gap:20px;align-items:start}
+.rv>*{min-width:0}
+.ol-wrap{position:sticky;top:calc(var(--hh) + 12px);max-height:calc(100vh - var(--hh) - 100px);overflow:auto}
+.ol-grp{position:sticky;top:0;background:var(--sunk);padding:8px 14px;font-weight:600;font-size:.875rem;display:flex;justify-content:space-between;border-bottom:1px solid var(--line);z-index:1}
+.ol{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:2px 10px;align-items:center;width:100%;min-height:52px;padding:6px 14px;border:0;border-bottom:1px solid var(--line);background:var(--surface);font:inherit;text-align:left;color:var(--ink);cursor:pointer}
+.ol:hover{background:var(--sunk)}
+.ol[aria-current="true"]{background:var(--pri-s);box-shadow:inset 0 0 0 1px var(--pri-l)}
+.ol .ic{grid-row:1/3;color:var(--ok)}
+.ol .ic.fl{color:var(--amb)}
+.ol .tt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ol .tt .code{color:var(--ink2);margin-right:6px}
+.ol .meta{grid-column:2;font-size:.8125rem;color:var(--ink2)}
+.ol .flag{grid-row:1/3;grid-column:3}
+.doc{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px;font-family:"IBM Plex Serif",Georgia,serif;font-weight:500}
+.doc .q{font-size:1.125rem;line-height:1.4}
+.slide{aspect-ratio:16/9;background:#fff;border:1px solid var(--line2);border-radius:4px;padding:5% 6%;display:flex;flex-direction:column;justify-content:center;gap:10px;font-family:"IBM Plex Serif",serif;position:relative;overflow:hidden}
+.slide h4{margin:0;font:600 clamp(1.1rem,2.6vw,1.75rem)/1.2 "IBM Plex Serif",serif}
+.slide ul{margin:0;padding-left:1.2em;font-weight:500;font-size:clamp(.85rem,1.6vw,1.05rem)}
+.slide .sn{position:absolute;right:12px;bottom:8px;font:500 .75rem "IBM Plex Mono",monospace;color:var(--ink3)}
+.eq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font:600 clamp(.95rem,2vw,1.35rem) "IBM Plex Serif",serif}
+.eq span.b{padding:6px 12px;border:1px solid var(--pri-l);background:var(--pri-s);border-radius:6px}
+.eq .ar{display:flex;flex-direction:column;align-items:center;font:500 .75rem "IBM Plex Sans",sans-serif;color:var(--ink2)}
+.eq .ar i{width:30px;height:30px}
+.opts-l{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.opts-l li{display:flex;gap:10px;align-items:center;min-height:44px;padding:6px 12px;border:1px solid var(--line2);border-radius:6px;font-family:"IBM Plex Sans",sans-serif;font-weight:400}
+.opts-l li.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opts-l .l{font:500 .8125rem "IBM Plex Mono",monospace;width:18px}
+.blank{display:inline-block;min-width:90px;border-bottom:2px solid var(--ink);margin:0 4px}
+.gloss{margin-top:12px;padding:12px 14px;border:1px solid var(--pri-l);background:var(--pri-s);border-radius:6px;font-family:"IBM Plex Sans",sans-serif;font-weight:400}
+.gloss.sug{border-style:dashed}
+.chk{border:1px solid var(--amb-line);background:var(--amb-bg);color:var(--ink);border-radius:8px;padding:14px 16px;margin:14px 0}
+.chk.done{background:var(--ok-bg);border-color:#9CCDB0}
+.chk h3{display:flex;align-items:center;gap:8px;color:var(--amb)}
+.chk.done h3{color:var(--ok)}
+.chk p{margin-top:6px}
+.chk .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.pairs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-family:"IBM Plex Sans",sans-serif;font-weight:500}
+.pairs div{display:grid;grid-template-columns:1fr 22px 1fr;gap:6px;align-items:center;padding:8px 10px;border:1px solid var(--line2);border-radius:6px;min-height:44px}
+.pairs i{color:var(--ink3);width:18px;height:18px}
+.flip{width:100%;max-width:420px;aspect-ratio:3/2;border:1px solid var(--line2);border-radius:8px;background:var(--surface);cursor:pointer;display:grid;place-items:center;padding:20px;text-align:center;font:600 1.375rem/1.3 "IBM Plex Serif",serif;color:var(--ink)}
+.flip small{display:block;font:500 .8125rem "IBM Plex Sans",sans-serif;color:var(--ink3);margin-top:10px}
+.ai-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cov{display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px 12px;align-items:center}
+.cov .qs{display:flex;gap:6px;flex-wrap:wrap}
+.cov .qs button{min-height:28px;min-width:40px;padding:0 8px;border:1px solid var(--line2);background:var(--surface);border-radius:4px;font:500 .8125rem "IBM Plex Mono",monospace;cursor:pointer;color:var(--ink)}
+.cov .qs button:hover{background:var(--sunk)}
+.meter{height:8px;border-radius:4px;background:var(--sunk);overflow:hidden;min-width:100px}
+.meter i{display:block;height:100%;background:var(--pri)}
+/* differentiate */
+.df{min-width:880px}
+.df th,.df td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.df thead th{background:var(--sunk);font-size:.875rem;position:sticky;top:0}
+.df tbody th{width:170px;font-weight:600}
+.df tr.hl td,.df tr.hl th{background:var(--pri-s)}
+.df td{font-family:"IBM Plex Serif",serif;font-weight:500;font-size:.9375rem}
+.df td small{display:block;font:400 .8125rem "IBM Plex Sans",sans-serif;color:var(--ink2);margin-top:4px}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:6px;background:var(--surface)}
+.step button{width:36px;height:36px;border:0;background:none;cursor:pointer;color:var(--ink);font-size:1.125rem}
+.step button:hover{background:var(--sunk)}
+.step output{min-width:36px;text-align:center;font-weight:600}
+.lvl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.lvl:first-of-type{border-top:0}
+/* teach */
+.teach{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+.teach>*{min-width:0}
+.navy{background:#1A2230;color:#fff;border-radius:10px;padding:28px}
+.navy .l{color:#C9D1DC}
+.proj-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center}
+.joincode{font:500 clamp(2.4rem,6vw,4rem)/1 "IBM Plex Mono",monospace;letter-spacing:.04em;margin-top:6px}
+.qr{background:#fff;padding:10px;border-radius:8px;width:132px;height:132px}
+.qr svg{display:block;width:100%;height:100%}
+.joined{margin-top:20px}
+.joined .meter{background:#2A3447;height:10px}.joined .meter i{background:#7CCBC3}
+.bigq{margin-top:26px;padding-top:22px;border-top:1px solid #3B465A}
+.bigq p.q{font:600 clamp(1.5rem,3.4vw,2.4rem)/1.25 "IBM Plex Serif",serif;margin-top:8px}
+.bigq .tf{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+.bigq .tf span{display:inline-flex;align-items:center;min-height:52px;padding:0 28px;border:2px solid #8793A6;border-radius:8px;font:600 1.5rem "IBM Plex Sans",sans-serif}
+.ctrl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:14px}
+.sw{display:inline-flex;align-items:center;gap:10px;min-height:44px;background:none;border:0;font:500 .9375rem "IBM Plex Sans",sans-serif;color:var(--ink);cursor:pointer}
+.sw .tr{width:44px;height:26px;border-radius:13px;background:var(--line2);position:relative;flex:none;transition:background-color .2s var(--ease)}
+.sw .tr::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s var(--ease)}
+.sw[aria-checked="true"] .tr{background:var(--pri)}.sw[aria-checked="true"] .tr::after{transform:translateX(18px)}
+.btn.t44{min-height:44px}
+.fgroup{border:0;padding:0;margin:0 0 16px}
+.fgroup legend{font-weight:600;font-size:.875rem;margin-bottom:8px;padding:0}
+.fgroup label.opt{margin-bottom:8px;min-height:44px;align-items:center}
+/* student */
+.stu{display:grid;grid-template-columns:minmax(0,430px) minmax(0,1fr);gap:32px;align-items:start}
+.stu>*{min-width:0}
+.phone{width:min(390px,100%);height:780px;background:#fff;border:10px solid var(--ink);border-radius:36px;overflow:hidden;display:flex;flex-direction:column;margin:0 auto}
+.phone .sb{display:flex;justify-content:space-between;padding:10px 20px 4px;font:500 .8125rem "IBM Plex Sans",sans-serif;color:var(--ink2)}
+.phone .body{flex:1;padding:18px 20px 24px;display:flex;flex-direction:column;gap:16px;overflow:auto}
+.phone .qt{font:600 1.5rem/1.3 "IBM Plex Serif",serif}
+.phone .tfb{display:grid;gap:12px;margin-top:auto}
+.tfb button{min-height:64px;border-radius:10px;border:2px solid var(--line2);background:#fff;font:600 1.25rem "IBM Plex Sans",sans-serif;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+.tfb button:hover{border-color:var(--pri);background:var(--pri-s)}
+.tfb button[aria-pressed="true"]{background:var(--pri);border-color:var(--pri);color:#fff}
+.phone input[type=text]{min-height:56px;font-size:1.125rem}
+.saved{display:flex;gap:10px;align-items:center;padding:14px;border-radius:8px;background:var(--ok-bg);color:var(--ok);font-weight:600}
+.never{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.never li{display:flex;gap:10px;align-items:flex-start}.never i{color:var(--ink3);margin-top:4px}
+/* results */
+.mrow{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr) 150px;gap:14px;align-items:center;min-height:44px}
+.track{position:relative;height:18px;background:var(--sunk);border-radius:4px}
+.track .f{position:absolute;inset:0 auto 0 0;border-radius:4px;background:var(--ink2)}
+.track .f.lo{background:var(--amb)}
+.track .tg{position:absolute;top:-6px;bottom:-6px;left:70%;width:0;border-left:2px dashed var(--ink)}
+.tglab{position:relative;height:18px;margin-bottom:2px}.tglab span{position:absolute;left:70%;transform:translateX(-50%);font-size:.8125rem;color:var(--ink2);white-space:nowrap}
+.qt-t{min-width:760px}.qt-t th,.qt-t td{padding:8px 10px;border-top:1px solid var(--line);height:42px}.qt-t thead th{background:var(--sunk);font-size:.875rem;border-top:0}
+.qt-t tr.mis td{background:var(--amb-bg)}
+.bar-s{display:flex;align-items:center;gap:8px}.bar-s .meter{flex:1;min-width:70px}
+.gridwrap{max-height:430px;overflow:auto;border:1px solid var(--line);border-radius:6px}
+.sg{min-width:680px}
+.sg th,.sg td{padding:0 6px;height:36px;border-bottom:1px solid var(--line);text-align:center}
+.sg thead th{position:sticky;top:0;background:var(--sunk);z-index:2;font-size:.875rem}
+.sg tbody th{position:sticky;left:0;background:var(--surface);text-align:left;white-space:nowrap;padding:0 12px;font-weight:500;min-width:190px;z-index:1;border-right:1px solid var(--line)}
+.sg thead th:first-child{left:0;z-index:3;text-align:left;padding-left:12px}
+.sg td i{width:16px;height:16px;vertical-align:middle}
+.sg .y{color:var(--ok);background:var(--ok-bg)}.sg .n{color:var(--bad);background:var(--bad-bg)}.sg .pp{color:var(--amb);background:var(--amb-bg)}
+.sg tbody th i{width:15px;height:15px;color:var(--amb);vertical-align:-2px;margin-right:6px}
+.help li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px}
+#stub .panel{max-width:760px}
+/* picker + toast */
+.picker{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;z-index:90;display:flex;gap:2px;padding:4px;background:var(--surface);border:1px solid var(--line2);border-radius:999px;box-shadow:0 8px 18px -6px rgba(26,34,48,.25);max-width:calc(100vw - 24px);overflow-x:auto;scrollbar-width:none}
+.picker::-webkit-scrollbar{display:none}
+.picker a{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border-radius:999px;color:var(--ink);text-decoration:none;font-weight:500;font-size:.875rem;white-space:nowrap}
+.picker a:hover{background:var(--sunk);color:var(--ink)}
+.picker a[aria-current="page"]{background:var(--ink);color:#fff}
+.picker a.all{color:var(--pri);border-left:1px solid var(--line);border-radius:0 999px 999px 0;margin-left:2px}
+#toast{position:fixed;left:50%;bottom:64px;transform:translate(-50%,8px);opacity:0;pointer-events:none;z-index:95;background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;font-weight:500;max-width:calc(100vw - 24px);transition:opacity .2s var(--ease),transform .2s var(--ease)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.scrim{display:none}
+/* responsive */
+@media (max-width:1100px){
+ .grid2,.teach,.gen{grid-template-columns:minmax(0,1fr)}
+ .rv{grid-template-columns:300px minmax(0,1fr)}
+}
+@media (max-width:1024px){
+ .shell{grid-template-columns:minmax(0,1fr)}
+ .only-sm{display:inline-flex}
+ .tree{position:fixed;top:var(--hh);left:0;bottom:0;width:300px;max-width:88vw;height:auto;transform:translateX(-100%);visibility:hidden;transition:transform .25s var(--ease),visibility 0s .25s;box-shadow:8px 0 24px -12px rgba(26,34,48,.3)}
+ .tree.open{transform:none;visibility:visible;transition:transform .25s var(--ease),visibility 0s}
+ main{padding:20px 20px 110px}
+}
+@media (max-width:860px){
+ .rv,.stu{grid-template-columns:minmax(0,1fr)}
+ .ol-wrap{position:static;max-height:300px}
+ .mrow{grid-template-columns:minmax(0,1fr) 120px}.mrow .track{grid-column:1/3;order:3}
+}
+@media (max-width:640px){
+ body{font-size:15px}
+ h1{font-size:1.75rem}
+ main{padding:16px 14px 110px}
+ .bar{gap:6px;padding:0 8px}
+ .search{display:none}.search-btn{display:inline-flex!important;margin-left:auto}
+ .brand span.w{display:none}
+ .term>button{padding:0 8px;gap:4px}.term>button>i:first-child{display:none}
+ #treeBtn span{display:none}.bar .btn.sm{padding:0 8px}
+ .tree{left:0;right:0;width:auto;max-width:none;bottom:auto;max-height:72vh;transform:translateY(-110%);box-shadow:0 12px 24px -12px rgba(26,34,48,.35);border-bottom:1px solid var(--line2);border-right:0}
+ .tree.open{transform:none}
+ .pad{padding:16px}
+ .cols3,.cols2,.pairs{grid-template-columns:minmax(0,1fr)}
+ .proj-top{grid-template-columns:minmax(0,1fr)}
+ .navy{padding:20px}
+ .obj{grid-template-columns:20px 34px minmax(0,1fr)}.obj .tags{grid-column:3;justify-content:flex-start}
+ .res-row{grid-template-columns:minmax(0,1fr) auto}.res-row>:nth-child(2){grid-column:1}
+ .picker a{padding:0 9px;font-size:.8125rem}
+ .mrow{grid-template-columns:minmax(0,1fr)}.mrow .track{grid-column:auto}
+}
+.search-btn{display:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <button class="btn sm only-sm" id="treeBtn" aria-label="Lessons tree" aria-expanded="false" aria-controls="tree"><i data-lucide="list-tree"></i><span>Lessons</span></button>
+  <a class="brand" href="#dashboard" style="text-decoration:none"><b aria-hidden="true">E</b><span class="w">Educator Helper</span></a>
+  <div class="term">
+    <button class="btn sm" id="termBtn" aria-haspopup="true" aria-expanded="false"><i data-lucide="calendar-range"></i><span id="termLbl">Term 1 · Week 11</span><i data-lucide="chevron-down"></i></button>
+    <div class="menu" id="termMenu" hidden role="group" aria-label="Choose term">
+      <button type="button" data-term="Term 1 · Week 11">Term 1 · Week 11 <i data-lucide="check"></i></button>
+      <button type="button" data-term="Term 1 · Week 10">Term 1 · Week 10</button>
+      <button type="button" data-term="Term 2 · Week 1">Term 2 · Week 1</button>
+    </div>
+  </div>
+  <div class="search" role="search"><i data-lucide="search"></i><input type="search" id="q" placeholder="Search lessons, standards, objectives" aria-label="Search lessons, standards and objectives"></div>
+  <button class="btn sm search-btn" id="searchBtn" aria-label="Search lessons"><i data-lucide="search"></i></button>
+  <button class="avatar" aria-label="AG, Alex Green account menu">AG</button>
+</header>
+
+<div class="shell">
+<aside class="tree" id="tree" aria-label="Curriculum tree">
+  <p class="tt"><i data-lucide="school"></i>Term 1 <small>Grade 6 Science</small></p>
+  <nav aria-label="Units and lessons">
+  <ul>
+    <li><button class="t-unit" data-unit aria-expanded="false"><i data-lucide="chevron-right" class="chev"></i>Unit 1 Cells <span class="st"><i data-lucide="check-circle-2" style="vertical-align:-2px"></i> Done</span></button><p class="t-note" hidden>All lessons taught. Open the unit to see its lessons and coverage.</p></li>
+    <li><button class="t-unit" data-unit aria-expanded="false"><i data-lucide="chevron-right" class="chev"></i>Unit 2 Ecosystems <span class="st"><i data-lucide="check-circle-2" style="vertical-align:-2px"></i> Done</span></button><p class="t-note" hidden>All lessons taught. Open the unit to see its lessons and coverage.</p></li>
+    <li>
+      <button class="t-unit" data-unit aria-expanded="true"><i data-lucide="chevron-right" class="chev"></i>Unit 3 Plants and energy <span class="st">Open</span></button>
+      <ul class="lessons" id="lessons">
+        <li><button class="t-les" data-les="1"><span class="n">1</span><span class="ti">What plants need</span><span class="r"><i data-lucide="check"></i>88%</span></button></li>
+        <li><button class="t-les" data-les="2"><span class="n">2</span><span class="ti">Leaves</span><span class="r"><i data-lucide="check"></i>84%</span></button></li>
+        <li><button class="t-les" data-les="3"><span class="n">3</span><span class="ti">Roots and stems</span><span class="r"><i data-lucide="check"></i>79%</span></button></li>
+        <li><button class="t-les" data-les="4" aria-current="true"><span class="n">4</span><span class="ti">Photosynthesis<small id="t4s">Ready · 3 to check</small></span></button></li>
+        <li><button class="t-les np" data-les="5"><span class="n">5</span><span class="ti">Lesson 5<small id="t5s">Not planned</small></span><span class="r"><span class="swatch" aria-hidden="true"></span></span></button></li>
+        <li><button class="t-les np" data-les="6"><span class="n">6</span><span class="ti">Lesson 6<small>Not planned</small></span><span class="r"><span class="swatch" aria-hidden="true"></span></span></button></li>
+      </ul>
+    </li>
+    <li><button class="t-unit" data-unit aria-expanded="false"><i data-lucide="chevron-right" class="chev"></i>Unit 4 Matter <span class="st">Later</span></button><p class="t-note" hidden>Starts after Unit 3. Nothing planned yet.</p></li>
+  </ul>
+  </nav>
+  <p class="small muted" id="noMatch" hidden style="padding:8px">No lessons match your search.</p>
+</aside>
+
+<main id="main">
+<!-- STUB for other lessons -->
+<section id="stub" hidden>
+  <nav class="crumb" aria-label="Breadcrumb"></nav>
+  <div class="top"><div><h1 id="stubH">Lesson</h1><p id="stubP"></p></div></div>
+  <div class="panel pad" id="stubBody"></div>
+</section>
+
+<!-- 1 DASHBOARD -->
+<section data-screen="dashboard" hidden>
+  <nav class="crumb" aria-label="Breadcrumb"></nav>
+  <div class="top">
+    <div><h1>Today, Thursday 14 November</h1><p>Riverside Middle School · Science department · Term 1, Week 11. Unit 3 is 3 lessons taught, 1 ready.</p></div>
+    <a class="btn pri lg" href="#create"><i data-lucide="plus"></i>New lesson</a>
+  </div>
+  <div class="grid2">
+    <div class="stack">
+      <div class="panel pad">
+        <div class="hd"><h2>Next lesson</h2><span class="chip pri"><i data-lucide="clock-3"></i>6B · Period 3 · 10:40–11:25</span></div>
+        <p style="margin-top:8px"><strong>Lesson 4 of 6 — Photosynthesis: how plants make food.</strong> <span class="muted">NGSS MS-LS1-6 · O1, O2, O3 · 45 min</span></p>
+        <div class="scroll" style="margin-top:12px"><table class="kit"><thead><tr><th scope="col">Resource</th><th scope="col">Contents</th><th scope="col">Status</th></tr></thead><tbody>
+          <tr><th scope="row" style="font-weight:500;text-align:left">Presentation</th><td>12 slides</td><td><span class="chip ok"><i data-lucide="check"></i>Ready</span></td></tr>
+          <tr><th scope="row" style="font-weight:500;text-align:left">Worksheet</th><td>8 activities · Support / Core / Stretch</td><td><span class="chip amb"><i data-lucide="flag"></i>To review · 1 flag</span></td></tr>
+          <tr><th scope="row" style="font-weight:500;text-align:left">Quiz</th><td>10 questions</td><td><span class="chip amb"><i data-lucide="flag"></i>To review · 2 flags</span></td></tr>
+          <tr><th scope="row" style="font-weight:500;text-align:left">Mini-game</th><td>Plant parts match · 8 pairs</td><td><span class="chip ok"><i data-lucide="check"></i>Ready</span></td></tr>
+          <tr><th scope="row" style="font-weight:500;text-align:left">Summary cards</th><td>12 cards</td><td><span class="chip ok"><i data-lucide="check"></i>Ready</span></td></tr>
+        </tbody></table></div>
+        <div class="ai-row" style="margin-top:14px"><a class="btn" href="#review"><i data-lucide="list-checks"></i>Review kit</a><a class="btn" href="#teach"><i data-lucide="cast"></i>Teach or assign</a></div>
+      </div>
+      <div class="panel pad">
+        <h2>Today's periods</h2>
+        <ul class="list" style="margin-top:8px">
+          <li><span class="time">08:45–09:30</span><div style="flex:1"><strong>6A · Science</strong><div class="small muted">The water cycle, review</div></div><span class="chip"><i data-lucide="check"></i>Taught</span></li>
+          <li><span class="time">10:40–11:25</span><div style="flex:1"><strong>6B · Science</strong><div class="small muted">Lesson 4 Photosynthesis, Period 3</div></div><span class="chip pri">Next</span></li>
+          <li><span class="time">13:10–13:55</span><div style="flex:1"><strong>7C · Science</strong><div class="small muted">Food chains</div></div><span class="chip">Draft</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="panel pad">
+        <h2>Unit 3 · Plants and energy</h2>
+        <div class="seg6" role="img" aria-label="Lessons 1 to 3 taught, lesson 4 ready, lessons 5 and 6 not planned"><div class="d">1</div><div class="d">2</div><div class="d">3</div><div class="rd">4</div><div class="x">5</div><div class="x">6</div></div>
+        <p class="small muted">Lessons 1–3 taught · 4 ready · 5–6 not planned</p>
+      </div>
+      <div class="panel pad">
+        <h2>Recent results</h2>
+        <ul class="list" style="margin-top:8px">
+          <li><div style="flex:1"><strong>States of matter</strong><div class="small muted">6B · last week</div></div><strong>92%</strong></li>
+          <li><div style="flex:1"><strong>The water cycle</strong><div class="small muted">6A · 2 weeks ago</div></div><strong>81%</strong></li>
+          <li><div style="flex:1"><strong>Food chains</strong><div class="small muted">7C</div></div><span class="chip">Draft</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="panel pad" style="margin-top:20px">
+    <div class="hd"><h2>Coverage matrix · Unit 3, NGSS MS-LS1-6</h2><span class="small muted">Objectives and standard components by lesson</span></div>
+    <div class="note" style="margin:14px 0"><i data-lucide="flag"></i><div><span class="code">O3</span> (read the word equation) is the weak spot at 58%. Lesson 5 is not planned, so it is the place to re-teach it. <button class="btn sm" id="dashAdd" style="margin-left:8px;color:var(--ink)" aria-pressed="false"><i data-lucide="repeat"></i><span>Add O3 re-teach to Lesson 5</span></button></div></div>
+    <div class="scroll"><div data-matrix="dash"></div></div>
+    <div class="legend" aria-label="Legend"><span><i class="k" style="background:var(--ok-bg)"></i>Taught, with mastery</span><span><i class="k" style="background:var(--amb-bg)"></i>Taught, below 70%</span><span><i class="k" style="background:var(--pri-s)"></i>Planned</span><span><i class="k" style="background:var(--hatch)"></i>Gap, not planned</span><span><i class="k" style="background:var(--pri)"></i>Re-teach added</span></div>
+  </div>
+</section>
+
+<!-- 2 CREATE -->
+<section data-screen="create" hidden>
+  <nav class="crumb" aria-label="Breadcrumb"></nav>
+  <div class="top"><div><h1>Make the kit for Lesson 4</h1><p>Give Educator Helper your lesson file. It reads the objectives, then builds the kit to fit your class and standard.</p></div></div>
+  <div class="grid2">
+    <div class="stack">
+      <div class="panel pad">
+        <div class="hd"><h2><i data-lucide="file-text"></i>Source</h2>
+          <div class="seg" role="group" aria-label="Source type"><button id="srcFile" aria-pressed="true">Upload file</button><button id="srcDesc" aria-pressed="false">Describe it</button></div></div>
+        <div id="srcFileBox" style="margin-top:14px"><div class="file"><i data-lucide="file-text"></i><div style="flex:1;min-width:0"><strong class="mono" style="word-break:break-all">Plants_Unit3_Photosynthesis.pdf</strong><div class="small muted">14 pages · read in full</div></div><button class="btn sm">Replace</button></div></div>
+        <div id="srcDescBox" hidden style="margin-top:14px"><label class="fld" for="desc">Describe the lesson</label><textarea id="desc" placeholder="For example: how plants make food using light, water and carbon dioxide, for Grade 6."></textarea></div>
+      </div>
+      <div class="panel pad">
+        <h2><i data-lucide="users" style="vertical-align:-2px;margin-right:6px"></i>Class</h2>
+        <div class="cols3" role="radiogroup" aria-label="Class" style="margin-top:12px" id="classPick">
+          <label class="opt sel"><input type="radio" name="cls" value="6B" checked><span class="b"><strong>6B</strong><small>Science · 24 students</small></span></label>
+          <label class="opt"><input type="radio" name="cls" value="6A"><span class="b"><strong>6A</strong><small>Science · 26 students</small></span></label>
+          <label class="opt"><input type="radio" name="cls" value="7C"><span class="b"><strong>7C</strong><small>Science · 22 students</small></span></label>
+        </div>
+        <p class="small" style="margin-top:12px" id="classSum"><span class="chip pri">Grade 6</span> <span class="chip pri">45 min</span> <span class="chip pri">24 students</span> <span class="muted">set from the class</span></p>
+      </div>
+      <div class="panel pad">
+        <h2><i data-lucide="landmark" style="vertical-align:-2px;margin-right:6px"></i>Framework and standard</h2>
+        <div class="cols3" role="radiogroup" aria-label="Framework" style="margin-top:12px" id="fwPick">
+          <label class="opt sel"><input type="radio" name="fw" checked><span class="b"><strong>NGSS</strong><small>Selected</small></span></label>
+          <label class="opt"><input type="radio" name="fw"><span class="b"><strong>Cambridge Lower Secondary Science</strong></span></label>
+          <label class="opt"><input type="radio" name="fw"><span class="b"><strong>National curriculum</strong><small>Custom</small></span></label>
+        </div>
+        <p style="margin-top:14px"><span class="code">MS-LS1-6</span> <span class="muted">Construct a scientific explanation based on evidence for the role of photosynthesis in the cycling of matter and flow of energy into and out of organisms.</span></p>
+      </div>
+      <div class="panel pad">
+        <div class="hd"><h2><i data-lucide="target" style="vertical-align:-2px;margin-right:6px"></i>Objectives found in your file</h2><span class="small muted">Untick one to leave it out</span></div>
+        <div style="margin-top:8px" id="objs">
+          <div class="obj"><input type="checkbox" id="ob1" checked aria-labelledby="ot1"><span class="code">O1</span><label for="ob1" id="ot1">Explain that plants use light, water and carbon dioxide to make glucose and oxygen.</label><span class="tags"><span class="chip">pp. 4–6</span><span class="chip pri">Understand</span></span></div>
+          <div class="obj"><input type="checkbox" id="ob2" checked aria-labelledby="ot2"><span class="code">O2</span><label for="ob2" id="ot2">Describe the roles of leaves, roots and stem.</label><span class="tags"><span class="chip">pp. 8–9</span><span class="chip pri">Remember</span></span></div>
+          <div class="obj"><input type="checkbox" id="ob3" checked aria-labelledby="ot3"><span class="code">O3</span><label for="ob3" id="ot3">Read and complete the word equation for photosynthesis.</label><span class="tags"><span class="chip">p. 11</span><span class="chip pri">Apply</span></span></div>
+        </div>
+      </div>
+      <div class="panel pad">
+        <h2>Coverage preview · Lesson 4</h2>
+        <p class="small muted" style="margin:4px 0 12px">This row of the unit matrix updates as you change objectives.</p>
+        <div class="scroll"><div data-matrix="create"></div></div>
+      </div>
+      <details class="panel pad opts">
+        <summary><i data-lucide="chevron-right" class="chev"></i>Options <span class="muted" style="font-weight:400">English · 3 levels · all 5 resources</span></summary>
+        <div class="cols2" style="margin-top:12px">
+          <div><label class="fld" for="lang">Language</label><select id="lang"><option>English</option><option>English with Arabic glossary</option></select></div>
+          <fieldset class="fgroup" style="margin:0"><legend>Levels</legend><div style="display:flex;gap:14px;flex-wrap:wrap"><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked>Support</label><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked>Core</label><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked>Stretch</label></div></fieldset>
+        </div>
+        <fieldset class="fgroup" style="margin:12px 0 0"><legend>Resources to make</legend><div style="display:flex;gap:14px;flex-wrap:wrap"><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked>Presentation</label><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked>Worksheet</label><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked>Quiz</label><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked>Mini-game</label><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked>Summary cards</label></div></fieldset>
+      </details>
+    </div>
+    <div class="stack" style="position:sticky;top:calc(var(--hh) + 16px)">
+      <div class="panel pad">
+        <h2>Ready to make</h2>
+        <ul class="checks" style="margin-top:12px">
+          <li><i data-lucide="check-circle-2"></i><span><strong>Objectives found</strong><br><span class="small muted" id="rdObj">3 objectives, O1–O3</span></span></li>
+          <li><i data-lucide="check-circle-2"></i><span><strong>Grade level set</strong><br><span class="small muted" id="rdGrade">Grade 6, 45 min</span></span></li>
+          <li><i data-lucide="check-circle-2"></i><span><strong>Standard chosen</strong><br><span class="small muted">NGSS MS-LS1-6</span></span></li>
+          <li><i data-lucide="check-circle-2"></i><span><strong>File read</strong><br><span class="small muted">14 of 14 pages</span></span></li>
+        </ul>
+      </div>
+      <div class="panel pad">
+        <h2>Bloom's target</h2>
+        <p class="small muted" style="margin:4px 0 12px">10 quiz questions, planned split</p>
+        <div data-bloom="target"></div>
+      </div>
+      <button class="btn pri lg" id="makeBtn" style="width:100%"><i data-lucide="sparkles"></i>Make lesson kit</button>
+      <p class="small muted">AI can make mistakes. Nothing reaches students until you approve it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 GENERATING -->
+<section data-screen="generating" hidden>
+  <nav class="crumb" aria-label="Breadcrumb"></nav>
+  <div class="top"><div><h1>Making your lesson kit</h1><p>Usually takes about 40 seconds. Open any resource as soon as it is finished.</p></div>
+    <button class="btn" id="replay"><i data-lucide="rotate-ccw"></i>Replay</button></div>
+  <div class="gen">
+    <div class="panel" aria-label="Kit outline">
+      <div class="outline" id="genOutline" tabindex="0" role="region" aria-label="Kit outline, scrollable"></div>
+    </div>
+    <div class="stack">
+      <div class="panel pad">
+        <div class="hd"><h2>Progress</h2><strong id="genPct">0%</strong></div>
+        <div class="prog" style="margin:10px 0" role="progressbar" aria-label="Kit progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="genBar"><i id="genFill"></i></div>
+        <p class="small muted" id="genNow">Reading Plants_Unit3_Photosynthesis.pdf</p>
+        <hr class="rule">
+        <div id="genRes"></div>
+      </div>
+      <div class="panel pad">
+        <h2>Source trace</h2>
+        <p style="margin-top:6px"><strong id="trace">0</strong> of 44 statements traced to your file</p>
+        <p class="small muted" id="traceNote">Statements are checked against the 14 pages as they are written.</p>
+        <hr class="rule">
+        <h2 style="font-size:1.0625rem">Bloom's distribution</h2>
+        <div style="margin-top:10px" data-bloom="gen"></div>
+      </div>
+      <div class="note pri" id="genDone" hidden role="status"><i data-lucide="check-circle-2"></i><div>Kit ready in 12 seconds of demo time. 3 items need your check. <a href="#review" style="margin-left:6px;font-weight:600">Review kit</a></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 REVIEW -->
+<section data-screen="review" hidden>
+  <nav class="crumb" aria-label="Breadcrumb"></nav>
+  <div class="top">
+    <div><h1>Review the lesson kit</h1><p>41 of 44 statements traced to your file; 3 need your check. AI can make mistakes. Nothing reaches students until you approve it.</p></div>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="min-width:170px"><strong id="rvCount">0 of 3 checked</strong><div class="meter" style="margin-top:6px"><i id="rvMeter" style="width:0%"></i></div></div>
+      <button class="btn pri" id="approveBtn" aria-disabled="true"><i data-lucide="badge-check"></i>Approve kit</button>
+    </div>
+  </div>
+  <div class="rv">
+    <div class="panel ol-wrap" id="olWrap"><div id="outline"></div></div>
+    <div class="stack" id="preview"></div>
+  </div>
+  <div class="grid2" style="margin-top:20px">
+    <div class="panel pad">
+      <h2>Objective coverage</h2>
+      <p class="small muted" style="margin:4px 0 12px">Which quiz questions cover each objective. Select one to open it.</p>
+      <div class="cov" id="cov"></div>
+    </div>
+    <div class="panel pad"><h2>Bloom's distribution, actual</h2><p class="small muted" style="margin:4px 0 12px">From the 10 quiz questions as written</p><div data-bloom="actual"></div></div>
+  </div>
+</section>
+
+<!-- 5 DIFFERENTIATE -->
+<section data-screen="differentiate" hidden>
+  <nav class="crumb" aria-label="Breadcrumb"></nav>
+  <div class="top"><div><h1>Differentiate the worksheet</h1><p>Each activity has three levels. A2 is open in full. Set how many students get each level.</p></div></div>
+  <div class="panel pad">
+    <h2>Activities by level</h2>
+    <div class="scroll" style="margin-top:12px"><table class="df"><thead><tr><th scope="col">Activity</th><th scope="col">Support</th><th scope="col">Core</th><th scope="col">Stretch</th></tr></thead><tbody id="dfBody"></tbody></table></div>
+  </div>
+  <div class="grid2" style="margin-top:20px">
+    <div class="panel pad">
+      <div class="hd"><h2>Who gets which level</h2><span class="chip" id="unassigned"></span></div>
+      <p class="small muted" style="margin:4px 0">Class 6B, 24 students. Counts are yours to edit.</p>
+      <div id="lvls" style="margin-top:8px"></div>
+    </div>
+    <div class="panel pad">
+      <h2>Accommodations summary</h2>
+      <p class="small muted" style="margin:4px 0 8px"><i data-lucide="lock" style="width:14px;height:14px;vertical-align:-2px"></i> Teacher only. Never shown on the projector.</p>
+      <ul class="list" id="acc"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6 TEACH -->
+<section data-screen="teach" hidden>
+  <nav class="crumb" aria-label="Breadcrumb"></nav>
+  <div class="top"><div><h1>Teach and assign</h1><p>Student data stays in your school's region. Names are never shown on the projector.</p></div></div>
+  <div class="teach">
+    <div>
+      <div class="navy" role="region" aria-label="Projector view">
+        <div class="proj-top">
+          <div><p class="l">Join the live quiz with this code</p><div class="joincode" aria-label="Join code 4 8 2, 9 1 3">482 913</div></div>
+          <div class="qr" id="qr" role="img" aria-label="QR code to join the live quiz"></div>
+        </div>
+        <div class="joined">
+          <div class="hd"><strong style="font-size:1.25rem">18 of 24 joined</strong><span class="l" id="namesState">Names hidden</span></div>
+          <div class="meter" style="margin-top:8px"><i style="width:75%"></i></div>
+        </div>
+        <div class="bigq">
+          <p class="l">Question 4 of 10</p>
+          <p class="q">True or false: Plants get their food from the soil.</p>
+          <div class="tf" aria-hidden="true"><span>True</span><span>False</span></div>
+        </div>
+      </div>
+      <div class="ctrl">
+        <button class="sw" role="switch" aria-checked="true" id="hideNames"><span class="tr" aria-hidden="true"></span>Hide names on projector</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn t44">Reveal answer</button><button class="btn pri t44">Next question</button></div>
+      </div>
+      <p class="small muted" id="namesWarn" hidden style="margin-top:8px">Names will appear on the projector. Turn this back on before you share your screen.</p>
+      <p class="small muted" style="margin-top:8px">11 of 18 answered. The projector shows counts only.</p>
+    </div>
+    <div class="panel pad">
+      <h2>Assign to 6B</h2>
+      <p class="small muted" style="margin:4px 0 16px">For homework or catch-up after the live quiz.</p>
+      <div style="margin-bottom:16px"><label class="fld" for="asCls">Class</label><select id="asCls"><option>6B · 24 students</option><option>6A · 26 students</option><option>7C · 22 students</option></select></div>
+      <div style="margin-bottom:16px"><label class="fld" for="due">Due</label><input type="text" id="due" value="Fri 15 Nov 08:00"></div>
+      <fieldset class="fgroup"><legend>Levels</legend>
+        <label class="opt"><input type="checkbox" checked><span class="b">Support <span class="muted">· <span data-count="S">6</span> students</span></span></label>
+        <label class="opt"><input type="checkbox" checked><span class="b">Core <span class="muted">· <span data-count="C">13</span> students</span></span></label>
+        <label class="opt"><input type="checkbox" checked><span class="b">Stretch <span class="muted">· <span data-count="T">5</span> students</span></span></label>
+      </fieldset>
+      <fieldset class="fgroup"><legend>Export to</legend>
+        <label class="opt"><input type="checkbox" checked><span class="b">Google Classroom</span></label>
+        <label class="opt"><input type="checkbox"><span class="b">Microsoft Teams</span></label>
+        <label class="opt"><input type="checkbox"><span class="b">PDF</span></label>
+        <label class="opt"><input type="checkbox"><span class="b">PowerPoint</span></label>
+      </fieldset>
+      <button class="btn pri t44" id="assignBtn" style="width:100%"><i data-lucide="send"></i><span>Assign to 6B</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- 7 STUDENT -->
+<section data-screen="student" hidden>
+  <nav class="crumb" aria-label="Breadcrumb"></nav>
+  <div class="top"><div><h1>What students see</h1><p>Sara A. joins with the code, answers Q4 and sees "Answer saved". Tap inside the phone to step through.</p></div></div>
+  <div class="stu">
+    <div>
+      <div class="phone" aria-label="Student phone preview">
+        <div class="sb"><span>10:52</span><span>Live quiz</span></div>
+        <div class="body" id="phBody"></div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="panel pad">
+        <h2>Step through</h2>
+        <div class="seg" role="group" aria-label="Student steps" style="margin-top:12px" id="stSteps"><button data-st="join" aria-pressed="true">Join</button><button data-st="q" aria-pressed="false">Question 4</button><button data-st="saved" aria-pressed="false">Answer saved</button></div>
+      </div>
+      <div class="panel pad">
+        <h2>What students never see</h2>
+        <ul class="never">
+          <li><i data-lucide="eye-off"></i><span>Other students' names, answers or scores</span></li>
+          <li><i data-lucide="eye-off"></i><span>The correct answer or their own score, until you reveal it</span></li>
+          <li><i data-lucide="eye-off"></i><span>AI checks, flags and source notes</span></li>
+          <li><i data-lucide="eye-off"></i><span>Accommodations and level assignments</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 RESULTS -->
+<section data-screen="results" hidden>
+  <nav class="crumb" aria-label="Breadcrumb"></nav>
+  <div class="top">
+    <div><h1>22 of 24 students answered and the class averages 74%, and only 41% got the Q4 soil question right.</h1><p>Mastery is weakest on O3, reading the word equation.</p></div>
+    <button class="btn" id="syncBtn"><i data-lucide="refresh-cw"></i><span>Sync scores to gradebook</span></button>
+  </div>
+  <div class="stack">
+    <div class="panel pad">
+      <h2>Mastery by objective</h2>
+      <div class="tglab" style="margin-top:12px;margin-left:calc(230px + 14px);margin-right:calc(150px + 14px)"><span>Target 70%</span></div>
+      <div id="mastery"></div>
+    </div>
+    <div class="panel pad">
+      <h2>Question breakdown</h2>
+      <div class="scroll" style="margin-top:10px"><table class="qt-t"><thead><tr><th scope="col">Q</th><th scope="col">Question</th><th scope="col">Objective</th><th scope="col">Bloom</th><th scope="col">Correct</th><th scope="col">Note</th></tr></thead><tbody id="qtBody"></tbody></table></div>
+    </div>
+    <div class="panel pad">
+      <h2>Student by question</h2>
+      <p class="small muted" style="margin:4px 0 12px">Teacher only. Names are never shown on the projector. Scroll the grid in both directions.</p>
+      <div class="gridwrap" tabindex="0" role="region" aria-label="Student by question grid, scrollable"><table class="sg" id="sg"></table></div>
+      <div class="legend"><span><i data-lucide="check" style="color:var(--ok)"></i>Correct</span><span><i data-lucide="x" style="color:var(--bad)"></i>Incorrect</span><span><i data-lucide="minus" style="color:var(--amb)"></i>Partly correct</span><span><i data-lucide="life-buoy" style="color:var(--amb)"></i>Needs help, below 60%</span></div>
+    </div>
+    <div class="grid2">
+      <div class="panel pad"><h2>Needs help</h2><ul class="list help" style="margin-top:8px">
+        <li><strong>Youssef Haddad</strong><span class="chip bad">40%</span></li>
+        <li><strong>Ali Ben Salah</strong><span class="chip bad">50%</span></li>
+        <li><strong>Omar Kacem</strong><span class="chip bad">50%</span></li>
+        <li><strong>Mia Lopez</strong><span class="chip bad">55%</span></li></ul></div>
+      <div class="panel pad"><h2>Not submitted</h2><ul class="list" style="margin-top:8px">
+        <li><strong style="flex:1">Adam Cherif</strong><button class="btn sm rem">Send reminder</button></li>
+        <li><strong style="flex:1">Noah Brown</strong><button class="btn sm rem">Send reminder</button></li></ul></div>
+    </div>
+    <div class="panel pad">
+      <h2>Re-teach plan</h2>
+      <ul class="list" style="margin-top:8px">
+        <li style="flex-wrap:wrap"><div style="flex:1;min-width:240px"><strong>5-minute warm-up for Lesson 5 on "plants don't eat soil"</strong><div class="small muted">Covers Q4 (O1) · 41% correct</div></div><button class="btn rt" data-rt="warm" aria-pressed="false"><i data-lucide="plus"></i><span>Add to Lesson 5</span></button></li>
+        <li style="flex-wrap:wrap"><div style="flex:1;min-width:240px"><strong>Small-group task for 4 students on the word equation (O3)</strong><div class="small muted">Youssef, Ali, Omar and Mia · O3 mastery 58%</div></div><button class="btn rt" data-rt="group" aria-pressed="false"><i data-lucide="plus"></i><span>Add to Lesson 5</span></button></li>
+      </ul>
+      <h3 style="margin-top:16px">Matrix after this lesson</h3>
+      <div class="scroll" style="margin-top:8px"><div data-matrix="res"></div></div>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<nav class="picker" aria-label="Mockup screens">
+  <a href="#dashboard">Dashboard</a><a href="#create">Create</a><a href="#generating">Generating</a><a href="#review">Review</a><a href="#differentiate">Differentiate</a><a href="#teach">Teach</a><a href="#student">Student</a><a href="#results">Results</a><a class="all" href="../index.html">All v2 versions</a>
+</nav>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var SCREENS=['dashboard','create','generating','review','differentiate','teach','student','results'];
+var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function icons(){try{window.lucide&&lucide.createIcons()}catch(e){}}
+function ic(n){return '<i data-lucide="'+n+'" aria-hidden="true"></i>'}
+var tt;function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},3600)}
+
+/* ---------- data ---------- */
+var SL=[['S1','Photosynthesis: how plants make food','O1','Understand',['Grade 6 Science · Unit 3: Plants and energy','Lesson 4 of 6']],['S2','What do plants need?','O1','Remember',['Light, water and carbon dioxide','Plants make their own food']],['S3','Light, water and carbon dioxide','O1','Understand',['Where each ingredient comes from','Why a plant needs all three']],['S4','The word equation','O3','Apply',[]],['S5','Chlorophyll catches light','O1','Understand',['The green part of the leaf','It catches sunlight']],['S6','Inside a leaf','O2','Remember',[]],['S7','Roots take in water','O2','Remember',['Roots hold the plant in the soil','Water moves up from the roots']],['S8','The stem carries water','O2','Understand',['Water travels up the stem','Sugar travels to where it is needed']],['S9','Leaves make food','O2','Remember',['Most food is made in the leaf','Stomata let gases in and out']],['S10','Glucose: the sugar a plant makes','O1','Remember',['Glucose is food made by the plant','Plants use it for energy']],['S11','Check your understanding','O3','Apply',['Complete the word equation with a partner']],['S12','Summary and exit ticket','O1','Understand',['Three things to remember','Exit ticket: Q4 and Q7']]];
+var WS=[['A1','Label the plant','O2','Remember'],['A2','Fill the gaps in the word equation','O3','Apply'],['A3','Match each part to its job','O2','Remember'],['A4','Put the steps in order','O1','Understand'],['A5','Glossary: glucose','O1','Remember'],['A6','True or false: where does food come from?','O1','Understand'],['A7','Draw and label a leaf','O2','Understand'],['A8','Explain in one sentence','O1','Understand']];
+var QS=[['Q1','What does a plant need to make its own food?','O1','Understand','MC'],['Q2','Which part of a plant takes in water?','O2','Remember','MC'],['Q3','Which gas do plants take in from the air?','O1','Remember','MC'],['Q4','Plants get their food from the soil.','O1','Understand','TF'],['Q5','What is the main job of a leaf?','O2','Remember','MC'],['Q6','Which gas do plants release into the air?','O1','Remember','MC'],['Q7','Complete: carbon dioxide + water → ____ + oxygen','O3','Apply','MC'],['Q8','The stem carries water up to the leaves.','O2','Understand','TF'],['Q9','What does chlorophyll do?','O1','Understand','SA'],['Q10','Write the word equation for photosynthesis.','O3','Apply','SA']];
+var OPTS={Q1:[['Sunlight, water and carbon dioxide',1],['Soil and water only',0],['Oxygen and sugar',0],['Only sunlight',0]],Q2:[['Roots',1],['Stem',0],['Leaf',0],['Flower',0]],Q3:[['Carbon dioxide',1],['Oxygen',0],['Nitrogen',0],['Hydrogen',0]],Q5:[['Makes food',1],['Takes in water',0],['Holds the plant up',0],['Makes seeds',0]],Q6:[['Oxygen',1],['Carbon dioxide',0],['Nitrogen',0],['Glucose',0]],Q7:[['Glucose',1],['Soil',0],['Chlorophyll',0],['Light',0]]};
+var PAIRS=[['Roots','take in water'],['Leaf','makes food'],['Stem','carries water'],['Flower','makes seeds'],['Chlorophyll','catches light'],['Stomata','let gases in and out'],['Glucose','food made by the plant'],['Oxygen','released into air']];
+var CARDS=[['Photosynthesis','Plants use light, water and carbon dioxide to make glucose and oxygen.'],['Chlorophyll','The green part of the leaf that catches sunlight.'],['Glucose','The sugar a plant makes for energy.'],['Roots','Take in water from the soil.'],['Stem','Carries water up to the leaves.'],['Leaf','Where the plant makes its food.'],['Stomata','Tiny holes that let gases in and out.'],['Oxygen','A gas released into the air.'],['Carbon dioxide','A gas plants take in from the air.'],['Word equation','carbon dioxide + water → glucose + oxygen'],['Light energy','The energy a plant uses to make food.'],['Soil is not food','Soil gives a plant water and minerals, not food.']];
+var ITEMS=[];
+SL.forEach(function(s){ITEMS.push({id:s[0].toLowerCase(),g:'Slides',code:s[0],title:s[1],obj:s[2],bl:s[3],bul:s[4]})});
+WS.forEach(function(s){ITEMS.push({id:s[0].toLowerCase(),g:'Worksheet',code:s[0],title:s[1],obj:s[2],bl:s[3]})});
+QS.forEach(function(s){ITEMS.push({id:s[0].toLowerCase(),g:'Quiz',code:s[0],title:s[1],obj:s[2],bl:s[3],type:s[4]})});
+ITEMS.push({id:'game',g:'Game',code:'G',title:'Plant parts match · 8 pairs',obj:'O2',bl:'Remember'});
+ITEMS.push({id:'cards',g:'Cards',code:'C',title:'Summary cards · 12 cards',obj:'O1',bl:'Remember'});
+var BY={};ITEMS.forEach(function(i){BY[i.id]=i});
+var CHK={
+ q4:{t:'Fact check',conf:'Confidence is low on the distractor wording.',body:'The answer key says False. "From the soil" is a common misconception, so keep the statement and check the explanation below.',src:'p. 6',edit:'Plants make their own food using light, water and carbon dioxide. Soil gives them water, not food.'},
+ q9:{t:'Reading level',conf:'Reading level is grade 8, above your class (grade 6).',body:'"Chlorophyll absorbs light energy" is written above grade 6. Suggested rewrite: "Chlorophyll is the green part of the leaf that catches sunlight."',src:'p. 5',edit:'Chlorophyll is the green part of the leaf that catches sunlight.'},
+ a5:{t:'Used before introduced',conf:'Worksheet A5 uses "glucose" before the slides introduce it.',body:'Suggestion: add a note on slide 6 or a glossary box. A glossary box is drafted below.',src:'p. 10',edit:'Glucose — the sugar a plant makes for energy.'}
+};
+var ST={q4:'flag',q9:'flag',a5:'flag'},EDITING={},TEXT={},sel='q4';
+var LABEL={flag:'Check',accepted:'Accepted',edited:'Edited',dismissed:'Dismissed'};
+
+/* ---------- state: matrix ---------- */
+var RT={warm:false,group:false};
+var COLS=[['O1','Make glucose'],['O2','Plant parts'],['O3','Word equation'],['','Energy flow'],['','Matter cycling']];
+var MROWS={1:['t90','n','n','t86','n'],2:['n','t86','n','n','t82'],3:['n','t90','t58','n','t89'],4:['p','p','p','p','p'],5:['g','g','s','g','g'],6:['g','g','g','g','g']};
+var LT={1:'What plants need',2:'Leaves',3:'Roots and stems',4:'Photosynthesis',5:'Lesson 5',6:'Lesson 6'};
+var LAST={1:'88%',2:'84%',3:'79%',4:'Ready',5:'Not planned',6:'Not planned'};
+function cell(s,col,row){
+ var h;
+ if(row===5&&col===0&&RT.warm)return '<span class="cell r">'+ic('repeat')+'Re-teach · 5 min warm-up</span>';
+ if(row===5&&col===2&&RT.group)return '<span class="cell r">'+ic('repeat')+'Re-teach · small group</span>';
+ if(s==='n')return '<span class="cell n">—<span class="sr-only">Not targeted</span></span>';
+ if(s==='p')return '<span class="cell p">'+ic('calendar-clock')+'Planned</span>';
+ if(s==='g')return '<span class="cell g">Not planned</span>';
+ if(s==='s')return '<span class="cell s">'+ic('repeat')+'Re-teach here?</span>';
+ if(s==='c')return '<span class="cell g">Not covered</span>';
+ var v=parseInt(s.slice(1),10);
+ return v<70?'<span class="cell w">'+ic('flag')+v+'% · weak</span>':'<span class="cell t">'+ic('check')+v+'%</span>';
+}
+function head(){return '<thead><tr><th scope="col">Lesson</th>'+COLS.map(function(c){return '<th scope="col">'+(c[0]?'<span class="code">'+c[0]+'</span>':'')+'<span class="sub">'+c[1]+'</span></th>'}).join('')+'<th scope="col">Lesson</th></tr></thead>'}
+function row(n,cells,last,cur){return '<tr'+(cur?' class="cur"':'')+'><th scope="row"><span class="code">L'+n+'</span> '+(n>4?'Lesson '+n+' · not planned':LT[n])+(cur?' <span class="chip pri">Current</span>':'')+'</th>'+cells.map(function(s,i){return '<td class="c">'+cell(s,i,n)+'</td>'}).join('')+'<td class="c"><span class="cell n" style="font-weight:600;color:var(--ink)">'+last+'</span></td></tr>'}
+function renderMatrices(){
+ var d=$('[data-matrix="dash"]');
+ if(d)d.innerHTML='<table class="mx">'+head()+'<tbody>'+[1,2,3,4,5,6].map(function(n){return row(n,MROWS[n],LAST[n],n===4)}).join('')+'</tbody></table>';
+ var c=$('[data-matrix="create"]');
+ if(c){var on=[$('#ob1').checked,$('#ob2').checked,$('#ob3').checked];var cs=on.map(function(o){return o?'p':'c'});cs.push(on[0]?'p':'c');cs.push(on[0]||on[2]?'p':'c');
+  c.innerHTML='<table class="mx">'+head()+'<tbody>'+row(4,cs,'Ready',true)+'</tbody></table>'}
+ var r=$('[data-matrix="res"]');
+ if(r)r.innerHTML='<table class="mx">'+head()+'<tbody>'+row(4,['t68','t85','t58','t74','t71'],'Taught',true)+row(5,MROWS[5],LAST[5],false)+'</tbody></table>';
+ var any=RT.warm||RT.group;
+ $('#t5s').textContent=any?'Re-teach planned':'Not planned';
+ $('#dashAdd').setAttribute('aria-pressed',RT.group);$('#dashAdd span').textContent=RT.group?'O3 re-teach added to Lesson 5':'Add O3 re-teach to Lesson 5';
+ $$('.rt').forEach(function(b){var on=RT[b.dataset.rt];b.setAttribute('aria-pressed',on);b.classList.toggle('on',on);b.innerHTML=ic(on?'check':'plus')+'<span>'+(on?'Added to Lesson 5':'Add to Lesson 5')+'</span>'});
+ icons();
+}
+/* ---------- bloom ---------- */
+var BC=['#C2C8D1','#7C8797','#1A2230'],BN=['Remember','Understand','Apply'],BV=[4,4,2];
+function bloom(el,id){
+ el.innerHTML='<div class="bloom"><div class="bar" role="img" aria-label="Remember 4, Understand 4, Apply 2">'+BV.map(function(v,i){return '<div class="seg" style="flex:'+v+'"><i style="background:'+BC[i]+'" data-b="'+i+'"></i></div>'}).join('')+'</div><div class="lab">'+BV.map(function(v,i){return '<div style="flex:'+v+'"><span><i class="bsw" style="background:'+BC[i]+'"></i>'+BN[i]+'</span><b data-bn="'+i+'">'+v+'</b></div>'}).join('')+'</div></div>';
+}
+function setBloom(el,a){$$('[data-b]',el).forEach(function(s,i){s.style.setProperty('--f',a[i]/BV[i])});$$('[data-bn]',el).forEach(function(s,i){s.textContent=a[i]})}
+
+/* ---------- tree ---------- */
+var tree=$('#tree'),treeBtn=$('#treeBtn');
+function openTree(o){tree.classList.toggle('open',o);treeBtn.setAttribute('aria-expanded',o)}
+treeBtn.addEventListener('click',function(){openTree(!tree.classList.contains('open'))});
+$('#searchBtn').addEventListener('click',function(){openTree(true);var q=$('#q');q.parentNode.style.cssText='display:block;position:fixed;top:0;left:0;right:0;z-index:80;background:#fff;padding:8px 10px;max-width:none;margin:0;height:var(--hh)';q.focus()});
+$('#q').addEventListener('blur',function(){this.parentNode.removeAttribute('style')});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){openTree(false);$('#termMenu').hidden=true;$('#termBtn').setAttribute('aria-expanded','false')}});
+$('#main').addEventListener('click',function(){if(tree.classList.contains('open'))openTree(false)});
+$$('[data-unit]').forEach(function(b){b.addEventListener('click',function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',!o);var n=b.nextElementSibling;if(n)n.hidden=o})});
+$('#termBtn').addEventListener('click',function(){var m=$('#termMenu');m.hidden=!m.hidden;this.setAttribute('aria-expanded',!m.hidden)});
+$$('#termMenu button').forEach(function(b){b.addEventListener('click',function(){$('#termLbl').textContent=b.dataset.term;$('#termMenu').hidden=true;$('#termBtn').setAttribute('aria-expanded','false');toast(b.dataset.term+' selected. This mockup keeps Unit 3 as the example.')})});
+$('#q').addEventListener('input',function(){var v=this.value.trim().toLowerCase(),n=0;$$('.t-les').forEach(function(b){var m=!v||b.textContent.toLowerCase().indexOf(v)>=0||('ms-ls1-6 o1 o2 o3 photosynthesis'.indexOf(v)>=0&&b.dataset.les==='4');b.parentNode.hidden=!m;if(m)n++});$('#noMatch').hidden=n>0});
+var lesson=4;
+function showLesson(n){
+ lesson=n;
+ $$('.t-les').forEach(function(b){if(+b.dataset.les===n)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current')});
+ var stub=$('#stub');
+ if(n===4){stub.hidden=true;route(true);return}
+ $$('[data-screen]').forEach(function(s){s.hidden=true});stub.hidden=false;
+ var body='',h='Lesson '+n,p='';
+ if(n<=3){h='Lesson '+n+' — '+LT[n];p='Taught. Mastery '+LAST[n]+'.';
+  var cs=MROWS[n].map(function(s,i){return s[0]==='t'?'<li><strong>'+(COLS[i][0]||COLS[i][1])+'</strong> '+s.slice(1)+'%</li>':''}).join('');
+  body='<h2>Coverage from this lesson</h2><ul class="list" style="margin-top:8px">'+cs+'</ul>'}
+ else if(n===5){h='Lesson 5';p=(RT.warm||RT.group)?'Not yet planned, with re-teach added.':'Not planned.';
+  body='<h2>Planned re-teach</h2><ul class="list" style="margin-top:8px">'+(RT.warm?'<li>5-minute warm-up on "plants don\'t eat soil" (O1)</li>':'')+(RT.group?'<li>Small-group task on the word equation (O3)</li>':'')+((RT.warm||RT.group)?'':'<li class="muted">Nothing yet. O3 is at 58%, so Lesson 5 is the place to re-teach it.</li>')+'</ul>'}
+ else{h='Lesson 6';p='Not planned.';body='<p class="muted">Nothing planned yet. Plan it after Lesson 5.</p>'}
+ $('#stubH').textContent=h;$('#stubP').textContent=p;$('#stubBody').innerHTML=body+'<p style="margin-top:16px"><button class="btn" id="backL4"><i data-lucide="arrow-left"></i>Back to Lesson 4</button></p>';
+ $('#backL4').addEventListener('click',function(){showLesson(4)});
+ fillCrumbs();icons();window.scrollTo(0,0);
+}
+$$('.t-les').forEach(function(b){b.addEventListener('click',function(){showLesson(+b.dataset.les);openTree(false)})});
+function fillCrumbs(){$$('.crumb').forEach(function(c){c.innerHTML='<span>Term 1</span>'+ic('chevron-right')+'<span>Unit 3 Plants and energy</span>'+ic('chevron-right')+'<span aria-current="page">Lesson '+lesson+' of 6'+(lesson<4?' · '+LT[lesson]:'')+'</span>'});icons()}
+
+/* ---------- routing ---------- */
+var cur='dashboard';
+function route(keep){
+ var id=(location.hash||'').slice(1);if(SCREENS.indexOf(id)<0)id='dashboard';
+ if(!keep&&lesson!==4){lesson=4;$$('.t-les').forEach(function(b){if(+b.dataset.les===4)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current')});$('#stub').hidden=true}
+ $$('[data-screen]').forEach(function(s){s.hidden=s.dataset.screen!==id});
+ $$('.picker a').forEach(function(a){if(a.getAttribute('href')==='#'+id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+ document.title=id.charAt(0).toUpperCase()+id.slice(1)+' · Educator Helper · Curriculum Map';
+ cur=id;fillCrumbs();
+ if(id==='generating')startGen();else stopGen();
+ if(id==='review')renderReview();
+ renderMatrices();openTree(false);
+ if(!keep)window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',function(){route()});
+
+/* ---------- create ---------- */
+$('#srcFile').addEventListener('click',function(){srcSet(true)});$('#srcDesc').addEventListener('click',function(){srcSet(false)});
+function srcSet(f){$('#srcFile').setAttribute('aria-pressed',f);$('#srcDesc').setAttribute('aria-pressed',!f);$('#srcFileBox').hidden=!f;$('#srcDescBox').hidden=f}
+var CL={'6B':['Grade 6','45 min','24 students'],'6A':['Grade 6','45 min','26 students'],'7C':['Grade 7','45 min','22 students']};
+$$('#classPick input').forEach(function(r){r.addEventListener('change',function(){$$('#classPick .opt').forEach(function(o){o.classList.toggle('sel',o.querySelector('input').checked)});var c=CL[r.value];$('#classSum').innerHTML=c.map(function(x){return '<span class="chip pri">'+x+'</span> '}).join('')+'<span class="muted">set from class '+r.value+'</span>';$('#rdGrade').textContent=c[0]+', '+c[1]})});
+$$('#fwPick input').forEach(function(r){r.addEventListener('change',function(){$$('#fwPick .opt').forEach(function(o){o.classList.toggle('sel',o.querySelector('input').checked)})})});
+$$('#objs input').forEach(function(c){c.addEventListener('change',function(){var n=$$('#objs input').filter(function(x){return x.checked}).length;$('#rdObj').textContent=n+' of 3 objectives in use';renderMatrices()})});
+$('#makeBtn').addEventListener('click',function(){location.hash='#generating'});
+$$('.opt input').forEach(function(i){if(i.type==='checkbox')i.addEventListener('change',function(){})});
+
+/* ---------- generating ---------- */
+var GROUPS=['Slides','Worksheet','Quiz','Game','Cards'];
+var GEN_ITEMS=[];
+SL.forEach(function(s){GEN_ITEMS.push({g:0,c:s[0],t:s[1],m:s[2]})});WS.forEach(function(s){GEN_ITEMS.push({g:1,c:s[0],t:s[1],m:s[2]+' · '+s[3],bl:null})});QS.forEach(function(s,i){GEN_ITEMS.push({g:2,c:s[0],t:s[1],m:s[2]+' · '+s[3],bl:s[3]})});PAIRS.forEach(function(p,i){GEN_ITEMS.push({g:3,c:'P'+(i+1),t:p[0]+' ↔ '+p[1],m:''})});CARDS.forEach(function(c,i){GEN_ITEMS.push({g:4,c:'C'+(i+1),t:c[0],m:''})});
+var GN=[12,8,10,8,12],OPENID=['s1','a1','q1','game','cards'],NAMES=['Slides','Worksheet','Quiz','Mini-game','Summary cards'],UNITS=['slides','activities','questions','pairs','cards'];
+var gi=0,gt=null;
+function buildGen(){
+ var h='';
+ GROUPS.forEach(function(g,gx){h+='<h3><span>'+g+'</span><span data-gc="'+gx+'">0 / '+GN[gx]+'</span></h3><ol>';GEN_ITEMS.forEach(function(it,ix){if(it.g===gx)h+='<li class="g-row wait" data-ix="'+ix+'">'+ic('circle-dashed')+'<span class="c">'+it.c+'</span><span class="t">'+it.t+'</span><span class="m">'+it.m+'</span></li>'});h+='</ol>'});
+ $('#genOutline').innerHTML=h;
+ $('#genRes').innerHTML=NAMES.map(function(n,i){return '<div class="res-row"><div><strong>'+n+'</strong><div class="small muted" data-rs="'+i+'">Waiting</div></div><span class="small" data-rc="'+i+'">0 of '+GN[i]+'</span><button class="btn sm" data-open="'+i+'" aria-disabled="true">Open</button></div>'}).join('');
+ $$('[data-open]').forEach(function(b){b.addEventListener('click',function(){if(b.getAttribute('aria-disabled')==='true'){toast('Not finished yet. It will open when it is ready.');return}sel=OPENID[+b.dataset.open];location.hash='#review'})});
+ bloom($('[data-bloom="gen"]'));icons();
+}
+function paint(n){
+ var rows=$$('.g-row');
+ rows.forEach(function(r,i){var d=i<n;if(d!==r.classList.contains('done')){r.classList.toggle('done',d);r.classList.toggle('wait',!d);r.querySelector('svg,i').outerHTML=ic(d?'check':'circle-dashed')}});
+ var counts=[0,0,0,0,0];GEN_ITEMS.forEach(function(it,i){if(i<n)counts[it.g]++});
+ counts.forEach(function(c,i){var gcs=$('[data-gc="'+i+'"]');gcs.textContent=c+' / '+GN[i];$('[data-rc="'+i+'"]').textContent=c+' of '+GN[i];var done=c===GN[i];$('[data-rs="'+i+'"]').textContent=done?'Ready to open':(c?'Making '+UNITS[i]+'…':'Waiting');var b=$('[data-open="'+i+'"]');b.setAttribute('aria-disabled',!done);b.classList.toggle('pri',done)});
+ var pct=Math.round(n/GEN_ITEMS.length*100);$('#genPct').textContent=pct+'%';$('#genBar').setAttribute('aria-valuenow',pct);$('#genFill').style.transform='scaleX('+(pct/100)+')';
+ $('#trace').textContent=Math.round(41*n/GEN_ITEMS.length);
+ var b=[0,0,0];GEN_ITEMS.forEach(function(it,i){if(i<n&&it.g===2){b[BN.indexOf(it.bl)]++}});setBloom($('[data-bloom="gen"]'),b);
+ var fin=n>=GEN_ITEMS.length;$('#genDone').hidden=!fin;
+ $('#genNow').textContent=fin?'Finished. 41 of 44 statements traced; 3 need your check.':(n?'Making '+GEN_ITEMS[Math.min(n,GEN_ITEMS.length-1)].t:'Reading Plants_Unit3_Photosynthesis.pdf');
+ if(fin)$('#traceNote').textContent='41 of 44 statements traced to your file; 3 need your check.';
+ else $('#traceNote').textContent='Statements are checked against the 14 pages as they are written.';
+ var last=rows[Math.max(0,Math.min(n,rows.length)-1)];if(last&&!RM){var o=$('#genOutline');o.scrollTop=Math.max(0,last.offsetTop-o.clientHeight+60)}
+}
+function startGen(){stopGen();buildGen();gi=0;paint(0);
+ if(RM){paint(GEN_ITEMS.length);return}
+ gt=setInterval(function(){gi++;paint(gi);if(gi>=GEN_ITEMS.length)stopGen()},240);
+}
+function stopGen(){if(gt){clearInterval(gt);gt=null}}
+$('#replay').addEventListener('click',startGen);
+
+/* ---------- review ---------- */
+var openCount=function(){return Object.keys(ST).filter(function(k){return ST[k]!=='flag'}).length};
+function statusOf(id){return ST[id]}
+function renderOutline(){
+ var h='',g='';
+ ITEMS.forEach(function(it){
+  if(it.g!==g){g=it.g;var n=ITEMS.filter(function(x){return x.g===g}).length;h+='<div class="ol-grp"><span>'+({Slides:'Presentation · Slides 1–12',Worksheet:'Worksheet · A1–A8',Quiz:'Quiz · Q1–Q10',Game:'Mini-game',Cards:'Summary cards'})[g]+'</span></div>'}
+  var s=statusOf(it.id),fl=s==='flag',rs=s&&!fl;
+  h+='<button class="ol" data-id="'+it.id+'"'+(it.id===sel?' aria-current="true"':'')+'><span class="ic'+(fl?' fl':'')+'">'+ic(fl?'flag':'check-circle-2')+'</span><span class="tt"><span class="code">'+it.code+'</span>'+it.title+'</span>'+(fl?'<span class="flag chip amb">Check</span>':'')+'<span class="meta">'+it.obj+' · '+it.bl+(rs?' · '+LABEL[s]:'')+'</span><span class="sr-only">'+(fl?'Needs a check':'OK')+'</span></button>';
+ });
+ $('#outline').innerHTML=h;
+ $$('.ol').forEach(function(b){b.addEventListener('click',function(){selectItem(b.dataset.id,true)})});
+}
+function selectItem(id,user){sel=id;renderOutline();renderPreview();icons();if(user&&innerWidth<860)$('#preview').scrollIntoView({block:'start'})}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function docFor(it){
+ var id=it.id,h='';
+ if(it.g==='Slides'){
+  var n=+it.code.slice(1);
+  if(id==='s4')h='<div class="slide"><h4>'+it.title+'</h4><div class="eq"><span class="b">carbon dioxide</span>+<span class="b">water</span><span class="ar">light energy'+ic('arrow-right')+'in chlorophyll</span><span class="b">glucose</span>+<span class="b">oxygen</span></div><span class="sn">4 / 12</span></div>';
+  else if(id==='s6')h='<div class="slide"><h4>Inside a leaf</h4><svg viewBox="0 0 360 150" role="img" aria-label="Leaf cross-section with chloroplast, stomata and vein labelled" style="width:100%;max-height:60%"><rect x="10" y="10" width="220" height="14" rx="3" fill="#B5D9D5" stroke="#0B6B66"/><rect x="10" y="26" width="220" height="40" rx="3" fill="#E2F1EF" stroke="#0B6B66"/><g fill="#0B6B66"><ellipse cx="34" cy="46" rx="9" ry="6"/><ellipse cx="74" cy="46" rx="9" ry="6"/><ellipse cx="114" cy="46" rx="9" ry="6"/><ellipse cx="154" cy="46" rx="9" ry="6"/><ellipse cx="194" cy="46" rx="9" ry="6"/></g><rect x="10" y="68" width="220" height="40" rx="3" fill="#fff" stroke="#0B6B66"/><circle cx="120" cy="88" r="14" fill="#B5D9D5" stroke="#0B6B66" stroke-width="2"/><rect x="10" y="110" width="220" height="14" rx="3" fill="#B5D9D5" stroke="#0B6B66"/><rect x="90" y="108" width="28" height="18" fill="#fff" stroke="#0B6B66"/><g stroke="#1A2230" stroke-width="1" fill="none"><path d="M154 46L250 24"/><path d="M104 117L250 118"/><path d="M120 88L250 74"/></g><g font-family="IBM Plex Sans,sans-serif" font-size="13" fill="#1A2230"><text x="254" y="28">chloroplast</text><text x="254" y="122">stomata</text><text x="254" y="78">vein</text></g></svg><span class="sn">6 / 12</span></div>';
+  else h='<div class="slide"><h4>'+esc(it.title)+'</h4>'+(it.bul&&it.bul.length?'<ul>'+it.bul.map(function(b){return '<li>'+esc(b)+'</li>'}).join('')+'</ul>':'')+'<span class="sn">'+n+' / 12</span></div>';
+ }else if(it.g==='Worksheet'){
+  if(id==='a1')h='<div class="doc"><p class="small muted" style="font-family:IBM Plex Sans">Core · Activity 1 · O2</p><p class="q">Label the plant. Use: roots, stem, leaf, flower.</p><svg viewBox="0 0 260 150" role="img" aria-label="Plant outline with four blank label lines" style="width:100%;max-width:380px;margin-top:10px"><path d="M130 140V50" stroke="#0B6B66" stroke-width="4"/><path d="M130 90C100 90 85 70 90 55C112 55 128 70 130 90Z" fill="#B5D9D5" stroke="#0B6B66"/><path d="M130 70C160 70 175 50 170 35C148 35 132 50 130 70Z" fill="#B5D9D5" stroke="#0B6B66"/><circle cx="130" cy="40" r="9" fill="#fff" stroke="#0B6B66" stroke-width="2"/><path d="M130 140l-25 8M130 140l0 8M130 140l25 8" stroke="#0B6B66" stroke-width="2"/><g stroke="#1A2230"><path d="M139 40h70M178 50h31M130 100h79M130 146h79"/></g></svg></div>';
+  else if(id==='a2')h='<div class="doc"><p class="small muted" style="font-family:IBM Plex Sans">Core · Activity 2 · O3 · Apply</p><p class="q">Fill the gaps in the word equation.</p><p class="q" style="margin-top:14px"><span class="blank"></span> + water → glucose + <span class="blank"></span></p><p class="small muted" style="font-family:IBM Plex Sans;margin-top:8px">with light energy, in chlorophyll</p></div>';
+  else if(id==='a5'){var ok=ST.a5!=='flag';h='<div class="doc"><p class="small muted" style="font-family:IBM Plex Sans">Core · Activity 5 · O1</p><p class="q">Which substance does a plant make for energy?</p><div class="gloss'+(ok?'':' sug')+'"><strong>Glossary</strong><br>'+esc(TEXT.a5||CHK.a5.edit)+'</div>'+(ok?'':'<p class="small muted" style="font-family:IBM Plex Sans;margin-top:8px">Suggested glossary box. It is added when you accept.</p>')+'</div>'}
+  else h='<div class="doc"><p class="small muted" style="font-family:IBM Plex Sans">Core · Activity '+it.code.slice(1)+' · '+it.obj+'</p><p class="q">'+esc(it.title)+'</p></div>';
+ }else if(it.g==='Quiz'){
+  var meta='<p class="small muted" style="font-family:IBM Plex Sans">'+({MC:'Multiple choice',TF:'True or false',SA:'Short answer'})[it.type]+' · '+it.code+' · '+it.obj+' · '+it.bl+'</p>';
+  if(id==='q4')h='<div class="doc">'+meta+'<p class="q">'+it.code+'. Plants get their food from the soil.</p><ul class="opts-l"><li><span class="l">T</span>True</li><li class="ok"><span class="l">F</span>False '+ic('check')+'<span class="small" style="margin-left:auto">Answer key</span></li></ul><p class="small" style="font-family:IBM Plex Sans;font-weight:400;margin-top:12px"><strong>Explanation shown after the answer:</strong> '+esc(TEXT.q4||'Plants make food by photosynthesis. Soil gives water, not food.')+'</p></div>';
+  else if(id==='q9')h='<div class="doc">'+meta+'<p class="q">'+it.code+'. '+(ST.q9==='accepted'||ST.q9==='edited'?'What does chlorophyll do?':'What does chlorophyll do?')+'</p><p style="margin-top:12px;font-family:IBM Plex Sans;font-weight:400">Model answer: <em>'+esc(ST.q9==='accepted'||ST.q9==='edited'?(TEXT.q9||CHK.q9.edit):'Chlorophyll absorbs light energy.')+'</em></p><p class="small muted" style="font-family:IBM Plex Sans;font-weight:400;margin-top:8px">Reading level: '+(ST.q9==='accepted'||ST.q9==='edited'?'grade 6':'grade 8')+'</p></div>';
+  else if(it.type==='TF')h='<div class="doc">'+meta+'<p class="q">'+it.code+'. '+esc(it.title)+'</p><ul class="opts-l"><li class="ok"><span class="l">T</span>True '+ic('check')+'</li><li><span class="l">F</span>False</li></ul></div>';
+  else if(it.type==='SA')h='<div class="doc">'+meta+'<p class="q">'+it.code+'. '+esc(it.title)+'</p><p style="margin-top:12px;font-family:IBM Plex Sans;font-weight:400">Model answer: <em>carbon dioxide + water → glucose + oxygen</em>, with light energy, in chlorophyll.</p></div>';
+  else h='<div class="doc">'+meta+'<p class="q">'+it.code+'. '+esc(it.title)+'</p><ul class="opts-l">'+OPTS[it.code].map(function(o,i){return '<li'+(o[1]?' class="ok"':'')+'><span class="l">'+'ABCD'[i]+'</span>'+esc(o[0])+(o[1]?' '+ic('check'):'')+'</li>'}).join('')+'</ul></div>';
+ }else if(id==='game'){
+  h='<div class="doc"><p class="q">Plant parts match · 8 pairs</p><div class="pairs" style="margin-top:12px">'+PAIRS.map(function(p){return '<div><span>'+p[0]+'</span>'+ic('arrow-left-right')+'<span>'+p[1]+'</span></div>'}).join('')+'</div></div>';
+ }else{
+  h='<div class="doc"><p class="small muted" style="font-family:IBM Plex Sans">Card <span id="cardN">1</span> of 12 · select the card to flip it</p><button class="flip" id="flip" style="margin-top:10px" aria-label="Card front: Photosynthesis. Flip card"><span>Photosynthesis<small>Front</small></span></button><div class="ai-row" style="margin-top:12px"><button class="btn sm" id="cardPrev">Previous</button><button class="btn sm" id="cardNext">Next</button></div></div>';
+ }
+ return h;
+}
+function checkPanel(id){
+ var c=CHK[id];if(!c)return '';var s=ST[id];
+ var src='<a href="Plants_Unit3_Photosynthesis.pdf" data-src="'+c.src+'">Plants_Unit3_Photosynthesis.pdf '+c.src+'</a>';
+ if(s==='flag'){
+  var ed=EDITING[id]?'<div style="margin-top:12px"><label class="fld" for="edt">Edit the text</label><textarea id="edt">'+esc(TEXT[id]||c.edit)+'</textarea><div class="row"><button class="btn pri sm" id="edSave">Save edit</button><button class="btn sm" id="edCancel">Cancel</button></div></div>':'';
+  return '<div class="chk"><h3>'+ic('flag')+'Check: '+c.t+'</h3><p><strong>'+c.conf+'</strong> '+c.body+'</p><p class="small" style="margin-top:6px">Source: '+src+'</p>'+(EDITING[id]?ed:'<div class="row"><button class="btn pri sm" data-act="accepted">'+ic('check')+'Accept</button><button class="btn sm" data-act="edit">'+ic('pencil')+'Edit</button><button class="btn sm" data-act="dismissed">'+ic('x')+'Dismiss</button></div>')+'</div>';
+ }
+ return '<div class="chk done"><h3>'+ic('check-circle-2')+LABEL[s]+': '+c.t+'</h3><p>'+(s==='dismissed'?'Dismissed. The item stays as written.':(s==='edited'?'Your edit is in the kit.':'The suggestion is in the kit.'))+' Source: '+src+'</p><div class="row"><button class="btn sm" data-act="reopen">Reopen check</button></div></div>';
+}
+function renderPreview(){
+ var it=BY[sel],id=it.id,fl=ST[id];
+ var h='<div class="panel pad"><div class="hd"><div><h2 style="font-size:1.25rem"><span class="code" style="font-family:IBM Plex Mono">'+it.code+'</span> '+esc(it.title)+'</h2></div><div class="ai-row"><span class="chip">'+it.obj+'</span><span class="chip">'+it.bl+'</span>'+(fl==='flag'?'<span class="chip amb">'+ic('flag')+'Check</span>':'<span class="chip ok">'+ic('check')+(fl?LABEL[fl]:'Ready')+'</span>')+'</div></div>'+checkPanel(id)+'<div style="margin-top:14px">'+docFor(it)+'</div>';
+ h+='<div class="ai-row" style="margin-top:14px"><span class="small muted" style="margin-right:4px">Change this item</span><button class="btn sm" data-ai="Simpler">Simpler</button><button class="btn sm" data-ai="Add example">Add example</button><button class="btn sm" data-ai="Translate">Translate</button><button class="btn sm" data-ai="Regenerate this">Regenerate this</button></div>';
+ h+='<form id="ask" style="margin-top:14px"><label class="fld" for="askIn">Ask for a change</label><div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="askIn" placeholder="For example: use a garden example" style="flex:1;min-width:200px"><button class="btn pri" type="submit">Send request</button></div><p class="small muted" id="askOut" style="margin-top:8px" role="status"></p></form></div>';
+ $('#preview').innerHTML=h;
+ $$('[data-act]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.act)})});
+ var es=$('#edSave');if(es){es.addEventListener('click',function(){TEXT[sel]=$('#edt').value;EDITING[sel]=false;ST[sel]='edited';renderReview();toast('Edit saved on '+BY[sel].code+'.')});$('#edCancel').addEventListener('click',function(){EDITING[sel]=false;renderPreview();icons()});}
+ $$('[data-ai]').forEach(function(b){b.addEventListener('click',function(){toast(b.dataset.ai+': draft for '+BY[sel].code+' is ready. Review it before you accept.')})});
+ $$('[data-src]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();toast('Opening page '+a.dataset.src.replace('p. ','')+' of Plants_Unit3_Photosynthesis.pdf')})});
+ $('#ask').addEventListener('submit',function(e){e.preventDefault();var v=$('#askIn').value.trim();if(!v){$('#askOut').textContent='Type what you would like changed first.';return}$('#askOut').textContent='Requested for '+BY[sel].code+': "'+v+'". The change will be flagged for your check.';$('#askIn').value=''});
+ var fp=$('#flip');if(fp){var ci=0,back=false;var draw=function(){var c=CARDS[ci];fp.innerHTML='<span>'+(back?c[1]:c[0])+'<small>'+(back?'Back':'Front')+'</small></span>';fp.setAttribute('aria-label','Card '+(back?'back: '+c[1]:'front: '+c[0])+'. Flip card');$('#cardN').textContent=ci+1};fp.addEventListener('click',function(){back=!back;draw()});$('#cardPrev').addEventListener('click',function(){ci=(ci+11)%12;back=false;draw()});$('#cardNext').addEventListener('click',function(){ci=(ci+1)%12;back=false;draw()})}
+}
+function act(a){
+ var id=sel;
+ if(a==='edit'){EDITING[id]=true;renderPreview();icons();return}
+ if(a==='reopen'){ST[id]='flag';TEXT[id]=undefined}
+ else{ST[id]=a;if(a==='accepted')TEXT[id]=undefined}
+ renderReview();
+ toast(a==='accepted'?'Accepted on '+BY[id].code+'.':(a==='dismissed'?'Dismissed on '+BY[id].code+'.':'Check reopened on '+BY[id].code+'.'));
+}
+function renderReview(){
+ renderOutline();renderPreview();
+ var n=openCount();$('#rvCount').textContent=n+' of 3 checked';$('#rvMeter').style.width=(n/3*100)+'%';
+ var b=$('#approveBtn');b.setAttribute('aria-disabled',n<3);b.classList.toggle('pri',n===3);
+ var left=3-n;$('#t4s').textContent=left?'Ready · '+left+' to check':'Ready · all checked';
+ var cv=$('#cov');cv.innerHTML=['O1','O2','O3'].map(function(o){var qs=QS.filter(function(q){return q[2]===o});return '<strong class="code">'+o+'</strong><div class="qs">'+qs.map(function(q){return '<button data-jump="'+q[0].toLowerCase()+'">'+q[0]+'</button>'}).join('')+'<span class="small muted" style="align-self:center">'+qs.length+' questions</span></div>'}).join('');
+ $$('[data-jump]').forEach(function(b){b.addEventListener('click',function(){selectItem(b.dataset.jump,true)})});
+ bloom($('[data-bloom="actual"]'));setBloom($('[data-bloom="actual"]'),BV);
+ var ab=$('[data-bloom="actual"] .bar');icons();
+}
+$('#approveBtn').addEventListener('click',function(){if(this.getAttribute('aria-disabled')==='true'){toast((3-openCount())+' items still need your check.');return}location.hash='#teach'});
+
+/* ---------- differentiate ---------- */
+var DF=[['A1 Label the plant','Label the 4 parts using the word bank.','Label the plant: roots, stem, leaf, flower.','Label the parts and write one job for each.'],
+['A2 Word equation','Fill the gaps in the word equation. Word bank: glucose, oxygen, water, carbon dioxide. Sentence starter: "Plants take in carbon dioxide and ____."','Fill the gaps in the word equation: ____ + water → glucose + ____ (with light energy, in chlorophyll).','Complete the word equation from memory. Explain why a plant kept in the dark loses mass.'],
+['A3 Match part to job','Match 3 parts to their jobs with pictures.','Match each part to its job.','Match each part to its job, then add the part that makes seeds.'],
+['A4 Order the steps','Put 3 steps in order with sentence starters.','Put the steps of photosynthesis in order.','Order the steps, then say what is missing from a drawing.'],
+['A5 Glossary: glucose','Read the glossary box, then circle the sugar.','Read the glossary box, then answer: which substance gives a plant energy?','Write your own glossary entry for glucose.'],
+['A6 Where does food come from?','True or false with a picture clue.','True or false: where does a plant get its food?','Correct a false statement about soil.'],
+['A7 Draw a leaf','Complete a half-drawn leaf and add 2 labels.','Draw a leaf and label 3 parts.','Draw a leaf and explain what each part does.'],
+['A8 Explain in a sentence','Finish: "A plant makes food using ____."','Explain in one sentence how a plant makes food.','Explain how the plant, air and light work together.']];
+var LV={S:6,C:13,T:5};
+function renderDf(){$('#dfBody').innerHTML=DF.map(function(r,i){var a2=i===1;return '<tr class="'+(a2?'hl':'')+'"><th scope="row">'+r[0]+(a2?'<small class="chip pri" style="display:flex;width:max-content;margin-top:6px;font-family:IBM Plex Sans">Open in full</small>':'')+'</th><td>'+r[1]+(a2?'<small>Adds a word bank and sentence starters</small>':'')+'</td><td>'+r[2]+'</td><td>'+r[3]+(a2?'<small>Adds a dark-plant explanation</small>':'')+'</td></tr>'}).join('')}
+function renderLv(){
+ var N={S:'Support',C:'Core',T:'Stretch'},D={S:'Word bank and sentence starters',C:'Standard worksheet',T:'Extension questions'};
+ $('#lvls').innerHTML=['S','C','T'].map(function(k){return '<div class="lvl"><div><strong>'+N[k]+'</strong><div class="small muted">'+D[k]+'</div></div><div class="step" role="group" aria-label="'+N[k]+' students"><button data-k="'+k+'" data-d="-1" aria-label="Fewer '+N[k]+' students">−</button><output aria-live="polite">'+LV[k]+'</output><button data-k="'+k+'" data-d="1" aria-label="More '+N[k]+' students">+</button></div></div>'}).join('');
+ $$('#lvls button').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.k,v=LV[k]+ +b.dataset.d;if(v<0)return;LV[k]=v;renderLv()})});
+ var s=LV.S+LV.C+LV.T,d=24-s,u=$('#unassigned');
+ u.className='chip '+(d===0?'ok':'amb');u.textContent=d===0?'24 of 24 assigned':(d>0?d+' not yet assigned':(-d)+' too many');
+ $$('[data-count]').forEach(function(e){e.textContent=LV[e.dataset.count]});
+}
+var ACC=[['Read-aloud',2,'L. F., I. S.'],['Extra time',1,'T. M.'],['Arabic glossary',3,'Z. G., R. J., M. A.']];
+function renderAcc(){$('#acc').innerHTML=ACC.map(function(a,i){return '<li style="flex-wrap:wrap"><strong style="flex:1;min-width:140px">'+a[0]+'</strong><span class="chip">'+a[1]+(a[1]>1?' students':' student')+'</span><button class="btn sm" data-ac="'+i+'" aria-expanded="false">Open list</button><p class="small muted" data-al="'+i+'" hidden style="flex-basis:100%">'+a[2]+' · teacher only</p></li>'}).join('');
+ $$('[data-ac]').forEach(function(b){b.addEventListener('click',function(){var p=$('[data-al="'+b.dataset.ac+'"]'),o=b.getAttribute('aria-expanded')==='true';p.hidden=o;b.setAttribute('aria-expanded',!o);b.textContent=o?'Open list':'Hide list'})})}
+
+/* ---------- teach ---------- */
+(function(){var n=25,s=7,h='<rect width="25" height="25" fill="#fff"/>';
+ function fp(x,y){return '<rect x="'+x+'" y="'+y+'" width="7" height="7" fill="#1A2230"/><rect x="'+(x+1)+'" y="'+(y+1)+'" width="5" height="5" fill="#fff"/><rect x="'+(x+2)+'" y="'+(y+2)+'" width="3" height="3" fill="#1A2230"/>'}
+ var seed=482913;function rnd(){seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff}
+ for(var y=0;y<n;y++)for(var x=0;x<n;x++){var inF=(x<8&&y<8)||(x>16&&y<8)||(x<8&&y>16);if(inF)continue;if(rnd()>.52)h+='<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="#1A2230"/>'}
+ h+=fp(0,0)+fp(18,0)+fp(0,18);
+ $('#qr').innerHTML='<svg viewBox="0 0 25 25" shape-rendering="crispEdges" aria-hidden="true">'+h+'</svg>'})();
+$('#hideNames').addEventListener('click',function(){var on=this.getAttribute('aria-checked')==='true';this.setAttribute('aria-checked',!on);$('#namesState').textContent=on?'Names shown':'Names hidden';$('#namesWarn').hidden=!on});
+$('#asCls').addEventListener('change',function(){$('#assignBtn span').textContent='Assign to '+this.value.slice(0,2)});
+$('#assignBtn').addEventListener('click',function(){var b=$('span',this);b.textContent='Assigned · due '+$('#due').value;this.classList.add('on');toast('Assigned. Students see it after you approve the kit.')});
+
+/* ---------- student ---------- */
+var stState='join',ans=null;
+function renderPhone(){
+ var b=$('#phBody'),h='';
+ if(stState==='join')h='<h2 style="font-size:1.5rem">Join live quiz</h2><p class="muted">Enter the code on the board.</p><div><label class="fld" for="jc">Join code</label><input type="text" id="jc" value="482 913" inputmode="numeric" style="font-family:IBM Plex Mono"></div><div><label class="fld" for="jn">Your name</label><input type="text" id="jn" value="Sara A."></div><button class="btn pri" id="phJoin" style="min-height:60px;font-size:1.125rem;margin-top:auto">Join quiz</button><p class="small muted">Only your teacher sees your name.</p>';
+ else if(stState==='q')h='<div><div class="hd small"><strong>Question 4 of 10</strong><span class="muted">Sara A.</span></div><div class="prog" style="margin-top:8px"><i style="transform:scaleX(.4)"></i></div></div><p class="qt">True or false: Plants get their food from the soil.</p><div class="tfb"><button id="phT" aria-pressed="false">True</button><button id="phF" aria-pressed="false">False</button></div>';
+ else h='<div><div class="hd small"><strong>Question 4 of 10</strong><span class="muted">Sara A.</span></div><div class="prog" style="margin-top:8px"><i style="transform:scaleX(.4)"></i></div></div><p class="qt">True or false: Plants get their food from the soil.</p><div class="saved" role="status">'+ic('check-circle-2')+'Answer saved</div><p class="muted">You chose <strong>'+ans+'</strong>. Waiting for your teacher to show the next question.</p><div class="tfb"><button id="phChange">Change my answer</button></div>';
+ b.innerHTML=h;icons();
+ var j=$('#phJoin');if(j)j.addEventListener('click',function(){stState='q';renderPhone()});
+ [['#phT','True'],['#phF','False']].forEach(function(p){var e=$(p[0]);if(e)e.addEventListener('click',function(){ans=p[1];stState='saved';renderPhone()})});
+ var c=$('#phChange');if(c)c.addEventListener('click',function(){stState='q';renderPhone()});
+ $$('#stSteps button').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.st===stState)});
+}
+$$('#stSteps button').forEach(function(x){x.addEventListener('click',function(){stState=x.dataset.st;if(stState==='saved'&&!ans)ans='False';renderPhone()})});
+
+/* ---------- results ---------- */
+var MAST=[['O1','Explain photosynthesis',68],['O2','Roles of leaves, roots and stem',85],['O3','Read the word equation',58]];
+$('#mastery').innerHTML=MAST.map(function(m){var lo=m[2]<70;return '<div class="mrow"><div><span class="code">'+m[0]+'</span> '+m[1]+'</div><div class="track" role="img" aria-label="'+m[0]+' mastery '+m[2]+' percent, target 70"><div class="f'+(lo?' lo':'')+'" style="width:'+m[2]+'%"></div><div class="tg"></div></div><div><strong>'+m[2]+'%</strong> '+(lo?'<span class="chip amb">'+ic('flag')+'Below target</span>':'<span class="chip ok">'+ic('check')+'On target</span>')+'</div></div>'}).join('');
+var PQ=[92,86,81,41,77,82,58,79,68,76];
+$('#qtBody').innerHTML=QS.map(function(q,i){var p=PQ[i],mis=q[0]==='Q4',lo=p<70&&!mis;return '<tr'+(mis?' class="mis"':'')+'><th scope="row" class="code" style="text-align:left">'+q[0]+'</th><td>'+esc(q[1])+(mis?'<div class="small" style="margin-top:4px"><strong>Misconception:</strong> "Plants get their food from the soil." Most common wrong answer: True.</div>':'')+'</td><td class="code">'+q[2]+'</td><td>'+q[3]+'</td><td><div class="bar-s"><div class="meter"><i style="width:'+p+'%"></i></div><strong>'+p+'%</strong></div></td><td>'+(mis?'<span class="chip amb">'+ic('flag')+'Misconception</span>':(lo?'<span class="chip amb">'+ic('flag')+'Below 70%</span>':''))+'</td></tr>'}).join('');
+var SGD=[["Sara Ahmed",100,"1111111111"],["Fatma Trabelsi",95,"111111111p"],["Lina Mansour",90,"1110111111"],["Hana Mourad",90,"1011111111"],["Karim Nasser",80,"1110111101"],["Layla Farouk",80,"1111010111"],["Ibrahim Sassi",80,"1100111111"],["Nora Dubois",80,"1110111011"],["Tariq Mansouri",80,"1110101111"],["Salma Khelifi",80,"1110110111"],["Jad Karray",80,"1110111101"],["Yara Bennani",80,"1101111101"],["Leo Martin",70,"1101110101"],["Zeinab Gharbi",70,"0111110011"],["Rayan Jaziri",70,"1111010011"],["Emma Collins",70,"0110111110"],["Malek Ayari",70,"1011111010"],["Sofia Rossi",60,"1110100110"],["Mia Lopez",55,"10101101p0"],["Ali Ben Salah",50,"1110001100"],["Omar Kacem",50,"1110010001"],["Youssef Haddad",40,"1100000110"]];
+$('#sg').innerHTML='<thead><tr><th scope="col">Student</th>'+QS.map(function(q){return '<th scope="col" class="code">'+q[0]+'</th>'}).join('')+'<th scope="col">Score</th></tr></thead><tbody>'+SGD.map(function(s){var lo=s[1]<60;return '<tr><th scope="row">'+(lo?ic('life-buoy')+'<span class="sr-only">Needs help: </span>':'')+s[0]+'</th>'+s[2].split('').map(function(c){var k=c==='1'?['y','check','Correct']:(c==='0'?['n','x','Incorrect']:['pp','minus','Partly correct']);return '<td class="'+k[0]+'">'+ic(k[1])+'<span class="sr-only">'+k[2]+'</span></td>'}).join('')+'<td><strong>'+s[1]+'%</strong></td></tr>'}).join('')+'</tbody>';
+$$('.rt').forEach(function(b){b.addEventListener('click',function(){RT[b.dataset.rt]=!RT[b.dataset.rt];renderMatrices();toast(RT[b.dataset.rt]?'Added to Lesson 5. The Lesson 5 cell now shows the re-teach.':'Removed from Lesson 5.')})});
+$('#dashAdd').addEventListener('click',function(){RT.group=!RT.group;renderMatrices();toast(RT.group?'O3 re-teach added to Lesson 5.':'Removed from Lesson 5.')});
+$$('.rem').forEach(function(b){b.addEventListener('click',function(){b.textContent='Reminder sent';b.classList.add('on')})});
+$('#syncBtn').addEventListener('click',function(){$('span',this).textContent='Scores synced · 22 of 24';this.classList.add('on');toast('Scores synced to the gradebook. Not-submitted students are left blank.')});
+
+/* ---------- init ---------- */
+['target','actual'].forEach(function(k){var e=$('[data-bloom="'+k+'"]');bloom(e);setBloom(e,BV)});
+renderDf();renderLv();renderAcc();renderPhone();renderOutline();renderPreview();renderMatrices();fillCrumbs();
+route();icons();
+if(window.lucide===undefined)window.addEventListener('load',icons);
+})();
+</script>
+</body>
+</html>

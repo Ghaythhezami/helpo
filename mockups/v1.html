@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Three teacher-first redesign directions for Educator Helper, an AI lesson-kit app.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%274%27 fill=%27%2317283A%27/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Educator Helper — three teacher-first redesigns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,600&display=swap" rel="stylesheet">
+<style>
+:root{--page:#F5F6F2;--surface:#fff;--line:#DFE3DA;--ink:#17283A;--ink-2:#4A5868;--ink-3:#5F6B79;--accent:#1D6F55;--hl:#FFE36E;--ease:cubic-bezier(0.16,1,0.3,1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 "Figtree",system-ui,sans-serif}
+::selection{background:var(--hl)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:"Literata",Georgia,serif;font-weight:600;letter-spacing:-0.015em;margin:0;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding:56px 32px 96px}
+header{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:48px;align-items:end;margin-bottom:56px}
+header h1{font-size:48px;line-height:1.08;margin-bottom:16px}
+header p{font-size:18px;color:var(--ink-2);max-width:60ch}
+.flow{list-style:none;margin:0;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:var(--surface);display:grid;gap:10px;font-size:15px}
+.flow li{display:flex;gap:12px;align-items:baseline}
+.flow b{font-family:"Literata",serif;font-weight:600;min-width:74px}
+.flow span{color:var(--ink-2)}
+h2.sec{font-size:28px;margin-bottom:18px}
+.fixes{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:72px;font-size:15px}
+.fixes th,.fixes td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top}
+.fixes th{font-weight:600;color:var(--ink-3);font-size:14px;background:#FAFBF8}
+.fixes tr:last-child td{border-bottom:0}
+.fixes td:first-child{font-weight:600;width:28%}
+.fixes td:nth-child(2){color:var(--ink-2);width:36%}
+.dir{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:40px;padding:40px 0;border-top:1px solid var(--line)}
+.dir h3{font-size:30px;margin-bottom:10px}
+.dir .idea{font-size:17px;color:var(--ink-2);margin-bottom:20px}
+.dir dl{margin:0 0 24px;display:grid;gap:12px;font-size:15px}
+.dir dt{font-weight:600}
+.dir dd{margin:2px 0 0;color:var(--ink-2)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:9px;background:var(--ink);color:#fff;font-weight:600;text-decoration:none;transition:transform .1s var(--ease),background .15s}
+.btn:hover{background:#0F1D2B}.btn:active{transform:scale(.97)}
+.links{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.links a.plain{color:var(--ink-2);font-size:15px;text-underline-offset:3px}
+.shots{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:16px;align-items:start}
+.shot{display:block;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:0 6px 12px -6px rgba(23,40,58,.22);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+.shot:hover{transform:translateY(-2px);box-shadow:0 10px 16px -8px rgba(23,40,58,.26)}
+.shot img{display:block;width:100%;height:auto}
+.shot.desk img{aspect-ratio:1440/900;object-fit:cover;object-position:top}
+.shot.phone img{aspect-ratio:390/760;object-fit:cover;object-position:top}
+.caption{font-size:13px;color:var(--ink-3);margin-top:6px}
+.rec{margin-top:24px;padding:32px;border-radius:16px;background:var(--ink);color:#E9EEF1}
+.rec h2{color:#fff;font-size:28px;margin-bottom:14px}
+.rec p{color:#C9D3DA;max-width:70ch;margin-bottom:14px}
+.rec ul{margin:0;padding-left:20px;display:grid;gap:8px;color:#E9EEF1}
+.rec b{color:#fff}
+.mark{background:linear-gradient(transparent 14%,var(--hl) 14%,var(--hl) 86%,transparent 86%);color:var(--ink);padding:0 3px;font-weight:600}
+@media (max-width:900px){
+  .wrap{padding:32px 18px 64px}
+  header{grid-template-columns:1fr;gap:24px}
+  header h1{font-size:34px}
+  .dir{grid-template-columns:1fr;gap:20px}
+  .fixes td:first-child,.fixes td:nth-child(2){width:auto}
+  .fixes thead{display:none}
+  .fixes tr{display:block;border-bottom:1px solid var(--line);padding:6px 0}
+  .fixes td{display:block;border:0;padding:6px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="v2/index.html" style="display:inline-flex;align-items:center;min-height:40px;padding:0 16px;margin-bottom:24px;border-radius:9px;background:#17283A;color:#fff;font-weight:600;text-decoration:none">See v2: three school-ready versions</a> <a href="v3/index.html" style="display:inline-flex;align-items:center;min-height:40px;padding:0 16px;margin:0 0 24px 8px;border-radius:9px;background:#1F66C9;color:#fff;font-weight:600;text-decoration:none">See v3: kid-friendly</a>
+  <header>
+    <div>
+      <h1>Educator Helper, redesigned for teachers</h1>
+      <p>Three clickable directions for the same lesson: Alex Green’s Grade 6 class 6B, “Photosynthesis: how plants make food”. Same content and flow in each, so you can compare structure and feel rather than data.</p>
+    </div>
+    <ol class="flow" aria-label="The teacher flow every version covers">
+      <li><b>Prepare</b><span>Upload or describe; the class sets grade and length</span></li>
+      <li><b>Check</b><span>Fix only what the AI was unsure about</span></li>
+      <li><b>Teach</b><span>Run it live or assign it to the class</span></li>
+      <li><b>Results</b><span>See who needs help and act on it</span></li>
+    </ol>
+  </header>
+
+  <h2 class="sec">What changed from the current build</h2>
+  <table class="fixes">
+    <thead><tr><th>Instructor feedback</th><th>Cause in the current screens</th><th>Fix in all three versions</th></tr></thead>
+    <tbody>
+      <tr><td>Too many steps and screens</td><td>Input, quote panel, kit cards, floating lesson board and editor compete on one page; resources reachable three ways</td><td>One lesson is one workspace with four stages. Home only answers “what’s next?”. One way to switch resources.</td></tr>
+      <tr><td>Hard to review AI output</td><td>No sign of what the AI was unsure about or where content came from</td><td>A short “to check” list (3 items, not 45 questions): fact check, reading level, order of ideas. Each links to the page of the teacher’s file, with Accept, Edit or Dismiss.</td></tr>
+      <tr><td>Too decorative and busy</td><td>Purple gradients, mascot, quote panel, five accent colours, sticky-note board, numbered cards</td><td>One accent colour per version, real typography, no eyebrow labels or vanity stats. Colour only signals status.</td></tr>
+      <tr><td>Class and results unclear</td><td>Average, top 3 and a donut chart; no next action</td><td>Who needs help and why, which question failed (Q4: 41%), who hasn’t submitted, and one button to make tomorrow’s 5-minute warm-up.</td></tr>
+      <tr><td>Missing context for good AI output</td><td>Only title and objectives; “source readiness 100%”</td><td>Picking the class fills grade, length and student count. Objectives are pulled from the file and editable. Rare options are folded away.</td></tr>
+      <tr><td>Waiting with no feedback</td><td>One big “Generate” and a full page swap</td><td>Resources arrive one by one with honest progress; the first one can be opened while the rest finish.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sec">Three directions</h2>
+
+  <section class="dir" aria-labelledby="dA">
+    <div>
+      <h3 id="dA">A. Planbook</h3>
+      <p class="idea">Calm and careful. The app looks like the teacher’s own week planner, and checking the AI works like marking with a <span class="mark">highlighter</span>.</p>
+      <dl>
+        <div><dt>Home</dt><dd>The teaching week as a grid of periods. Today’s lesson shows “2 to check”; empty periods are one click from a new lesson.</dd></div>
+        <div><dt>Signature</dt><dd>The quiz reads like a document. Unsure lines are highlighted, with margin notes beside them like a colleague’s comments.</dd></div>
+        <div><dt>Best for</dt><dd>Teachers who prepare ahead and want to read everything before class.</dd></div>
+        <div><dt>Type and colour</dt><dd>Literata (bookish serif) with Figtree; ink blue, marking green, highlighter yellow for flags only.</dd></div>
+      </dl>
+      <div class="links"><a class="btn" href="a-planbook/index.html#home">Open clickable mockup</a><a class="plain" href="a-planbook/index.html#review">Jump to Check</a></div>
+    </div>
+    <div class="shots">
+      <div><a class="shot desk" href="a-planbook/index.html#review"><img src="shots/a-planbook-review-desktop.png" alt="Planbook check screen: quiz as a document with highlighted questions and margin notes" loading="lazy"></a><p class="caption">Check: highlighted lines with margin notes</p></div>
+      <div><a class="shot phone" href="a-planbook/index.html#results"><img src="shots/a-planbook-results-phone.png" alt="Planbook results on a phone" loading="lazy"></a><p class="caption">Results on a phone</p></div>
+    </div>
+  </section>
+
+  <section class="dir" aria-labelledby="dB">
+    <div>
+      <h3 id="dB">B. Copilot</h3>
+      <p class="idea">Fast and conversational. The teacher says what they need in one sentence, and every change the AI makes can be undone.</p>
+      <dl>
+        <div><dt>Home</dt><dd>“What are you teaching next?” in one prompt bar, with the next lesson above it.</dd></div>
+        <div><dt>Signature</dt><dd>The prompt bar turns a sentence into editable chips (class 6B, Grade 6, 45 min, Thu 14 Nov, the PDF). In Check, a thread lists flags and AI edits, each with Undo.</dd></div>
+        <div><dt>Best for</dt><dd>Teachers comfortable with chat assistants who like to ask rather than hunt for buttons.</dd></div>
+        <div><dt>Type and colour</dt><dd>Bricolage Grotesque with Atkinson Hyperlegible (made for low-vision readers); chalkboard green shell, chalk yellow for the main action only.</dd></div>
+      </dl>
+      <div class="links"><a class="btn" href="b-copilot/index.html#home">Open clickable mockup</a><a class="plain" href="b-copilot/index.html#create">Jump to New lesson</a></div>
+    </div>
+    <div class="shots">
+      <div><a class="shot desk" href="b-copilot/index.html#review"><img src="shots/b-copilot-review-desktop.png" alt="Copilot check screen: thread of AI flags beside the quiz" loading="lazy"></a><p class="caption">Check: flags and AI edits in one thread</p></div>
+      <div><a class="shot phone" href="b-copilot/index.html#results"><img src="shots/b-copilot-results-phone.png" alt="Copilot results on a phone" loading="lazy"></a><p class="caption">Results on a phone</p></div>
+    </div>
+  </section>
+
+  <section class="dir" aria-labelledby="dC">
+    <div>
+      <h3 id="dC">C. Class Pulse</h3>
+      <p class="idea">Practical and glanceable. Everything is organised around the class period: before class, in class, after class.</p>
+      <dl>
+        <div><dt>Home</dt><dd>Today’s timetable with a “now” line. Period 3 with 6B shows the kit status and one button.</dd></div>
+        <div><dt>Signature</dt><dd>A period bar on every lesson screen with a live countdown, and a student-by-question grid that shows at a glance that Q4 is the problem.</dd></div>
+        <div><dt>Best for</dt><dd>Teaching live on a board or tablet, and teachers who want to act on results the same day.</dd></div>
+        <div><dt>Type and colour</dt><dd>Lexend (designed for reading fluency); cobalt for actions, green and red only for right and wrong, always with icons.</dd></div>
+      </dl>
+      <div class="links"><a class="btn" href="c-pulse/index.html#home">Open clickable mockup</a><a class="plain" href="c-pulse/index.html#results">Jump to Results</a></div>
+    </div>
+    <div class="shots">
+      <div><a class="shot desk" href="c-pulse/index.html#results"><img src="shots/c-pulse-results-desktop.png" alt="Class Pulse results: student by question grid with Q4 highlighted" loading="lazy"></a><p class="caption">Results: who got what, Q4 stands out</p></div>
+      <div><a class="shot phone" href="c-pulse/index.html#results"><img src="shots/c-pulse-results-phone.png" alt="Class Pulse results on a phone" loading="lazy"></a><p class="caption">Results on a phone</p></div>
+    </div>
+  </section>
+
+  <section class="rec" aria-labelledby="rec">
+    <h2 id="rec">Recommendation</h2>
+    <p>Build on <b>A. Planbook</b> as the frame, because the week planner matches how teachers already think and its check screen is the clearest answer to “hard to review AI output”. Borrow one idea from each of the other two:</p>
+    <ul>
+      <li><b>From C:</b> the before / in / after class stages and the student-by-question grid on Results.</li>
+      <li><b>From B:</b> the “Ask for a change” bar inside Check, so a teacher can type “make Q3 easier” instead of finding a button.</li>
+    </ul>
+    <p style="margin-top:14px;margin-bottom:0">All three use only patterns available in shadcn/ui (tabs, sheet, command, table, toggle, switch), so the chosen direction maps directly to the planned Next.js stack.</p>
+  </section>
+</div>
+</body>
+</html>

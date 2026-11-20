@@ -1,0 +1,12 @@
+# Helpo mockups (all versions)
+
+Clickable HTML mockups for Educator Helper / Helpo, from v1 to v5. Open `index.html` for the list of versions.
+
+- **v5** (recommended): gamified Helpo. Teacher app `v5/index.html`, student app with mini-games `v5/play.html`.
+- **v4**: Helpo style taken from the reference screens, with the one-tap student join (`v4/index.html#join`).
+- **v3**: kid-friendly, grades 2 to 12, with age bands for students.
+- **v2**: school-ready: standards, objectives, levels, mastery.
+- **v1**: first redesign after the instructor's feedback.
+
+Each version's `share/` folder holds the PNG images used for review. Design briefs are in `docs/design/`.
+Run locally with any static server, for example `npx serve mockups`.
