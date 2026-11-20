@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nibras · Join your class (v6 mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Fredoka:wght@500;600&family=Baloo+Bhaijaan+2:wght@500;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F0FE;--ink:#24185F;--ink2:#4A3F86;--ink3:#5F5596;--pri:#6035CF;--grad:linear-gradient(135deg,#582BC8,#764BD2);--soft:#EBE2FD;--line:#E6DEFB;--sh:0 10px 30px -14px rgba(91,63,217,.32);--btnsh:0 8px 20px -8px rgba(91,63,217,.55);
+--c0:#C0392B;--c1:#1F6FD0;--c2:#B45309;--c3:#15803D;
+--f-disp:'Fredoka','Baloo Bhaijaan 2',sans-serif;--f-text:'Nunito','Tajawal',sans-serif}
+html[lang=ar]{--f-disp:'Baloo Bhaijaan 2','Fredoka',sans-serif;--f-text:'Tajawal','Nunito',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--f-text);background:radial-gradient(900px 500px at 50% -10%,#E4DAFF,transparent 70%),var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;overscroll-behavior:none;font-size:16px}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+:focus-visible{outline:3px solid #1D4ED8;outline-offset:2px;border-radius:10px}
+.app{height:100dvh;width:100%;max-width:620px;margin:0 auto;display:flex;flex-direction:column;padding:0 14px calc(14px + env(safe-area-inset-bottom));position:relative}
+.top{height:56px;display:flex;align-items:center;justify-content:space-between;flex:none}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--f-disp);font-weight:600;font-size:20px}
+.lang{display:inline-flex;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:3px}
+.lang button{min-height:38px;min-width:52px;padding:0 10px;border-radius:9px;font-weight:800;font-size:14px;color:var(--ink2)}
+.lang button[aria-pressed=true]{background:var(--pri);color:#fff}
+.scr{flex:1;min-height:0;display:flex;flex-direction:column}
+.disp{font-family:var(--f-disp)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 22px;border-radius:18px;font-family:var(--f-disp);font-weight:600;font-size:20px;border:2px solid var(--line);background:#fff;color:var(--ink)}
+.btn.pri{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--btnsh)}
+.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+.btn:active:not(:disabled){transform:scale(.98)}
+
+/* join */
+.join{justify-content:center;align-items:stretch;gap:12px;text-align:center}
+.join img.m{width:clamp(80px,17dvh,132px);height:auto;align-self:center;filter:drop-shadow(0 12px 14px rgba(36,24,95,.2))}
+.join h1{font-size:clamp(26px,4.4dvh,34px);font-weight:600;line-height:1.1}
+.join p.sub{font-weight:700;color:var(--ink3);margin-top:-6px}
+.field{display:flex;flex-direction:column;gap:5px;text-align:start}
+.field label{font-weight:800;color:var(--ink2);font-size:15px}
+.field input{min-height:56px;border:2px solid var(--line);border-radius:16px;padding:0 16px;background:#fff;font-weight:800;font-size:20px}
+.field input:focus{border-color:var(--pri)}
+.field input.code{font-family:var(--f-disp);font-weight:600;font-size:32px;letter-spacing:.35em;text-align:center;direction:ltr;padding-inline-start:.35em}
+.field input::placeholder{color:#8A82B8;font-weight:700;letter-spacing:0;font-size:20px}
+.demo{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:4px}
+.demo small{font-weight:800;font-size:12.5px;color:var(--ink3)}
+.demo div{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.demo button{min-height:44px;padding:0 14px;border-radius:99px;background:var(--soft);color:#3B2A91;font-weight:800;font-size:14px;border:1.5px solid transparent}
+.demo button[aria-pressed=true]{background:var(--pri);color:#fff}
+
+/* waiting */
+.wait{align-items:center;justify-content:center;gap:14px;text-align:center}
+.wait img{width:110px}
+.wait b{font-family:var(--f-disp);font-weight:600;font-size:24px}
+.spin{width:26px;height:26px;border-radius:50%;border:4px solid var(--soft);border-top-color:var(--pri);animation:sp .9s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.wline{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink2);font-size:17px}
+
+/* quiz */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none;padding:2px 2px 8px}
+.pc{font-weight:900;color:var(--ink2);font-size:16px;direction:ltr}
+.prog{flex:1;height:10px;border-radius:99px;background:#DDD2F7;overflow:hidden;margin-inline:6px}
+.prog i{display:block;height:100%;background:var(--grad);border-radius:99px;transition:width .4s}
+.ring{position:relative;width:56px;height:56px;flex:none}
+.ring svg{width:56px;height:56px;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-disp);font-weight:600;font-size:20px}
+.qcard{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--sh);padding:clamp(14px,2.8dvh,24px) 18px;text-align:center;font-family:var(--f-disp);font-weight:600;font-size:clamp(21px,3.4dvh,28px);line-height:1.2;flex:none;display:grid;place-items:center;min-height:clamp(96px,19dvh,170px)}
+.ans{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:10px;margin-top:12px}
+.ab{border-radius:22px;color:#fff;font-weight:800;font-size:clamp(17px,2.6dvh,22px);line-height:1.15;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;box-shadow:0 8px 0 rgba(0,0,0,.18);text-align:center;transition:transform .12s}
+.ab:active{transform:translateY(4px);box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.ab span.sh{font-size:22px;line-height:1;opacity:.95}
+.ab0{background:var(--c0)}.ab1{background:var(--c1)}.ab2{background:var(--c2)}.ab3{background:var(--c3)}
+.fb{flex:1;min-height:0;margin-top:12px;border-radius:26px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
+.fb.ok{background:#DCF5E3;color:#0F5A30}.fb.try{background:#FFF0CF;color:#6A4400}
+.fb h2{font-family:var(--f-disp);font-weight:600;font-size:clamp(28px,4.4dvh,36px)}
+.fb p{font-weight:700;font-size:17px;line-height:1.35;max-width:440px}
+.fb .ico{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;font-size:42px;background:#fff;box-shadow:0 8px 16px -8px rgba(0,0,0,.3)}
+.fb .wline{margin-top:6px;color:inherit}
+.fb .spin{border-color:rgba(0,0,0,.12);border-top-color:currentColor}
+
+/* games */
+.hint{text-align:center;font-weight:800;color:var(--ink2);margin:2px 0 8px;flex:none}
+.gr{flex:1;min-height:0;display:grid;gap:10px}
+.gr.m2{grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,1fr)}
+.gr.m3{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr)}
+.tile{border-radius:18px;background:#fff;border:2.5px solid var(--line);font-weight:800;font-size:clamp(15px,2.5dvh,20px);padding:6px;box-shadow:0 6px 0 #DDD2F7;line-height:1.15;display:grid;place-items:center;transition:transform .15s}
+.tile:active{transform:translateY(3px)}
+.tile.sel{background:#EFE6FF;border-color:var(--pri)}
+.tile.ok{background:#DCF5E3;border-color:#1E8E4E;color:#0F5A30;box-shadow:none}
+.tile.no{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.mem{background:var(--grad);border-color:transparent;color:#fff;font-size:34px;box-shadow:0 6px 0 #4A21AE}
+.mem.up{background:#fff;border:2.5px solid var(--line);box-shadow:0 6px 0 #DDD2F7}
+.mem.up img{width:62%;max-height:62%;object-fit:contain}
+.mem.ok{background:#DCF5E3;border-color:#1E8E4E;box-shadow:none}
+.tfq{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px}
+.tfq .qcard{flex:1;font-size:clamp(22px,3.6dvh,30px)}
+.tfb{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:clamp(110px,24dvh,200px);flex:none}
+.tfb button{border-radius:24px;color:#fff;font-family:var(--f-disp);font-weight:600;font-size:clamp(24px,3.6dvh,32px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.tfb button span{font-size:36px;line-height:1}
+.tfb .t{background:var(--c3)}.tfb .f{background:var(--c0)}
+.streak{font-weight:900;color:var(--ink2);direction:ltr}
+
+/* end */
+.end{align-items:center;justify-content:center;text-align:center;gap:12px;position:relative}
+.end h1{font-size:clamp(28px,4.6dvh,36px);font-weight:600}
+.stars{display:flex;gap:6px;justify-content:center;font-size:clamp(52px,9dvh,76px);line-height:1}
+.stars span{color:#F2A900;text-shadow:0 4px 0 #C98600}
+.stars span.off{color:#D8CFF0;text-shadow:none}
+.xp{display:inline-flex;align-items:center;gap:8px;background:#fff;border:2px solid #F3D27A;color:#6A4400;border-radius:99px;padding:8px 20px;font-weight:900;font-size:20px}
+.end p{font-weight:700;color:var(--ink2);font-size:18px}
+.end .btns{display:flex;flex-direction:column;gap:10px;width:min(360px,100%);margin-top:8px}
+.end>*:not(.cf){position:relative;z-index:1}.end img.cf{position:absolute;top:0;inset-inline:0;margin:auto;width:100%;max-width:420px;opacity:.9;pointer-events:none}
+@media (min-width:700px){.app{padding-top:10px}.ab{font-size:24px}}
+@media (max-height:640px){.join img.m{width:64px}.join{gap:8px}.field input{min-height:50px}.btn{min-height:52px}.qcard{min-height:80px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.spin{border-top-color:var(--pri);border-right-color:var(--pri)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="logo"><svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B55E0"/><stop offset="1" stop-color="#5226C2"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lg)"/><path d="M20 12 8.5 17.2 20 22.4l11.5-5.2Z" fill="#fff"/><path d="M13.5 21v4.4c0 1.6 3 3 6.5 3s6.5-1.4 6.5-3V21l-6.5 3Z" fill="#E4DAFF"/><path d="M31.5 17.2v6" stroke="#FFD66B" stroke-width="1.6" stroke-linecap="round"/><path d="M31.5 25.4c-1.3-1-1.3-2.2 0-3.4 1.3 1.2 1.3 2.4 0 3.4Z" fill="#FFD66B"/></svg>Nibras</div>
+    <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="ar" aria-pressed="false" lang="ar">عربي</button></div>
+  </header>
+
+  <main class="scr join" id="join">
+    <img class="m" src="assets/star-buddy.svg" alt="">
+    <h1 class="disp" data-i="joinT">Join your class</h1>
+    <div class="field"><label for="code" data-i="codeL">Class code</label><input id="code" class="code" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="000000" aria-describedby="err"></div>
+    <div class="field"><label for="name" data-i="nameL">What's your first name?</label><input id="name" autocomplete="given-name" maxlength="20" data-iph="nameP" placeholder="First name"></div>
+    <button type="button" class="btn pri" id="joinBtn" disabled data-i="join">Join</button>
+    <div class="demo"><small data-i="demo">Demo: pick an activity</small><div id="modes" role="group"></div></div>
+  </main>
+
+  <main class="scr wait" id="wait" hidden>
+    <img src="assets/star-buddy.svg" alt=""><b data-i="hi"></b><div class="wline"><span class="spin"></span><span data-i="waitT">Waiting for teacher…</span></div>
+  </main>
+
+  <main class="scr" id="play" hidden></main>
+
+  <main class="scr end" id="end" hidden>
+    <img class="cf" src="assets/confetti.svg" alt="">
+    <h1 class="disp" id="endT"></h1>
+    <div class="stars" id="stars" role="img"></div>
+    <p id="endS"></p>
+    <div class="xp">+40 XP <span data-i="xpT">for effort</span></div>
+    <div class="btns"><button type="button" class="btn pri" id="again" data-i="again">Play again</button><button type="button" class="btn" id="done" data-i="done">Done</button></div>
+  </main>
+</div>
+
+<script>
+const I={en:{joinT:"Join your class",codeL:"Class code",nameL:"What's your first name?",nameP:"First name",join:"Join",demo:"Demo: pick an activity",waitT:"Waiting for teacher…",xpT:"for effort",again:"Play again",done:"Done",
+quiz:"Quiz",match:"Match pairs",memory:"Memory",rush:"True / False",hi:n=>`Hi ${n}! Get ready.`,
+good:"Nice!",goodS:"You got it.",tryT:"Good try!",tryS:"The answer is",time:"Time's up",timeS:"Here is the answer:",
+endT:n=>`Well done, ${n}!`,endS:(a,b)=>`You got ${a} of ${b}. Every try helps you learn.`,endG:"All done. Every try helps you learn.",stars:n=>`${n} of 3 stars`,
+matchH:"Tap two cards that belong together",memH:"Find the matching pictures",tf:"True",fl:"False",streak:"Streak",ofx:(a,b)=>`${a} / ${b}`,tfH:"Is it true or false?"},
+ar:{joinT:"انضم إلى صفك",codeL:"رمز الصف",nameL:"ما اسمك الأول؟",nameP:"الاسم الأول",join:"انضم",demo:"عرض تجريبي: اختر نشاطًا",waitT:"بانتظار المعلّم…",xpT:"على جهدك",again:"العب مرة أخرى",done:"تم",
+quiz:"اختبار",match:"طابق الأزواج",memory:"الذاكرة",rush:"صح / خطأ",hi:n=>`أهلًا ${n}! استعد.`,
+good:"أحسنت!",goodS:"إجابتك صحيحة.",tryT:"محاولة جيدة!",tryS:"الإجابة هي",time:"انتهى الوقت",timeS:"هذه هي الإجابة:",
+endT:n=>`أحسنت يا ${n}!`,endS:(a,b)=>`أجبت عن ${a} من ${b}. كل محاولة تساعدك على التعلّم.`,endG:"انتهينا. كل محاولة تساعدك على التعلّم.",stars:n=>`${n} من 3 نجوم`,
+matchH:"اضغط على بطاقتين تنتميان معًا",memH:"ابحث عن الصور المتطابقة",tf:"صح",fl:"خطأ",streak:"السلسلة",ofx:(a,b)=>`${a} / ${b}`,tfH:"هل العبارة صحيحة أم خاطئة؟"}};
+const Q={en:[
+{q:"What do plants make during photosynthesis?",o:["Food (glucose)","Rocks","Soil","Plastic"],c:0,e:"Plants build glucose, a sugar, and use it as food."},
+{q:"Which gas do plants take in?",o:["Oxygen","Carbon dioxide","Nitrogen","Helium"],c:1,e:"Leaves take in carbon dioxide from the air."},
+{q:"What gives leaves their green colour?",o:["Water","Chlorophyll","Glucose","Soil"],c:1,e:"Chlorophyll is a green pigment that captures light."},
+{q:"Which energy do plants use?",o:["Wind","Sound","Heat from soil","Sunlight"],c:3,e:"Sunlight is the energy source."},
+{q:"What are the tiny holes in leaves called?",o:["Veins","Roots","Stomata","Petals"],c:2,e:"Stomata let gases in and out."}],
+ar:[
+{q:"ماذا تصنع النباتات في البناء الضوئي؟",o:["غذاء (الجلوكوز)","صخورًا","تربة","بلاستيكًا"],c:0,e:"يبني النبات الجلوكوز، وهو سكر يستخدمه غذاءً."},
+{q:"أي غاز تأخذه النباتات؟",o:["الأكسجين","ثاني أكسيد الكربون","النيتروجين","الهيليوم"],c:1,e:"تأخذ الأوراق ثاني أكسيد الكربون من الهواء."},
+{q:"ما الذي يعطي الأوراق لونها الأخضر؟",o:["الماء","الكلوروفيل","الجلوكوز","التربة"],c:1,e:"الكلوروفيل صبغة خضراء تلتقط الضوء."},
+{q:"ما الطاقة التي تستخدمها النباتات؟",o:["الرياح","الصوت","حرارة التربة","ضوء الشمس"],c:3,e:"ضوء الشمس هو مصدر الطاقة."},
+{q:"ماذا نسمّي الثقوب الصغيرة في الأوراق؟",o:["العروق","الجذور","الثغور","البتلات"],c:2,e:"الثغور تسمح بدخول الغازات وخروجها."}]};
+const PAIRS={en:[["Chlorophyll","Green pigment"],["Sunlight","Energy source"],["CO₂","Gas taken in"],["Oxygen","Gas released"],["Glucose","Plant's food"]],ar:[["الكلوروفيل","صبغة خضراء"],["ضوء الشمس","مصدر الطاقة"],["CO₂","غاز يدخل"],["الأكسجين","غاز يخرج"],["الجلوكوز","غذاء النبات"]]};
+const TF={en:[["Plants make their own food.",1,"Yes. They use light, water and CO₂."],["Plants breathe out carbon dioxide during photosynthesis.",0,"They release oxygen instead."],["Chlorophyll is green.",1,"That is why leaves look green."],["Most photosynthesis happens in the roots.",0,"It mostly happens in the leaves."],["Plants need sunlight.",1,"Light is their energy source."],["Oxygen is an input of photosynthesis.",0,"Oxygen is an output."]],
+ar:[["النباتات تصنع غذاءها بنفسها.",1,"نعم. تستخدم الضوء والماء وCO₂."],["النباتات تطلق ثاني أكسيد الكربون في البناء الضوئي.",0,"إنها تطلق الأكسجين بدلًا منه."],["الكلوروفيل أخضر اللون.",1,"لهذا تبدو الأوراق خضراء."],["معظم البناء الضوئي يحدث في الجذور.",0,"يحدث غالبًا في الأوراق."],["النباتات تحتاج إلى ضوء الشمس.",1,"الضوء مصدر طاقتها."],["الأكسجين من مدخلات البناء الضوئي.",0,"الأكسجين من المخرجات."]]};
+const MEMIMG=["leaf","sprout-sun","drop","tile-co2","tile-candy","lightbulb"];
+const MODES=["quiz","match","memory","rush"];
+const S={lang:"en",mode:"quiz",name:"",timers:[]};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const t=k=>I[S.lang][k];const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const reduce=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
+function later(fn,ms){const id=setTimeout(fn,ms);S.timers.push(id);return id}
+function every(fn,ms){const id=setInterval(fn,ms);S.timers.push(id);return id}
+function clearAll(){S.timers.forEach(i=>{clearTimeout(i);clearInterval(i)});S.timers=[]}
+function show(id){["join","wait","play","end"].forEach(x=>$("#"+x).hidden=x!==id)}
+
+function setLang(l){S.lang=l;document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr";
+ $$("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));$$("[data-iph]").forEach(e=>e.placeholder=t(e.dataset.iph));
+ $$(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===l));renderModes();
+ if(!$("#wait").hidden)$("#wait b").textContent=t("hi")(S.name);
+ if(!$("#play").hidden&&S.cur){S.cur.rerender&&S.cur.rerender()}
+ if(!$("#end").hidden)renderEnd();document.title="Nibras · "+(l==="ar"?"انضم إلى صفك":"Join your class")}
+$$(".lang button").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+function renderModes(){$("#modes").innerHTML=MODES.map(m=>`<button type="button" data-m="${m}" aria-pressed="${S.mode===m}">${t(m)}</button>`).join("");
+ $$("#modes button").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;renderModes()})}
+
+/* join */
+const code=$("#code"),nm=$("#name"),jb=$("#joinBtn");
+function valid(){code.value=code.value.replace(/\D/g,"").slice(0,6);jb.disabled=!(code.value.length===6&&nm.value.trim().length>0)}
+code.oninput=nm.oninput=valid;
+nm.onkeydown=e=>{if(e.key==="Enter"&&!jb.disabled)jb.click()};
+jb.onclick=()=>{S.name=nm.value.trim();show("wait");$("#wait b").textContent=t("hi")(S.name);later(()=>startMode(S.mode),1500)};
+
+function startMode(m){clearAll();S.mode=m;S.score=0;S.total=0;show("play");S.cur=null;({quiz,match:matchGame,memory:memGame,rush:rushGame})[m]()}
+
+/* ---- Quiz ---- */
+function quiz(){const st={i:0,sec:20,answered:null,phase:"q"};S.cur=st;const SH=["▲","◆","●","■"];const N=()=>Q[S.lang].length;S.total=Q.en.length;
+ const R=2*Math.PI*24;
+ function draw(){const q=Q[S.lang][st.i];const p=$("#play");
+  p.innerHTML=`<div class="bar"><span class="pc">${st.i+1} / ${N()}</span><div class="prog" aria-hidden="true"><i style="width:${(st.i)/N()*100}%"></i></div><div class="ring" role="timer" aria-label="${st.sec}"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#DDD2F7" stroke-width="6"/><circle id="rg" cx="28" cy="28" r="24" fill="none" stroke="#6035CF" stroke-width="6" stroke-linecap="round" stroke-dasharray="${R}" stroke-dashoffset="${R*(1-st.sec/20)}"/></svg><b id="rs">${st.sec}</b></div></div>
+  <div class="qcard">${esc(q.q)}</div><div class="ans" id="ans">${q.o.map((o,n)=>`<button type="button" class="ab ab${n}" data-n="${n}"><span class="sh" aria-hidden="true">${SH[n]}</span>${esc(o)}</button>`).join("")}</div>`;
+  $$("#ans .ab").forEach(b=>b.onclick=()=>answer(+b.dataset.n))}
+ function tick(){if(st.phase!=="q")return;st.sec--;const rg=$("#rg");if(rg)rg.setAttribute("stroke-dashoffset",R*(1-st.sec/20));const rs=$("#rs");if(rs)rs.textContent=st.sec;if(st.sec<=0)answer(null)}
+ function feedback(){const q=Q[S.lang][st.i];const right=st.answered===q.c,to=st.answered===null;
+  const a=$("#ans");const fb=document.createElement("div");fb.className="fb "+(right?"ok":"try");fb.setAttribute("role","status");
+  fb.innerHTML=`<div class="ico" aria-hidden="true">${right?"✓":to?"⏱":"💡"}</div><h2>${right?t("good"):to?t("time"):t("tryT")}</h2><p>${right?t("goodS"):(to?t("timeS"):t("tryS"))+(right?"":" <b>"+esc(q.o[q.c])+"</b>.")} ${esc(q.e)}</p><div class="wline"><span class="spin"></span><span>${t("waitT")}</span></div>`;
+  a.replaceWith(fb)}
+ function answer(n){if(st.phase!=="q")return;st.phase="fb";st.answered=n;if(n===Q.en[st.i].c)S.score++;feedback();
+  later(()=>{st.i++;if(st.i>=N()){finish()}else{st.sec=20;st.phase="q";draw()}},3600)}
+ st.rerender=()=>{if(st.phase==="q")draw();else{draw();feedback()}};
+ draw();every(tick,1000)}
+
+/* ---- Match pairs ---- */
+function matchGame(){const P=()=>PAIRS[S.lang];const st={sel:null,ok:new Set(),moves:0};S.cur=st;S.total=P().length;
+ const order=[0,3,6,1,8,5,2,9,4,7];const tiles=[];P().forEach((p,i)=>{tiles.push({id:i,s:0},{id:i,s:1})});const arr=order.map(i=>tiles[i]);
+ function draw(){$("#play").innerHTML=`<div class="hint">${t("matchH")} · <span class="streak">${st.ok.size}/${P().length}</span></div><div class="gr m2">${arr.map((x,n)=>`<button type="button" class="tile ${st.ok.has(x.id)?"ok":""} ${st.sel===n?"sel":""}" data-n="${n}" ${st.ok.has(x.id)?"disabled":""}>${esc(P()[x.id][x.s])}</button>`).join("")}</div>`;
+  $$(".tile").forEach(b=>b.onclick=()=>{const n=+b.dataset.n;if(st.sel===null){st.sel=n;draw();return}if(st.sel===n){st.sel=null;draw();return}
+   const a=arr[st.sel],c=arr[n];st.moves++;if(a.id===c.id&&a.s!==c.s){st.ok.add(a.id);st.sel=null;draw();if(st.ok.size===P().length){S.score=Math.max(1,P().length-Math.max(0,st.moves-P().length));later(finish,900)}}
+   else{const s=st.sel;st.sel=null;draw();const bs=$$(".tile");[bs[s],bs[n]].forEach(e=>e.classList.add("no"))}})}
+ st.rerender=draw;draw()}
+
+/* ---- Memory ---- */
+function memGame(){const st={open:[],ok:new Set(),lock:false,moves:0};S.cur=st;S.total=6;
+ const deck=[0,3,1,5,2,4,4,0,2,5,3,1];
+ function draw(){$("#play").innerHTML=`<div class="hint">${t("memH")} · <span class="streak">${st.ok.size}/6</span></div><div class="gr m3">${deck.map((id,n)=>{const up=st.open.includes(n)||st.ok.has(id);return `<button type="button" class="tile mem ${up?"up":""} ${st.ok.has(id)?"ok":""}" data-n="${n}" aria-label="${up?"picture":"card"}" ${up&&st.ok.has(id)?"disabled":""}>${up?`<img src="assets/${MEMIMG[id]}.svg" alt="">`:"?"}</button>`}).join("")}</div>`;
+  $$(".tile").forEach(b=>b.onclick=()=>{const n=+b.dataset.n;if(st.lock||st.open.includes(n))return;st.open.push(n);draw();
+   if(st.open.length===2){st.moves++;const[a,c]=st.open;if(deck[a]===deck[c]){st.ok.add(deck[a]);st.open=[];draw();if(st.ok.size===6){S.score=Math.max(1,6-Math.floor(Math.max(0,st.moves-9)/2));later(finish,900)}}
+    else{st.lock=true;later(()=>{st.open=[];st.lock=false;draw()},800)}}})}
+ st.rerender=draw;draw()}
+
+/* ---- True/False rush ---- */
+function rushGame(){const st={i:0,streak:0,left:8,phase:"q",ans:null};S.cur=st;const N=TF.en.length;S.total=N;
+ function draw(){const q=TF[S.lang][st.i];const p=$("#play");
+  p.innerHTML=`<div class="bar"><span class="pc">${st.i+1} / ${N}</span><div class="prog" aria-hidden="true"><i style="width:${st.left/8*100}%;transition:none"></i></div><span class="streak">${t("streak")} ${st.streak}</span></div><div class="tfq"><div class="qcard">${esc(q[0])}</div><div id="tfa" class="tfb"><button type="button" class="t" data-v="1"><span aria-hidden="true">✓</span>${t("tf")}</button><button type="button" class="f" data-v="0"><span aria-hidden="true">✗</span>${t("fl")}</button></div></div>`;
+  $$("#tfa button").forEach(b=>b.onclick=()=>pick(+b.dataset.v))}
+ function fb(){const q=TF[S.lang][st.i];const right=st.ans===q[1],to=st.ans===null;const a=$("#tfa");const f=document.createElement("div");f.className="fb "+(right?"ok":"try");f.style.cssText="margin-top:0;flex:none;height:clamp(110px,24dvh,200px);padding:12px";f.setAttribute("role","status");
+  f.innerHTML=`<h2 style="font-size:26px">${right?t("good"):to?t("time"):t("tryT")}</h2><p style="font-size:16px">${esc(q[2])}</p><div class="wline" style="margin:0"><span class="spin"></span><span>${t("waitT")}</span></div>`;a.replaceWith(f)}
+ function pick(v){if(st.phase!=="q")return;st.phase="fb";st.ans=v;const q=TF.en[st.i];if(v===q[1]){S.score++;st.streak++}else st.streak=0;fb();later(()=>{st.i++;if(st.i>=N)finish();else{st.left=8;st.phase="q";st.ans=null;draw()}},2600)}
+ every(()=>{if(st.phase!=="q")return;st.left--;const i=$(".prog i");if(i)i.style.width=st.left/8*100+"%";if(st.left<=0)pick(null)},1000);
+ st.rerender=()=>{draw();if(st.phase==="fb")fb()};draw()}
+
+/* ---- End ---- */
+function finish(){clearAll();show("end");renderEnd()}
+function stars(){const r=S.score/S.total;return r>=.8?3:r>=.5?2:1}
+function renderEnd(){const n=stars();$("#endT").textContent=t("endT")(S.name||"");$("#stars").setAttribute("aria-label",t("stars")(n));$("#stars").innerHTML=[1,2,3].map(i=>`<span class="${i<=n?"":"off"}" aria-hidden="true">★</span>`).join("");
+ $("#endS").textContent=S.mode==="quiz"||S.mode==="rush"?t("endS")(S.score,S.total):t("endG")}
+$("#again").onclick=()=>startMode(S.mode);
+$("#done").onclick=()=>{clearAll();S.cur=null;show("join");nm.value="";valid();nm.focus()};
+
+/* init */
+const P=new URLSearchParams(location.search);
+if(P.get("mode")&&MODES.includes(P.get("mode")))S.mode=P.get("mode");
+if(P.get("code")){code.value=P.get("code").replace(/\D/g,"").slice(0,6)}
+setLang(P.get("lang")==="ar"?"ar":"en");valid();
+window.__play={S,startMode,finish};
+</script>
+</body>
+</html>
