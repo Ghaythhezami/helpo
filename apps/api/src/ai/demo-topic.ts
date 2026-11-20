@@ -207,7 +207,14 @@ export function buildTopic(ctx: LessonContext): Topic {
       sortNo: ["Chocolate", "Plastic", "Pizza"],
     };
   }
-  const terms = genericTerms(ctx.title, ctx.objectives, ctx.sourceText);
+  // Generators read the stored blueprint (as with Claude), so the cards and questions stay grounded even when the
+  // lesson title changed after analysis (auto titles). Analysis itself derives terms from the title and source.
+  const fromBlueprint: Term[] = (ctx.blueprint?.vocabulary ?? []).map((v, i) => ({
+    term: v.term,
+    meaning: v.meaning,
+    page: ctx.blueprint?.keyConcepts[i]?.sourcePage ?? 1,
+  })).map(({ term, meaning, page }) => ({ term, def: meaning, page }));
+  const terms = fromBlueprint.length >= 10 ? fromBlueprint : genericTerms(ctx.title, ctx.objectives, ctx.sourceText);
   return {
     plants,
     title: ctx.title,

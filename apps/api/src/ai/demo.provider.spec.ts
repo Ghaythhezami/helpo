@@ -196,3 +196,12 @@ describe("DemoAiProvider grounding (any topic)", () => {
     },
   );
 });
+
+describe("DemoAiProvider grounding after an auto title change", () => {
+  it("keeps cards grounded when generation runs with a different title than analysis", async () => {
+    const { dropUngrounded } = await import("./content");
+    const bp = await ai.analyze(ctx("Grade 4 science, 45 min: the water cycle (evaporation, condensation, precipitation)"));
+    const cards = await gen("CARDS", { ...ctx("Water cycle grade 4"), blueprint: bp } as LessonContext);
+    expect(dropUngrounded("CARDS", cards, bp).dropped).toBe(0);
+  });
+});
