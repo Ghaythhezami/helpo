@@ -10,7 +10,7 @@ import { PrismaService } from "../prisma/prisma.service";
 
 /** Student join URL carrying the code. */
 export function joinLink(code: string): string {
-  return `${process.env.WEB_URL || process.env.WEB_ORIGIN || "http://localhost:3000"}/play?code=${code}`;
+  return `${process.env.WEB_URL || process.env.WEB_ORIGIN || "http://localhost:3000"}/join?code=${code}`;
 }
 
 /** QR code of the join link as SVG (the qrcode package). Falls back to an empty string if it cannot be made. */

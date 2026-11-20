@@ -242,8 +242,8 @@ export class DemoAiProvider implements AiProvider {
       summary: plan.summary,
       standard: plan.standard,
       objectives: plan.objectives,
-      keyConcepts: topic.terms.slice(0, 8).map((t) => ({ name: t.term, definition: t.def, sourcePage: t.page })),
-      vocabulary: topic.terms.slice(0, 10).map((t) => ({ term: t.term, meaning: t.def })),
+      keyConcepts: topic.terms.slice(0, 15).map((t) => ({ name: t.term, definition: t.def, sourcePage: t.page })),
+      vocabulary: topic.terms.slice(0, 15).map((t) => ({ term: t.term, meaning: t.def })),
       processes: [{ name: ar ? "العملية" : "The process", steps: topic.equationTiles.filter((t) => !["+", "->", "←"].includes(t)) }],
       relations: topic.terms.slice(0, 6).map((t) => ({ left: t.term, right: t.def })),
       commonMisconceptions: [

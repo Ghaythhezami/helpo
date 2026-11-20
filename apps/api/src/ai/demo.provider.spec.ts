@@ -181,3 +181,18 @@ describe("content helpers", () => {
     }
   });
 });
+
+describe("DemoAiProvider grounding (any topic)", () => {
+  it.each(["Water cycle grade 4", "Fractions: adding unlike denominators", "Photosynthesis"])(
+    "keeps every card and question grounded in its own blueprint for %s",
+    async (title) => {
+      const { dropUngrounded } = await import("./content");
+      const c = ctx(title);
+      const bp = await ai.analyze(c);
+      for (const kind of ["CARDS", "QUIZ"] as const) {
+        const content = await gen(kind, { ...c, blueprint: bp } as LessonContext);
+        expect(dropUngrounded(kind, content, bp).dropped).toBe(0);
+      }
+    },
+  );
+});

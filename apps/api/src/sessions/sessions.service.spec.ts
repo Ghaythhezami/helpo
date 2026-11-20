@@ -143,7 +143,7 @@ describe("SessionsService share settings", () => {
     const expires = db.activitySession.create.mock.calls[0][0].data.expiresAt as Date;
     expect(expires.getTime() - Date.now()).toBeGreaterThan(1.9 * 3_600_000);
     expect(expires.getTime() - Date.now()).toBeLessThan(2.1 * 3_600_000);
-    expect(view.link).toBe(`https://nibras.example/play?code=${view.joinCode}`);
+    expect(view.link).toBe(`https://nibras.example/join?code=${view.joinCode}`);
     expect(view.qrSvg).toMatch(/^<svg/);
     expect(view.isOpen).toBe(true);
     delete process.env.WEB_URL;

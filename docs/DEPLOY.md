@@ -2,8 +2,8 @@
 
 | Part | Host | Mode |
 |---|---|---|
-| Web (Next.js) | Vercel, project `nibras-web` | rewrites `/api/*` to `API_ORIGIN` (same-origin cookies) |
-| API (NestJS, one port) | Railway, project `nibras`, service `nibras-api` | `QUEUE_DRIVER=bullmq` + `REALTIME=socket` once those drivers land; `inline` + `poll` until then |
+| Web (Next.js) | Vercel, project `nibras-web` (https://nibras-web-sage.vercel.app) | rewrites `/api/*` to `API_ORIGIN` (same-origin cookies) |
+| API (NestJS, one port) | Railway, project `nibras`, service `nibras-api` | `QUEUE_DRIVER=bullmq` + `REALTIME=socket` (https://nibras-api-production-caff3bab.up.railway.app) |
 | Postgres | Railway `Postgres` service | `DATABASE_URL=${{Postgres.DATABASE_URL}}` (private network) |
 | Redis | Railway `Redis` service | `REDIS_URL=${{Redis.REDIS_URL}}`; a fixed-cost instance, which suits BullMQ polling |
 | API (fallback) | Vercel, project `nibras-api` (optional) | `inline` + `poll`, for a serverless-only setup |
@@ -26,7 +26,7 @@ Variables on `nibras-api`:
 ```
 DATABASE_URL=${{Postgres.DATABASE_URL}}   REDIS_URL=${{Redis.REDIS_URL}}   NODE_ENV=production
 QUEUE_DRIVER=inline|bullmq                REALTIME=poll|socket              WORKER_ONLY=false
-WEB_URL / WEB_ORIGIN / BETTER_AUTH_URL = the web origin (https://nibras-web.vercel.app)
+WEB_URL / WEB_ORIGIN / BETTER_AUTH_URL = the web origin (https://nibras-web-sage.vercel.app)
 CORS_ORIGINS = extra allowed origins, comma-separated
 BETTER_AUTH_SECRET, STUDENT_COOKIE_SECRET, REALTIME_TOKEN_SECRET   (generated; local copy in .local/prod-secrets.env, gitignored)
 ANTHROPIC_API_KEY                         (set by the owner; without it the API runs in demo mode)
@@ -34,11 +34,9 @@ CLAUDE_ANALYSIS_MODEL=claude-opus-5-5     CLAUDE_GEN_MODEL=claude-sonnet-5-5    
 MAX_UPLOAD_MB=20                          MONTHLY_LESSON_QUOTA=100
 ```
 
-To seed the demo data once, use the public database URL from the Railway Postgres service:
-
-```bash
-DATABASE_URL="<DATABASE_PUBLIC_URL>" npm run db:seed -w @helpo/api
-```
+To seed the demo data (idempotent), set `DEMO_PASSWORD` (secret) and `SEED_ON_START=true` on `nibras-api`, deploy once,
+then set `SEED_ON_START=false`. The seed runs after the migrations and never blocks startup. The production demo login
+is kept in `.local/prod-demo-account.txt` (gitignored).
 
 ## Vercel (web)
 
