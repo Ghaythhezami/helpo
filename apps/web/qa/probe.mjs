@@ -1,0 +1,21 @@
+import { createRequire } from "node:module";
+import fs from "node:fs";
+const require = createRequire("C:/Users/A/AppData/Roaming/npm/node_modules/@playwright/mcp/");
+const { chromium } = require("playwright");
+const acct = fs.readFileSync("C:/Users/A/Desktop/DEV/helpo/.local/demo-account.txt", "utf8");
+const browser = await chromium.launch({ executablePath: "C:/Users/A/AppData/Local/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-win64/chrome-headless-shell.exe" });
+const c = await browser.newContext();
+const p = await c.newPage();
+await p.goto("http://localhost:3000/login");
+await p.fill("#email", /Email:\s*(\S+)/.exec(acct)[1]);
+await p.fill("#password", /Password:\s*(\S+)/.exec(acct)[1]);
+await p.locator(".authbtn").click();
+await p.waitForURL(/\/app/);
+const out = await p.evaluate(async () => {
+  const lessons = await (await fetch("/api/lessons")).json();
+  const l = lessons.sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+  const r = await (await fetch(`/api/lessons/${l.id}/results`)).json();
+  return { lesson: l.title.slice(0, 30), sessionId: r.sessionId, answered: r.answered, classSize: r.classSize, average: r.average, avgTime: r.averageTimeSec, grid: r.grid.length, ranking: r.ranking };
+});
+console.log(JSON.stringify(out));
+await browser.close();

@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/.next
+**/coverage
+**/.env
+**/.env.*
+.local
+.git
+.vercel
+.scannerwork
+apps/web
+design
+docs
+mockups
+**/qa

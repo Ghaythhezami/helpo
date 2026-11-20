@@ -7,3 +7,13 @@ coverage/
 !.env.example
 *.tsbuildinfo
 npm-debug.log*
+
+.local/
+.vercel/
+.env*.local
+.scannerwork/
+apps/web/keys.tmp
+apps/web/qa/out/
+apps/web/qa/mobile/
+apps/web/qa/e2e/
+apps/web/qa/*.txt

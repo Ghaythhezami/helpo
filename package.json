@@ -1,15 +1,19 @@
 {
-  "name": "educator-helper",
-  "version": "0.1.0",
+  "name": "helpo",
+  "version": "1.0.0",
   "private": true,
-  "workspaces": ["apps/*"],
+  "workspaces": ["packages/*", "apps/*"],
   "scripts": {
-    "dev:api": "npm run dev -w @educator-helper/api",
-    "dev:teacher": "npm run dev -w @educator-helper/teacher",
-    "dev:student": "npm run dev -w @educator-helper/student",
-    "build": "npm run build -w @educator-helper/api && npm run build -w @educator-helper/teacher && npm run build -w @educator-helper/student",
-    "db:generate": "npm run db:generate -w @educator-helper/api",
-    "db:migrate": "npm run db:migrate -w @educator-helper/api"
+    "build": "npm run build -w @helpo/shared && npm run build -w @helpo/api && npm run build -w @helpo/web",
+    "dev:api": "npm run dev -w @helpo/api",
+    "dev:web": "npm run dev -w @helpo/web",
+    "test": "npm run test -w @helpo/shared && npm run test -w @helpo/api && npm run test -w @helpo/web",
+    "typecheck": "npm run typecheck -w @helpo/shared && npm run typecheck -w @helpo/api && npm run typecheck -w @helpo/web",
+    "lint": "npm run lint -w @helpo/api && npm run lint -w @helpo/web",
+    "db:generate": "npm run db:generate -w @helpo/api",
+    "db:migrate": "npm run db:migrate -w @helpo/api",
+    "db:seed": "npm run db:seed -w @helpo/api",
+    "sonar": "node scripts/sonar.mjs"
   },
   "engines": { "node": ">=20.19.0" }
 }

@@ -1,0 +1,368 @@
+// Helpo domain model. Every teacher-owned row is reachable from a teacherId and every
+// query is scoped by it (Stackwise T09: scope every query by owner).
+
+enum Band {
+  EXPLORER
+  NAVIGATOR
+  STUDIO
+}
+
+enum LessonStatus {
+  DRAFT
+  UPLOADED
+  EXTRACTING
+  ANALYZING
+  ANALYZED
+  GENERATING
+  READY
+  PARTIAL
+  FAILED
+}
+
+enum ResourceKind {
+  SLIDES
+  WORKSHEET
+  QUIZ
+  GAME
+  CARDS
+}
+
+enum ResourceStatus {
+  WAITING
+  WORKING
+  READY
+  FAILED
+}
+
+enum CheckKind {
+  FACT_CHECK
+  READING_LEVEL
+  ORDER
+  AGE_APPROPRIATE
+  LANGUAGE
+  GROUNDING
+}
+
+enum CheckStatus {
+  OPEN
+  ACCEPTED
+  EDITED
+  DISMISSED
+}
+
+enum SessionType {
+  LIVE_QUIZ
+  GAME
+  ASSIGNMENT
+}
+
+enum SessionStatus {
+  LOBBY
+  LIVE
+  ENDED
+}
+
+enum GameKind {
+  MATCH
+  SORT
+  EQUATION
+  MEMORY
+  TRUE_FALSE
+}
+
+model School {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  teachers  User[]
+  classes   ClassRoom[]
+
+  @@map("school")
+}
+
+model ClassRoom {
+  id                  String    @id @default(cuid())
+  schoolId            String?
+  teacherId           String
+  name                String
+  grade               Int
+  subjectEn           String    @default("Science")
+  subjectAr           String?
+  band                Band
+  pointsEnabled       Boolean   @default(true)
+  teamsEnabled        Boolean   @default(false)
+  soundsEnabled       Boolean   @default(false)
+  celebrationsEnabled Boolean   @default(true)
+  weeklyGoalXp        Int       @default(500)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  school              School?   @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  teacher             User      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  students            Student[]
+  lessons             Lesson[]
+  sessions            ActivitySession[]
+
+  @@unique([teacherId, name])
+  @@index([schoolId, grade])
+  @@map("class_room")
+}
+
+model Student {
+  id              String    @id @default(cuid())
+  classId         String
+  fullName        String
+  displayName     String
+  xp              Int       @default(0)
+  streakDays      Int       @default(0)
+  streakSavers    Int       @default(1)
+  lastActiveDay   String?
+  avatarItems     String[]  @default([])
+  avatarBackground String   @default("lavender")
+  locale          String    @default("en")
+  createdAt       DateTime  @default(now())
+  classRoom       ClassRoom @relation(fields: [classId], references: [id], onDelete: Cascade)
+  participants    Participant[]
+  badges          StudentBadge[]
+  xpEvents        XpEvent[]
+  gameResults     GameResult[]
+
+  @@index([classId])
+  @@map("student")
+}
+
+model Lesson {
+  id                String        @id @default(cuid())
+  teacherId         String
+  classId           String
+  titleEn           String?
+  titleAr           String?
+  unitTitleEn       String?
+  unitTitleAr       String?
+  lessonNumber      Int?
+  durationMin       Int           @default(45)
+  language          String        @default("English")
+  descriptionEn     String?
+  descriptionAr     String?
+  standard          String?
+  objectivesEn      Json          @default("[]")
+  objectivesAr      Json          @default("[]")
+  /// Language the kit was generated in first ("en" | "ar").
+  contentLocale     String        @default("en")
+  /// {"en":"ready|working|missing","ar":"..."}: state of each language for the whole lesson.
+  translationStatus Json          @default("{\"en\":\"ready\",\"ar\":\"missing\"}")
+  sourceText        String?
+  sourceFileName    String?
+  sourceType        String?
+  sourcePages       Int?
+  sourceSha256      String?
+  sourceLocale      String?
+  sourceBlobUrl     String?
+  /// Teacher's free-text instructions (prompt-only lessons set aiWritten).
+  prompt            String?   @db.Text
+  /// Storage key of the original: lessons/{id}/source.{ext}
+  sourceKey         String?
+  /// Cleaned markdown with [[page N]] markers (cache by sourceSha256 reuses it).
+  cleanText         String?   @db.Text
+  tokenCount        Int?
+  aiWritten         Boolean   @default(false)
+  cancelRequested   Boolean   @default(false)
+  /// {resources, quizCount, difficulty, autoGenerate}: what one click generates.
+  generationOptions Json?
+  /// Why the pipeline failed (extraction or analysis), shown to the teacher.
+  errorMessage      String?
+  /// Result of the single analysis call (LessonBlueprint); every generator reads the same blueprint.
+  blueprint         Json?
+  /// Set by the teacher's approval; sessions can only start on approved kits.
+  approvedAt        DateTime?
+  requestedKinds    ResourceKind[]
+  status            LessonStatus  @default(DRAFT)
+  tracedStatements  Int?
+  totalStatements   Int?
+  generationStartedAt  DateTime?
+  generationFinishedAt DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  teacher           User          @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  classRoom         ClassRoom     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  resources         Resource[]
+  checks            AiCheck[]
+  sessions          ActivitySession[]
+  gameResults       GameResult[]
+
+  @@index([teacherId, createdAt])
+  @@index([classId])
+  @@index([teacherId, sourceSha256])
+  @@map("lesson")
+}
+
+model Resource {
+  id        String         @id @default(cuid())
+  lessonId  String
+  kind      ResourceKind
+  status    ResourceStatus @default(WAITING)
+  contentEn Json?
+  contentAr Json?
+  error     String?
+  promptVersion String?
+  model     String?
+  tokensIn  Int      @default(0)
+  tokensOut Int      @default(0)
+  version   Int      @default(1)
+  progress  Int      @default(0)
+  versions  ResourceVersion[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  lesson    Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, kind])
+  @@map("resource")
+}
+
+/// Every save of a resource is a version (1 = the AI original). Revert restores an earlier one.
+model ResourceVersion {
+  id        String   @id @default(cuid())
+  resourceId String
+  version   Int
+  contentEn Json?
+  contentAr Json?
+  source    String   @default("AI")
+  createdAt DateTime @default(now())
+  resource  Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@unique([resourceId, version])
+  @@map("resource_version")
+}
+
+model AiCheck {
+  id          String        @id @default(cuid())
+  lessonId    String
+  resource    ResourceKind
+  itemRef     String
+  kind        CheckKind
+  messageEn   String?
+  messageAr   String?
+  suggestionEn String?
+  suggestionAr String?
+  sourcePage  Int?
+  status      CheckStatus   @default(OPEN)
+  editedTextEn String?
+  editedTextAr String?
+  /// Text of the item before a check was applied, so OPEN (undo) can restore it.
+  originalTextEn String?
+  originalTextAr String?
+  resolvedAt  DateTime?
+  createdAt   DateTime      @default(now())
+  lesson      Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId, status])
+  @@map("ai_check")
+}
+
+model ActivitySession {
+  id              String        @id @default(cuid())
+  lessonId        String
+  classId         String
+  type            SessionType
+  game            GameKind?
+  status          SessionStatus @default(LOBBY)
+  joinCode        String
+  namesHidden     Boolean       @default(true)
+  currentQuestion Int           @default(0)
+  revealed        Boolean       @default(false)
+  isOpen          Boolean       @default(true)
+  expiresAt       DateTime?
+  leaderboard     String        @default("TEAMS")
+  dueAt           DateTime?
+  startedAt       DateTime?
+  endedAt         DateTime?
+  createdAt       DateTime      @default(now())
+  lesson          Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  classRoom       ClassRoom     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  participants    Participant[]
+  answers         Answer[]
+
+  @@index([joinCode, status])
+  @@index([classId, status])
+  @@map("activity_session")
+}
+
+model Participant {
+  id          String          @id @default(cuid())
+  sessionId   String
+  studentId   String?
+  displayName String
+  joinedAt    DateTime        @default(now())
+  durationSec Int?
+  submittedAt DateTime?
+  session     ActivitySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  student     Student?        @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  answers     Answer[]
+
+  @@unique([sessionId, studentId])
+  @@map("participant")
+}
+
+model Answer {
+  id            String          @id @default(cuid())
+  sessionId     String
+  participantId String
+  questionIndex Int
+  optionIndex   Int?
+  text          String?
+  correct       Boolean
+  partial       Boolean         @default(false)
+  xpAwarded     Int             @default(0)
+  createdAt     DateTime        @default(now())
+  session       ActivitySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participant   Participant     @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([participantId, questionIndex])
+  @@index([sessionId, questionIndex])
+  @@map("answer")
+}
+
+model GameResult {
+  id          String   @id @default(cuid())
+  studentId   String
+  lessonId    String
+  sessionId   String?
+  game        GameKind
+  stars       Int
+  xp          Int
+  total       Int
+  firstTry    Int
+  retried     Int
+  createdAt   DateTime @default(now())
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, lessonId, game])
+  @@map("game_result")
+}
+
+model StudentBadge {
+  id        String   @id @default(cuid())
+  studentId String
+  badge     String
+  awardedBy String?  // teacher user id, null when earned by the system
+  createdAt DateTime @default(now())
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, badge])
+  @@map("student_badge")
+}
+
+/// Append-only XP ledger; student.xp is the running total. Weekly class goal = sum over this week.
+model XpEvent {
+  id        String   @id @default(cuid())
+  studentId String
+  classId   String
+  amount    Int
+  reason    String
+  createdAt DateTime @default(now())
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([classId, createdAt])
+  @@map("xp_event")
+}

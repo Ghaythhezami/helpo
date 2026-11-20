@@ -1,21 +1,35 @@
 import "dotenv/config";
-import "reflect-metadata";
+import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import { toNodeHandler } from "better-auth/node";
-import express from "express";
-import { AppModule } from "./app.module.js";
-import { auth, prisma } from "./auth.js";
+import { AppModule } from "./app.module";
+import { createApp } from "./bootstrap";
+import { initSentry } from "./observability/sentry";
+import { getPrisma } from "./prisma/prisma.service";
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bodyParser: false });
-  app.enableCors({ origin: process.env.TEACHER_URL, credentials: true });
-  const server = app.getHttpAdapter().getInstance() as express.Express;
-  server.all("/api/auth/{*path}", toNodeHandler(auth));
-  server.use(express.json());
+/**
+ * Long-running host (Railway, local): HTTP on PORT. With WORKER_ONLY=true only the queue workers start (no HTTP
+ * listener). The Vercel handler lives in vercel.ts.
+ */
+async function main() {
+  initSentry();
+  if (process.env.WORKER_ONLY === "true") {
+    const app = await NestFactory.createApplicationContext(AppModule);
+    app.enableShutdownHooks();
+    new Logger("Worker").log("WORKER_ONLY: queue workers started, no HTTP listener");
+    return;
+  }
+  const app = await createApp();
   app.enableShutdownHooks();
-  await app.listen(Number(process.env.PORT ?? 3001));
+  await app.listen(Number(process.env.PORT ?? 3001), "0.0.0.0");
 }
 
-process.on("SIGTERM", () => { void prisma.$disconnect(); });
-process.on("SIGINT", () => { void prisma.$disconnect(); });
-void bootstrap();
+const stop = () => {
+  void getPrisma().$disconnect();
+};
+process.on("SIGTERM", stop);
+process.on("SIGINT", stop);
+
+main().catch((e: unknown) => {
+  console.error(e);
+  process.exit(1);
+});

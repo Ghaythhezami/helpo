@@ -1,34 +1,57 @@
-# Educator Helper
+# Nibras
 
-A starting point for the teaching assistant shown in the project mockups. The teacher workspace provides email/password registration, sign-in, sign-out, and a sidebar; the remaining teacher screens are placeholders. The separate Next.js student app is a placeholder for a future joining flow.
+Nibras turns one lesson into a complete teaching kit with Claude. The teacher uploads a file (PDF, Word, PowerPoint,
+TXT) or describes the lesson. Nibras then makes summary cards, a worksheet, slides, a quiz and a mini-game.
+The teacher checks and edits the kit, explains with a built-in whiteboard, and shares it with a code or QR. Students
+(grades 2 to 12) join with a code and their first name to play the live quiz or the game, and the teacher sees the
+results. The app works in English and Arabic (right to left).
+
+- Teacher app: two screens, with no page scroll.
+  - **Create**: upload a file or describe the lesson, refine the prompt with AI, and find previous lessons.
+  - **Lesson workspace**: five tabs, an edit panel in the margins, a draggable whiteboard with pencil and eraser,
+    sharing and results.
+- Student app: one interface. Join, then play the quiz or game, then see the result card.
+- Design reference: `design/mockups/v5` and the v6 mockups at https://helpo-mockups.vercel.app.
 
 ## Stack
 
-- Teacher app: React, TypeScript, Vite, Redux Toolkit and RTK Query.
-- API: NestJS, Better Auth, Prisma, PostgreSQL.
-- Student app: Next.js and React.
+| Part | Technology |
+|---|---|
+| Web (`apps/web`) | Next.js (App Router), React, TypeScript, Tailwind CSS v4, TanStack Query, motion, Socket.IO client |
+| API (`apps/api`) | NestJS modular monolith on one port: REST, Socket.IO gateway, BullMQ workers |
+| Data | PostgreSQL + Prisma; Redis for BullMQ and rate limits |
+| Auth | Better Auth (teachers). Students use a signed cookie and need no account or password. |
+| AI | Claude via `@anthropic-ai/sdk`. One analysis call builds the lesson blueprint, then five generators run in parallel. Structured outputs are validated with Zod, and a repair loop retries failed checks. |
+| Shared (`packages/shared`) | Domain rules, Zod schemas and API types used by both apps |
+| Quality | Jest (shared, API unit and e2e, web with React Testing Library), SonarQube, GitHub Actions |
 
-Prisma models are kept in separate files in `apps/api/prisma/schema`. The future AI generation, storage, Redis/queues, real-time activities, editors and export features from the concept are not implemented or installed yet.
+Architecture, the AI pipeline and the security rules are in `docs/ARCHITECTURE.md`. The API contract is in
+`docs/API.md`, and deployment (Railway API + Vercel web) is in `docs/DEPLOY.md`. The AI Integration Spec is in
+`docs/spec/`.
 
 ## Local setup
 
-Requires Node.js 20.19 or later, npm, and PostgreSQL. All three applications use `localhost`; use the same hostname everywhere so browser cookies work.
+Requires Node.js 20.19 or later, Docker (for PostgreSQL and Redis) and npm.
 
-1. Install dependencies: `npm install`.
-2. Create a PostgreSQL database named `educator_helper` (or use an existing database).
-3. Copy `apps/api/.env.example` to `apps/api/.env`. Set `DATABASE_URL` and generate a unique `BETTER_AUTH_SECRET` using `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`. Never commit the `.env` file.
-4. Run `npm run db:generate` and `npm run db:migrate`.
-5. In separate terminals, run `npm run dev:api`, `npm run dev:teacher`, and optionally `npm run dev:student`.
-6. Open the teacher app at http://localhost:5173 and create an account. The student placeholder is at http://localhost:3002; the API listens on http://localhost:3001.
+```bash
+npm install
+cp apps/api/.env.example apps/api/.env      # then set DATABASE_URL and the two secrets
+npm run build -w @helpo/shared
+npm run db:migrate && npm run db:seed       # the demo teacher login is written to .local/demo-account.txt
+npm run dev:api                             # http://localhost:3001
+npm run dev:web                             # http://localhost:3000
+```
 
-To change the API URL used by the teacher app, copy `apps/teacher/.env.example` to `apps/teacher/.env` and set `VITE_API_URL`. Configure `TEACHER_URL` and `BETTER_AUTH_URL` in the API to match the actual origins. Deployments must use HTTPS and a strong unique secret. Registration is currently open and email addresses are not verified; add email verification and production deployment controls before exposing this initial version publicly.
+Without `ANTHROPIC_API_KEY`, the API runs in demo mode with realistic offline content. Set `QUEUE_DRIVER=bullmq`,
+`REALTIME=socket` and `REDIS_URL` to run the background jobs and live updates exactly as in production.
 
 ## Commands
 
-- `npm run build` builds all three apps.
-- `npm run db:generate` regenerates Prisma Client after schema changes.
-- `npm run db:migrate` applies committed migrations. For a new schema change, run `npx prisma migrate dev --name <description> --schema prisma/schema` from `apps/api` and commit the migration.
-
-## GitHub
-
-Sign in with `gh auth login`, then from the project root create and push a public repository with `gh repo create educator-helper --public --source . --remote origin --push` after reviewing the files and creating a commit.
+| Command | What it does |
+|---|---|
+| `npm run build` | Builds shared, then the API, then the web app |
+| `npm run typecheck` / `npm run lint` | Type and lint checks for all packages |
+| `npm test` | Jest with coverage for shared, API and web (lcov for SonarQube) |
+| `npm run test:e2e -w @helpo/api` | API end-to-end tests against a real database |
+| `npm run sonar` | SonarQube scan (needs `SONAR_HOST_URL` and `SONAR_TOKEN`) |
+| `npm run db:migrate` | Applies Prisma migrations. Create new ones with `prisma migrate dev --name <x>` in `apps/api`. |
