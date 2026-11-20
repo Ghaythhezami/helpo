@@ -89,6 +89,18 @@ textarea.prompt:focus{border-color:var(--pri)}
 .t-sci{background:#DCF5E3;color:#17703F}.t-math{background:#DBEAFE;color:#1E40AF}.t-eng{background:#FCE7F3;color:#9D174D}.t-his{background:#FDE4A3;color:#7A4E00}
 .st-ready{background:var(--ready-bg);color:var(--ready)}.st-chk{background:var(--chk-bg);color:var(--chk)}.st-dr{background:var(--neu-bg);color:var(--ink2)}
 
+.tawrap{position:relative}
+.tawrap textarea{padding-inline-end:164px}
+.refine{position:absolute;inset-inline-end:8px;bottom:8px;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:99px;background:var(--grad);color:#fff;font-weight:800;font-size:13px;box-shadow:var(--btnsh)}
+.refine:disabled{background:#E4DEF5;color:#5F5596;box-shadow:none;cursor:not-allowed}
+.refine svg{width:16px;height:16px}
+.tawrap.busy textarea{color:transparent;background:linear-gradient(90deg,#F4EEFF 25%,#E2D6FF 50%,#F4EEFF 75%);background-size:200% 100%;animation:shim 1s linear infinite}
+@keyframes shim{to{background-position:-200% 0}}
+.tawrap.done textarea{min-height:112px}
+.refbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.refbar .rl{display:inline-flex;align-items:center;gap:5px;font-weight:900;font-size:13.5px;color:var(--pri-h)}
+.refbar .rl svg{width:16px;height:16px}
+.refbar .chip.ai{background:#fff;border:1.5px dashed var(--pri)}
 /* ---------- Screen 2 ---------- */
 .wtop{display:flex;align-items:center;gap:10px;padding:8px 14px;min-height:62px;flex:none;background:#fff;border-bottom:1px solid var(--line)}
 .ttl{display:flex;align-items:center;gap:6px;min-width:0;max-width:230px;font-family:var(--f-disp);font-weight:600;font-size:19px}
@@ -264,7 +276,7 @@ dialog::backdrop{background:rgba(36,24,95,.5);backdrop-filter:blur(3px)}
 .dev button{color:#fff;font-size:11px;padding:3px 7px;background:#333;border-radius:5px}
 
 /* short desktop */
-@media (max-height:780px){
+@media (max-height:780px){.tawrap.done textarea{min-height:70px}
   .create{gap:12px}.card{padding:16px 24px 18px;gap:9px}h1.disp{font-size:29px}.drop{min-height:88px;padding:10px 18px}.drop img{width:56px;height:56px}textarea.prompt{min-height:54px}
 }
 @media (max-width:1100px){.tab span.tl{display:none}.tab{padding:0 10px}.ttl{max-width:160px}}
@@ -288,6 +300,8 @@ dialog::backdrop{background:rgba(36,24,95,.5);backdrop-filter:blur(3px)}
   .more span{display:none}
   .more{padding:0 8px}
   .btn.big{min-height:54px}
+  .tawrap textarea{padding-inline-end:56px}.tawrap.done textarea{min-height:56px}.refine{width:44px;height:44px;padding:0;justify-content:center;bottom:6px;inset-inline-end:6px}.refine span{display:none}.refine svg{width:20px;height:20px}
+  .refbar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.refbar::-webkit-scrollbar{display:none}.refbar .chip{min-height:44px;flex:none}.refbar .rl{flex:none}
   .pop{inset-inline:12px;width:auto;bottom:70px}
   .lc{width:184px;padding:9px 11px}.prev{margin-top:auto}
   .prevhead h2{font-size:16px}
@@ -369,7 +383,7 @@ dialog::backdrop{background:rgba(36,24,95,.5);backdrop-filter:blur(3px)}
 <!-- ================= SCREEN 1: CREATE ================= -->
 <section id="s1" class="screen" aria-label="Create">
   <header class="top">
-    <div class="logo"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B55E0"/><stop offset="1" stop-color="#5226C2"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lg)"/><path d="M20 12 8.5 17.2 20 22.4l11.5-5.2Z" fill="#fff"/><path d="M13.5 21v4.4c0 1.6 3 3 6.5 3s6.5-1.4 6.5-3V21l-6.5 3Z" fill="#E4DAFF"/><path d="M31.5 17.2v6" stroke="#FFD66B" stroke-width="1.6" stroke-linecap="round"/><path d="M31.5 25.4c-1.3-1-1.3-2.2 0-3.4 1.3 1.2 1.3 2.4 0 3.4Z" fill="#FFD66B"/></svg><span>Nibras <span lang="ar" style="font-weight:700;opacity:.8">نبراس</span></span></div>
+    <div class="logo"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B55E0"/><stop offset="1" stop-color="#5226C2"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lg)"/><path d="M20 12 8.5 17.2 20 22.4l11.5-5.2Z" fill="#fff"/><path d="M13.5 21v4.4c0 1.6 3 3 6.5 3s6.5-1.4 6.5-3V21l-6.5 3Z" fill="#E4DAFF"/><path d="M31.5 17.2v6" stroke="#FFD66B" stroke-width="1.6" stroke-linecap="round"/><path d="M31.5 25.4c-1.3-1-1.3-2.2 0-3.4 1.3 1.2 1.3 2.4 0 3.4Z" fill="#FFD66B"/></svg><span>Nibras</span></div>
     <div class="spacer"></div>
     <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="ar" aria-pressed="false" lang="ar">عربي</button></div>
     <div class="avatar" role="img" aria-label="Teacher account">H</div>
@@ -384,8 +398,9 @@ dialog::backdrop{background:rgba(36,24,95,.5);backdrop-filter:blur(3px)}
         <input type="file" id="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt">
       </label>
       <label class="lbl" for="prompt" data-i18n="orDesc">Or describe your lesson</label>
-      <textarea class="prompt" id="prompt" rows="2" data-i18n-ph="ph" placeholder="e.g. How plants make food, for Grade 6"></textarea>
+      <div class="tawrap" id="tawrap"><textarea class="prompt" id="prompt" rows="2" data-i18n-ph="ph" placeholder="e.g. How plants make food, for Grade 6"></textarea><button type="button" class="refine" id="refineBtn" disabled data-i18n-aria="refine" aria-label="Refine with AI"><svg class="i"><use href="#i-spark"/></svg><span data-i18n="refine">Refine with AI</span></button></div>
       <div class="chips" id="sugg" role="group" aria-label="Suggestions"></div>
+      <div class="refbar" id="refBar" hidden><span class="rl"><svg class="i"><use href="#i-spark"/></svg><span data-i18n="refined">Refined</span></span><button type="button" class="chip" id="refUndo" data-i18n="undo">Undo</button><button type="button" class="chip ai" data-add="aiA" data-i18n="aiAL">+ Add an experiment</button><button type="button" class="chip ai" data-add="aiB" data-i18n="aiBL">+ Focus on vocabulary</button></div>
       <div class="opts">
         <label class="sel"><span class="sl" data-i18n="class">Class</span><select id="selClass" aria-label="Class"><option data-i18n="c1">6B · Grade 6</option><option data-i18n="c2">5A · Grade 5</option><option data-i18n="c3">8C · Grade 8</option></select></label>
         <label class="sel"><span class="sl" data-i18n="langL">Language</span><select id="selLang" aria-label="Language"><option value="auto" data-i18n="auto">Auto</option><option value="en">English</option><option value="ar">العربية</option></select></label>
@@ -486,7 +501,7 @@ dialog::backdrop{background:rgba(36,24,95,.5);backdrop-filter:blur(3px)}
 
 <script>
 /* ============ i18n ============ */
-const I={en:{eyebrow:"Teacher workspace",h1:"What are we teaching today?",dropT:"Drop your lesson file",dropS:"PDF, Word, PowerPoint, TXT · up to 20 MB",orDesc:"Or describe your lesson",ph:"e.g. How plants make food, for Grade 6",class:"Class",c1:"6B · Grade 6",c2:"5A · Grade 5",c3:"8C · Grade 8",langL:"Language",auto:"Auto",more:"More options",oLen:"Slides",oLvl:"3 levels on worksheet",oKey:"Answer key",make:"Make lesson kit",prev:"Previous lessons",seeAll:"See all",
+const I={en:{eyebrow:"Teacher workspace",h1:"What are we teaching today?",dropT:"Drop your lesson file",dropS:"PDF, Word, PowerPoint, TXT · up to 20 MB",orDesc:"Or describe your lesson",ph:"e.g. How plants make food, for Grade 6",class:"Class",c1:"6B · Grade 6",c2:"5A · Grade 5",c3:"8C · Grade 8",langL:"Language",auto:"Auto",more:"More options",oLen:"Slides",oLvl:"3 levels on worksheet",oKey:"Answer key",make:"Make lesson kit",refine:"Refine with AI",refined:"Refined",undo:"Undo",aiAL:"+ Add an experiment",aiBL:"+ Focus on vocabulary",aiA:" Add a simple hands-on experiment.",aiB:" Focus on key vocabulary with a short glossary.",prev:"Previous lessons",seeAll:"See all",
 back:"Back to Create",whatU:"What Nibras understood",download:"Download",share:"Share",tList:"Toggle list",tEdit:"Toggle edit panel",prevI:"Previous",nextI:"Next",restart:"Restart",drawOn:"Draw on slide",board:"Whiteboard",edit:"Edit",mList:"List",mEdit:"Edit",mBoard:"Board",close:"Close",minimize:"Minimize",maximize:"Maximize",
 shareT:"How will students play?",live:"Play live in class",liveS:"You run it on the projector. Everyone answers together.",solo:"Students do it on their own",soloS:"Homework style. They finish at their own pace.",code:"Class code",copy:"Copy",copied:"Copied",chBack:"Change how they play",
 hintLive:"Students open the link or scan the code. Waiting for them to join.",hintSolo:"Send this link to your class. They can start any time.",tLive:"Join code for your class",tSolo:"Share this link",
@@ -501,7 +516,7 @@ q:"Question",flipH:"Tap the card to flip it",moves:"Moves",won:"All matched. Wel
 pairsHint:"Tap two cards that belong together",newT:"Photosynthesis",
 mk:["Slides","Worksheet","Quiz","Game","Cards"],drawHint:"Draw",pen:"Pencil",eraser:"Eraser",undo:"Undo",clear:"Clear",size:"Stroke size",color:"Color",
 exSimple:"Plants use sunlight to make food.",exAdd:" Example: a bean plant on a sunny windowsill grows faster than one in a dark cupboard."},
-ar:{eyebrow:"مساحة المعلّم",h1:"ماذا سنُدرّس اليوم؟",dropT:"أفلِت ملف الدرس هنا",dropS:"PDF أو Word أو PowerPoint أو TXT · حتى 20 م.ب",orDesc:"أو صِف درسك",ph:"مثال: كيف تصنع النباتات غذاءها، للصف السادس",class:"الصف",c1:"6ب · الصف السادس",c2:"5أ · الصف الخامس",c3:"8ج · الصف الثامن",langL:"اللغة",auto:"تلقائي",more:"خيارات أكثر",oLen:"عدد الشرائح",oLvl:"3 مستويات في ورقة العمل",oKey:"مفتاح الإجابة",make:"أنشئ حقيبة الدرس",prev:"الدروس السابقة",seeAll:"عرض الكل",
+ar:{eyebrow:"مساحة المعلّم",h1:"ماذا سنُدرّس اليوم؟",dropT:"أفلِت ملف الدرس هنا",dropS:"PDF أو Word أو PowerPoint أو TXT · حتى 20 م.ب",orDesc:"أو صِف درسك",ph:"مثال: كيف تصنع النباتات غذاءها، للصف السادس",class:"الصف",c1:"6ب · الصف السادس",c2:"5أ · الصف الخامس",c3:"8ج · الصف الثامن",langL:"اللغة",auto:"تلقائي",more:"خيارات أكثر",oLen:"عدد الشرائح",oLvl:"3 مستويات في ورقة العمل",oKey:"مفتاح الإجابة",make:"أنشئ حقيبة الدرس",refine:"حسِّن بالذكاء الاصطناعي",refined:"تم التحسين",undo:"تراجع",aiAL:"+ أضف تجربة",aiBL:"+ ركّز على المفردات",aiA:" أضف تجربة عملية بسيطة.",aiB:" ركّز على المفردات الأساسية مع معجم قصير.",prev:"الدروس السابقة",seeAll:"عرض الكل",
 back:"العودة إلى الإنشاء",whatU:"ما الذي فهمه نبراس",download:"تنزيل",share:"مشاركة",tList:"إظهار القائمة",tEdit:"إظهار لوحة التعديل",prevI:"السابق",nextI:"التالي",restart:"إعادة",drawOn:"ارسم على الشريحة",board:"السبّورة",edit:"تعديل",mList:"القائمة",mEdit:"تعديل",mBoard:"السبّورة",close:"إغلاق",minimize:"تصغير",maximize:"تكبير",
 shareT:"كيف سيلعب الطلاب؟",live:"لعب مباشر في الصف",liveS:"تشغّله على جهاز العرض ويجيب الجميع معًا.",solo:"يعمل الطلاب بمفردهم",soloS:"مثل الواجب، يُنهونه بالسرعة التي تناسبهم.",code:"رمز الصف",copy:"نسخ",copied:"تم النسخ",chBack:"تغيير طريقة اللعب",
 hintLive:"يفتح الطلاب الرابط أو يمسحون الرمز. بانتظار انضمامهم.",hintSolo:"أرسل هذا الرابط إلى صفك. يمكنهم البدء في أي وقت.",tLive:"رمز الانضمام لصفك",tSolo:"شارك هذا الرابط",
@@ -572,7 +587,7 @@ function setLang(l){S.lang=l;document.documentElement.lang=l;document.documentEl
  $$("[data-i18n-aria]").forEach(e=>e.setAttribute("aria-label",t(e.dataset.i18nAria)));
  $$(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===l));
  $("#ttlT").textContent=S.lang==="ar"&&S.title==="Photosynthesis"?"البناء الضوئي":S.title;
- renderSugg();renderStrip();if(S.screen===2){renderAll();buildToolbars()}
+ renderSugg();renderStrip();if(typeof refCheck==="function")refCheck();if(S.screen===2){renderAll();buildToolbars()}
  document.title="Nibras · "+(l==="ar"?"مساحة المعلّم":"Teacher workspace")}
 $$(".lang button").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
 
@@ -593,6 +608,18 @@ const drop=$("#drop"),file=$("#file");
 drop.addEventListener("drop",e=>{if(e.dataTransfer.files[0])showFile(e.dataTransfer.files[0].name)});
 file.onchange=()=>{if(file.files[0])showFile(file.files[0].name)};
 function showFile(n){const c=$("#fileChip");c.hidden=false;c.innerHTML=ic("check")+esc(n)}
+
+/* Refine with AI (faked) */
+const REF={en:[[/photosyn|plants?|leaf|leaves/i,"Grade 6 science, 45 min: how plants make food by photosynthesis — inputs (light, water, CO₂), outputs (glucose, oxygen), where it happens (chloroplasts). Include a word equation, a diagram slide and a matching game; check the misconception that plants get food from soil."],[/fraction|denominator/i,"Grade 6 math, 45 min: adding fractions with unlike denominators — find a common denominator, add, then simplify. Include a worked example, a fraction-bar slide and a matching game; check the misconception of adding the denominators."],[/water|cycle|evapor/i,"Grade 6 science, 45 min: the water cycle — evaporation, condensation, precipitation and collection. Include a diagram slide, a sequencing activity and a short quiz; check the misconception that clouds are made of steam."]],
+ar:[[/نبات|ضوئي|photosyn|plant/i,"الصف السادس علوم، 45 دقيقة: كيف تصنع النباتات غذاءها بالبناء الضوئي — المدخلات (الضوء والماء وCO₂) والمخرجات (الجلوكوز والأكسجين) وأين يحدث (البلاستيدات الخضراء). أضف معادلة لفظية وشريحة برسم توضيحي ولعبة مطابقة، وتحقق من الفكرة الخاطئة بأن النباتات تأخذ غذاءها من التربة."],[/كسور|كسر|fraction/i,"الصف السادس رياضيات، 45 دقيقة: جمع الكسور المختلفة المقام — إيجاد مقام مشترك ثم الجمع ثم التبسيط. أضف مثالًا محلولًا وشريحة بأشرطة الكسور ولعبة مطابقة، وتحقق من الفكرة الخاطئة بجمع المقامات."],[/ماء|دورة|water/i,"الصف السادس علوم، 45 دقيقة: دورة الماء — التبخر والتكاثف والهطول والتجمع. أضف شريحة برسم توضيحي ونشاط ترتيب واختبارًا قصيرًا، وتحقق من الفكرة الخاطئة بأن السحب مصنوعة من البخار."]]};
+const pr=$("#prompt"),rb=$("#refineBtn"),rbar=$("#refBar"),taw=$("#tawrap");let refOrig="";
+function refCheck(){rb.disabled=pr.value.trim().length<10}
+pr.addEventListener("input",refCheck);
+function fakeRefine(txt){const hit=REF[S.lang].find(r=>r[0].test(txt));if(hit)return hit[1];const c=txt.trim().replace(/[.،]+$/,"");return S.lang==="ar"?`الصف السادس، 45 دقيقة: ${c}. أضف أهدافًا واضحة ومثالًا محلولًا واختبارًا قصيرًا ولعبة مطابقة، وتحقق من الأفكار الخاطئة الشائعة.`:`Grade 6, 45 min: ${c}. Include clear objectives, a worked example, a short quiz and a matching game; check common misconceptions.`}
+rb.onclick=()=>{if(rb.disabled||taw.classList.contains("busy"))return;refOrig=pr.value;taw.classList.add("busy");rb.disabled=true;pr.readOnly=true;
+ setTimeout(()=>{pr.value=fakeRefine(refOrig);pr.readOnly=false;taw.classList.remove("busy");taw.classList.add("done");rb.disabled=false;$("#sugg").hidden=true;rbar.hidden=false;pr.scrollTop=0},reduce()?200:1000)};
+$("#refUndo").onclick=()=>{pr.value=refOrig;taw.classList.remove("done");rbar.hidden=true;$("#sugg").hidden=false;$$("#refBar [data-add]").forEach(b=>b.hidden=false);refCheck();pr.focus()};
+$$("#refBar [data-add]").forEach(b=>b.onclick=()=>{pr.value=pr.value.replace(/\s+$/,"")+t(b.dataset.add);b.hidden=true;pr.scrollTop=pr.scrollHeight});
 $("#makeBtn").onclick=()=>openLesson("Photosynthesis",true);
 
 /* ============ navigation ============ */
