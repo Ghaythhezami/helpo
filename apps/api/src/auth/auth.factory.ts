@@ -1,5 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 import { allowedOrigins } from "../common/origins";
+import { authRateLimit, createRedisSecondaryStorage } from "./auth-rate-limit";
 
 /**
  * Better Auth ships as ESM. This file is compiled as CommonJS (module Node16), so `import()` stays a real
@@ -19,6 +20,8 @@ export async function createAuth(prisma: PrismaClient) {
     baseURL,
     trustedOrigins: [...new Set([...allowedOrigins(), baseURL])],
     emailAndPassword: { enabled: true, minPasswordLength: 8 },
+    rateLimit: authRateLimit(),
+    ...(process.env.REDIS_URL ? { secondaryStorage: createRedisSecondaryStorage(process.env.REDIS_URL) } : {}),
   });
 }
 

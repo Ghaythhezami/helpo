@@ -20,4 +20,4 @@ export function proxy(request: NextRequest) {
   return NextResponse.redirect(url);
 }
 
-export const config = { matcher: ["/app/:path*"] };
+export const config = { matcher: ["/app/:path*", "/admin/:path*"] };

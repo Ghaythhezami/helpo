@@ -5,12 +5,15 @@ class TestResponse {
   readonly status: number;
   readonly statusText: string;
   readonly ok: boolean;
+  readonly headers: { get: (name: string) => string | null };
   private readonly payload: string | null;
   constructor(body?: string | null, init: { status?: number; statusText?: string; headers?: Record<string, string> } = {}) {
     this.payload = body ?? null;
     this.status = init.status ?? 200;
     this.statusText = init.statusText ?? "";
     this.ok = this.status >= 200 && this.status < 300;
+    const lower = Object.fromEntries(Object.entries(init.headers ?? {}).map(([k, v]) => [k.toLowerCase(), v]));
+    this.headers = { get: (name) => lower[name.toLowerCase()] ?? null };
   }
   async text() {
     return this.payload ?? "";

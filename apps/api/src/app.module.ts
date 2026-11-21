@@ -13,6 +13,8 @@ import { JobsModule } from "./jobs/jobs.module";
 import { StorageModule } from "./storage/storage.module";
 import { LessonsModule } from "./lessons/lessons.module";
 import { MeModule } from "./me/me.module";
+import { AdminModule } from "./admin/admin.module";
+import { DemoModule } from "./demo/demo.module";
 import { RealtimeModule } from "./realtime/realtime.module";
 import { PlayModule } from "./play/play.module";
 import { PrismaModule } from "./prisma/prisma.service";
@@ -41,6 +43,8 @@ import { StudentsModule } from "./students/students.module";
     PlayModule,
     HealthModule,
     RealtimeModule,
+    DemoModule,
+    AdminModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ProblemFilter },

@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 /** Modal dialog: focus moves in, Escape and the close button leave, Tab stays inside. Long content scrolls inside it. */
-export function Dialog({ title, onClose, children, wide }: { title: string; onClose: () => void; children: ReactNode; wide?: boolean }) {
+export function Dialog({ title, onClose, children, wide, drawer }: { title: string; onClose: () => void; children: ReactNode; wide?: boolean; drawer?: boolean }) {
   const { t } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const opener = useRef<Element | null>(null);
@@ -35,8 +35,8 @@ export function Dialog({ title, onClose, children, wide }: { title: string; onCl
   }, [onClose]);
 
   return (
-    <div className="ovl" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div ref={ref} className={`dlg app-dlg ${wide ? "wide" : ""}`} role="dialog" aria-modal="true" aria-label={title}>
+    <div className={`ovl ${drawer ? "drawer-ovl" : ""}`} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div ref={ref} className={`dlg app-dlg ${wide ? "wide" : ""} ${drawer ? "drawer" : ""}`} role="dialog" aria-modal="true" aria-label={title}>
         <header className="dlg-head">
           <h2>{title}</h2>
           <button type="button" className="rbtn" aria-label={t("common.close")} onClick={onClose}>

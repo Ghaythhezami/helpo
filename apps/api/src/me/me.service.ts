@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { Locale, Me } from "@helpo/shared";
+import type { Locale, Me, UserRole } from "@helpo/shared";
 import { asLocale } from "../common/i18n";
 import { notFound } from "../common/problem";
 import { slugify } from "../common/time";
@@ -17,6 +17,7 @@ export class MeService {
       name: user.name,
       email: user.email,
       locale: asLocale(user.locale),
+      role: (user.role === "ADMIN" ? "ADMIN" : "TEACHER") as UserRole,
       school: user.school ? { id: user.school.id, name: user.school.name, slug: user.school.slug } : null,
     };
   }

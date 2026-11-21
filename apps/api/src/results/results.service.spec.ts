@@ -21,12 +21,17 @@ async function setup() {
   return { db, quiz, service: new ResultsService(db, lessons as never, demo) };
 }
 
-const sess = (id: string, type: string, day: number, participants: string[]) => ({ id, type, createdAt: new Date(`2026-11-${10 + day}T10:00:00Z`), answers: participants.map((participantId) => ({ participantId })) });
+/** Session rows plus the grouped "participants who answered" counts the service now asks for. */
+const sess = (id: string, type: string, day: number, participants: string[]) => ({ id, type, createdAt: new Date(`2026-11-${10 + day}T10:00:00Z`), participants });
+function seedSessions(db: ReturnType<typeof mockPrisma>, rows: ReturnType<typeof sess>[]) {
+  db.activitySession.findMany.mockResolvedValue(rows.map(({ id, type, createdAt }) => ({ id, type, createdAt })));
+  db.participant.groupBy.mockResolvedValue(rows.filter((r) => r.participants.length).map((r) => ({ sessionId: r.id, _count: { _all: r.participants.length } })));
+}
 
 describe("ResultsService default session", () => {
   it("picks the newest session that has answers, not simply the newest one", async () => {
     const { db, service } = await setup();
-    db.activitySession.findMany.mockResolvedValue([sess("EMPTY-LIVE", "LIVE_QUIZ", 3, []), sess("ASSIGN", "ASSIGNMENT", 2, ["P1", "P2"]), sess("OLD-LIVE", "LIVE_QUIZ", 1, ["P1"])]);
+    seedSessions(db, [sess("EMPTY-LIVE", "LIVE_QUIZ", 3, []), sess("ASSIGN", "ASSIGNMENT", 2, ["P1", "P2"]), sess("OLD-LIVE", "LIVE_QUIZ", 1, ["P1"])]);
     db.answer.findMany.mockResolvedValue([]);
     db.participant.findMany.mockResolvedValue([]);
     const r = await service.get("T1", "L1", "en");
@@ -37,11 +42,11 @@ describe("ResultsService default session", () => {
 
   it("falls back to the newest session when none has answers, and to no session at all", async () => {
     const { db, service } = await setup();
-    db.activitySession.findMany.mockResolvedValue([sess("A", "LIVE_QUIZ", 2, []), sess("B", "LIVE_QUIZ", 1, [])]);
+    seedSessions(db, [sess("A", "LIVE_QUIZ", 2, []), sess("B", "LIVE_QUIZ", 1, [])]);
     db.answer.findMany.mockResolvedValue([]);
     db.participant.findMany.mockResolvedValue([]);
     expect((await service.get("T1", "L1", "en")).sessionId).toBe("A");
-    db.activitySession.findMany.mockResolvedValue([]);
+    seedSessions(db, []);
     const none = await service.get("T1", "L1", "en");
     expect(none).toMatchObject({ sessionId: null, sessions: [], answered: 0, average: null });
     expect(none.notSubmitted).toHaveLength(3);
@@ -49,7 +54,7 @@ describe("ResultsService default session", () => {
 
   it("an explicit sessionId wins; an unknown one is 404", async () => {
     const { db, service } = await setup();
-    db.activitySession.findMany.mockResolvedValue([sess("A", "LIVE_QUIZ", 2, ["P1"]), sess("B", "LIVE_QUIZ", 1, [])]);
+    seedSessions(db, [sess("A", "LIVE_QUIZ", 2, ["P1"]), sess("B", "LIVE_QUIZ", 1, [])]);
     db.answer.findMany.mockResolvedValue([]);
     db.participant.findMany.mockResolvedValue([]);
     expect((await service.get("T1", "L1", "en", "B")).sessionId).toBe("B");
@@ -57,10 +62,26 @@ describe("ResultsService default session", () => {
   });
 });
 
+describe("ResultsService query shape", () => {
+  it("never loads every session with all its answers: plain session rows, one grouped count, and answers only for the selected session", async () => {
+    const { db, service } = await setup();
+    seedSessions(db, [sess("NEW", "LIVE_QUIZ", 2, ["P1"]), sess("OLD", "LIVE_QUIZ", 1, ["P1", "P2"])]);
+    db.answer.findMany.mockResolvedValue([]);
+    db.participant.findMany.mockResolvedValue([]);
+    await service.get("T1", "L1", "en");
+    const list = db.activitySession.findMany.mock.calls[0][0];
+    expect(list.select).toEqual({ id: true, type: true, createdAt: true }); // no `answers` relation in the session list
+    expect(JSON.stringify(list)).not.toContain("answers");
+    expect(db.participant.groupBy.mock.calls[0][0]).toEqual({ by: ["sessionId"], where: { session: { lessonId: "L1" }, answers: { some: {} } }, _count: { _all: true } });
+    expect(db.answer.findMany).toHaveBeenCalledTimes(1);
+    expect(db.answer.findMany.mock.calls[0][0].where).toEqual({ sessionId: "NEW" }); // only the selected session
+  });
+});
+
 describe("ResultsService average time", () => {
   it("live quiz: join to last answer, only over students who answered", async () => {
     const { db, quiz, service } = await setup();
-    db.activitySession.findMany.mockResolvedValue([sess("LIVE", "LIVE_QUIZ", 1, ["P1", "P2"])]);
+    seedSessions(db, [sess("LIVE", "LIVE_QUIZ", 1, ["P1", "P2"])]);
     const right = (i: number) => correctIndex(quiz.questions[i] as never) as number;
     db.answer.findMany.mockResolvedValue([
       { participantId: "P1", questionIndex: 0, optionIndex: right(0), correct: true, partial: false, createdAt: at(60) },

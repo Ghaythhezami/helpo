@@ -52,6 +52,7 @@ The following must pass before you call a change finished:
 
 ## Product rules (owner decisions, do not change without asking)
 
+- **Navigation.** The logo always goes home: `/app` when signed in, `/` when signed out, `/join` on student screens. Teachers and admins get a collapsible side menu on the start side (mirrored in RTL), which becomes a drawer on phones. Students get no menu.
 - **Teacher app has two screens, and no page ever scrolls.**
   - `/app` (Create) holds upload or describe, Refine with AI, and the previous lessons.
   - `/app/lessons/[id]` (Workspace) holds the five tabs, the edit margins and the draggable whiteboard. Share and Results

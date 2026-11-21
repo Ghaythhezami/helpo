@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import type { Lesson, Prisma } from "@prisma/client";
-import { BlueprintSchema, LIMITS, isLocale, type LessonDetail, type LessonSummary, type Locale } from "@helpo/shared";
+import { BlueprintSchema, isLocale, type LessonDetail, type LessonSummary, type Locale } from "@helpo/shared";
 import { notFound } from "../common/problem";
+import { lessonQuotaLimit } from "../common/quota";
 import { startOfMonth } from "../common/time";
 import { quizQuestionCount, sessionAverage } from "../common/stats";
 import { asLocale, pickText, parseTranslations } from "../common/i18n";
@@ -119,8 +120,11 @@ export class LessonViewService {
   }
 
   async quota(teacherId: string): Promise<{ used: number; limit: number }> {
-    const used = await this.prisma.lesson.count({ where: { teacherId, createdAt: { gte: startOfMonth() } } });
-    return { used, limit: Number(process.env.MONTHLY_LESSON_QUOTA) || LIMITS.monthlyLessonQuota };
+    const [used, user] = await Promise.all([
+      this.prisma.lesson.count({ where: { teacherId, createdAt: { gte: startOfMonth() } } }),
+      this.prisma.user.findUnique({ where: { id: teacherId }, select: { email: true } }),
+    ]);
+    return { used, limit: lessonQuotaLimit(user?.email) };
   }
 
   /** Average score (0..1) of the latest finished live quiz for each lesson. */

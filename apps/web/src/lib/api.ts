@@ -23,6 +23,8 @@ export class ApiError extends Error {
   readonly fieldErrors: { path: string; message: string }[];
   /** Extra members of the problem body, such as existingLessonId on a duplicate upload. */
   readonly extra: Record<string, unknown>;
+  /** Seconds from the Retry-After header (429), when the server sends it. */
+  retryAfter: number | null = null;
 
   constructor(problem: Partial<Problem> & { status: number; title: string }, extra: Record<string, unknown> = {}) {
     super(problem.detail || problem.title);
@@ -54,14 +56,25 @@ export interface ApiOptions {
   signal?: AbortSignal;
 }
 
-/** Plain-language message for any thrown value, safe to show to teachers and students. */
+/** "pageRange" or "items.0.name" becomes "page range" / "name" for a sentence. */
+function fieldName(path: string): string {
+  const last = path.split(".").filter((p) => !/^\d+$/.test(p)).pop() ?? path;
+  return last.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
+}
+
+/** Plain-language, actionable message for any thrown value, safe to show to teachers and students. */
 export function errorMessage(error: unknown): string {
-  const t = (key: string) => translate(getApiLocale(), key);
+  const t = (key: string, vars?: Record<string, string | number>) => translate(getApiLocale(), key, vars);
   if (error instanceof ApiError) {
-    if (error.isNetwork) return t("error.network");
+    if (error.isNetwork) return typeof navigator !== "undefined" && navigator.onLine === false ? t("error.offline") : t("error.network");
     if (error.status >= 500) return t("error.server");
+    if (error.status === 400 && error.fieldErrors.length > 0) {
+      const fields = [...new Set(error.fieldErrors.map((f) => fieldName(f.path)))].join(", ");
+      return t("error.400.fields", { fields });
+    }
+    if (error.status === 429) return error.retryAfter ? t("error.429.after", { n: error.retryAfter }) : t("error.429");
     if (error.detail) return error.detail;
-    const known = [400, 401, 403, 404, 409, 413, 429];
+    const known = [400, 401, 403, 404, 409, 413, 422, 429];
     return known.includes(error.status) ? t(`error.${error.status}`) : error.title;
   }
   if (error instanceof Error) return error.message;
@@ -86,7 +99,9 @@ async function toProblem(res: Response): Promise<ApiError> {
   } catch {
     body = null;
   }
-  return new ApiError(
+  const header = res.headers?.get?.("Retry-After");
+  const seconds = header && /^\d+$/.test(header) ? Number(header) : null;
+  const error = new ApiError(
     {
       type: body?.type,
       title: body?.title || res.statusText || "Request failed",
@@ -96,6 +111,8 @@ async function toProblem(res: Response): Promise<ApiError> {
     },
     (body as Record<string, unknown> | null) ?? {},
   );
+  error.retryAfter = seconds;
+  return error;
 }
 
 /** Same-origin JSON fetch. `path` starts with "/" and is relative to /api. */

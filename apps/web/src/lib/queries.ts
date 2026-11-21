@@ -1,6 +1,7 @@
 "use client";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type {
+  AdminOverview,
   ClassDetail,
   ClassSummary,
   DashboardView,
@@ -153,3 +154,6 @@ export const useStudentQuiz = (sessionId: string) =>
     retry,
     refetchInterval: (query) => (query.state.data?.status === "ENDED" ? false : POLL_MS),
   });
+
+export const useAdminOverview = (enabled = true) =>
+  useQuery({ queryKey: ["admin", "overview"], queryFn: () => api<AdminOverview>("/admin/overview"), enabled, retry, refetchInterval: 15000 });

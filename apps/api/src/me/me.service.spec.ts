@@ -17,6 +17,7 @@ describe("MeService", () => {
       name: "Alex Green",
       email: "alex@x.test",
       locale: "ar",
+      role: "TEACHER",
       school: { id: "SC1", name: "Riverside Middle School", slug: "riverside-middle-school" },
     });
     expect(db.user.findUnique).toHaveBeenCalledWith({ where: { id: "T1" }, include: { school: true } });
@@ -26,6 +27,16 @@ describe("MeService", () => {
     const { db, service } = setup();
     db.user.findUnique.mockResolvedValue(user({ locale: "fr" }));
     expect(await service.get("T1")).toMatchObject({ school: null, locale: "en" });
+  });
+
+  it("exposes the role: ADMIN for admins, TEACHER for everyone else (including unknown stored values)", async () => {
+    const { db, service } = setup();
+    db.user.findUnique.mockResolvedValue(user({ role: "ADMIN" }));
+    expect((await service.get("T1")).role).toBe("ADMIN");
+    db.user.findUnique.mockResolvedValue(user({ role: "SUPERUSER" }));
+    expect((await service.get("T1")).role).toBe("TEACHER");
+    db.user.findUnique.mockResolvedValue(user());
+    expect((await service.get("T1")).role).toBe("TEACHER");
   });
 
   it("an account that no longer exists is a 404", async () => {

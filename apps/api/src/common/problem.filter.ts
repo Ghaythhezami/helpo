@@ -63,7 +63,9 @@ export class ProblemFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost) {
     const res = host.switchToHttp().getResponse<Response>();
-    const problem = toProblem(exception);
+    const problem: Problem & { requestId?: string } = toProblem(exception);
+    const requestId = (res.req as { requestId?: string } | undefined)?.requestId;
+    if (requestId) problem.requestId = requestId;
     if (problem.status >= 500) captureError(exception);
     if (problem.status >= 500) this.logger.error(exception instanceof Error ? (exception.stack ?? exception.message) : String(exception));
     if (problem.status === 429) res.setHeader("Retry-After", String(retryAfterSeconds(exception)));

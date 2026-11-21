@@ -12,19 +12,23 @@ import { JoinService } from "./join.service";
 export class JoinController {
   constructor(private readonly join: JoinService) {}
 
+  // Public lookups. Limits are per IP and deliberately generous: a whole class often shares one NAT address, so 120 lookups
+  // and 60 joins per minute never lock a classroom out, yet guessing the 900,000 six-digit codes is still throttled hard.
   @Get("schools/:slug/classes")
+  @RateLimit("join-lookup", 120)
   classes(@Param("slug") slug: string, @ReqLocale() locale: Locale, @Query("grade") grade?: string) {
     const g = grade !== undefined && /^\d{1,2}$/.test(grade) ? Number(grade) : undefined;
     return this.join.classesFor(slug, g, locale);
   }
 
   @Get("classes/:classId/students")
+  @RateLimit("join-lookup", 120)
   students(@Param("classId") classId: string) {
     return this.join.studentsOf(classId);
   }
 
   @Get("code/:code")
-  @RateLimit("join", 60)
+  @RateLimit("join-lookup", 120)
   byCode(@Param("code") code: string, @ReqLocale() locale: Locale) {
     return this.join.byCode(code, locale);
   }

@@ -1,7 +1,8 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Users } from "lucide-react";
+import Link from "next/link";
+import { LogOut, Menu, ShieldCheck, Users } from "lucide-react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { authClient } from "@/lib/auth-client";
 import { ApiError } from "@/lib/api";
@@ -12,7 +13,11 @@ import { Dialog } from "@/components/ui/dialog";
 import { LanguageSwitch } from "@/components/ui/language-switch";
 import { Logo } from "@/components/ui/logo";
 import { ToastProvider } from "@/components/ui/toast";
+import { useMedia } from "@/lib/use-media";
 import { ClassManager } from "./class-manager";
+import { LessonsDialog } from "./lessons-dialog";
+import { NavItems, SideRail } from "./side-nav";
+import { WorkspaceBridgeProvider } from "./workspace-bridge";
 
 interface ClassSelection {
   classId: string | null;
@@ -23,6 +28,7 @@ const SelectionContext = createContext<ClassSelection>({ classId: null, setClass
 export const useSelectedClassId = () => useContext(SelectionContext);
 
 const STORAGE_KEY = "helpo:class";
+export const RAIL_KEY = "helpo:rail";
 
 /** Two screens only (Create, Lesson workspace): a slim header, then a viewport-sized stage that never scrolls the page. */
 export function TeacherShell({ children }: { children: ReactNode }) {
@@ -43,12 +49,26 @@ function ShellInner({ children }: { children: ReactNode }) {
   const [stored, setStored] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [manage, setManage] = useState(false);
+  const [lessonsOpen, setLessonsOpen] = useState(false);
+  const [drawer, setDrawer] = useState(false);
+  const [railCollapsed, setRailCollapsed] = useState(false);
+  const desktop = useMedia("(min-width: 1024px)");
+  const narrowDesktop = useMedia("(max-width: 1279px)", false);
+  const menuButton = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync from localStorage after mount
     setStored(window.localStorage.getItem(STORAGE_KEY));
+    setRailCollapsed(window.localStorage.getItem(RAIL_KEY) === "collapsed");
   }, []);
+
+  const toggleRail = () => {
+    setRailCollapsed((v) => {
+      window.localStorage.setItem(RAIL_KEY, v ? "expanded" : "collapsed");
+      return !v;
+    });
+  };
 
   useEffect(() => {
     if (me.error instanceof ApiError && me.error.isUnauthorized) router.replace(`/login?next=${encodeURIComponent(pathname)}`);
@@ -88,9 +108,13 @@ function ShellInner({ children }: { children: ReactNode }) {
       <a className="skip-link" href="#main">{t("common.skip")}</a>
       <div className="blobs" aria-hidden="true"><i /><i /><i /></div>
       <header className="app-head">
+        {!desktop && (
+          <button ref={menuButton} type="button" className="rbtn menu-btn" aria-expanded={drawer} aria-controls="drawer-menu" aria-label={t("menu.open")} onClick={() => setDrawer(true)}>
+            <Menu className="ic" aria-hidden="true" />
+          </button>
+        )}
         <Logo href="/app" label={t("shell.logo.home")} />
         <span className="sp" />
-        <LanguageSwitch />
         <div className="avmenu" ref={menuRef}>
           <button type="button" className="av" aria-expanded={menuOpen} aria-controls="account-menu" aria-label={t("nav.account", { initials: initials(name || "Teacher") })} onClick={() => setMenuOpen((v) => !v)}>
             {initials(name || "Teacher")}
@@ -105,6 +129,12 @@ function ShellInner({ children }: { children: ReactNode }) {
                 <Users className="ic" aria-hidden="true" />
                 {t("classes.manage")}
               </button>
+              {me.data?.role === "ADMIN" && (
+                <Link className="btn sm sec" href="/admin" onClick={() => setMenuOpen(false)}>
+                  <ShieldCheck className="ic" aria-hidden="true" />
+                  {t("nav.admin")}
+                </Link>
+              )}
               <button type="button" className="btn sm sec" onClick={() => void signOut()}>
                 <LogOut className="ic" aria-hidden="true" />
                 {t("nav.signOut")}
@@ -114,16 +144,47 @@ function ShellInner({ children }: { children: ReactNode }) {
         </div>
       </header>
       <ToastProvider>
+        <WorkspaceBridgeProvider>
         <SelectionContext.Provider value={selection}>
-          <main id="main" tabIndex={-1} className="app-stage">
-            {children}
-          </main>
+          <div className="app-body">
+            {desktop && (
+              <SideRail
+                pathname={pathname}
+                isAdmin={me.data?.role === "ADMIN"}
+                collapsed={railCollapsed || (narrowDesktop && pathname.startsWith("/app/lessons/"))}
+                onToggle={toggleRail}
+                onOpenLessons={() => setLessonsOpen(true)}
+                onOpenClasses={() => setManage(true)}
+                onSignOut={() => void signOut()}
+              />
+            )}
+            <main id="main" tabIndex={-1} className="app-stage">
+              {children}
+            </main>
+          </div>
+          {drawer && !desktop && (
+            <Dialog title={t("menu.label")} onClose={() => setDrawer(false)} drawer>
+              <div id="drawer-menu" className="drawer-menu">
+                <NavItems
+                  pathname={pathname}
+                  isAdmin={me.data?.role === "ADMIN"}
+                  onNavigate={() => setDrawer(false)}
+                  onOpenLessons={() => setLessonsOpen(true)}
+                  onOpenClasses={() => setManage(true)}
+                  onSignOut={() => void signOut()}
+                />
+                <LanguageSwitch />
+              </div>
+            </Dialog>
+          )}
+          {lessonsOpen && <LessonsDialog onClose={() => setLessonsOpen(false)} />}
           {manage && (
             <Dialog title={t("classes.title")} onClose={() => setManage(false)} wide>
               <ClassManager />
             </Dialog>
           )}
         </SelectionContext.Provider>
+        </WorkspaceBridgeProvider>
       </ToastProvider>
     </div>
   );

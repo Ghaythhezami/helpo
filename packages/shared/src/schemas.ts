@@ -332,3 +332,6 @@ export const AvatarBody = z.object({
   items: z.array(z.enum(["scarf", "hat", "glasses", "backpack"])).max(4),
   background: z.enum(["lavender", "meadow", "sky"]),
 });
+
+/** POST /api/demo/login: one-click sign-in to a pre-configured demo account (only when DEMO_LOGIN=true). */
+export const DemoLoginBody = z.object({ account: z.enum(["teacher", "student", "admin"]) });

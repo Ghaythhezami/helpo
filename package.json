@@ -2,7 +2,10 @@
   "name": "helpo",
   "version": "1.0.0",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "build": "npm run build -w @helpo/shared && npm run build -w @helpo/api && npm run build -w @helpo/web",
     "dev:api": "npm run dev -w @helpo/api",
@@ -15,5 +18,10 @@
     "db:seed": "npm run db:seed -w @helpo/api",
     "sonar": "node scripts/sonar.mjs"
   },
-  "engines": { "node": ">=20.19.0" }
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "devDependencies": {
+    "railway": "^3.17.0"
+  }
 }

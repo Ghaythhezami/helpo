@@ -16,7 +16,7 @@ import {
   type SlidesContent,
   type WorksheetContent,
 } from "@helpo/shared";
-import { ArrowLeft, BarChart3, ChevronLeft, ChevronRight, Copy, Download, GripVertical, Highlighter, Info, ListChecks, Monitor, PanelRight, PenLine, Send, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUp, BarChart3, MoreVertical, ChevronLeft, ChevronRight, Copy, Download, GripVertical, Highlighter, Info, ListChecks, Monitor, PanelRight, PenLine, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { exportOptions } from "@/lib/checks";
 import { exportHref } from "./lesson-actions";
@@ -40,6 +40,7 @@ import { CardsPreview, GamePreview, QuizPreview, SlidesPreview, WorksheetPreview
 import { ResultsBody } from "./results";
 import { ShareDialogBody } from "./share-dialog";
 import { ItemEditor } from "./item-editor";
+import { useRegisterWorkspace } from "./workspace-bridge";
 import { BlueprintPanel } from "./lesson-actions";
 import { ShownInChip, TranslationBanner, useAutoTranslate } from "./translation-banner";
 import { DrawLayer, Whiteboard } from "./whiteboard";
@@ -110,13 +111,22 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
     return () => mq.removeEventListener("change", on);
   }, []);
   const [draw, setDraw] = useState(false);
+  const [slideIndex, setSlideIndex] = useState(0);
+  const selectTab = useCallback((k: ResourceKind) => {
+    setTab(k);
+    setSlideIndex(0);
+  }, []);
+  const toggleBoard = useCallback(() => setBoard((v) => !v), []);
+  const openShare = useCallback(() => setDialog("share"), []);
+  const openResults = useCallback(() => setDialog("results"), []);
+  useRegisterWorkspace({ lessonId: lesson.id, title: lesson.title, tab, setTab: selectTab, boardOpen: board, toggleBoard, openShare, openResults });
   const [menu, setMenu] = useState(false);
   const [dragFrom, setDragFrom] = useState<number | null>(null);
+  const [menuRow, setMenuRow] = useState<number | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selection, setSelection] = useState("");
   const [request, setRequest] = useState("");
-  const [slideIndex, setSlideIndex] = useState(0);
 
   const byResource = openChecksByResource(lesson.checks);
   const open = openChecks(lesson.checks);
@@ -291,9 +301,18 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
                 {row.label.replace(/^\d+\.\s*/, "")}
               </button>
               {canEditList && (
-                <span className="row-tools">
-                  <button type="button" aria-label={t("ws.dup", { n: i + 1 })} onClick={() => edit("dup", i)}><Copy className="ic" aria-hidden="true" /></button>
-                  <button type="button" aria-label={t("ws.del", { n: i + 1 })} onClick={() => edit("del", i)}><Trash2 className="ic" aria-hidden="true" /></button>
+                <span className="row-menu-wrap">
+                  <button type="button" className="row-menu-btn" aria-haspopup="true" aria-expanded={menuRow === i} aria-label={t("ws.menu", { n: i + 1 })} onClick={() => setMenuRow(menuRow === i ? null : i)}>
+                    <MoreVertical className="ic" aria-hidden="true" />
+                  </button>
+                  {menuRow === i && (
+                    <span className="row-menu" role="group" aria-label={t("ws.menu", { n: i + 1 })}>
+                      <button type="button" aria-label={t("ws.up", { n: i + 1 })} disabled={i === 0} onClick={() => { edit("up", i); setMenuRow(null); }}><ArrowUp className="ic" aria-hidden="true" />{t("ws.moveUp")}</button>
+                      <button type="button" aria-label={t("ws.down", { n: i + 1 })} disabled={i === rows.length - 1} onClick={() => { edit("down", i); setMenuRow(null); }}><ArrowDown className="ic" aria-hidden="true" />{t("ws.moveDown")}</button>
+                      <button type="button" aria-label={t("ws.dup", { n: i + 1 })} onClick={() => { edit("dup", i); setMenuRow(null); }}><Copy className="ic" aria-hidden="true" />{t("ws.duplicate")}</button>
+                      <button type="button" aria-label={t("ws.del", { n: i + 1 })} onClick={() => { edit("del", i); setMenuRow(null); }}><Trash2 className="ic" aria-hidden="true" />{t("ws.delete")}</button>
+                    </span>
+                  )}
                 </span>
               )}
             </li>

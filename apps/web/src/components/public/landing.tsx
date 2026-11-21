@@ -6,6 +6,7 @@ import { useI18n } from "@/lib/i18n";
 import { ButtonLink } from "@/components/ui/button";
 import { PillHeader } from "@/components/ui/card";
 import { Illus } from "@/components/ui/illus";
+import { DemoPicker } from "./demo-picker";
 
 export function Landing() {
   const { t } = useI18n();
@@ -29,6 +30,8 @@ export function Landing() {
           <ButtonLink size="big" variant="secondary" href="/join">{t("landing.cta.join")}</ButtonLink>
         </div>
       </div>
+
+      <DemoPicker />
 
       <section className="panel" aria-labelledby="kit-h" style={{ marginBottom: 24 }}>
         <PillHeader id="kit-h" icon={<Illus name="level-star" size={36} />}>{t("landing.kit.heading")}</PillHeader>

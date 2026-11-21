@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/meta";
 import { Suspense } from "react";
 import { PublicShell } from "@/components/public/public-shell";
 import { AuthForm } from "@/components/public/auth-form";
 
-export const metadata: Metadata = { title: "Teacher sign-in" };
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata("meta.title.login");
+}
 
 export default function LoginPage() {
   return (

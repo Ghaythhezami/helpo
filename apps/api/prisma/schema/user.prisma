@@ -6,6 +6,8 @@ model User {
   image         String?
   schoolId      String?
   locale        String      @default("en")
+  /// "TEACHER" | "ADMIN"
+  role          String      @default("TEACHER")
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   sessions      Session[]

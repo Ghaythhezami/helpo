@@ -5,6 +5,7 @@ import { cleanPrompt } from "@helpo/shared";
 import type { z } from "zod";
 import { AI_PROVIDER, type AiProvider } from "../ai/ai.provider";
 import { writeCol } from "../common/i18n";
+import { HourlyLimiter } from "../common/quota";
 import { ProblemException, conflict, duplicateUpload, notFound } from "../common/problem";
 import { PrismaService } from "../prisma/prisma.service";
 import { DocumentsService, sha256Hex } from "../documents/documents.service";
@@ -16,6 +17,8 @@ export const LESSON_LIST_CAP = 500;
 
 @Injectable()
 export class LessonsService {
+  private readonly refineLimiter = new HourlyLimiter(30, "You can refine 30 prompts per hour. Try again later.");
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly views: LessonViewService,
@@ -39,6 +42,8 @@ export class LessonsService {
    * supplies grade, subject and duration; the prompt is treated as data by the model.
    */
   async refinePrompt(teacherId: string, body: z.infer<typeof RefinePromptBody>, locale: Locale): Promise<RefinedPrompt> {
+    // per user, on top of the per-IP limit: a shared demo link must not burn the AI budget
+    if (!this.refineLimiter.allow(teacherId)) throw new ProblemException(429, "Too many requests", this.refineLimiter.reason);
     const cls = body.classId
       ? await this.prisma.classRoom.findFirst({ where: { id: body.classId, teacherId }, select: { grade: true, subjectEn: true, subjectAr: true } })
       : null;

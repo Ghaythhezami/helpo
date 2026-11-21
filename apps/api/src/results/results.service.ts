@@ -58,12 +58,14 @@ export class ResultsService {
     const gameInsights = gameRows.map((g) => ({ game: g.game as GameKind, plays: g._count._all, averageStars: Math.round((g._avg.stars ?? 0) * 10) / 10 }));
 
     // Default session: the newest one that has answers or submissions, else simply the newest.
-    const all = await this.prisma.activitySession.findMany({
-      where: { lessonId },
-      orderBy: { createdAt: "desc" },
-      select: { id: true, type: true, createdAt: true, answers: { select: { participantId: true } } },
-    });
-    const sessions = all.map((s) => ({ id: s.id, type: s.type, createdAt: s.createdAt.toISOString(), answered: new Set(s.answers.map((a) => a.participantId)).size }));
+    // Bounded reads: the session list is plain rows plus ONE grouped count of participants who answered
+    // (never every session with all its answers); only the selected session's answers are loaded below.
+    const [all, answeredBy] = await Promise.all([
+      this.prisma.activitySession.findMany({ where: { lessonId }, orderBy: { createdAt: "desc" }, select: { id: true, type: true, createdAt: true } }),
+      this.prisma.participant.groupBy({ by: ["sessionId"], where: { session: { lessonId }, answers: { some: {} } }, _count: { _all: true } }),
+    ]);
+    const answeredCount = new Map(answeredBy.map((g) => [g.sessionId, g._count._all]));
+    const sessions = all.map((s) => ({ id: s.id, type: s.type, createdAt: s.createdAt.toISOString(), answered: answeredCount.get(s.id) ?? 0 }));
     const pickedId = sessionId ?? sessions.find((s) => s.answered > 0)?.id ?? sessions[0]?.id;
     if (sessionId && !all.some((s) => s.id === sessionId)) throw notFound("Session");
     const session = pickedId ? await this.prisma.activitySession.findFirst({ where: { id: pickedId, lessonId } }) : null;

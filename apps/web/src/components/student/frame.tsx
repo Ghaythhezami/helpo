@@ -1,5 +1,5 @@
 "use client";
-import { BRAND, type Band } from "@helpo/shared";
+import type { Band } from "@helpo/shared";
 import type { ReactNode } from "react";
 import { bandAttr } from "@/lib/band";
 import { LocaleScopeProvider, useI18n } from "@/lib/i18n";
@@ -30,7 +30,7 @@ function FrameInner({ children, band }: { children: ReactNode; band: Band }) {
       <a className="skip-link" href="#main">{t("common.skip")}</a>
       <div className="blobs" aria-hidden="true"><i /><i /><i /></div>
       <header className="app-head">
-        <Logo href="/join" label={t("student.logo", { name: BRAND.name })} />
+        <Logo href="/join" label={t("shell.logo.home")} />
         <span className="sp" />
         <LanguageSwitch />
       </header>

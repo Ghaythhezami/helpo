@@ -5,6 +5,8 @@ import type { z } from "zod";
 import { AI_PROVIDER, type AiProvider } from "../ai/ai.provider";
 import { asLocale, initialTranslations, writeCol } from "../common/i18n";
 import { ProblemException, badRequest, notFound } from "../common/problem";
+import { lessonQuotaLimit } from "../common/quota";
+import { sharedCounterStore, type CounterStore } from "../common/rate-limit";
 import { startOfMonth } from "../common/time";
 import { DocumentsService, extensionOf, sha256Hex, type ExtractedSource } from "../documents/documents.service";
 import { JobQueue } from "../jobs/job-queue";
@@ -46,16 +48,38 @@ export function shortTitle(prompt: string): string {
   return text ? text[0].toUpperCase() + text.slice(1) : "New lesson";
 }
 
-/** Per-teacher upload limiter: 10 uploads per hour (in memory, best effort). */
+/**
+ * Per-teacher upload limiter: 10 uploads per hour. Shared across instances through the Redis counter store when
+ * REDIS_URL is set (INCR with a one-hour expiry); in memory otherwise, or if Redis is unreachable (best effort).
+ */
 export class UploadLimiter {
   private readonly hits = new Map<string, number[]>();
-  check(teacherId: string, now = Date.now(), max = LIMITS.uploadsPerHour): void {
+
+  constructor(private readonly store: CounterStore | undefined = sharedCounterStore()) {}
+
+  async check(teacherId: string, now = Date.now(), max: number = LIMITS.uploadsPerHour): Promise<void> {
+    if (this.store) {
+      try {
+        const key = `rl:upload:${teacherId}`;
+        const n = await this.store.incr(key);
+        if (n === 1) await this.store.pexpire(key, 3_600_000);
+        if (n > max) throw this.tooMany(max);
+        return;
+      } catch (e) {
+        if (e instanceof ProblemException) throw e;
+        // Redis is down: fall through to the in-memory window rather than blocking teachers
+      }
+    }
     const recent = (this.hits.get(teacherId) ?? []).filter((t) => now - t < 3_600_000);
     if (recent.length >= max) {
       this.hits.set(teacherId, recent);
-      throw new ProblemException(429, "Too many uploads", `You can upload ${max} files per hour. Try again later.`);
+      throw this.tooMany(max);
     }
     this.hits.set(teacherId, [...recent, now]);
+  }
+
+  private tooMany(max: number) {
+    return new ProblemException(429, "Too many uploads", `You can upload ${max} files per hour. Try again later.`, undefined, { retryAfter: 3600 });
   }
 }
 
@@ -80,9 +104,11 @@ export class PipelineService {
 
   /** Lessons created this month versus the teacher's quota. */
   async quota(teacherId: string, now = new Date()): Promise<{ used: number; limit: number }> {
-    const limit = Number(process.env.MONTHLY_LESSON_QUOTA) || LIMITS.monthlyLessonQuota;
-    const used = await this.prisma.lesson.count({ where: { teacherId, createdAt: { gte: startOfMonth(now) } } });
-    return { used, limit };
+    const [used, user] = await Promise.all([
+      this.prisma.lesson.count({ where: { teacherId, createdAt: { gte: startOfMonth(now) } } }),
+      this.prisma.user.findUnique({ where: { id: teacherId }, select: { email: true } }),
+    ]);
+    return { used, limit: lessonQuotaLimit(user?.email) };
   }
 
   async create(teacherId: string, body: z.infer<typeof CreateLessonBody>, file?: UploadedFile): Promise<{ lessonId: string }> {
@@ -101,7 +127,7 @@ export class PipelineService {
     let sha256: string | null = null;
     let cached: CachedSource | null = null;
     if (file) {
-      this.limiter.check(teacherId);
+      await this.limiter.check(teacherId);
       type = await this.documents.detectType(file.buffer, file.originalname);
       sha256 = sha256Hex(file.buffer);
       if (body.reuse) {

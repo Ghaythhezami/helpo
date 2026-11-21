@@ -19,7 +19,7 @@ export class PlayController {
 
   /** Share by code: which class and activity a code opens. Public, child-safe. */
   @Get("code/:code")
-  @RateLimit("join", 60)
+  @RateLimit("join-lookup", 120)
   byCode(@Param("code") code: string, @ReqLocale() locale: Locale) {
     return this.join.byCode(code, locale);
   }

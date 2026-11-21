@@ -3,16 +3,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useRef, useState, type DragEvent } from "react";
-import { LOCALES, LOCALE_LABELS, type ClassSummary, type LessonSummary, type Locale, type RefinedPrompt } from "@helpo/shared";
+import { LOCALES, LOCALE_LABELS, type ClassSummary, type Locale, type RefinedPrompt } from "@helpo/shared";
 import { FileText, Settings2, Sparkles, X } from "lucide-react";
 import { ApiError, api, errorMessage } from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
 import { qk, useClasses, useLessons } from "@/lib/queries";
-import { relativeDay } from "@/lib/format";
+import { LessonCard, LessonsDialog } from "./lessons-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Illus } from "@/components/ui/illus";
-import { Pill } from "@/components/ui/pill";
 import { ErrorState } from "@/components/ui/states";
 import { ClassManager } from "./class-manager";
 import { useSelectedClassId } from "./shell";
@@ -246,9 +245,7 @@ function PreviousLessons() {
   const { t } = useI18n();
   const lessons = useLessons();
   const [all, setAll] = useState(false);
-  const [query, setQuery] = useState("");
   const list = useMemo(() => [...(lessons.data ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [lessons.data]);
-  const shown = list.filter((l) => l.title.toLowerCase().includes(query.trim().toLowerCase()));
 
   return (
     <section className="prev" aria-labelledby="prev-h">
@@ -267,31 +264,7 @@ function PreviousLessons() {
           {list.slice(0, 12).map((l) => <LessonCard key={l.id} lesson={l} />)}
         </ul>
       )}
-      {all && (
-        <Dialog title={t("create.previous")} onClose={() => setAll(false)} wide>
-          <label className="sr" htmlFor="lesson-search">{t("create.search")}</label>
-          <input id="lesson-search" type="search" className="search" placeholder={t("create.search")} value={query} onChange={(e) => setQuery(e.target.value)} data-autofocus />
-          <ul className="prev-list">
-            {shown.map((l) => <LessonCard key={l.id} lesson={l} wide />)}
-            {shown.length === 0 && <li className="muted">{t("create.search.none")}</li>}
-          </ul>
-        </Dialog>
-      )}
+      {all && <LessonsDialog onClose={() => setAll(false)} />}
     </section>
-  );
-}
-
-function LessonCard({ lesson, wide }: { lesson: LessonSummary; wide?: boolean }) {
-  const { t } = useI18n();
-  const ready = lesson.status === "READY" || lesson.status === "PARTIAL";
-  return (
-    <li className={wide ? "lcard-wide" : "lcard-s"}>
-      <Link href={`/app/lessons/${lesson.id}`} className="lcard-link">
-        <span className="chip">{lesson.className}</span>
-        <b>{lesson.title}</b>
-        <small>{relativeDay(lesson.createdAt, t)}</small>
-        <Pill tone={ready ? "ready" : "neu"} icon={false}>{t(`lstatus.${lesson.status}` as "lstatus.READY")}</Pill>
-      </Link>
-    </li>
   );
 }

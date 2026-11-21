@@ -32,7 +32,15 @@ BETTER_AUTH_SECRET, STUDENT_COOKIE_SECRET, REALTIME_TOKEN_SECRET   (generated; l
 ANTHROPIC_API_KEY                         (set by the owner; without it the API runs in demo mode)
 CLAUDE_ANALYSIS_MODEL=claude-opus-5-5     CLAUDE_GEN_MODEL=claude-sonnet-5-5     CLAUDE_EFFORT=medium
 MAX_UPLOAD_MB=20                          MONTHLY_LESSON_QUOTA=100
+DEMO_LOGIN=true|false                     (default off: /api/demo/* answers 404)
+DEMO_PASSWORD                             (secret; shared password of the pre-configured accounts; never in code)
+DEMO_LESSON_QUOTA=30                      (lessons per month for demo@/admin@helpo.test, so a public link cannot burn the AI budget)
+ADMIN_EMAILS                              (optional; Bull Board also admits users with role ADMIN)
 ```
+
+The seed creates `demo@helpo.test` (teacher), `admin@helpo.test` (role ADMIN) and the demo student "Layla A." in 6B, and two
+always-open activities on the photosynthesis lesson: a live quiz lobby with join code `202020` and a self-paced quiz with
+join code `303030`. Re-running the seed resets them to open. Both codes are reserved: the random code generator skips them.
 
 To seed the demo data (idempotent), set `DEMO_PASSWORD` (secret) and `SEED_ON_START=true` on `nibras-api`, deploy once,
 then set `SEED_ON_START=false`. The seed runs after the migrations and never blocks startup. The production demo login

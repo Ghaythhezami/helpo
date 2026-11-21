@@ -26,6 +26,9 @@ export async function qrSvg(link: string): Promise<string> {
 /** The shared actions plus open/close of a share link. */
 export type SessionAction = z.infer<typeof SessionActionBody>["action"] | "open" | "close";
 
+/** Join codes reserved for the pre-configured demo activities (see prisma/seed.ts). */
+export const RESERVED_JOIN_CODES: ReadonlySet<string> = new Set(["202020", "303030"]);
+
 export function randomJoinCode(): string {
   return String(randomInt(0, 1_000_000)).padStart(6, "0");
 }
@@ -53,6 +56,7 @@ export class SessionsService {
   async uniqueJoinCode(generate: () => string = randomJoinCode): Promise<string> {
     for (let i = 0; i < 25; i++) {
       const code = generate();
+      if (RESERVED_JOIN_CODES.has(code)) continue; // fixed demo codes
       const taken = await this.prisma.activitySession.findFirst({ where: { joinCode: code, status: { not: "ENDED" } }, select: { id: true } });
       if (!taken) return code;
     }

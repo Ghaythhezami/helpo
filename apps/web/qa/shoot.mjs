@@ -54,7 +54,9 @@ function mock(page, state) {
     const p = url.pathname.replace("/api", "");
     const method = route.request().method();
     const json = (body, status = 200) => route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) });
-    if (p === "/me") return json({ id: "u1", name: "Alex Green", email: "a@b.c", school: { id: "s", name: "Riverside", slug: "riverside" }, locale: "en" });
+    if (p === "/me") return json({ id: "u1", name: "Alex Green", email: "a@b.c", school: { id: "s", name: "Riverside", slug: "riverside" }, locale: "en", role: "ADMIN" });
+    if (p === "/demo/accounts") return json([{ key: "teacher", label: "Teacher", labelAr: "معلّم", description: "Make lessons and share them", descriptionAr: "أنشئ دروسًا وشاركها", email: "teacher@demo.nibras.app", next: "/app" }, { key: "student", label: "Student", labelAr: "طالب", description: "Play a live quiz", descriptionAr: "العب اختبارًا مباشرًا", email: null, next: "/join?code=202020" }, { key: "admin", label: "Admin", labelAr: "مدير", description: "See the platform", descriptionAr: "شاهد المنصة", email: "admin@demo.nibras.app", next: "/admin" }]);
+    if (p === "/admin/overview") return json({ totals: { schools: 1, teachers: 3, classes: 5, students: 62, lessons: 18, sessions: 11, answers: 940 }, lessonsByStatus: { READY: 14, PARTIAL: 2, FAILED: 2 }, ai: { resources: 90, tokensIn: 120000, tokensOut: 340000, byModel: [{ model: "claude-sonnet", resources: 70, tokensIn: 90000, tokensOut: 250000 }, { model: "claude-haiku", resources: 20, tokensIn: 30000, tokensOut: 90000 }] }, recentLessons: Array.from({ length: 12 }, (_, i) => ({ id: `l${i}`, title: `Lesson ${i + 1}: a long title about plants and energy`, teacherName: "Alex Green", status: "READY", createdAt: now })), recentSessions: Array.from({ length: 12 }, (_, i) => ({ id: `s${i}`, type: "LIVE_QUIZ", joinCode: "202020", status: "CLOSED", joined: 20, createdAt: now })), runtime: { queueDriver: "bullmq", realtime: "socket.io", aiMode: "claude", demoLogin: true } });
     if (p === "/classes" && method === "GET") return json([{ id: "c1", name: "6B", grade: 6, subject: "Science", band: "NAVIGATOR", studentCount: 24 }]);
     if (p === "/classes/c1") return json({ id: "c1", name: "6B", grade: 6, subject: "Science", band: "NAVIGATOR", studentCount: 4, settings: { pointsEnabled: true, teamsEnabled: false, soundsEnabled: false, celebrationsEnabled: true, weeklyGoalXp: 500 }, students, weekXp: 380, lessons: summaries });
     if (p === "/lessons" && method === "GET") return json(summaries);
@@ -77,6 +79,7 @@ function mock(page, state) {
 }
 
 const SIZES = [
+  { name: "tablet1024", w: 1024, h: 768 },
   { name: "mobile320", w: 320, h: 568 },
   { name: "desktop", w: 1440, h: 900 },
   { name: "laptop", w: 1280, h: 720 },
@@ -103,6 +106,7 @@ async function run(size, lang, fn, name, state = {}) {
     { name: "helpo_locale", value: lang, url: BASE },
     { name: "better-auth.session_token", value: "x", url: BASE },
   ]);
+  if (state.rail) await ctx.addInitScript((v) => localStorage.setItem("helpo:rail", v), state.rail);
   await ctx.addInitScript(() => { document.addEventListener('DOMContentLoaded', () => { const st = document.createElement('style'); st.textContent = 'nextjs-portal{display:none!important}'; document.head.appendChild(st); }); });
   const page = await ctx.newPage();
   await mock(page, state);
@@ -113,6 +117,11 @@ async function run(size, lang, fn, name, state = {}) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: `${dir}${name}-${lang}-${size.name}.png` });
     await scan(page, `${name} ${lang} ${size.name}`);
+    if (size.w >= 1024 && name === "create" || name === "create-railcollapsed") {
+      const box = await page.locator("aside.rail").boundingBox();
+      const onRight = box.x > size.w / 2;
+      results_log.push(`${(lang === "ar") === onRight ? "PASS" : "FAIL"} rail side ${name} ${lang} ${size.name}: x=${Math.round(box.x)} w=${Math.round(box.width)}`);
+    }
   } catch (e) {
     results_log.push(`ERROR ${name} ${lang} ${size.name}: ${String(e.message).slice(0, 160)}`);
   }
@@ -162,12 +171,20 @@ const screens = {
   sort: async (p) => { await p.goto(`${BASE}/play/games/l1/SORT`); await p.waitForSelector(".baskets"); },
   equation: async (p) => { await p.goto(`${BASE}/play/games/l1/EQUATION`); await p.waitForSelector(".eq"); },
   tf: async (p) => { await p.goto(`${BASE}/play/games/l1/TRUE_FALSE`); await p.waitForSelector(".qtf"); },
+  admin: async (p) => { await p.goto(`${BASE}/admin`); await p.waitForSelector(".admin", { timeout: 20000 }); },
+  landing: async (p) => { await p.goto(`${BASE}/`); await p.waitForSelector(".demo-card"); },
+  "login-demo": async (p) => { await p.goto(`${BASE}/login`); await p.waitForSelector(".demo-card"); },
   win: async (p) => { await p.goto(`${BASE}/join`); await p.evaluate(() => sessionStorage.setItem("helpo:last-result", JSON.stringify({ game: "MATCH", lessonId: "l1", result: { stars: 3, xp: 60, personalBest: true, totalXp: 400, level: 7, xpIntoLevel: 400, badgeUnlocked: null, classGoal: { goalXp: 500, earnedXp: 440 } } }))); await p.goto(`${BASE}/play/win`); await p.waitForSelector(".wincard"); },
 };
 
 for (const [name, fn] of Object.entries(screens)) {
   if (only && !name.startsWith(only)) continue;
   for (const lang of ["en", "ar"]) for (const size of SIZES) await run(size, lang, fn, name);
+}
+// teacher screens again with the rail saved as collapsed
+for (const name of ["create", "workspace", "ws-quiz", "share", "results", "admin"]) {
+  if (only && !name.startsWith(only)) continue;
+  for (const lang of ["en", "ar"]) for (const size of SIZES.filter((s) => s.w >= 1024)) await run(size, lang, screens[name], `${name}-railcollapsed`, { rail: "collapsed" });
 }
 await browser.close();
 fs.appendFileSync(new URL("./scroll-check.txt", import.meta.url), results_log.join("\n") + "\n");

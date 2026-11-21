@@ -49,6 +49,10 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
+      - name: API end-to-end tests (real Postgres)
+        run: npm run test:e2e -w @helpo/api
+      - name: Dependency audit (high/critical in production deps, documented exceptions in scripts/audit.mjs)
+        run: node scripts/audit.mjs
       - run: npm run build
       - name: SonarQube scan
         if: ${{ env.SONAR_TOKEN != '' }}

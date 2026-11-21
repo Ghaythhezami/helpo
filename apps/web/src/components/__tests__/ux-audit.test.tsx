@@ -57,17 +57,17 @@ describe("UX audit: keyboard and RTL", () => {
 
   it("AuthForm: the forward arrow flips in RTL via the shared .flip class", () => {
     const { container } = renderWithProviders(<AuthForm mode="login" />, { locale: "ar" });
-    expect(container.querySelector("button svg")).toHaveClass("flip");
+    expect(container.querySelector(".authbtn svg")).toHaveClass("flip");
   });
 });
 
 describe("UX audit: forms and errors", () => {
-  const type = (label: string, value: string) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
+  const type = (label: string, value: string) => fireEvent.change(screen.getByLabelText(new RegExp(`^${label}`)), { target: { value } });
 
   it("AuthForm: a failed sign-in marks the fields invalid and links them to the error text", async () => {
     authMock.signIn.email.mockResolvedValueOnce({ data: {}, error: { message: "raw english server text" } });
     renderWithProviders(<AuthForm mode="login" />);
-    expect(screen.getByLabelText("Email")).not.toHaveAttribute("aria-invalid");
+    expect(screen.getByLabelText(/^Email/)).not.toHaveAttribute("aria-invalid");
     type("Email", "a@b.co");
     type("Password", "longenough1");
     await userEvent.click(screen.getByRole("button", { name: /Sign in/ }));
@@ -75,8 +75,8 @@ describe("UX audit: forms and errors", () => {
     expect(alert).toHaveTextContent("That email and password don't match.");
     expect(alert).not.toHaveTextContent("raw english server text");
     for (const label of ["Email", "Password"]) {
-      expect(screen.getByLabelText(label)).toHaveAttribute("aria-invalid", "true");
-      expect(screen.getByLabelText(label).getAttribute("aria-describedby")).toContain(alert.id);
+      expect(screen.getByLabelText(new RegExp(`^${label}`))).toHaveAttribute("aria-invalid", "true");
+      expect(screen.getByLabelText(new RegExp(`^${label}`)).getAttribute("aria-describedby")).toContain(alert.id);
     }
   });
 
@@ -91,14 +91,14 @@ describe("UX audit: forms and errors", () => {
 
   it("AuthForm sign-up: names the missing fields and keeps the password hint described", async () => {
     renderWithProviders(<AuthForm mode="signup" />);
-    expect(screen.getByLabelText("Password")).toHaveAttribute("aria-describedby", "password-hint");
+    expect(screen.getByLabelText(/^Password/)).toHaveAttribute("aria-describedby", "password-hint");
     type("Email", "alex@riverside.org");
     type("Password", "longenough1");
     await userEvent.click(screen.getByRole("button", { name: /Create account/ }));
     await screen.findByRole("alert");
-    expect(screen.getByLabelText("Your name")).toHaveAttribute("aria-invalid", "true");
-    expect(screen.getByLabelText("School name")).toHaveAttribute("aria-invalid", "true");
-    expect(screen.getByLabelText("Email")).not.toHaveAttribute("aria-invalid");
+    expect(screen.getByLabelText(/^Your name/)).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText(/^School name/)).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText(/^Email/)).not.toHaveAttribute("aria-invalid");
   });
 
   it("AuthForm sign-up: an existing account gets a plain instruction, anything else a generic line", async () => {

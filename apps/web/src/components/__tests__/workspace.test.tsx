@@ -126,6 +126,7 @@ describe("Workspace", () => {
     await waitFor(() => expect(calls.some((c) => c.method === "PATCH" && c.path === "/resources/r-SLIDES")).toBe(true));
     const patch = calls.find((c) => c.method === "PATCH")!.body as { content: { slides: { title: string }[] } };
     expect(patch.content.slides[0].title).toBe("What plants need");
+    await userEvent.click(screen.getByRole("button", { name: "Item 2 menu" }));
     await userEvent.click(screen.getByRole("button", { name: "Delete item 2" }));
     await waitFor(() => expect(calls.filter((c) => c.method === "PATCH").length).toBe(2));
   });

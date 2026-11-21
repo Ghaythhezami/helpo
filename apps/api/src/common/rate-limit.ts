@@ -19,6 +19,15 @@ export interface CounterStore {
   pexpire(key: string, ms: number): Promise<unknown>;
 }
 
+let sharedStore: CounterStore | undefined;
+
+/** One Redis connection per process, shared by the HTTP limiter and the upload limiter; undefined means "use memory". */
+export function sharedCounterStore(env: NodeJS.ProcessEnv = process.env): CounterStore | undefined {
+  if (!env.REDIS_URL) return undefined;
+  sharedStore ??= new IORedis(env.REDIS_URL, { maxRetriesPerRequest: 1 }) as unknown as CounterStore;
+  return sharedStore;
+}
+
 /** Optional DI token for a shared counter store (tests inject a fake; production builds one from REDIS_URL). */
 export const RATE_LIMIT_STORE = Symbol("RATE_LIMIT_STORE");
 
@@ -39,7 +48,7 @@ export class RateLimitGuard implements CanActivate {
     private readonly reflector: Reflector,
     @Optional() @Inject(RATE_LIMIT_STORE) store?: CounterStore,
   ) {
-    this.store = store ?? (process.env.REDIS_URL ? (new IORedis(process.env.REDIS_URL, { maxRetriesPerRequest: 1 }) as unknown as CounterStore) : undefined);
+    this.store = store ?? sharedCounterStore();
   }
 
   get backend(): "redis" | "memory" {

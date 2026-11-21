@@ -28,13 +28,18 @@ beforeEach(() => {
   authMock.signOut.mockReset().mockResolvedValue({ data: {}, error: null });
 });
 
-const type = (label: string, value: string) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
+const type = (label: string, value: string) => fireEvent.change(screen.getByLabelText(new RegExp(`^${label}`)), { target: { value } });
 
 describe("AuthForm", () => {
   it("signs in and goes to the safe next page", async () => {
     search = "next=/app/lessons/l1";
     renderWithProviders(<AuthForm mode="login" />);
-    expect(screen.getByRole("button", { name: /Sign in/ })).toHaveAttribute("aria-disabled", "true");
+    const submit = screen.getByRole("button", { name: /Sign in/ });
+    expect(submit).toBeEnabled();
+    await userEvent.click(submit);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Please fix the fields marked below.");
+    expect(screen.getByLabelText(/^Email/)).toHaveFocus();
+    expect(authMock.signIn.email).not.toHaveBeenCalled();
     type("Email", " teacher@school.org ");
     type("Password", "longenough1");
     await userEvent.click(screen.getByRole("button", { name: /Sign in/ }));
@@ -83,7 +88,9 @@ describe("AuthForm", () => {
     type("Email", "alex@riverside.org");
     type("Password", "longenough1");
     await userEvent.click(screen.getByRole("button", { name: /Create account/ }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Add your name and your school name.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Please fix the fields marked below.");
+    expect(screen.getByText("Enter your name.")).toBeInTheDocument();
+    expect(screen.getByText("Enter your school's name.")).toBeInTheDocument();
     expect(authMock.signUp.email).not.toHaveBeenCalled();
   });
 
@@ -180,8 +187,11 @@ describe("teacher shell", () => {
 
   it("switches the language from the header and saves it for the teacher", async () => {
     const { calls } = mockFetch({ "GET /me": () => ({ body: me }), "GET /classes": () => ({ body: [] }), "PUT /me/locale": () => ({ body: me }) });
+    const mm = window.matchMedia;
+    window.matchMedia = ((q: string) => ({ ...mm(q), matches: q.includes("min-width: 1024px") })) as typeof window.matchMedia;
     renderWithProviders(<TeacherShell><p>x</p></TeacherShell>, { scope: "teacher" });
     await userEvent.click(await screen.findByRole("button", { name: "العربية" }));
+    window.matchMedia = mm;
     await waitFor(() => expect(calls.some((c) => c.path === "/me/locale")).toBe(true));
     expect(document.documentElement.dir).toBe("rtl");
     document.documentElement.lang = "en";

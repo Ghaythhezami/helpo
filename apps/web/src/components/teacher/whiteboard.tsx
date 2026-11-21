@@ -162,6 +162,8 @@ export function Whiteboard({ lessonId, onClose }: { lessonId: string; onClose: (
   const [full, setFull] = useState(false);
   const [mini, setMini] = useState(false);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
+  const [announce, setAnnounce] = useState("");
   const dr = useDrawing(lessonId, !mini);
 
   const drag = useRef<{ dx: number; dy: number } | null>(null);
@@ -178,6 +180,27 @@ export function Whiteboard({ lessonId, onClose }: { lessonId: string; onClose: (
     setPos({ x: Math.min(Math.max(0, e.clientX - drag.current.dx), window.innerWidth - Math.min(w, 120)), y: Math.min(Math.max(0, e.clientY - drag.current.dy), window.innerHeight - 48) });
   };
 
+  /** Arrow keys on the title bar move the window; Shift plus arrows resize it (16 px steps). */
+  const onKeys = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (full || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+    e.preventDefault();
+    const r = box.current?.getBoundingClientRect();
+    if (!r) return;
+    const dx = e.key === "ArrowLeft" ? -16 : e.key === "ArrowRight" ? 16 : 0;
+    const dy = e.key === "ArrowUp" ? -16 : e.key === "ArrowDown" ? 16 : 0;
+    if (e.shiftKey) {
+      const w = Math.min(window.innerWidth, Math.max(280, Math.round(r.width) + dx));
+      const h = Math.min(window.innerHeight, Math.max(240, Math.round(r.height) + dy));
+      setSize({ w, h });
+      setAnnounce(t("board.resized", { w, h }));
+    } else {
+      const x = Math.min(Math.max(0, Math.round(r.left) + dx), window.innerWidth - 120);
+      const y = Math.min(Math.max(0, Math.round(r.top) + dy), window.innerHeight - 48);
+      setPos({ x, y });
+      setAnnounce(t("board.moved", { x, y }));
+    }
+  };
+
   if (mini) {
     return (
       <button type="button" className="board-mini btn" onClick={() => setMini(false)} aria-label={t("board.open")}>
@@ -186,11 +209,14 @@ export function Whiteboard({ lessonId, onClose }: { lessonId: string; onClose: (
       </button>
     );
   }
-  const style = full ? undefined : pos ? { left: pos.x, top: pos.y, insetInlineStart: "auto" } : undefined;
+  const style = full ? undefined : { ...(pos ? { left: pos.x, top: pos.y, insetInlineStart: "auto" } : {}), ...(size ? { width: size.w, height: size.h } : {}) };
   return (
     <div ref={box} className={`board-float ${full ? "full" : ""}`} role="dialog" aria-label={t("board.title")} style={style}>
-      <header className="board-bar" onPointerDown={startDrag} onPointerMove={onDrag} onPointerUp={() => (drag.current = null)}>
-        <b>{t("board.title")}</b>
+      <header className="board-bar">
+        {/* A real button is the move handle: drag it with a pointer, or focus it and use the arrow keys. */}
+        <button type="button" className="board-grip" aria-label={t("board.keys")} onKeyDown={onKeys} onPointerDown={startDrag} onPointerMove={onDrag} onPointerUp={() => (drag.current = null)}>
+          <b>{t("board.title")}</b>
+        </button>
         <span className="sp" />
         <button type="button" className="rbtn" aria-label={t("board.minimize")} onClick={() => setMini(true)}><Minus aria-hidden="true" /></button>
         <button type="button" className="rbtn" aria-label={full ? t("board.restore") : t("board.maximize")} aria-pressed={full} onClick={() => setFull((v) => !v)}>
@@ -198,6 +224,7 @@ export function Whiteboard({ lessonId, onClose }: { lessonId: string; onClose: (
         </button>
         <button type="button" className="rbtn" aria-label={t("board.close")} onClick={onClose}><X aria-hidden="true" /></button>
       </header>
+      <p className="sr" role="status" aria-live="polite">{announce}</p>
       <canvas ref={dr.canvasRef} className="board-canvas" aria-label={t("board.canvas")} role="img" {...dr.handlers} />
       <BoardToolbar d={dr.ui} />
     </div>

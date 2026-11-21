@@ -10,6 +10,7 @@ import { mountBullBoard } from "./admin/bull-board";
 import { BullMqJobQueue } from "./jobs/bullmq.queue";
 import { JobQueue, selectDrivers } from "./jobs/job-queue";
 import { allowedOrigins } from "./common/origins";
+import { REQUEST_ID_HEADER, requestContext } from "./common/request-context";
 import { trustProxyHops, tuneHttpServer } from "./common/http-server";
 import { securityHeaders } from "./common/security-headers";
 
@@ -24,12 +25,14 @@ export async function createApp(): Promise<NestExpressApplication> {
   // Proxy hops in front of the API: Railway edge (1); browser traffic also passes the Vercel rewrite (2 in production).
   server.set("trust proxy", trustProxyHops());
   server.disable("x-powered-by");
+  server.use(requestContext()); // x-request-id + one structured access line per request
   server.use(securityHeaders());
   tuneHttpServer(app.getHttpServer());
   app.enableCors({
     origin: allowedOrigins(),
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", LOCALE_HEADER],
+    allowedHeaders: ["Content-Type", "Authorization", LOCALE_HEADER, REQUEST_ID_HEADER],
+    exposedHeaders: [REQUEST_ID_HEADER],
   });
   if (selectDrivers().realtime === "socket") app.useWebSocketAdapter(new IoAdapter(app)); // Socket.IO on the same port
   server.all("/api/auth/{*path}", await loadNodeHandler(app.get(AUTH)));

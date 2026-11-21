@@ -318,4 +318,85 @@ describe("Nibras API (demo mode, real DB)", () => {
     expect(t.body.token).toMatch(/\./);
     expect((await request(base()).get("/api/realtime/token")).status).toBe(401);
   });
+
+  describe("pre-configured demo access, admin and observability", () => {
+    const post = (path: string, body: object) => request(base()).post(path).set("Origin", ORIGIN()).send(body);
+
+    it("lists three accounts with EN/AR labels and never reveals the password", async () => {
+      const res = await request(base()).get("/api/demo/accounts");
+      expect(res.status).toBe(200);
+      expect(res.body.map((a: { key: string; email: string | null; next: string }) => [a.key, a.email, a.next.split("/").slice(0, 3).join("/")])).toEqual([
+        ["teacher", "demo@helpo.test", "/app"],
+        ["student", null, "/play/self"],
+        ["admin", "admin@helpo.test", "/admin"],
+      ]);
+      expect(JSON.stringify(res.body)).not.toContain("e2e-demo-password");
+    });
+
+    it("teacher: one click signs in server-side and the cookie is a normal session", async () => {
+      const res = await post("/api/demo/login", { account: "teacher" });
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual({ account: "teacher", next: "/app" });
+      const cookie = (res.headers["set-cookie"] as unknown as string[]).map((c) => c.split(";")[0]).join("; ");
+      const me = await request(base()).get("/api/me").set({ Cookie: cookie });
+      expect(me.body).toMatchObject({ email: "demo@helpo.test", role: "TEACHER" });
+      const dash = await request(base()).get("/api/dashboard").set({ Cookie: cookie });
+      expect(dash.body.classQuest).toMatchObject({ className: "6B", earnedXp: 380 });
+      expect((await request(base()).get("/api/admin/overview").set({ Cookie: cookie })).status).toBe(404); // another role: 404
+    });
+
+    it("admin: signs in with role ADMIN and reads the platform overview", async () => {
+      const res = await post("/api/demo/login", { account: "admin" });
+      const cookie = (res.headers["set-cookie"] as unknown as string[]).map((c) => c.split(";")[0]).join("; ");
+      expect((await request(base()).get("/api/me").set({ Cookie: cookie })).body).toMatchObject({ email: "admin@helpo.test", role: "ADMIN", name: "Nibras Admin" });
+      const o = await request(base()).get("/api/admin/overview").set({ Cookie: cookie });
+      expect(o.status).toBe(200);
+      expect(o.body.totals.schools).toBeGreaterThanOrEqual(1);
+      expect(o.body.totals.lessons).toBeGreaterThanOrEqual(4);
+      expect(o.body.runtime).toMatchObject({ aiMode: "demo", demoLogin: true, queueDriver: "inline", realtime: "poll" });
+      expect(o.body.ai.byModel.some((m: { model: string }) => m.model === "demo")).toBe(true);
+      expect(o.body.recentLessons.length).toBeGreaterThan(0);
+      expect((await request(base()).get("/api/admin/overview")).status).toBe(401);
+    });
+
+    it("the seeded password works through the normal sign-in too, and a wrong one does not", async () => {
+      const ok = await post("/api/auth/sign-in/email", { email: "demo@helpo.test", password: "e2e-demo-password-1" });
+      expect(ok.status).toBe(200);
+      expect((await post("/api/auth/sign-in/email", { email: "demo@helpo.test", password: "wrong-password" })).status).not.toBe(200);
+    });
+
+    it("student: Layla A. gets the signed cookie and lands on the always-open self-paced quiz", async () => {
+      const res = await post("/api/demo/login", { account: "student" });
+      expect(res.body.next).toMatch(/^\/play\/self\/\w+$/);
+      const cookie = (res.headers["set-cookie"] as unknown as string[]).find((c) => c.startsWith("helpo_student=")) as string;
+      expect(cookie).toMatch(/HttpOnly/i);
+      const student = { Cookie: cookie.split(";")[0] };
+      const home = await request(base()).get("/api/play/me").set(student);
+      expect(home.body).toMatchObject({ displayName: "Layla A.", className: "6B", xp: 1240, level: 3 });
+      const sessionId = res.body.next.split("/").pop();
+      const qs = await request(base()).get(`/api/play/sessions/${sessionId}/questions`).set(student);
+      expect(qs.body.joinCode).toBe("303030");
+      expect(qs.body.questions.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it("the fixed activities are open: a live quiz lobby (202020) and a self-paced assignment (303030)", async () => {
+      const live = await request(base()).get("/api/join/code/202020");
+      expect(live.body.live).toMatchObject({ type: "LIVE_QUIZ", joinCode: "202020" });
+      const self = await request(base()).get("/api/join/code/303030");
+      expect(self.body.live).toMatchObject({ type: "ASSIGNMENT", joinCode: "303030" });
+      expect(self.body.className).toBe("6B");
+    });
+
+    it("every response carries x-request-id: a valid incoming uuid is kept, anything else is replaced; errors echo it", async () => {
+      const uuid = "0b8f6f5e-2c1d-4a53-9a1e-7b8d3f2a1c44";
+      const kept = await request(base()).get("/api/health").set("x-request-id", uuid);
+      expect(kept.headers["x-request-id"]).toBe(uuid);
+      const replaced = await request(base()).get("/api/health").set("x-request-id", "evil\\\"id");
+      expect(replaced.headers["x-request-id"]).toMatch(/^[0-9a-f-]{36}$/);
+      const err = await request(base()).get("/api/dashboard").set("x-request-id", uuid);
+      expect(err.status).toBe(401);
+      expect(err.body.requestId).toBe(uuid);
+    });
+  });
 });
+

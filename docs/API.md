@@ -147,3 +147,31 @@ Students:
 `QUEUE_DRIVER=inline` + `REALTIME=poll` (default, Vercel): the same processors run with `waitUntil`, with the same idempotency, retries (3 attempts) and progress persisted in Postgres; clients poll every 1.5 s.
 `QUEUE_DRIVER=bullmq` (+ `REDIS_URL`): a BullMQ flow with a parent `finalize` and children `generate.{kind}` (jobId `lessonId:kind`, 3 attempts, exponential backoff of 4 s, 3 min timeout, global limit of 5), Bull Board at `/admin/queues` for `ADMIN_EMAILS`, and shared rate limits in Redis. `WORKER_ONLY=true` runs workers without an HTTP listener.
 `REALTIME=socket`: Socket.IO on the same port; rooms `lesson:{id}` and `session:{id}`; events `lesson.status`, `resource.progress|ready|failed`, `session.studentJoined|question|answer`. CORS uses `WEB_URL` plus `CORS_ORIGINS`.
+
+## Demo access, admin and request ids
+
+`Me` now has `role` (`"TEACHER"` or `"ADMIN"`).
+
+| Method | Path | Body | Returns |
+|---|---|---|---|
+| GET | `/api/demo/accounts` | | `DemoAccount[]` (teacher, student, admin) with EN/AR labels and descriptions, the email (null for the student) and `next` (`/app`, `/play/self/<assignment id>`, `/admin`). **404 unless `DEMO_LOGIN=true`.** |
+| POST | `/api/demo/login` | `DemoLoginBody { account }` | `DemoLoginResult { account, next }`. Teacher and admin: signs in server-side with `DEMO_PASSWORD` and forwards Better Auth's `Set-Cookie` headers (first-party on the web origin through the rewrite). Student: sets the signed `helpo_student` cookie for "Layla A." as a participant of the seeded self-paced quiz. 503 without `DEMO_PASSWORD` or seed data. Rate limited to 30 per minute per IP; logs the account only. **404 unless `DEMO_LOGIN=true`.** |
+| GET | `/api/admin/overview` | | `AdminOverview`: totals, lessons by status, AI tokens with a per-model breakdown, the 10 most recent lessons and sessions, runtime flags. Role `ADMIN` only: another signed-in role gets **404**, nobody signed in gets 401. Bull Board at `/admin/queues` also admits role `ADMIN`. |
+
+Demo accounts (`demo@helpo.test`, `admin@helpo.test`) have a smaller lesson quota: `DEMO_LESSON_QUOTA` (default 30) per month instead of
+`MONTHLY_LESSON_QUOTA`. Refine-prompt is limited to 30 per hour per user on top of the per-IP limit.
+
+Seeded always-open activities (6B, photosynthesis lesson; re-running the seed resets them): live quiz lobby code `202020`,
+self-paced quiz code `303030`. Both codes are reserved and never generated at random.
+
+### Request ids and limits
+
+- Every response has `x-request-id`. An incoming one is kept only when it is a valid UUID, otherwise a new one is made. Problem
+  responses carry the same value as `requestId`. One structured access line is logged per request (method, route pattern, status,
+  ms, request id; no IP, body, query string or names); `/api/health` is not logged.
+- Public join lookups (`GET /api/join/code/:code`, `/join/schools/:slug/classes`, `/join/classes/:id/students`,
+  `GET /api/play/code/:code`) allow 120 per minute per IP, joins 60 per minute. The limits are generous on purpose: a whole class
+  often shares one NAT address, while guessing six-digit codes is still throttled.
+- Better Auth's own limiter stores its counters in the `rateLimit` table (Redis when `REDIS_URL` is set), so it holds across instances.
+  Sign-in and sign-up allow 10 per minute per IP. It is on in production. Uploads are limited to 10 per hour per teacher in the shared store.
+- `GET /api/lessons/:id/results` reads the session list as plain rows plus one grouped count, and loads answers only for the selected session.

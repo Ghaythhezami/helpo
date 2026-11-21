@@ -23,7 +23,7 @@ const DAY = 86_400_000;
 const NAMES_6B = [
   "Sara Ahmed", "Fatma Trabelsi", "Lina Mansour", "Youssef Haddad", "Ali Ben Salah", "Omar Kacem", "Mia Lopez", "Adam Cherif", "Noah Brown",
   "Yasmine Gharbi", "Karim Jaziri", "Nour Bouazizi", "Hana Mejri", "Ines Ben Ammar", "Rayan Dridi", "Leila Sassi", "Mehdi Chaabane", "Emma Wilson",
-  "Lucas Martin", "Salma Ferchichi", "Amine Khelifi", "Zeineb Hamdi", "Tarek Belhadj", "Jana Miled",
+  "Lucas Martin", "Salma Ferchichi", "Amine Khelifi", "Zeineb Hamdi", "Tarek Belhadj", "Layla Ahmed",
 ];
 const FIRST = ["Aya", "Bilel", "Chaima", "Dali", "Eya", "Firas", "Ghada", "Hedi", "Imen", "Jawher", "Khadija", "Louay", "Maram", "Nizar", "Oumaima", "Prince", "Rim", "Sami", "Takwa", "Wael", "Yosra", "Zied"];
 const LAST = ["Abid", "Baccouche", "Cherni", "Dhaouadi", "Essid", "Fourati", "Gabsi", "Hamza", "Jebali", "Kallel", "Landolsi", "Marzouki", "Nasri", "Ouerghi", "Rekik", "Souissi", "Tlili", "Zouari"];
@@ -62,30 +62,32 @@ function savedPassword(): string | null {
   return /^Password: (.+)$/m.exec(readFileSync(ACCOUNT_FILE, "utf8"))?.[1]?.trim() ?? null;
 }
 
-async function ensureTeacher(schoolId: string) {
-  const email = "demo@helpo.test";
-  // DEMO_PASSWORD (a secret service variable) lets a hosted seed use a known password without writing it anywhere.
-  const hostedPassword = process.env.DEMO_PASSWORD?.trim() || null;
-  let password = hostedPassword || savedPassword();
-  const existing = await prisma.user.findUnique({ where: { email } });
+/**
+ * Creates or refreshes a password account. With DEMO_PASSWORD set (a secret service variable, never written anywhere)
+ * the stored credential is reset to it on every run; without it a random password is generated for the teacher and
+ * kept only in the gitignored .local/demo-account.txt.
+ */
+async function ensureAccount(email: string, name: string, role: "TEACHER" | "ADMIN", schoolId: string): Promise<string> {
+  const hosted = process.env.DEMO_PASSWORD?.trim() || null;
   const auth = await createAuth(prisma);
-  if (existing && hostedPassword) {
-    // Make the stored credential match DEMO_PASSWORD (hash with Better Auth's own hasher).
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing && hosted) {
     const ctx = await auth.$context;
-    await prisma.account.updateMany({ where: { userId: existing.id, providerId: "credential" }, data: { password: await ctx.password.hash(hostedPassword) } });
-    await prisma.user.update({ where: { id: existing.id }, data: { schoolId } });
+    await prisma.account.updateMany({ where: { userId: existing.id, providerId: "credential" }, data: { password: await ctx.password.hash(hosted) } });
+    await prisma.user.update({ where: { id: existing.id }, data: { schoolId, role, name } });
     return existing.id;
   }
-  if (existing && password) {
-    await prisma.user.update({ where: { id: existing.id }, data: { schoolId } });
+  // locally the admin has no known password (set DEMO_PASSWORD to log in as admin): keep an existing one untouched
+  const local = role === "TEACHER" ? savedPassword() : "admin-keep";
+  if (existing && local) {
+    await prisma.user.update({ where: { id: existing.id }, data: { schoolId, role, name } });
     return existing.id;
   }
   if (existing) await prisma.user.delete({ where: { id: existing.id } }); // password unknown: recreate cleanly
-  password = hostedPassword || randomBytes(12).toString("base64url");
-  const res = await auth.api.signUpEmail({ body: { name: "Alex Green", email, password } });
-  await prisma.user.update({ where: { id: res.user.id }, data: { schoolId, locale: "en" } });
-  // Hosted seeds take DEMO_PASSWORD from the secret store and write nothing to disk.
-  if (process.env.DEMO_PASSWORD) return res.user.id;
+  const password = hosted || randomBytes(12).toString("base64url");
+  const res = await auth.api.signUpEmail({ body: { name, email, password } });
+  await prisma.user.update({ where: { id: res.user.id }, data: { schoolId, locale: "en", role } });
+  if (hosted || role !== "TEACHER") return res.user.id; // hosted seeds write nothing to disk
   mkdirSync(path.dirname(ACCOUNT_FILE), { recursive: true });
   writeFileSync(ACCOUNT_FILE, `Nibras demo teacher\nEmail: ${email}\nPassword: ${password}\n`);
   return res.user.id;
@@ -308,11 +310,54 @@ async function seedGamification(classId: string, lessonId: string, students: { i
   });
 }
 
+/* ------------------------- demo student and always-open activities ------------------------- */
+
+/** Fixed join codes for the pre-configured demo access (reserved: the random generator never uses them). */
+const DEMO_LIVE_CODE = "202020";
+const DEMO_ASSIGNMENT_CODE = "303030";
+const FAR_FUTURE = new Date("2099-12-31T00:00:00Z");
+
+/** "Layla A." exists in 6B (an older database that still has the placeholder name is renamed, so the roster stays at 24). */
+async function ensureDemoStudent(classId: string) {
+  const found = await prisma.student.findFirst({ where: { classId, fullName: "Layla Ahmed" } });
+  if (found) return found;
+  const filler = await prisma.student.findFirst({ where: { classId, fullName: "Jana Miled" } });
+  if (filler) return prisma.student.update({ where: { id: filler.id }, data: { fullName: "Layla Ahmed", displayName: "Layla A." } });
+  return prisma.student.create({ data: { classId, fullName: "Layla Ahmed", displayName: "Layla A." } });
+}
+
+/** Some history so the result card has data: 1240 XP (level 3), a 2-day streak and an older game result. Idempotent. */
+async function refreshDemoStudent(classId: string) {
+  const layla = await prisma.student.findFirstOrThrow({ where: { classId, fullName: "Layla Ahmed" } });
+  const history = await prisma.xpEvent.findFirst({ where: { studentId: layla.id, reason: "seed:history" } });
+  if (history) await prisma.xpEvent.update({ where: { id: history.id }, data: { amount: 1240 } });
+  await prisma.student.update({ where: { id: layla.id }, data: { xp: 1240, streakDays: 2, streakSavers: 1, lastActiveDay: schoolDay() } });
+  const lesson = await prisma.lesson.findFirst({ where: { classId, lessonNumber: 4 }, select: { id: true } });
+  if (lesson && (await prisma.gameResult.count({ where: { studentId: layla.id } })) === 0) {
+    await prisma.gameResult.create({ data: { studentId: layla.id, lessonId: lesson.id, game: "MATCH", stars: 2, xp: 45, total: 7, firstTry: 5, retried: 2, createdAt: new Date(startOfIsoWeek(new Date()).getTime() - 2 * DAY) } });
+  }
+}
+
+/** A LIVE_QUIZ lobby (202020) and a self-paced ASSIGNMENT (303030) on the photosynthesis lesson, always open, far expiry. */
+async function ensureOpenActivities(classId: string, lessonId: string) {
+  const specs = [
+    { type: "LIVE_QUIZ" as const, code: DEMO_LIVE_CODE, status: "LOBBY" as const },
+    { type: "ASSIGNMENT" as const, code: DEMO_ASSIGNMENT_CODE, status: "LIVE" as const },
+  ];
+  for (const spec of specs) {
+    const data = { status: spec.status, isOpen: true, expiresAt: FAR_FUTURE, endedAt: null, currentQuestion: 0, revealed: false, namesHidden: true, leaderboard: "TEAMS", startedAt: spec.status === "LIVE" ? new Date() : null };
+    const existing = await prisma.activitySession.findFirst({ where: { lessonId, classId, type: spec.type, joinCode: spec.code } });
+    if (existing) await prisma.activitySession.update({ where: { id: existing.id }, data });
+    else await prisma.activitySession.create({ data: { ...data, lessonId, classId, type: spec.type, joinCode: spec.code } });
+  }
+}
+
 /* ----------------------------------- main ----------------------------------- */
 
 async function main() {
   const school = await prisma.school.upsert({ where: { slug: "riverside" }, create: { name: "Riverside Middle School", slug: "riverside" }, update: { name: "Riverside Middle School" } });
-  const teacherId = await ensureTeacher(school.id);
+  const teacherId = await ensureAccount("demo@helpo.test", "Alex Green", "TEACHER", school.id);
+  await ensureAccount("admin@helpo.test", "Nibras Admin", "ADMIN", school.id);
 
   for (const c of CLASSES) {
     const cls = await prisma.classRoom.upsert({
@@ -328,6 +373,8 @@ async function main() {
   const cls6b = await prisma.classRoom.findUniqueOrThrow({ where: { teacherId_name: { teacherId, name: "6B" } } });
   const students = await prisma.student.findMany({ where: { classId: cls6b.id }, orderBy: { createdAt: "asc" }, select: { id: true, fullName: true, displayName: true } });
   // createMany keeps insertion order only loosely; sort to the roster order so "Sara Ahmed" is index 0.
+  await ensureDemoStudent(cls6b.id);
+  students.splice(0, students.length, ...(await prisma.student.findMany({ where: { classId: cls6b.id, fullName: { in: NAMES_6B } }, select: { id: true, fullName: true, displayName: true } })));
   students.sort((a, b) => NAMES_6B.indexOf(a.fullName) - NAMES_6B.indexOf(b.fullName));
 
   let lesson4 = "";
@@ -338,6 +385,8 @@ async function main() {
     if (made) await seedQuizSession(made.lesson.id, cls6b.id, made.quiz, students, spec, String(480_900 + spec.n * 37));
   }
   await seedGamification(cls6b.id, lesson4, students);
+  await refreshDemoStudent(cls6b.id);
+  await ensureOpenActivities(cls6b.id, lesson4);
   console.log("Seed complete: school riverside, teacher Alex Green, 5 classes, Unit 3 lessons L1 to L4.");
 }
 

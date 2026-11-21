@@ -25,7 +25,43 @@ export interface Me {
   name: string;
   email: string;
   locale: Locale;
+  role: UserRole;
   school: { id: string; name: string; slug: string } | null;
+}
+
+/** TEACHER is the default. ADMIN also sees /admin (platform overview) and the queue board. */
+export type UserRole = "TEACHER" | "ADMIN";
+
+/* ------------------------------ Demo access ------------------------------
+ * Pre-configured accounts so a reviewer can test without typing credentials. Enabled by DEMO_LOGIN=true on the API.
+ * Teacher and admin are real accounts (password from DEMO_PASSWORD); the student signs in with the student cookie
+ * (students never have passwords) and lands in a seeded open activity.
+ */
+export type DemoAccountKey = "teacher" | "student" | "admin";
+
+export interface DemoAccount {
+  key: DemoAccountKey;
+  label: string;
+  labelAr: string;
+  description: string;
+  descriptionAr: string;
+  email: string | null; // null for the student (no password login)
+  next: string; // where the web app goes after signing in
+}
+
+export interface DemoLoginResult {
+  account: DemoAccountKey;
+  next: string;
+}
+
+/** GET /api/admin/overview (ADMIN only): platform-wide numbers, never student personal data beyond display names. */
+export interface AdminOverview {
+  totals: { schools: number; teachers: number; classes: number; students: number; lessons: number; sessions: number; answers: number };
+  lessonsByStatus: Record<string, number>;
+  ai: { resources: number; tokensIn: number; tokensOut: number; byModel: { model: string; resources: number; tokensIn: number; tokensOut: number }[] };
+  recentLessons: { id: string; title: string; teacherName: string; status: string; createdAt: string }[];
+  recentSessions: { id: string; type: string; joinCode: string; status: string; joined: number; createdAt: string }[];
+  runtime: { queueDriver: string; realtime: string; aiMode: "claude" | "demo"; demoLogin: boolean };
 }
 
 export interface ClassSummary {

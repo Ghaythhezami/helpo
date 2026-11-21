@@ -107,6 +107,7 @@ describe("editing", () => {
     fireEvent.drop(items[2]);
     await waitFor(() => expect(calls.some((c) => c.method === "PATCH")).toBe(true));
     expect((calls.find((c) => c.method === "PATCH")!.body as { content: { questions: { id: string }[] } }).content.questions[2].id).toBe("Q1");
+    await userEvent.click(screen.getByRole("button", { name: "Item 1 menu" }));
     await userEvent.click(screen.getByRole("button", { name: "Duplicate item 1" }));
     await waitFor(() => expect(calls.filter((c) => c.method === "PATCH")).toHaveLength(2));
     fireEvent.change(screen.getByLabelText("Question"), { target: { value: "Edited question?" } });

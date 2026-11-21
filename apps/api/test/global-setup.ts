@@ -28,15 +28,20 @@ export default async function globalSetup(): Promise<void> {
     REALTIME: "poll",
     NODE_ENV: "test",
     BLOB_READ_WRITE_TOKEN: "",
+    DEMO_LOGIN: "true",
+    DEMO_PASSWORD: "e2e-demo-password-1",
   };
   const run = (cmd: string, args: string[]) => {
-    const r = spawnSync(process.execPath, [require.resolve(cmd), ...args], { cwd: ROOT, env, encoding: "utf8" });
+    const entry = cmd.startsWith("/") ? path.resolve(ROOT, "..", "..", "node_modules", cmd.slice(1)) : require.resolve(cmd);
+    const r = spawnSync(process.execPath, [entry, ...args], { cwd: ROOT, env, encoding: "utf8" });
     if (r.status !== 0) throw new Error(`${cmd} ${args.join(" ")} failed:\n${r.stdout}\n${r.stderr}`);
   };
   writeFileSync(path.join(ROOT, "test", ".drop.sql"), "DROP SCHEMA IF EXISTS helpo_e2e CASCADE;\n");
   run("prisma/build/index.js", ["db", "execute", "--file", "test/.drop.sql", "--schema", "prisma/schema"]);
   run("prisma/build/index.js", ["migrate", "deploy", "--schema", "prisma/schema"]);
   run("typescript/bin/tsc", ["-p", "tsconfig.build.json"]);
+  // the demo accounts, the always-open activities and the rich teacher data (also proves the seed works on an empty schema)
+  run("/tsx/dist/cli.mjs", ["prisma/seed.ts"]);
 
   const child: ChildProcess = spawn(process.execPath, ["dist/main.js"], { cwd: ROOT, env, stdio: "ignore" });
   (globalThis as { __E2E_SERVER__?: ChildProcess }).__E2E_SERVER__ = child;

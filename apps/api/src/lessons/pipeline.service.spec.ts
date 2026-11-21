@@ -114,12 +114,12 @@ describe("PipelineService.create", () => {
     expect(db.lesson.findFirst).not.toHaveBeenCalled();
   });
 
-  it("limits uploads to 10 per hour per teacher", () => {
-    const l = new UploadLimiter();
-    for (let i = 0; i < 10; i++) l.check("T1", 1000 + i);
-    expect(() => l.check("T1", 2000)).toThrow(expect.objectContaining({ status: 429 }) as never);
-    expect(() => l.check("T2", 2000)).not.toThrow();
-    expect(() => l.check("T1", 1000 + 3_600_001)).not.toThrow();
+  it("limits uploads to 10 per hour per teacher (memory fallback without Redis)", async () => {
+    const l = new UploadLimiter(undefined);
+    for (let i = 0; i < 10; i++) await l.check("T1", 1000 + i);
+    await expect(l.check("T1", 2000)).rejects.toMatchObject({ status: 429 });
+    await expect(l.check("T2", 2000)).resolves.toBeUndefined();
+    await expect(l.check("T1", 1000 + 3_600_001)).resolves.toBeUndefined();
   });
 });
 

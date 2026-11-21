@@ -274,7 +274,7 @@ describe("ui primitives", () => {
     const onChange = jest.fn();
     function Toaster() {
       const toast = useToast();
-      return <><button onClick={() => toast.show("Hello toast")}>show</button><button onClick={() => toast.show("Undoable", { undo: onChange, durationMs: 100 })}>undo</button><button onClick={() => toast.dismiss()}>hide</button></>;
+      return <><button onClick={() => toast.show("Hello toast")}>show</button><button onClick={() => toast.show("Undoable", { undo: onChange, durationMs: 5000 })}>undo</button><button onClick={() => toast.dismiss()}>hide</button></>;
     }
     renderWithProviders(<><InlineConfirm message="Sure?" confirmLabel="Yes" cancelLabel="No" onConfirm={onConfirm} onCancel={onCancel} busy /><Switch checked disabled label="Dis" onChange={onChange} /><Progress value={5} max={0} label="zero" /><Toaster /></>);
     fireEvent.click(screen.getByRole("button", { name: "Yes" }));

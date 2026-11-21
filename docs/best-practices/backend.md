@@ -22,12 +22,12 @@ the fixed code. Line numbers are as of this audit.
 | 5 | Request body size limit (T09, T04) | PASS | `src/bootstrap.ts:37` | `express.json({ limit: "1mb" })`. |
 | 6 | Upload size/count limit and type check by bytes (T32) | PASS | `src/lessons/lessons.controller.ts:70,92`; `src/documents/documents.service.ts:111-120` | 20 MB, 1 file, magic bytes, extension must agree. |
 | 7 | Slow-client / request timeouts on the HTTP server (T09, T29) | PASS (fixed) | `src/common/http-server.ts`, `src/bootstrap.ts:27` | requestTimeout 120 s, headers 65 s, keep-alive 61 s. |
-| 8 | Rate limit sensitive and public routes (T09 abuse defense) | PARTIAL | `src/common/rate-limit.ts`; `@RateLimit` on join, play, AI, export, share | Two public join lookups unthrottled (see Known gaps). |
+| 8 | Rate limit sensitive and public routes (T09 abuse defense) | PASS (fixed) | `src/common/rate-limit.ts`; `@RateLimit` on join, play, AI, export, share; `src/join/join.controller.ts` | Public join lookups now 120/min per IP, joins 60/min: generous so a classroom behind one NAT is never locked out, while guessing six-digit codes stays throttled. |
 | 9 | Rate-limit key must not be client-spoofable (T09, T07) | PASS (fixed) | `src/common/rate-limit.ts:53-54` | Used the first `X-Forwarded-For` entry, which a client can set to dodge the limit; now `req.ip` with `trust proxy 1`. |
 | 10 | 429 with `Retry-After` and problem+json (T04 Rate limit headers) | PASS (fixed) | `src/common/problem.filter.ts:54-70`, `src/common/rate-limit.ts:26` | Header added; body unchanged. Draft `RateLimit-*` headers not sent. |
 | 11 | Shared limiter store across instances (T07, T28) | PASS | `src/common/rate-limit.ts:42` | Redis INCR/PEXPIRE when `REDIS_URL`; memory fallback fails open, documented in code. |
 | 12 | Token endpoint rate limited (T09) | PASS (fixed) | `src/realtime/realtime.controller.ts:16` | `GET /realtime/token` had no limit. |
-| 13 | Auth: separate stricter limits for login/signup/reset (T09) | PARTIAL | `src/auth/auth.factory.ts:21` | Relies on Better Auth built-in limiter (memory storage; weak on serverless). See Known gaps. |
+| 13 | Auth: separate stricter limits for login/signup/reset (T09) | PASS (fixed) | `src/auth/auth-rate-limit.ts`, `src/auth/auth.factory.ts`, migration `auth_rate_limit` | Better Auth limiter moved to the `rateLimit` table (Redis secondary storage when `REDIS_URL`), so it holds across instances. Sign-in/sign-up 10/min, forgot-password 3/min. On in production. Server-side demo login does not pass through it. |
 | 14 | Password policy and secret strength checks at boot (T09) | PASS | `src/auth/auth.factory.ts:12-14,21` | Secret 32+ chars enforced, min password 8. |
 | 15 | Signed cookies/tokens: HMAC, constant-time compare, expiry (T09) | PASS | `src/common/student-cookie.ts:33`, `src/common/realtime-token.ts:49` | `timingSafeEqual`, exp checked. |
 | 16 | AuthZ on every resource, scoped by owner (T09 BOLA/IDOR) | PASS | `src/lessons/lesson-view.service.ts:24-25`, `src/auth/teacher.guard.ts`, `src/auth/student.guard.ts` | Controllers use `TeacherGuard`/`StudentGuard`; lookups carry `teacherId`/`classId`. |
@@ -43,7 +43,7 @@ the fixed code. Line numbers are as of this audit.
 | 26 | Migrations versioned, applied at deploy, CI runs them (T05, T13) | PASS | `prisma/schema/migrations/`, `.github/workflows/ci.yml:48` | `migrate deploy`. |
 | 27 | Index every foreign key and hot filter (T05) | PASS (fixed) | `prisma/schema/domain.prisma` (Participant, GameResult, XpEvent), migration `20261120234513_add_fk_lookup_indexes` | Added `participant(studentId)`, `game_result(lessonId)`, `xp_event(studentId, createdAt)`. |
 | 28 | Unique constraints back idempotent writes (T05, T04) | PASS | `prisma/schema/domain.prisma:106,218,233,302,320` | `(sessionId,studentId)`, `(participantId,questionIndex)`, `(lessonId,kind)`. |
-| 29 | Bounded list queries / pagination (T04, T05) | PARTIAL | `src/lessons/lessons.service.ts:32` cap 500; dashboard `take` 6/20/30 | Lesson list capped (fixed). Results sessions query still open (see Known gaps). |
+| 29 | Bounded list queries / pagination (T04, T05) | PASS (fixed) | `src/lessons/lessons.service.ts` cap 500; `src/results/results.service.ts`; dashboard `take` 6/20/30 | Results now read plain session rows plus one grouped count, and answers only for the selected session. |
 | 30 | Cascade deletes defined on relations (T05) | PASS | `prisma/schema/domain.prisma` `onDelete: Cascade/SetNull` | |
 | 31 | Idempotent job enqueue (T11) | PASS | `src/jobs/bullmq.queue.ts:31-44,101-107`, `src/jobs/job-queue.ts:183`, `src/lessons/generation.service.ts:71` | Deterministic `jobId`, duplicate returns false; inline keys; atomic claim. |
 | 32 | Retries with exponential backoff, bounded attempts (T11) | PASS | `src/jobs/bullmq.queue.ts:23-29` | 3 attempts, 4 s exponential. |
@@ -66,9 +66,9 @@ the fixed code. Line numbers are as of this audit.
 | 49 | Prompt injection: source treated as untrusted data (T45) | PASS | `src/ai/prompts.ts:49-53,113,125` | Delimited and declared untrusted. |
 | 50 | Prompt caching for repeated context (T15) | PASS | `src/ai/claude.provider.ts:56,85` | `cache_control: ephemeral` on the shared block. |
 | 51 | Token/cost metering and per-user quotas (T15, T39) | PASS | `src/ai/generators.ts:116`, `src/lessons/pipeline.service.ts:83` | Tokens logged per call; 100 lessons per month per teacher. |
-| 52 | Per-user upload limiter (T09, T32) | PARTIAL | `src/lessons/pipeline.service.ts:48-52` | In-memory, per instance (code comment says best effort). |
+| 52 | Per-user upload limiter (T09, T32) | PASS (fixed) | `src/lessons/pipeline.service.ts` (`UploadLimiter`), `src/common/rate-limit.ts` (`sharedCounterStore`) | Runs on the shared Redis counter store when `REDIS_URL` is set; memory fallback (also if Redis is down). |
 | 53 | Student data minimised; no student PII to the LLM (T34, T45) | PASS | `src/ai/prompts.ts:11`, `src/join/join.service.ts:62-64` | Join returns `displayName` only. |
-| 54 | Uploaded originals stored privately (T32) | PARTIAL | `src/storage/storage.service.ts:30` | Vercel Blob `access: "public"` with random suffix; off unless token set. See Known gaps. |
+| 54 | Uploaded originals stored privately (T32) | N/A | `src/storage/storage.service.ts` | The owner dropped storage: no `BLOB_READ_WRITE_TOKEN` is set, so originals are never stored (only the clean text and the sha256). Revisit only if storage returns. |
 | 55 | Storage failures never block the main flow (T32) | PASS | `src/storage/storage.service.ts:33-35` | Returns null and warns. |
 | 56 | Storage keys not user-controlled (T32) | PASS | `src/storage/storage.service.ts:20-22` | Extension sanitised, server-built key. |
 | 57 | Unit/integration tests and coverage in CI (T13) | PASS | `apps/api/jest.config.js`, `.github/workflows/ci.yml:49-52` | 94.2% lines. |
@@ -76,7 +76,7 @@ the fixed code. Line numbers are as of this audit.
 | 59 | CI runs typecheck, lint, tests, build (T13) | PASS | `.github/workflows/ci.yml:49-52` | |
 | 60 | Dependency audit / update automation (T13, T09 supply chain) | GAP | no `npm audit` step or Dependabot config | Outside `apps/api`; see Known gaps. |
 | 61 | Env validation at boot (T14 12-factor) | PARTIAL | `src/auth/auth.factory.ts:12`, `src/common/student-cookie.ts:12` | Auth and cookie secrets throw; no single typed env schema, some secrets checked lazily. |
-| 62 | Structured request logging with correlation id (T10) | GAP | Nest default logger only | No request id or JSON access log; see Known gaps. |
+| 62 | Structured request logging with correlation id (T10) | PASS (fixed) | `src/common/request-context.ts`, `src/bootstrap.ts`, `src/common/problem.filter.ts` | `x-request-id` (valid uuid kept, else generated) on every response and in problem+json as `requestId`; one JSON access line per request (method, route pattern, status, ms, requestId; no IP, body, query or names); `/api/health` skipped. |
 | 63 | Metrics / tracing (T10) | PARTIAL | `src/observability/sentry.ts:6` | Sentry traces at 5%; no metrics endpoint. |
 | 64 | Idempotency-Key header on non-idempotent POSTs (T04) | PARTIAL | rows 28 and 31 | Risky writes are idempotent by natural key or job id instead of a header. |
 | 65 | API versioning / deprecation policy (T04) | N/A | | Single first-party web client deployed with the API; `docs/API.md` is the contract. |
@@ -87,7 +87,7 @@ Counts (67 items): PASS 52 (11 of them fixed in this audit), PARTIAL 10, GAP 2, 
 
 ## Fixed in this audit
 
-Each fix has a Jest test in `apps/api/src/common/hardening.spec.ts`.
+Fixes 1-10 have Jest tests in `apps/api/src/common/hardening.spec.ts`; fixes 11-16 in `access-hardening.spec.ts`, `results.service.spec.ts`, `demo.service.spec.ts` and `admin.spec.ts`.
 
 1. Security headers middleware (nosniff, X-Frame-Options, Referrer-Policy, COOP, X-Permitted-Cross-Domain-Policies, HSTS in production) and `x-powered-by` removed. Test: "security headers (KB T09)".
 2. HTTP server timeouts (request, headers, keep-alive). Test: "HTTP server timeouts (KB T09/T14)".
@@ -100,15 +100,18 @@ Each fix has a Jest test in `apps/api/src/common/hardening.spec.ts`.
 9. Lesson list capped at 500 rows. Test: "bounded queries (KB T05/T04)".
 10. Three missing indexes via `prisma migrate dev --name add_fk_lookup_indexes` (generated SQL, not hand-edited): `participant(studentId)`, `game_result(lessonId)`, `xp_event(studentId, createdAt)`. Test: "Prisma schema indexes (KB T05)".
 
+11. Public join lookups throttled per IP (120/min lookups, 60/min joins). Test: "public join lookups are throttled per IP, generously" (`access-hardening.spec.ts`).
+12. Better Auth rate limit storage moved to the database (Redis secondary storage with `REDIS_URL`), sign-in kept strict; new `RateLimit` model via `prisma migrate dev --name auth_rate_limit`. Tests: "Better Auth rate limit storage".
+13. Upload limiter on the shared Redis counter store with memory fallback. Tests: "UploadLimiter on the shared store".
+14. Results no longer loads every session with its answers (session rows + one grouped count; answers only for the selected session). Test: "ResultsService query shape".
+15. `x-request-id` middleware, `requestId` in problem+json and a structured access log. Tests: "request id and access log".
+16. Pre-configured demo access (`DEMO_LOGIN`), admin overview and role guard, demo quota (`DEMO_LESSON_QUOTA`), reserved join codes. Tests: `demo.service.spec.ts`, `admin.spec.ts`.
+
 ## Known gaps / decisions
 
-- **Public join lookups unthrottled** (`GET join/schools/:slug/classes`, `GET join/classes/:id/students`): the join flow lists first-name-and-initial display names by design (students pick their name). A limiter risks blocking a whole classroom behind one school NAT. Owner decision: add a generous per-IP bucket (e.g. 300/min) or require the class join code.
-- **Auth endpoint limits** rely on Better Auth's built-in limiter, which keeps counters in process memory. Fine on Railway with one instance, weak on the Vercel fallback. A shared store needs Better Auth `secondaryStorage` (Redis) or a table, which touches auth config; left for the owner.
-- **Vercel Blob originals are `access: "public"`** (unguessable random suffix, optional via `BLOB_READ_WRITE_TOKEN`). The owner chose Blob and no S3; private blobs need a download proxy route, which changes the API contract. Teacher documents can be sensitive; consider private access.
-- **Upload limiter is in-memory per instance**, so the 10-per-hour cap is per process. The monthly quota is in Postgres and exact.
+Resolved since the first audit: public join lookups, Better Auth limiter storage, the upload limiter, the results query and request-id logging (see the Fixed list). Vercel Blob is N/A: the owner dropped storage and no token is set.
+
 - **Realtime limits**: Socket.IO runs only on Railway (`REALTIME=socket`); Vercel cannot hold sockets, so it polls. No per-socket room cap yet (low risk: `canJoin` authorizes each room).
-- **Results screen query** (`src/results/results.service.ts:61`) loads all sessions of a lesson with nested answers. Capping it would make older sessions un-addressable by id, so it waits for a paged API.
-- **Observability**: no request id, JSON access log or metrics. Adding them needs new dependencies or a log-format change; Sentry covers errors only.
 - **Dependency audit / Dependabot** and a typed env schema are outside the allowed scope (repo root, CI) or need a design decision.
 - **`railway.json`, Dockerfile and deploy config** were not touched, per the audit rules.
 - **Pre-existing e2e failure** (not caused by this audit): `test/api.e2e-spec.ts:120` expects the share link to contain `/play?code=`, but `src/sessions/sessions.service.ts:13` builds `/join?code=`. One of the two is stale; the owner must pick the canonical URL.
