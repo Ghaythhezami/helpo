@@ -22,7 +22,9 @@ export interface CounterStore {
 /** Optional DI token for a shared counter store (tests inject a fake; production builds one from REDIS_URL). */
 export const RATE_LIMIT_STORE = Symbol("RATE_LIMIT_STORE");
 
-const tooMany = () => new ProblemException(429, "Too many requests", "Slow down a little and try again in a minute.");
+/** 429 with a `retryAfter` extension in seconds; the exception filter turns it into the `Retry-After` header. */
+const tooMany = (windowMs = 60_000) =>
+  new ProblemException(429, "Too many requests", "Slow down a little and try again in a minute.", undefined, { retryAfter: Math.max(1, Math.ceil(windowMs / 1000)) });
 
 /**
  * Per-IP limits. In memory by default; shared across instances through Redis when REDIS_URL is set
@@ -48,8 +50,8 @@ export class RateLimitGuard implements CanActivate {
     const cfg = this.reflector.getAllAndOverride<{ bucket: string; max: number; windowMs: number } | undefined>(RATE_LIMIT_KEY, [context.getHandler(), context.getClass()]);
     if (!cfg || process.env.RATE_LIMIT_DISABLED === "1") return true;
     const req = context.switchToHttp().getRequest<Request>();
-    const ip = String(req.headers["x-forwarded-for"] ?? req.ip ?? "unknown").split(",")[0].trim();
-    const key = `${cfg.bucket}:${ip}`;
+    // `req.ip` honours `trust proxy` (1 hop). The raw X-Forwarded-For header is client-controlled, so its first entry is spoofable.
+    const key = `${cfg.bucket}:${req.ip ?? "unknown"}`;
     return this.store ? this.checkRedis(key, cfg.max, cfg.windowMs) : this.check(key, cfg.max, cfg.windowMs);
   }
 
@@ -58,7 +60,7 @@ export class RateLimitGuard implements CanActivate {
     try {
       const n = await store.incr(`rl:${key}`);
       if (n === 1) await store.pexpire(`rl:${key}`, windowMs);
-      if (n > max) throw tooMany();
+      if (n > max) throw tooMany(windowMs);
       return true;
     } catch (e) {
       if (e instanceof ProblemException) throw e;
@@ -74,7 +76,7 @@ export class RateLimitGuard implements CanActivate {
       return true;
     }
     hit.count += 1;
-    if (hit.count > max) throw tooMany();
+    if (hit.count > max) throw tooMany(windowMs);
     return true;
   }
 

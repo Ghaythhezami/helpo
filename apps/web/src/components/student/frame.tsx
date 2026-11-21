@@ -6,6 +6,13 @@ import { LocaleScopeProvider, useI18n } from "@/lib/i18n";
 import { Logo } from "@/components/ui/logo";
 import { LanguageSwitch } from "@/components/ui/language-switch";
 import { ToastProvider } from "@/components/ui/toast";
+import { useStudentHome } from "@/lib/queries";
+
+/** The frame for /play: it reads the student's band so Explorer (grades 2 to 5) gets its 64px targets on every play screen. */
+export function PlayFrame({ children }: { children: ReactNode }) {
+  const home = useStudentHome();
+  return <StudentFrame band={home.data?.band}>{children}</StudentFrame>;
+}
 
 /** The one student interface: a slim top bar and a viewport-sized stage. Long boards scroll inside the stage. */
 export function StudentFrame({ children, band = "NAVIGATOR" }: { children: ReactNode; band?: Band; withHome?: boolean }) {

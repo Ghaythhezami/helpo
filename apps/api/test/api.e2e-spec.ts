@@ -117,7 +117,7 @@ describe("Nibras API (demo mode, real DB)", () => {
     const shared = await request(base()).post(`/api/resources/${quiz.id}/share`).set(as(a)).send({ mode: "LIVE_QUIZ", leaderboard: "INDIVIDUAL" });
     expect(shared.status).toBe(201);
     expect(shared.body.joinCode).toMatch(/^\d{6}$/);
-    expect(shared.body.link).toContain(`/play?code=${shared.body.joinCode}`);
+    expect(shared.body.link).toContain(`/join?code=${shared.body.joinCode}`);
     expect(shared.body.qrSvg).toMatch(/^<svg/);
     expect(shared.body).toMatchObject({ status: "LOBBY", isOpen: true, leaderboard: "INDIVIDUAL", questionCount: 10 });
     expect((await request(base()).get(`/api/lessons/${lessonId}`).set(as(a))).body.approvedAt).not.toBeNull();

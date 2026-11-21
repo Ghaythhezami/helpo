@@ -1,0 +1,2980 @@
+{
+ "/ en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Nibras: lesson kits made friendly",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 9,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "h2#kit-h \"What is in a kit\"",
+    "cr": 1.04,
+    "px": 24,
+    "t": "What is in a kit"
+   },
+   {
+    "d": "a.btn.sm \"Teacher sign-in\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "Teacher sign-in"
+   },
+   {
+    "d": "a.btn.big \"Teacher sign-in\"",
+    "cr": 1.12,
+    "px": 20,
+    "t": "Teacher sign-in"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 0,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 793,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 873,
+    "y": 14
+   },
+   {
+    "el": "a.btn \"Join your class\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 948,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"Teacher sign-in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"Teacher sign-in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 959,
+    "y": 89
+   },
+   {
+    "el": "a.btn \"Join your class\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 959,
+    "y": 157
+   },
+   {
+    "el": "a.btn \"Create a teacher\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1007,
+    "y": 676
+   },
+   null,
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 793,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 873,
+    "y": 14
+   }
+  ]
+ },
+ "/login en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   },
+   {
+    "d": "a \"Create a teacher acc\"",
+    "w": 158,
+    "h": 19
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.btn.sm \"Teacher sign-in\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "Teacher sign-in"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 793,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 873,
+    "y": 14
+   },
+   {
+    "el": "a.btn \"Join your class\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 948,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"Teacher sign-in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 395
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 481
+   },
+   {
+    "el": "button.btn \"Sign in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 549
+   },
+   {
+    "el": "a \"Create a teacher\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 612,
+    "y": 622
+   },
+   null,
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 793,
+    "y": 14
+   }
+  ]
+ },
+ "/signup en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 12,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   },
+   {
+    "d": "a \"Sign in\"",
+    "w": 44,
+    "h": 19
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.btn.sm \"Teacher sign-in\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "Teacher sign-in"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 793,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 873,
+    "y": 14
+   },
+   {
+    "el": "a.btn \"Join your class\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 948,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"Teacher sign-in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 295
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 381
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 467
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 553
+   },
+   {
+    "el": "button.btn \"Create account\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 648
+   },
+   {
+    "el": "a \"Sign in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 701,
+    "y": 721
+   },
+   null,
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   }
+  ]
+ },
+ "/join en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1113,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1193,
+    "y": 14
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 202
+   },
+   {
+    "el": "button.ra \"Read aloud: Pick\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 955,
+    "y": 298
+   },
+   {
+    "el": "button \"2 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 356
+   },
+   {
+    "el": "button \"3 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 347,
+    "y": 356
+   },
+   {
+    "el": "button \"4 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 413,
+    "y": 356
+   },
+   {
+    "el": "button \"5 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 479,
+    "y": 356
+   },
+   {
+    "el": "button \"6 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 545,
+    "y": 356
+   },
+   {
+    "el": "button \"7 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 611,
+    "y": 356
+   },
+   {
+    "el": "button \"8 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 677,
+    "y": 356
+   },
+   {
+    "el": "button \"9 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 743,
+    "y": 356
+   }
+  ]
+ },
+ "/join?code=123456 en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1113,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1193,
+    "y": 14
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 202
+   },
+   {
+    "el": "button.ra \"Read aloud: Pick\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 955,
+    "y": 298
+   },
+   {
+    "el": "button \"2 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 356
+   },
+   {
+    "el": "button \"3 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 347,
+    "y": 356
+   },
+   {
+    "el": "button \"4 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 413,
+    "y": 356
+   },
+   {
+    "el": "button \"5 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 479,
+    "y": 356
+   },
+   {
+    "el": "button \"6 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 545,
+    "y": 356
+   },
+   {
+    "el": "button \"7 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 611,
+    "y": 356
+   },
+   {
+    "el": "button \"8 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 677,
+    "y": 356
+   },
+   {
+    "el": "button \"9 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 743,
+    "y": 356
+   }
+  ]
+ },
+ "/ en mobile": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Nibras: lesson kits made friendly",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, home\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 4,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "h2#kit-h \"What is in a kit\"",
+    "cr": 1.04,
+    "px": 19,
+    "t": "What is in a kit"
+   },
+   {
+    "d": "a.btn.big \"Teacher sign-in\"",
+    "cr": 1.12,
+    "px": 20,
+    "t": "Teacher sign-in"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 0,
+  "dialogs": []
+ },
+ "/login en mobile": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 8,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, home\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   },
+   {
+    "d": "a \"Create a teacher acc\"",
+    "w": 158,
+    "h": 19
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/signup en mobile": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, home\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   },
+   {
+    "d": "a \"Sign in\"",
+    "w": 44,
+    "h": 19
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/join en mobile": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, my journey\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/join?code=123456 en mobile": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, my journey\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/ en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Nibras: lesson kits made friendly",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, home\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 4,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "h2#kit-h \"What is in a kit\"",
+    "cr": 1.04,
+    "px": 19,
+    "t": "What is in a kit"
+   },
+   {
+    "d": "a.btn.big \"Teacher sign-in\"",
+    "cr": 1.12,
+    "px": 20,
+    "t": "Teacher sign-in"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 0,
+  "dialogs": []
+ },
+ "/login en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 8,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, home\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   },
+   {
+    "d": "a \"Create a teacher acc\"",
+    "w": 158,
+    "h": 19
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/signup en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, home\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   },
+   {
+    "d": "a \"Sign in\"",
+    "w": 44,
+    "h": 19
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/join en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, my journey\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/join?code=123456 en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "a.logo \"Nibras, my journey\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 77,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 57,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/ ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Nibras: lesson kits made friendly",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 9,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "h2#kit-h \"ماذا في الحقيبة\"",
+    "cr": 1.04,
+    "px": 24,
+    "t": "ماذا في الحقيبة"
+   },
+   {
+    "d": "a.btn.sm \"دخول المعلّم\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "دخول المعلّم"
+   },
+   {
+    "d": "a.btn.big \"دخول المعلّم\"",
+    "cr": 1.12,
+    "px": 20,
+    "t": "دخول المعلّم"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 0,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 403,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 327,
+    "y": 14
+   },
+   {
+    "el": "a.btn \"انضم إلى صفّك\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 160,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"دخول المعلّم\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"دخول المعلّم\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 57,
+    "y": 89
+   },
+   {
+    "el": "a.btn \"انضم إلى صفّك\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 57,
+    "y": 157
+   },
+   {
+    "el": "a.btn \"أنشئ حساب معلّم\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 49,
+    "y": 676
+   },
+   null,
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 403,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 327,
+    "y": 14
+   }
+  ]
+ },
+ "/login ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "a \"أنشئ حساب معلّم\"",
+    "w": 114,
+    "h": 21
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.btn.sm \"دخول المعلّم\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "دخول المعلّم"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 403,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 327,
+    "y": 14
+   },
+   {
+    "el": "a.btn \"انضم إلى صفّك\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 160,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"دخول المعلّم\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 395
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 481
+   },
+   {
+    "el": "button.btn \"تسجيل الدخول\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 549
+   },
+   {
+    "el": "a \"أنشئ حساب معلّم\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 532,
+    "y": 621
+   },
+   null,
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 403,
+    "y": 14
+   }
+  ]
+ },
+ "/signup ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 12,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "a \"سجّل الدخول\"",
+    "w": 80,
+    "h": 21
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.btn.sm \"دخول المعلّم\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "دخول المعلّم"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 403,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 327,
+    "y": 14
+   },
+   {
+    "el": "a.btn \"انضم إلى صفّك\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 160,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"دخول المعلّم\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 295
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 381
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 467
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 553
+   },
+   {
+    "el": "button.btn \"إنشاء الحساب\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 425,
+    "y": 648
+   },
+   {
+    "el": "a \"سجّل الدخول\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 534,
+    "y": 720
+   },
+   null,
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   }
+  ]
+ },
+ "/join ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 106,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 30,
+    "y": 14
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 202
+   },
+   {
+    "el": "button.ra \"اقرأ بصوت عالٍ: \"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 298
+   },
+   {
+    "el": "button \"2 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 943,
+    "y": 356
+   },
+   {
+    "el": "button \"3 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 877,
+    "y": 356
+   },
+   {
+    "el": "button \"4 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 811,
+    "y": 356
+   },
+   {
+    "el": "button \"5 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 745,
+    "y": 356
+   },
+   {
+    "el": "button \"6 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 679,
+    "y": 356
+   },
+   {
+    "el": "button \"7 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 613,
+    "y": 356
+   },
+   {
+    "el": "button \"8 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 547,
+    "y": 356
+   },
+   {
+    "el": "button \"9 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 481,
+    "y": 356
+   }
+  ]
+ },
+ "/join?code=123456 ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 800,
+   "ih": 800,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 106,
+    "y": 14
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 30,
+    "y": 14
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 202
+   },
+   {
+    "el": "button.ra \"اقرأ بصوت عالٍ: \"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 298
+   },
+   {
+    "el": "button \"2 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 943,
+    "y": 356
+   },
+   {
+    "el": "button \"3 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 877,
+    "y": 356
+   },
+   {
+    "el": "button \"4 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 811,
+    "y": 356
+   },
+   {
+    "el": "button \"5 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 745,
+    "y": 356
+   },
+   {
+    "el": "button \"6 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 679,
+    "y": 356
+   },
+   {
+    "el": "button \"7 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 613,
+    "y": 356
+   },
+   {
+    "el": "button \"8 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 547,
+    "y": 356
+   },
+   {
+    "el": "button \"9 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 481,
+    "y": 356
+   }
+  ]
+ },
+ "/ ar mobile": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Nibras: lesson kits made friendly",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [
+   {
+    "d": "a.logo \"نبراس، الرئيسية\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 4,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "h2#kit-h \"ماذا في الحقيبة\"",
+    "cr": 1.04,
+    "px": 19,
+    "t": "ماذا في الحقيبة"
+   },
+   {
+    "d": "a.btn.big \"دخول المعلّم\"",
+    "cr": 1.12,
+    "px": 20,
+    "t": "دخول المعلّم"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 0,
+  "dialogs": []
+ },
+ "/login ar mobile": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 8,
+  "small": [
+   {
+    "d": "a.logo \"نبراس، الرئيسية\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "a \"أنشئ حساب معلّم\"",
+    "w": 114,
+    "h": 21
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/signup ar mobile": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [
+   {
+    "d": "a.logo \"نبراس، الرئيسية\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "a \"سجّل الدخول\"",
+    "w": 80,
+    "h": 21
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/join ar mobile": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "a.logo \"Nibras، رحلتي\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/join?code=123456 ar mobile": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "a.logo \"Nibras، رحلتي\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/ ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Nibras: lesson kits made friendly",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [
+   {
+    "d": "a.logo \"نبراس، الرئيسية\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 4,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "h2#kit-h \"ماذا في الحقيبة\"",
+    "cr": 1.04,
+    "px": 19,
+    "t": "ماذا في الحقيبة"
+   },
+   {
+    "d": "a.btn.big \"دخول المعلّم\"",
+    "cr": 1.12,
+    "px": 20,
+    "t": "دخول المعلّم"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 0,
+  "dialogs": []
+ },
+ "/login ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 8,
+  "small": [
+   {
+    "d": "a.logo \"نبراس، الرئيسية\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "a \"أنشئ حساب معلّم\"",
+    "w": 114,
+    "h": 21
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/signup ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [
+   {
+    "d": "a.logo \"نبراس، الرئيسية\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "a \"سجّل الدخول\"",
+    "w": 80,
+    "h": 21
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/join ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "a.logo \"Nibras، رحلتي\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/join?code=123456 ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [
+   {
+    "d": "a.logo \"Nibras، رحلتي\"",
+    "w": 38,
+    "h": 44
+   },
+   {
+    "d": "button \"English\"",
+    "w": 72,
+    "h": 40
+   },
+   {
+    "d": "button \"العربية\"",
+    "w": 72,
+    "h": 40
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 2,
+  "dialogs": []
+ }
+}

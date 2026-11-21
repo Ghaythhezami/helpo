@@ -1,0 +1,4714 @@
+{
+ "/app en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Create · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 26,
+  "small": [
+   {
+    "d": "input.sr \"\"",
+    "w": 1,
+    "h": 1
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/app/lessons/l1 en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Photosynthesis: how plants make food · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 6,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.slide-emoji \"🌱\"",
+    "cr": 1,
+    "px": 32,
+    "t": "🌱"
+   },
+   {
+    "d": "h4 \"Photosynthesis\"",
+    "cr": 1,
+    "px": 18,
+    "t": "Photosynthesis"
+   },
+   {
+    "d": "p \"How plants make thei\"",
+    "cr": 1,
+    "px": 14,
+    "t": "How plants make their ow"
+   },
+   {
+    "d": "button.tool.mob \"Share\"",
+    "cr": 1,
+    "px": 12,
+    "t": "Share"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/play/quiz/se1 en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Live quiz · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/play/games/l1/MATCH en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/MEMORY en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/SORT en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/TRUE_FALSE en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 9,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/join en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/login en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 8,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/signup en mobile320": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/app en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Create · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 26,
+  "small": [
+   {
+    "d": "input.sr \"\"",
+    "w": 1,
+    "h": 1
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/app/lessons/l1 en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Photosynthesis: how plants make food · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 6,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.slide-emoji \"🌱\"",
+    "cr": 1,
+    "px": 32,
+    "t": "🌱"
+   },
+   {
+    "d": "h4 \"Photosynthesis\"",
+    "cr": 1,
+    "px": 18,
+    "t": "Photosynthesis"
+   },
+   {
+    "d": "p \"How plants make thei\"",
+    "cr": 1,
+    "px": 14,
+    "t": "How plants make their ow"
+   },
+   {
+    "d": "button.tool.mob \"Share\"",
+    "cr": 1,
+    "px": 12,
+    "t": "Share"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/play/quiz/se1 en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Live quiz · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/play/games/l1/MATCH en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/MEMORY en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/SORT en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/TRUE_FALSE en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 9,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/join en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/login en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 8,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/signup en mobile390": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/app en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Create · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 26,
+  "small": [
+   {
+    "d": "input.sr \"\"",
+    "w": 1,
+    "h": 1
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1055,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1135,
+    "y": 12
+   },
+   {
+    "el": "button.av \"AG account menu\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 1208,
+    "y": 10
+   },
+   {
+    "el": "input.sr \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 290,
+    "y": 143
+   },
+   {
+    "el": "textarea \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 267,
+    "y": 262
+   },
+   {
+    "el": "button.chip-btn \"Photosynthesis f\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 267,
+    "y": 374
+   },
+   {
+    "el": "button.chip-btn \"Multiplying frac\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 672,
+    "y": 374
+   },
+   {
+    "el": "button.chip-btn \"The Solar System\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 765,
+    "y": 374
+   },
+   {
+    "el": "select \"6B · Grade 6\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 316,
+    "y": 430
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 469,
+    "y": 430
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 549,
+    "y": 430
+   },
+   {
+    "el": "summary \"More options\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 620,
+    "y": 430
+   }
+  ]
+ },
+ "/app/lessons/l1 en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Photosynthesis: how plants make food · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 51,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 7,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.slide-emoji \"🌱\"",
+    "cr": 1,
+    "px": 32,
+    "t": "🌱"
+   },
+   {
+    "d": "h4 \"Photosynthesis\"",
+    "cr": 1,
+    "px": 30,
+    "t": "Photosynthesis"
+   },
+   {
+    "d": "p \"How plants make thei\"",
+    "cr": 1,
+    "px": 18,
+    "t": "How plants make their ow"
+   },
+   {
+    "d": "button.btn.sm \"Accept Slides S2 as \"",
+    "cr": 1,
+    "px": 15,
+    "t": "Accept"
+   },
+   {
+    "d": "button.btn.sm \"Save changes\"",
+    "cr": 1.04,
+    "px": 15,
+    "t": "Save changes"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1055,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1135,
+    "y": 12
+   },
+   {
+    "el": "button.av \"AG account menu\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 1208,
+    "y": 10
+   },
+   {
+    "el": "a.rbtn \"Back to create\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 24,
+    "y": 72
+   },
+   {
+    "el": "button.info-btn \"What Nibras unde\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 256,
+    "y": 72
+   },
+   {
+    "el": "button.tab \"Slides (ready)1 \"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 316,
+    "y": 72
+   },
+   {
+    "el": "button.btn \"Download\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1131,
+    "y": 72
+   },
+   {
+    "el": "button.btn \"Share with class\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 1200,
+    "y": 72
+   },
+   {
+    "el": "button.row-main \"1Photosynthesis\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 64,
+    "y": 184
+   },
+   {
+    "el": "button \"Duplicate item 1\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 164,
+    "y": 185
+   },
+   {
+    "el": "button \"Delete item 1\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 210,
+    "y": 185
+   },
+   {
+    "el": "button.row-main \"2What plants nee\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 64,
+    "y": 249
+   }
+  ]
+ },
+ "/play/quiz/se1 en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Live quiz · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1115,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1195,
+    "y": 12
+   },
+   {
+    "el": "button.ra \"Read aloud: True\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 255,
+    "y": 330
+   },
+   {
+    "el": "button.ans \"True\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 255,
+    "y": 390
+   },
+   {
+    "el": "button.ans \"False\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 647,
+    "y": 390
+   },
+   {
+    "el": "nextjs-portal \"\"",
+    "outline": "none 3px rgb(117, 117, 117)",
+    "shadow": "",
+    "x": 0,
+    "y": 720
+   },
+   null,
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1115,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1195,
+    "y": 12
+   },
+   {
+    "el": "button.ra \"Read aloud: True\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 255,
+    "y": 330
+   }
+  ]
+ },
+ "/play/games/l1/MATCH en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 3,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1115,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1195,
+    "y": 12
+   },
+   {
+    "el": "a.back \"Back\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 41,
+    "y": 81
+   },
+   {
+    "el": "button.tg \"Sound\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 987,
+    "y": 81
+   },
+   {
+    "el": "button.btn \"Pause\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1125,
+    "y": 81
+   },
+   {
+    "el": "button.tile \"Roots\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 289
+   },
+   {
+    "el": "button.tile \"Leaf\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 387
+   },
+   {
+    "el": "button.tile \"Stem\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 485
+   },
+   {
+    "el": "button.tile \"Flower\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 583
+   },
+   {
+    "el": "button.tile \"Makes food\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 652,
+    "y": 289
+   },
+   {
+    "el": "button.tile \"Makes seeds\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 652,
+    "y": 387
+   },
+   {
+    "el": "button.tile \"Carries water\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 652,
+    "y": 485
+   }
+  ]
+ },
+ "/play/games/l1/MEMORY en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 3,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1115,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1195,
+    "y": 12
+   },
+   {
+    "el": "a.back \"Back\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 41,
+    "y": 81
+   },
+   {
+    "el": "button.tg \"Sound\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 987,
+    "y": 81
+   },
+   {
+    "el": "button.btn \"Pause\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1125,
+    "y": 81
+   },
+   {
+    "el": "button.tile \"Card 1, face dow\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Card 2, face dow\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 346,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Card 3, face dow\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 646,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Card 4, face dow\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 947,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Card 5, face dow\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 355
+   },
+   {
+    "el": "button.tile \"Card 6, face dow\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 346,
+    "y": 355
+   },
+   {
+    "el": "button.tile \"Card 7, face dow\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 646,
+    "y": 355
+   }
+  ]
+ },
+ "/play/games/l1/SORT en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 3,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1115,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1195,
+    "y": 12
+   },
+   {
+    "el": "a.back \"Back\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 41,
+    "y": 81
+   },
+   {
+    "el": "button.tg \"Sound\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 987,
+    "y": 81
+   },
+   {
+    "el": "button.btn \"Pause\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1125,
+    "y": 81
+   },
+   {
+    "el": "button.tile \"Sunlight\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 91,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Darkness\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 313,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Water\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 535,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Carbon dioxide\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 757,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Plastic\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 979,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Candy\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 424,
+    "y": 349
+   },
+   {
+    "el": "button.tile \"Soil minerals\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 646,
+    "y": 349
+   }
+  ]
+ },
+ "/play/games/l1/TRUE_FALSE en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 9,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 3,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1115,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1195,
+    "y": 12
+   },
+   {
+    "el": "a.back \"Back\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 41,
+    "y": 81
+   },
+   {
+    "el": "button.tg \"Sound\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 987,
+    "y": 81
+   },
+   {
+    "el": "button.btn \"Pause\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1125,
+    "y": 81
+   },
+   {
+    "el": "button.ans \"True\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 283
+   },
+   {
+    "el": "button.ans \"False\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 647,
+    "y": 283
+   },
+   {
+    "el": "nextjs-portal \"\"",
+    "outline": "none 3px rgb(117, 117, 117)",
+    "shadow": "",
+    "x": 0,
+    "y": 720
+   },
+   null,
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1115,
+    "y": 12
+   }
+  ]
+ },
+ "/join en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, my journ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1115,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1195,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 202
+   },
+   {
+    "el": "button.ra \"Read aloud: Pick\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 955,
+    "y": 298
+   },
+   {
+    "el": "button \"2 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 356
+   },
+   {
+    "el": "button \"3 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 347,
+    "y": 356
+   },
+   {
+    "el": "button \"4 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 413,
+    "y": 356
+   },
+   {
+    "el": "button \"5 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 479,
+    "y": 356
+   },
+   {
+    "el": "button \"6 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 545,
+    "y": 356
+   },
+   {
+    "el": "button \"7 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 611,
+    "y": 356
+   },
+   {
+    "el": "button \"8 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 677,
+    "y": 356
+   },
+   {
+    "el": "button \"9 grade\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 743,
+    "y": 356
+   }
+  ]
+ },
+ "/login en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.btn.sm \"Teacher sign-in\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "Teacher sign-in"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 795,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 875,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"Join your class\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 948,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"Teacher sign-in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 306
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 390
+   },
+   {
+    "el": "button.btn \"Sign in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 452
+   },
+   {
+    "el": "a \"Create a teacher\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 612,
+    "y": 510
+   },
+   {
+    "el": "nextjs-portal \"\"",
+    "outline": "none 3px rgb(117, 117, 117)",
+    "shadow": "",
+    "x": 0,
+    "y": 720
+   },
+   null,
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   }
+  ]
+ },
+ "/signup en desktop": {
+  "lang": "en",
+  "dir": "ltr",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 12,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"English\"",
+    "cr": 1,
+    "px": 15,
+    "t": "English"
+   },
+   {
+    "d": "a.btn.sm \"Teacher sign-in\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "Teacher sign-in"
+   },
+   {
+    "d": "a.skip-link \"Skip to main content\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "Skip to main content"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"Skip to main con\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras, home\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 795,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 875,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"Join your class\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 948,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"Teacher sign-in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 208
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 292
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 376
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 460
+   },
+   {
+    "el": "button.btn \"Create account\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 549
+   },
+   {
+    "el": "a \"Sign in\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 701,
+    "y": 607
+   },
+   {
+    "el": "nextjs-portal \"\"",
+    "outline": "none 3px rgb(117, 117, 117)",
+    "shadow": "",
+    "x": 0,
+    "y": 720
+   },
+   null
+  ]
+ },
+ "/app ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Create · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 26,
+  "small": [
+   {
+    "d": "input.sr \"\"",
+    "w": 1,
+    "h": 1
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/app/lessons/l1 ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Photosynthesis: how plants make food · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 6,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.slide-emoji \"🌱\"",
+    "cr": 1,
+    "px": 32,
+    "t": "🌱"
+   },
+   {
+    "d": "h4 \"Photosynthesis\"",
+    "cr": 1,
+    "px": 18,
+    "t": "Photosynthesis"
+   },
+   {
+    "d": "p \"How plants make thei\"",
+    "cr": 1,
+    "px": 14,
+    "t": "How plants make their ow"
+   },
+   {
+    "d": "button.tool.mob \"شارك\"",
+    "cr": 1,
+    "px": 12,
+    "t": "شارك"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/play/quiz/se1 ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Live quiz · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/play/games/l1/MATCH ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/MEMORY ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/SORT ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/TRUE_FALSE ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 9,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/join ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/login ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 8,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/signup ar mobile320": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 568,
+   "ih": 568,
+   "sw": 320,
+   "iw": 320
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/app ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Create · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 26,
+  "small": [
+   {
+    "d": "input.sr \"\"",
+    "w": 1,
+    "h": 1
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/app/lessons/l1 ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Photosynthesis: how plants make food · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 6,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.slide-emoji \"🌱\"",
+    "cr": 1,
+    "px": 32,
+    "t": "🌱"
+   },
+   {
+    "d": "h4 \"Photosynthesis\"",
+    "cr": 1,
+    "px": 18,
+    "t": "Photosynthesis"
+   },
+   {
+    "d": "p \"How plants make thei\"",
+    "cr": 1,
+    "px": 14,
+    "t": "How plants make their ow"
+   },
+   {
+    "d": "button.tool.mob \"شارك\"",
+    "cr": 1,
+    "px": 12,
+    "t": "شارك"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/play/quiz/se1 ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Live quiz · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/play/games/l1/MATCH ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/MEMORY ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/SORT ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/play/games/l1/TRUE_FALSE ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 9,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 3,
+  "dialogs": []
+ },
+ "/join ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 2,
+  "dialogs": []
+ },
+ "/login ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 8,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/signup ar mobile390": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 844,
+   "ih": 844,
+   "sw": 390,
+   "iw": 390
+  },
+  "live": 1,
+  "dialogs": []
+ },
+ "/app ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Create · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 26,
+  "small": [
+   {
+    "d": "input.sr \"\"",
+    "w": 1,
+    "h": 1
+   }
+  ],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 164,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 88,
+    "y": 12
+   },
+   {
+    "el": "button.av \"قائمة حساب AG\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 24,
+    "y": 10
+   },
+   {
+    "el": "input.sr \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 989,
+    "y": 143
+   },
+   {
+    "el": "textarea \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 267,
+    "y": 262
+   },
+   {
+    "el": "button.chip-btn \"التمثيل الضوئي ل\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 646,
+    "y": 374
+   },
+   {
+    "el": "button.chip-btn \"ضرب الكسور خطوة \"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 292,
+    "y": 374
+   },
+   {
+    "el": "button.chip-btn \"المجموعة الشمسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 18,
+    "y": 374
+   },
+   {
+    "el": "select \"6B · الصف 6\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 831,
+    "y": 430
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 745,
+    "y": 430
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 669,
+    "y": 430
+   },
+   {
+    "el": "summary \"خيارات إضافية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 504,
+    "y": 430
+   }
+  ]
+ },
+ "/app/lessons/l1 ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Photosynthesis: how plants make food · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 51,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 7,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.slide-emoji \"🌱\"",
+    "cr": 1,
+    "px": 32,
+    "t": "🌱"
+   },
+   {
+    "d": "h4 \"Photosynthesis\"",
+    "cr": 1,
+    "px": 30,
+    "t": "Photosynthesis"
+   },
+   {
+    "d": "p \"How plants make thei\"",
+    "cr": 1,
+    "px": 18,
+    "t": "How plants make their ow"
+   },
+   {
+    "d": "button.btn.sm \"قبول الشرائح S2 كما \"",
+    "cr": 1,
+    "px": 15,
+    "t": "قبول"
+   },
+   {
+    "d": "button.btn.sm \"احفظ التغييرات\"",
+    "cr": 1.04,
+    "px": 15,
+    "t": "احفظ التغييرات"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 164,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 88,
+    "y": 12
+   },
+   {
+    "el": "button.av \"قائمة حساب AG\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 24,
+    "y": 10
+   },
+   {
+    "el": "a.rbtn \"العودة إلى الإنش\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 1212,
+    "y": 72
+   },
+   {
+    "el": "button.info-btn \"ما فهمه نبراس\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 980,
+    "y": 72
+   },
+   {
+    "el": "button.tab \"الشرائح (جاهز)1 \"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 806,
+    "y": 72
+   },
+   {
+    "el": "button.btn \"تنزيل\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 89,
+    "y": 72
+   },
+   {
+    "el": "button.btn \"شارك مع الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 24,
+    "y": 72
+   },
+   {
+    "el": "button.row-main \"1Photosynthesis\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1118,
+    "y": 184
+   },
+   {
+    "el": "button \"كرّر العنصر 1\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1072,
+    "y": 185
+   },
+   {
+    "el": "button \"احذف العنصر 1\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1026,
+    "y": 185
+   },
+   {
+    "el": "button.row-main \"2What plants nee\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1118,
+    "y": 249
+   }
+  ]
+ },
+ "/play/quiz/se1 ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Live quiz · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 7,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 104,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 28,
+    "y": 12
+   },
+   {
+    "el": "button.ra \"اقرأ بصوت عالٍ: \"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 855,
+    "y": 330
+   },
+   {
+    "el": "button.ans \"True\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 647,
+    "y": 390
+   },
+   {
+    "el": "button.ans \"False\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 255,
+    "y": 390
+   },
+   {
+    "el": "nextjs-portal \"\"",
+    "outline": "none 3px rgb(117, 117, 117)",
+    "shadow": "",
+    "x": 1280,
+    "y": 720
+   },
+   null,
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 104,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 28,
+    "y": 12
+   },
+   {
+    "el": "button.ra \"اقرأ بصوت عالٍ: \"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 855,
+    "y": 330
+   }
+  ]
+ },
+ "/play/games/l1/MATCH ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 3,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 104,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 28,
+    "y": 12
+   },
+   {
+    "el": "a.back \"رجوع\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1153,
+    "y": 81
+   },
+   {
+    "el": "button.tg \"الصوت\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 208,
+    "y": 81
+   },
+   {
+    "el": "button.btn \"إيقاف مؤقّت\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 41,
+    "y": 81
+   },
+   {
+    "el": "button.tile \"Roots\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 652,
+    "y": 297
+   },
+   {
+    "el": "button.tile \"Leaf\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 652,
+    "y": 395
+   },
+   {
+    "el": "button.tile \"Stem\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 652,
+    "y": 493
+   },
+   {
+    "el": "button.tile \"Flower\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 652,
+    "y": 591
+   },
+   {
+    "el": "button.tile \"Makes food\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 297
+   },
+   {
+    "el": "button.tile \"Makes seeds\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 395
+   },
+   {
+    "el": "button.tile \"Carries water\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 493
+   }
+  ]
+ },
+ "/play/games/l1/MEMORY ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 3,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 104,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 28,
+    "y": 12
+   },
+   {
+    "el": "a.back \"رجوع\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1153,
+    "y": 81
+   },
+   {
+    "el": "button.tg \"الصوت\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 208,
+    "y": 81
+   },
+   {
+    "el": "button.btn \"إيقاف مؤقّت\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 41,
+    "y": 81
+   },
+   {
+    "el": "button.tile \"البطاقة 1، مقلوب\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 947,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"البطاقة 2، مقلوب\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 646,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"البطاقة 3، مقلوب\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 346,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"البطاقة 4، مقلوب\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"البطاقة 5، مقلوب\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 947,
+    "y": 355
+   },
+   {
+    "el": "button.tile \"البطاقة 6، مقلوب\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 646,
+    "y": 355
+   },
+   {
+    "el": "button.tile \"البطاقة 7، مقلوب\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 346,
+    "y": 355
+   }
+  ]
+ },
+ "/play/games/l1/SORT ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 16,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 3,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 104,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 28,
+    "y": 12
+   },
+   {
+    "el": "a.back \"رجوع\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1153,
+    "y": 81
+   },
+   {
+    "el": "button.tg \"الصوت\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 208,
+    "y": 81
+   },
+   {
+    "el": "button.btn \"إيقاف مؤقّت\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 41,
+    "y": 81
+   },
+   {
+    "el": "button.tile \"Sunlight\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 979,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Darkness\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 757,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Water\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 535,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Carbon dioxide\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 313,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Plastic\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 91,
+    "y": 253
+   },
+   {
+    "el": "button.tile \"Candy\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 646,
+    "y": 349
+   },
+   {
+    "el": "button.tile \"Soil minerals\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 424,
+    "y": 349
+   }
+  ]
+ },
+ "/play/games/l1/TRUE_FALSE ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Mini-game · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 9,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 2,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 3,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 104,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 28,
+    "y": 12
+   },
+   {
+    "el": "a.back \"رجوع\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1153,
+    "y": 81
+   },
+   {
+    "el": "button.tg \"الصوت\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 208,
+    "y": 81
+   },
+   {
+    "el": "button.btn \"إيقاف مؤقّت\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 41,
+    "y": 81
+   },
+   {
+    "el": "button.ans \"صح\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 647,
+    "y": 283
+   },
+   {
+    "el": "button.ans \"خطأ\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 45,
+    "y": 283
+   },
+   {
+    "el": "nextjs-portal \"\"",
+    "outline": "none 3px rgb(117, 117, 117)",
+    "shadow": "",
+    "x": 1280,
+    "y": 720
+   },
+   null,
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 104,
+    "y": 12
+   }
+  ]
+ },
+ "/join ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Join your class · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 0,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 20,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 5,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "span.num \"1\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "1"
+   },
+   {
+    "d": "span.num \"2\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "2"
+   },
+   {
+    "d": "span.num \"3\"",
+    "cr": 1.04,
+    "px": 16,
+    "t": "3"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 2,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"Nibras، رحلتي\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1105,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 104,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 28,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 202
+   },
+   {
+    "el": "button.ra \"اقرأ بصوت عالٍ: \"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 281,
+    "y": 298
+   },
+   {
+    "el": "button \"2 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 943,
+    "y": 356
+   },
+   {
+    "el": "button \"3 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 877,
+    "y": 356
+   },
+   {
+    "el": "button \"4 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 811,
+    "y": 356
+   },
+   {
+    "el": "button \"5 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 745,
+    "y": 356
+   },
+   {
+    "el": "button \"6 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 679,
+    "y": 356
+   },
+   {
+    "el": "button \"7 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 613,
+    "y": 356
+   },
+   {
+    "el": "button \"8 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 547,
+    "y": 356
+   },
+   {
+    "el": "button \"9 الصف\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 481,
+    "y": 356
+   }
+  ]
+ },
+ "/login ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Teacher sign-in · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 10,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.btn.sm \"دخول المعلّم\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "دخول المعلّم"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 401,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 325,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"انضم إلى صفّك\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 160,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"دخول المعلّم\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 306
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 390
+   },
+   {
+    "el": "button.btn \"تسجيل الدخول\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 452
+   },
+   {
+    "el": "a \"أنشئ حساب معلّم\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 532,
+    "y": 510
+   },
+   {
+    "el": "nextjs-portal \"\"",
+    "outline": "none 3px rgb(117, 117, 117)",
+    "shadow": "",
+    "x": 1280,
+    "y": 720
+   },
+   null,
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   }
+  ]
+ },
+ "/signup ar desktop": {
+  "lang": "ar",
+  "dir": "rtl",
+  "title": "Create a teacher account · Nibras",
+  "h1": 1,
+  "main": 1,
+  "nav": 1,
+  "skip": true,
+  "viewportMeta": "width=device-width, initial-scale=1",
+  "ctlCount": 12,
+  "small": [],
+  "noName": [],
+  "unlabeled": [],
+  "placeholderOnly": [],
+  "imgsNoAlt": 0,
+  "svgNoHide": 0,
+  "lowContrastCount": 3,
+  "lowCt": [
+   {
+    "d": "button \"العربية\"",
+    "cr": 1,
+    "px": 15,
+    "t": "العربية"
+   },
+   {
+    "d": "a.btn.sm \"دخول المعلّم\"",
+    "cr": 1.12,
+    "px": 15,
+    "t": "دخول المعلّم"
+   },
+   {
+    "d": "a.skip-link \"تخطَّ إلى المحتوى ال\"",
+    "cr": 2.12,
+    "px": 16,
+    "t": "تخطَّ إلى المحتوى الرئيس"
+   }
+  ],
+  "scroll": {
+   "sh": 720,
+   "ih": 720,
+   "sw": 1280,
+   "iw": 1280
+  },
+  "live": 1,
+  "dialogs": [],
+  "focus": [
+   {
+    "el": "a.skip-link \"تخطَّ إلى المحتو\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 12,
+    "y": 12
+   },
+   {
+    "el": "a.logo \"نبراس، الرئيسية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 1103,
+    "y": 12
+   },
+   {
+    "el": "button \"English\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 401,
+    "y": 12
+   },
+   {
+    "el": "button \"العربية\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 325,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"انضم إلى صفّك\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 160,
+    "y": 12
+   },
+   {
+    "el": "a.btn \"دخول المعلّم\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "shadow",
+    "x": 24,
+    "y": 12
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 208
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 292
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 376
+   },
+   {
+    "el": "input \"\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 460
+   },
+   {
+    "el": "button.btn \"إنشاء الحساب\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 417,
+    "y": 549
+   },
+   {
+    "el": "a \"سجّل الدخول\"",
+    "outline": "solid 3px rgb(96, 53, 207)",
+    "shadow": "",
+    "x": 534,
+    "y": 607
+   },
+   {
+    "el": "nextjs-portal \"\"",
+    "outline": "none 3px rgb(117, 117, 117)",
+    "shadow": "",
+    "x": 1280,
+    "y": 720
+   },
+   null
+  ]
+ }
+}

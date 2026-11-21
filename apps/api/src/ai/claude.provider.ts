@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z, type ZodType } from "zod";
 import {
+  LIMITS,
   AiChecksSchema,
   BlueprintSchema,
   RefinedPromptSchema,
@@ -76,7 +77,8 @@ export class ClaudeAiProvider implements AiProvider {
   private readonly analysisEffort = (process.env.CLAUDE_EFFORT || "medium") as Effort;
 
   constructor(client?: Anthropic) {
-    this.client = client ?? new Anthropic();
+    // SDK default is 10 min per call; keep it inside the 3 min job timeout and the Vercel maxDuration. The SDK's own 2 retries (429/5xx) stay on.
+    this.client = client ?? new Anthropic({ timeout: LIMITS.aiCallTimeoutMs, maxRetries: 2 });
   }
 
   /** One structured call. The shared block is cached; the variable task text comes after it. */

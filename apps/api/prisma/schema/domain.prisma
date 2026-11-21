@@ -300,6 +300,7 @@ model Participant {
   answers     Answer[]
 
   @@unique([sessionId, studentId])
+  @@index([studentId])
   @@map("participant")
 }
 
@@ -338,6 +339,7 @@ model GameResult {
   lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@index([studentId, lessonId, game])
+  @@index([lessonId])
   @@map("game_result")
 }
 
@@ -364,5 +366,6 @@ model XpEvent {
   student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@index([classId, createdAt])
+  @@index([studentId, createdAt])
   @@map("xp_event")
 }

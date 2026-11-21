@@ -4,7 +4,6 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { createApp } from "./bootstrap";
 import { initSentry } from "./observability/sentry";
-import { getPrisma } from "./prisma/prisma.service";
 
 /**
  * Long-running host (Railway, local): HTTP on PORT. With WORKER_ONLY=true only the queue workers start (no HTTP
@@ -22,12 +21,6 @@ async function main() {
   app.enableShutdownHooks();
   await app.listen(Number(process.env.PORT ?? 3001), "0.0.0.0");
 }
-
-const stop = () => {
-  void getPrisma().$disconnect();
-};
-process.on("SIGTERM", stop);
-process.on("SIGINT", stop);
 
 main().catch((e: unknown) => {
   console.error(e);

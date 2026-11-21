@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   LOCALE_LABELS,
   RESOURCE_KINDS,
+  BRAND,
   otherLocale,
   type CardsContent,
   type CheckView,
@@ -88,6 +89,10 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
   const toast = useToast();
   const auto = useAutoTranslate(lesson);
   const { resolve, reopen } = useCheckResolution(lesson.id);
+  // The route title is static ("Lesson"); name the page after the lesson so tabs and history are distinguishable (WCAG 2.4.2).
+  useEffect(() => {
+    document.title = `${lesson.title} · ${BRAND.name}`;
+  }, [lesson.title]);
 
   const wanted = params.get("tab")?.toUpperCase() as ResourceKind | undefined;
   const [tab, setTab] = useState<ResourceKind>(wanted && RESOURCE_KINDS.includes(wanted) ? wanted : "SLIDES");

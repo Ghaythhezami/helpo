@@ -40,8 +40,12 @@ body:has(.app-shell) {
   overflow: auto;
   padding: 0 clamp(12px, 2vw, 24px) 12px;
 }
+/* 44px targets (WCAG 2.5.8 / KB: >= 44); the pill padding shrinks so the header keeps its height. */
+.app-shell .langsw {
+  padding: 2px;
+}
 .app-shell .langsw button {
-  min-height: 40px;
+  min-height: 44px;
   padding-inline: 12px;
 }
 
@@ -754,6 +758,8 @@ body:has(.app-shell) {
   .app-head .logo {
     font-size: 22px;
     min-height: 44px;
+    min-width: 44px;
+    justify-content: center;
   }
   .tapp .ws-actions .btn {
     padding-inline: 12px;
@@ -1322,6 +1328,13 @@ body:has(.app-shell) {
   width: 64px;
   height: 64px;
 }
+/* Explorer game bar: back, sound and pause are children's targets too. */
+.sapp[data-band="explorer"] .gbar .back,
+.sapp[data-band="explorer"] .gbar .tg,
+.sapp[data-band="explorer"] .gbar .btn {
+  min-height: 64px;
+  min-width: 64px;
+}
 
 /* tabs fit from 1024 up without scrolling; item editor; self-paced */
 .tapp .ws-head .tabs {
@@ -1373,7 +1386,7 @@ body:has(.app-shell) {
   min-height: 44px;
   padding: 8px 12px;
   border-radius: 14px;
-  border: 2px solid var(--line);
+  border: 2px solid var(--field-line);
   font: 600 16px var(--font-nunito), sans-serif;
   color: var(--ink);
   background: #fff;

@@ -247,7 +247,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .livebox img{width:48px;height:48px}
 .livebox.off{background:#E1E1F2}
 .joinbtn{width:100%;min-height:72px;font-size:24px}
-.codef input{width:100%;min-height:72px;text-align:center;font:600 36px var(--font-fredoka),var(--font-nunito),sans-serif;letter-spacing:.1em;border-radius:22px;border:3px solid #C3B5F2;color:var(--ink);background:#fff}
+.codef input{width:100%;min-height:72px;text-align:center;font:600 36px var(--font-fredoka),var(--font-nunito),sans-serif;letter-spacing:.1em;border-radius:22px;border:3px solid var(--field-line);color:var(--ink);background:#fff}
 .inbox{display:grid;justify-items:center;gap:10px;text-align:center}
 .inbox>img{width:130px;height:130px}
 .inbox h2{font-size:clamp(26px,4vw,36px);font-weight:900}

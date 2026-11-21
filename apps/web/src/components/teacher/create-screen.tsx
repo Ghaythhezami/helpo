@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Illus } from "@/components/ui/illus";
 import { Pill } from "@/components/ui/pill";
+import { ErrorState } from "@/components/ui/states";
 import { ClassManager } from "./class-manager";
 import { useSelectedClassId } from "./shell";
 import { PROMPT_MAX, PROMPT_MIN, formatSize, titleFromFile, validateFile } from "@/lib/upload";
@@ -26,6 +27,8 @@ export function CreateScreen() {
   const { t } = useI18n();
   const [manage, setManage] = useState(false);
   if (classes.isPending) return <p className="muted" role="status">{t("common.loading")}…</p>;
+  // A failed load is not "no classes yet": say so and offer a retry instead of the empty state.
+  if (classes.isError) return <ErrorState error={classes.error} onRetry={() => void classes.refetch()} />;
   const list = classes.data ?? [];
   return (
     <div className="create">

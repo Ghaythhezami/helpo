@@ -2,6 +2,7 @@ import { Controller, Get, Inject, Req } from "@nestjs/common";
 import type { Request } from "express";
 import { AUTH, type Auth } from "../auth/auth.factory";
 import { toWebHeaders } from "../auth/teacher.guard";
+import { RateLimit } from "../common/rate-limit";
 import { signRealtimeToken } from "../common/realtime-token";
 import { unauthorized } from "../common/problem";
 import { STUDENT_COOKIE, parseCookies, verifyStudentToken } from "../common/student-cookie";
@@ -12,6 +13,7 @@ export class RealtimeController {
   constructor(@Inject(AUTH) private readonly auth: Auth) {}
 
   @Get("token")
+  @RateLimit("rt-token", 60)
   async token(@Req() req: Request): Promise<{ token: string; url: string }> {
     const url = process.env.API_WS_URL || process.env.NEXT_PUBLIC_API_WS_URL || process.env.API_URL || "";
     const session = await this.auth.api.getSession({ headers: toWebHeaders(req.headers) });

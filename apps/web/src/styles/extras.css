@@ -795,3 +795,10 @@
     transition: none;
   }
 }
+
+/* The sign-in / sign-up switch link sits in a sentence; give it a 44px hit area without moving the text. */
+.authalt a {
+  display: inline-block;
+  padding-block: 14px;
+  margin-block: -14px;
+}

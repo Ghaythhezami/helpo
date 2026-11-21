@@ -110,7 +110,7 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
         ) : (
           <div className="codef">
             <label htmlFor="join-code">{t("join.code.enter")}</label>
-            <input id="join-code" dir="ltr" inputMode="numeric" autoComplete="off" value={code} maxLength={7} onChange={(e) => { setCode(e.target.value); setChanging(false); }} placeholder="482 913" />
+            <input id="join-code" dir="ltr" inputMode="numeric" autoComplete="off" value={code} maxLength={7} onChange={(e) => { setCode(e.target.value); setChanging(false); }} placeholder="482 913" aria-invalid={digits && byCode.isError ? true : undefined} aria-describedby="join-status" />
           </div>
         )}
 
@@ -176,7 +176,7 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
           </section>
         )}
 
-        <div className={`livebox ${live ? "" : "off"}`} role="status" aria-live="polite">
+        <div id="join-status" className={`livebox ${live ? "" : "off"}`} role="status" aria-live="polite">
           {live ? (
             <>
               <span className="live-ic" aria-hidden="true"><Radio className="ic" /></span>
@@ -185,7 +185,7 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
           ) : (
             <>
               <Clock className="ic" aria-hidden="true" />
-              <span>{usingCode && byCode.isError ? t("join.code.bad") : t("join.live.none")}</span>
+              <span>{digits && byCode.isError ? t("join.code.bad") : t("join.live.none")}</span>
             </>
           )}
         </div>

@@ -1,4 +1,4 @@
-import { Global, Injectable, Module } from "@nestjs/common";
+import { Global, Injectable, Module, type OnApplicationShutdown } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as { __helpoPrisma?: PrismaClient };
@@ -13,9 +13,17 @@ export function getPrisma(): PrismaClient {
 @Injectable()
 export class PrismaService extends PrismaClient {}
 
+/** Closes the pool after Nest has drained requests and queue workers (runs on SIGTERM/SIGINT via enableShutdownHooks). */
+@Injectable()
+export class PrismaShutdown implements OnApplicationShutdown {
+  async onApplicationShutdown(): Promise<void> {
+    await getPrisma().$disconnect();
+  }
+}
+
 @Global()
 @Module({
-  providers: [{ provide: PrismaService, useFactory: () => getPrisma() as PrismaService }],
+  providers: [{ provide: PrismaService, useFactory: () => getPrisma() as PrismaService }, PrismaShutdown],
   exports: [PrismaService],
 })
 export class PrismaModule {}

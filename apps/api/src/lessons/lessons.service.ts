@@ -11,6 +11,9 @@ import { DocumentsService, sha256Hex } from "../documents/documents.service";
 import { LESSON_INCLUDE, LessonViewService } from "./lesson-view.service";
 import { PipelineService } from "./pipeline.service";
 
+/** Safety cap on the lesson list (a teacher holds a few dozen; the monthly quota is 100). */
+export const LESSON_LIST_CAP = 500;
+
 @Injectable()
 export class LessonsService {
   constructor(
@@ -26,6 +29,7 @@ export class LessonsService {
       where: { teacherId, ...(classId ? { classId } : {}) },
       include: LESSON_INCLUDE,
       orderBy: [{ createdAt: "desc" }],
+      take: LESSON_LIST_CAP,
     });
     return this.views.summaries(lessons, locale);
   }

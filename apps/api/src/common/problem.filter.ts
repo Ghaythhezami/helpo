@@ -29,7 +29,7 @@ export function toProblem(exception: unknown): Problem {
       status: exception.getStatus(),
       detail: exception.detail,
       errors: exception.errors,
-      ...exception.extensions,
+      ...Object.fromEntries(Object.entries(exception.extensions ?? {}).filter(([k]) => k !== "retryAfter")),
       // an extension `type` is a bare slug such as "checks-open"
       type: typeof exception.extensions?.type === "string" ? `https://nibras.app/problems/${exception.extensions.type}` : typeUri(exception.getStatus()),
     };
@@ -51,6 +51,12 @@ export function toProblem(exception: unknown): Problem {
   return { type: typeUri(500), title: TITLES[500], status: 500, detail: "Something went wrong on the Nibras side. Please try again." };
 }
 
+/** Seconds for the `Retry-After` header of a 429 (RFC 6585); a `retryAfter` extension is header-only, not a body member. */
+export function retryAfterSeconds(exception: unknown): number {
+  const v = exception instanceof ProblemException ? exception.extensions?.retryAfter : undefined;
+  return typeof v === "number" && v > 0 ? v : 60;
+}
+
 @Catch()
 export class ProblemFilter implements ExceptionFilter {
   private readonly logger = new Logger("ProblemFilter");
@@ -60,6 +66,7 @@ export class ProblemFilter implements ExceptionFilter {
     const problem = toProblem(exception);
     if (problem.status >= 500) captureError(exception);
     if (problem.status >= 500) this.logger.error(exception instanceof Error ? (exception.stack ?? exception.message) : String(exception));
+    if (problem.status === 429) res.setHeader("Retry-After", String(retryAfterSeconds(exception)));
     res.status(problem.status).type("application/problem+json").send(problem);
   }
 }

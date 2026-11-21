@@ -11,6 +11,8 @@
   --grad: linear-gradient(135deg, #582bc8, #764bd2);
   --soft: #ebe2fd;
   --line: #e6defb;
+  /* Borders that identify an input: >= 3:1 on white, page and soft backgrounds (WCAG 1.4.11). --line stays for decoration. */
+  --field-line: #8777c4;
   --ready: #17703f;
   --ready-bg: #dcf5e3;
   --chk: #7a4e00;
@@ -168,6 +170,11 @@ main:focus {
 .skip-link:focus {
   top: 12px;
 }
+/* `.tapp a` / `.sapp a` set a purple link colour with higher specificity; keep the skip link white on its dark pill (was 2.1:1). */
+:root .skip-link,
+:root .skip-link:hover {
+  color: #fff;
+}
 .toast-region {
   display: contents;
 }
@@ -179,5 +186,14 @@ main:focus {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  /* Catch-all: no decorative movement. State changes still happen, instantly. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

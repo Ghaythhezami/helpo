@@ -52,13 +52,13 @@ describe("AuthForm", () => {
     await waitFor(() => expect(replace).toHaveBeenCalledWith("/app"));
   });
 
-  it("shows the server message, then a generic one, when sign-in fails", async () => {
+  it("shows our own translated message when sign-in fails, never the server text", async () => {
     authMock.signIn.email.mockResolvedValueOnce({ data: {}, error: { message: "Wrong password" } });
     renderWithProviders(<AuthForm mode="login" />);
     type("Email", "a@b.co");
     type("Password", "longenough1");
     await userEvent.click(screen.getByRole("button", { name: /Sign in/ }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Wrong password");
+    expect(await screen.findByRole("alert")).toHaveTextContent("That email and password don't match.");
     authMock.signIn.email.mockResolvedValueOnce({ data: {}, error: {} });
     await userEvent.click(screen.getByRole("button", { name: /Sign in/ }));
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("That email and password don't match."));
@@ -95,7 +95,7 @@ describe("AuthForm", () => {
     type("Email", "alex@riverside.org");
     type("Password", "longenough1");
     await userEvent.click(screen.getByRole("button", { name: /Create account/ }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Email already used");
+    expect(await screen.findByRole("alert")).toHaveTextContent("An account with that email already exists. Sign in instead.");
     mockFetch({ "PUT /me/school": () => ({ status: 500, body: { title: "x", status: 500 } }) });
     await userEvent.click(screen.getByRole("button", { name: /Create account/ }));
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent(/went wrong on our side/));

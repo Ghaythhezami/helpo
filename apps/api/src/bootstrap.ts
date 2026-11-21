@@ -10,6 +10,8 @@ import { mountBullBoard } from "./admin/bull-board";
 import { BullMqJobQueue } from "./jobs/bullmq.queue";
 import { JobQueue, selectDrivers } from "./jobs/job-queue";
 import { allowedOrigins } from "./common/origins";
+import { trustProxyHops, tuneHttpServer } from "./common/http-server";
+import { securityHeaders } from "./common/security-headers";
 
 /**
  * Builds the Nest app (used by main.ts locally and by the Vercel entry).
@@ -19,7 +21,11 @@ export async function createApp(): Promise<NestExpressApplication> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { bodyParser: false, logger: process.env.NODE_ENV === "test" ? false : ["error", "warn", "log"] });
   app.setGlobalPrefix("api");
   const server = app.getHttpAdapter().getInstance() as express.Express;
-  server.set("trust proxy", 1);
+  // Proxy hops in front of the API: Railway edge (1); browser traffic also passes the Vercel rewrite (2 in production).
+  server.set("trust proxy", trustProxyHops());
+  server.disable("x-powered-by");
+  server.use(securityHeaders());
+  tuneHttpServer(app.getHttpServer());
   app.enableCors({
     origin: allowedOrigins(),
     credentials: true,

@@ -42,7 +42,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       if (timer.current) clearTimeout(timer.current);
       counter.current += 1;
       setToast({ id: counter.current, message, ...options });
-      timer.current = setTimeout(() => setToast(null), options.durationMs ?? (options.undo ? 7000 : 3500));
+      timer.current = setTimeout(() => setToast(null), options.durationMs ?? (options.undo ? 8000 : 3500));
     },
     [],
   );
