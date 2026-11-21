@@ -395,4 +395,9 @@ main()
     console.error(e);
     process.exitCode = 1;
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+    // Better Auth's Redis-backed rate limiter (when REDIS_URL is set) keeps a connection open; the seed is a one-shot
+    // script that runs before the server starts, so it must always exit.
+    process.exit(process.exitCode ?? 0);
+  });

@@ -31,4 +31,4 @@ USER node
 EXPOSE 3001
 # Apply pending migrations, then start the single HTTP server (PORT is set by Railway).
 # SEED_ON_START=true runs the idempotent demo seed after migrating; a seed failure never blocks the server.
-CMD ["sh", "-c", "npx prisma migrate deploy && { if [ \"$SEED_ON_START\" = \"true\" ]; then npx tsx prisma/seed.ts || echo 'seed failed'; fi; } && node dist/main.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && { if [ \"$SEED_ON_START\" = \"true\" ]; then timeout 300 npx tsx prisma/seed.ts || echo 'seed failed or timed out'; fi; } && node dist/main.js"]
