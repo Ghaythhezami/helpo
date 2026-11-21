@@ -37,6 +37,7 @@ export function shortTitle(prompt: string): string {
   const cleaned = prompt
     .replace(/\s+/g, " ")
     .replace(/^please\s+/i, "")
+    .replace(/^(lesson\s+(brief|plan|outline)|brief)\s*:\s*/i, "")
     .replace(/^((teach|make|create|write|prepare|build)\s+(me\s+)?(a\s+)?)?(lesson|class|unit)\s+(on|about|for)\s*:?\s*/i, "")
     .replace(/^(teach|explain)\s+/i, "")
     .trim();

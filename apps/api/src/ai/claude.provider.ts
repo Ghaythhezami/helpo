@@ -120,7 +120,7 @@ export class ClaudeAiProvider implements AiProvider {
   }
 
   async analyze(ctx: LessonContext): Promise<Blueprint> {
-    return (await this.ask(BlueprintSchema, documentBlock({ ...ctx, objectives: [], blueprint: null }), analyzeTask(), this.strong())).out;
+    return (await this.ask(BlueprintSchema, documentBlock({ ...ctx, objectives: [], blueprint: null }), analyzeTask(ctx), this.strong())).out;
   }
 
   async analyzeChunk(ctx: LessonContext, chunk: string): Promise<Blueprint> {
