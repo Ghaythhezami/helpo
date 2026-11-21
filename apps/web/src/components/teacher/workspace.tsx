@@ -16,7 +16,7 @@ import {
   type SlidesContent,
   type WorksheetContent,
 } from "@helpo/shared";
-import { ArrowDown, ArrowLeft, ArrowUp, BarChart3, MoreVertical, ChevronLeft, ChevronRight, Copy, Download, GripVertical, Highlighter, Info, ListChecks, Monitor, PanelRight, PenLine, Send, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUp, BarChart3, Eye, MoreVertical, ChevronLeft, ChevronRight, Copy, Download, GripVertical, Highlighter, Info, ListChecks, Monitor, PanelRight, PenLine, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { exportOptions } from "@/lib/checks";
 import { exportHref } from "./lesson-actions";
@@ -399,6 +399,11 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
               </div>
             )}
           </div>
+          {usable && (
+            <Link href={`/app/lessons/${lesson.id}/preview`} className="btn sm sec" aria-label={t("preview.student")}>
+              <Eye className="ic" aria-hidden="true" /><span className="lbl">{t("preview.student")}</span>
+            </Link>
+          )}
           <button type="button" className="btn sm" disabled={!usable} onClick={() => setDialog("share")}><Send className="ic flip" aria-hidden="true" /><span className="lbl">{t("share.cta")}</span></button>
         </div>
       </header>

@@ -44,7 +44,7 @@ export function GameBar({
   const mm = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
   return (
     <div className="gbar">
-      <Link className="back" href="/join">
+      <Link className="back" href="/play">
         <ArrowLeft className="ic flip" aria-hidden="true" />
         {t("game.back")}
       </Link>

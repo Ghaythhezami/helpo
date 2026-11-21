@@ -37,15 +37,15 @@ describe("DemoService.accounts", () => {
     const list = await service.accounts();
     expect(list.map((a) => a.key)).toEqual(["teacher", "student", "admin"]);
     expect(list.map((a) => a.email)).toEqual([DEMO_TEACHER_EMAIL, null, DEMO_ADMIN_EMAIL]);
-    expect(list.map((a) => a.next)).toEqual(["/app", "/play/self/ASSIGN1", "/admin"]);
+    expect(list.map((a) => a.next)).toEqual(["/app", "/play", "/admin"]);
     for (const a of list) {
       expect([a.label, a.labelAr, a.description, a.descriptionAr].every((t) => t.length > 3)).toBe(true);
       expect(a.labelAr).toMatch(/[؀-ۿ]/);
     }
-    expect(db.activitySession.findFirst.mock.calls[0][0].where).toEqual({ joinCode: DEMO_ASSIGNMENT_CODE, type: "ASSIGNMENT", status: { not: "ENDED" } });
+    expect(db.activitySession.findFirst).not.toHaveBeenCalled(); // the practice hub needs no assignment lookup
   });
 
-  it("without the seeded assignment the student goes to /play", async () => {
+  it("the student always lands on the practice hub, even without the seeded assignment", async () => {
     const { service, db } = setup();
     db.activitySession.findFirst.mockResolvedValue(null);
     expect((await service.accounts())[1].next).toBe("/play");
@@ -81,7 +81,7 @@ describe("DemoService.login", () => {
     const out = await service.login("student");
     expect(db.student.findFirst.mock.calls[0][0].where).toEqual({ displayName: "Layla A.", classRoom: { name: "6B", teacher: { email: DEMO_TEACHER_EMAIL } } });
     expect(join.join).toHaveBeenCalledWith({ code: DEMO_ASSIGNMENT_CODE, studentId: "S9" });
-    expect(out).toEqual({ result: { account: "student", next: "/play/self/ASSIGN1" }, setCookies: [], student: { studentId: "S9", classId: "C1" } });
+    expect(out).toEqual({ result: { account: "student", next: "/play" }, setCookies: [], student: { studentId: "S9", classId: "C1" } });
     expect(auth.api.signInEmail).not.toHaveBeenCalled(); // students have no password
   });
 

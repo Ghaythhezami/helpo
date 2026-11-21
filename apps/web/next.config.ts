@@ -14,7 +14,6 @@ const nextConfig: NextConfig = {
       { source: "/app/class-world", destination: "/app", permanent: false },
       { source: "/app/results", destination: "/app", permanent: false },
       { source: "/app/check", destination: "/app", permanent: false },
-      { source: "/play", destination: "/join", permanent: false },
       { source: "/play/avatar", destination: "/join", permanent: false },
       { source: "/play/games", destination: "/join", permanent: false },
     ];

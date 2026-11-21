@@ -20,8 +20,8 @@ export function joinLabel(live: Live, t: TFunction): string {
   return live.type === "LIVE_QUIZ" ? t("join.button.quiz") : live.type === "GAME" ? t("join.button.game") : t("join.button.homework");
 }
 
-/** Where a joined student goes: the live quiz, or the shared game (assigned work first). Null = nothing to play yet. */
-export async function resolvePath(result: JoinResult, code?: string | null): Promise<string | null> {
+/** Where a joined student goes: the live quiz, the shared game (assigned work first), or the practice hub when nothing is live. */
+export async function resolvePath(result: JoinResult, code?: string | null): Promise<string> {
   if (result.next === "quiz" && result.sessionId) return `/play/quiz/${result.sessionId}`;
   if (result.next === "game" && result.sessionId) {
     // A self-paced (ASSIGNMENT) session has questions for this student; a live game session answers 409.
@@ -31,9 +31,10 @@ export async function resolvePath(result: JoinResult, code?: string | null): Pro
   if (result.next === "game") {
     const games = await api<{ lessonId: string; game: string; assigned: boolean }[]>("/play/games");
     const pick = games.find((g) => g.assigned) ?? games[0];
-    return pick ? `/play/games/${pick.lessonId}/${pick.game}` : null;
+    return pick ? `/play/games/${pick.lessonId}/${pick.game}` : "/play";
   }
-  return null;
+  // Nothing live: the practice hub, never a dead end.
+  return "/play";
 }
 
 const GRADES = Array.from({ length: MAX_GRADE - MIN_GRADE + 1 }, (_, i) => MIN_GRADE + i);
@@ -47,7 +48,6 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
   const [changing, setChanging] = useState(false);
   const [code, setCode] = useState(initialCode ?? "");
   const [name, setName] = useState("");
-  const [waiting, setWaiting] = useState(false);
   const [joined, setJoined] = useState<{ name: string; result: JoinResult } | null>(null);
 
   const digits = normalizeJoinCode(code);
@@ -72,8 +72,8 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
     onSuccess: async (result) => {
       const picked = students.data?.find((s) => s.id === studentId)?.displayName ?? name.trim();
       setJoined({ name: picked, result });
-      const path = await resolvePath(result, usingCode ? digits : null).catch(() => null);
-      if (path) router.push(path);
+      const path = await resolvePath(result, usingCode ? digits : null).catch(() => "/play");
+      router.push(path);
     },
   });
 
@@ -87,8 +87,7 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
           <Illus name="star-buddy" size={130} className="mascot" />
           <h1 id="in-h" tabIndex={-1} style={{ fontSize: "clamp(26px,4vw,36px)", fontWeight: 900 }}>{t("join.in", { name: joined.name })}</h1>
           <p className="muted" style={{ fontSize: 19 }}>{joined.result.sessionId ? t("join.in.live") : t("join.in.wait")}</p>
-          <Button size="big" onClick={async () => { const path = await resolvePath(joined.result, usingCode ? digits : null).catch(() => null); if (path) router.push(path); else setWaiting(true); }}>{joined.result.next === "quiz" ? t("join.open.quiz") : joined.result.next === "game" ? t("join.open.game") : t("join.open.home")}</Button>
-          {waiting && <p className="muted" role="status">{t("join.in.wait")}</p>}
+          <Button size="big" onClick={async () => { router.push(await resolvePath(joined.result, usingCode ? digits : null).catch(() => "/play")); }}>{joined.result.next === "quiz" ? t("join.open.quiz") : joined.result.next === "game" ? t("join.open.game") : t("join.open.practice")}</Button>
           <button type="button" className="lnk" onClick={() => setJoined(null)}>{t("join.different")}</button>
         </div>
       </div>

@@ -163,8 +163,8 @@ describe("student helpers", () => {
     saveLastResult({ game: "MATCH", lessonId: "l1", result: { stars: 3, xp: 60, personalBest: true, totalXp: 1, level: 1, xpIntoLevel: 1, badgeUnlocked: null, classGoal: { goalXp: 1, earnedXp: 1 } } }, storage);
     expect(readLastResult(storage)?.result.stars).toBe(3);
   });
-  it("routes a joined student to the quiz, or to nothing when idle", async () => {
+  it("routes a joined student to the quiz, or to the practice hub when idle", async () => {
     await expect(resolvePath({ participantId: "p", displayName: "S", sessionId: "se1", next: "quiz" })).resolves.toBe("/play/quiz/se1");
-    await expect(resolvePath({ participantId: "p", displayName: "S", sessionId: null, next: "home" })).resolves.toBeNull();
+    await expect(resolvePath({ participantId: "p", displayName: "S", sessionId: null, next: "home" })).resolves.toBe("/play");
   });
 });

@@ -43,7 +43,6 @@ export class DemoService {
 
   async accounts(): Promise<DemoAccount[]> {
     this.assertEnabled();
-    const assignment = await this.assignmentId();
     return [
       {
         key: "teacher",
@@ -58,10 +57,10 @@ export class DemoService {
         key: "student",
         label: "Student",
         labelAr: "طالب",
-        description: "Layla A., class 6B: XP, a streak and a self-paced quiz waiting to be played. No password.",
-        descriptionAr: "ليلى أ.، الصف 6B: نقاط وتتابع واختبار ذاتي جاهز للعب. بلا كلمة مرور.",
+        description: "Layla A., class 6B: XP, a streak, and every ready lesson to practise any time. No password.",
+        descriptionAr: "ليلى أ.، الصف 6B: نقاط وتتابع وكل الدروس الجاهزة للتدرّب في أي وقت. بلا كلمة مرور.",
         email: null,
-        next: assignment ? `/play/self/${assignment}` : "/play",
+        next: "/play", // the practice hub: open activities plus every ready lesson
       },
       {
         key: "admin",

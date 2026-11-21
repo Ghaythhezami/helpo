@@ -303,3 +303,30 @@ export interface GameResultView {
 }
 
 export type { ReteachPlan };
+
+/* ------------------------------ Practice mode ------------------------------
+ * Students can practise any READY lesson of their class at any time, without a teacher-opened session:
+ * a self-paced practice quiz (server-graded, not counted in class results) and every playable game template.
+ * Open sessions (live quiz, assignment) are listed too, so the hub is the student's single entry point.
+ */
+export interface StudentPractice {
+  className: string;
+  open: { sessionId: string; type: SessionType; joinCode: string; lessonTitle: string }[];
+  lessons: { lessonId: string; title: string; number: number | null; quizQuestions: number; games: GameKind[]; bestStars: number }[];
+}
+
+/** GET /api/play/practice/:lessonId/quiz: questions without answers (same shape the self-paced screen uses). */
+export interface PracticeQuiz {
+  lessonId: string;
+  lessonTitle: string;
+  questions: { id: string; type: "mcq" | "tf" | "short" | "matching"; prompt: string; options: string[] | null; pairs: { left: string; right: string }[] | null; timeLimitSec: number }[];
+}
+
+/** POST /api/play/practice/:lessonId/quiz → graded review; practice XP is small and never enters class results. */
+export interface PracticeResult {
+  score: number; // 0..1
+  correct: number;
+  total: number;
+  xp: number;
+  review: { questionId: string; correct: boolean; explanation: string; correctAnswer: string }[];
+}

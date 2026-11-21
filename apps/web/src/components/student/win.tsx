@@ -24,7 +24,7 @@ export function WinView() {
       <div className="winw">
         <div className="wincard">
           <h1>{t("win.none")}</h1>
-          <ButtonLink href="/join">{t("student.back")}</ButtonLink>
+          <ButtonLink href="/play">{t("student.back")}</ButtonLink>
         </div>
       </div>
     );
@@ -58,7 +58,7 @@ export function WinView() {
       </div>
       <div className="wbtns">
         <Link className="btn big" href={`/play/games/${lessonId}/${game}`}>{t("win.again")}</Link>
-        <Link className="btn big sec" href="/join">{t("student.back")}</Link>
+        <Link className="btn big sec" href="/play">{t("student.back")}</Link>
       </div>
       <p className="stopline">{t("win.stop")}</p>
     </div>

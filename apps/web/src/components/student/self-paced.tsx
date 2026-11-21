@@ -9,15 +9,11 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Illus } from "@/components/ui/illus";
 import { Progress } from "@/components/ui/progress";
 import { Async } from "@/components/ui/states";
+import { QuestionBody, isAnswered, type SelfQuestion } from "./question-body";
 import { ReadAloud } from "./read-aloud";
 
-export interface SelfQuestion {
-  id: string;
-  type: "mcq" | "tf" | "short" | "matching";
-  prompt: string;
-  options: string[] | null;
-  matching: { lefts: string[]; rights: string[] } | null;
-}
+export type { SelfQuestion };
+
 interface QuestionsResponse {
   sessionId: string;
   lessonTitle: string;
@@ -54,7 +50,7 @@ function Runner({ data, initialCode }: { data: QuestionsResponse; initialCode?: 
   const q = data.questions[index];
   const current = q ? answers[q.id] : undefined;
   const last = index === data.questions.length - 1;
-  const answered = Boolean(current && (current.optionIndex !== undefined || current.text || (current.pairs && current.pairs.length === (q?.matching?.lefts.length ?? 0))));
+  const answered = isAnswered(q, current);
 
   const submit = useMutation({
     mutationFn: () => submitSelfPaced(code.replace(/\D/g, ""), Object.values(answers), startedAt) as Promise<SubmitResult>,
@@ -74,7 +70,7 @@ function Runner({ data, initialCode }: { data: QuestionsResponse; initialCode?: 
               <li key={r.questionId} style={{ padding: "4px 0" }}><b>{r.questionId}</b>{" "}{r.correct ? t("self.right") : t("game.notYet")}{r.explanation ? ` ${r.explanation}` : ""}</li>
             ))}
           </ul>
-          <ButtonLink size="big" href="/join">{t("student.back")}</ButtonLink>
+          <ButtonLink size="big" href="/play">{t("student.back")}</ButtonLink>
         </div>
       </div>
     );
@@ -94,41 +90,7 @@ function Runner({ data, initialCode }: { data: QuestionsResponse; initialCode?: 
         <p className="qtext" id="sp-q">{q.prompt}</p>
         <div><ReadAloud text={q.prompt} /></div>
 
-        {(q.type === "mcq" || q.type === "tf") && q.options && (
-          <div className={q.type === "tf" ? "qtf" : "qopts"} role="group" aria-labelledby="sp-q">
-            {q.options.map((o, i) => (
-              <div className="tw" key={i}>
-                <button type="button" className="ans c-answer" style={q.type === "tf" ? undefined : { minHeight: 72, width: "100%", borderRadius: 22, border: "3px solid", fontSize: 22, fontWeight: 900, padding: "8px 20px", textAlign: "start" }} aria-pressed={current?.optionIndex === i} onClick={() => set({ optionIndex: i })}>{o}</button>
-              </div>
-            ))}
-          </div>
-        )}
-        {q.type === "short" && (
-          <div className="field">
-            <label className="sr" htmlFor="sp-short">{t("quiz.short.label")}</label>
-            <input id="sp-short" value={current?.text ?? ""} maxLength={1000} onChange={(e) => set({ text: e.target.value })} style={{ minHeight: 64, fontSize: 22 }} />
-          </div>
-        )}
-        {q.type === "matching" && q.matching && (
-          <div className="match-self">
-            {q.matching.lefts.map((left, i) => (
-              <div key={left} className="opt-row">
-                <label htmlFor={`sp-m-${i}`}>{left}</label>
-                <select
-                  id={`sp-m-${i}`}
-                  value={current?.pairs?.find((p) => p.left === left)?.right ?? ""}
-                  onChange={(e) => {
-                    const rest = (current?.pairs ?? []).filter((p) => p.left !== left);
-                    set({ pairs: e.target.value ? [...rest, { left, right: e.target.value }] : rest });
-                  }}
-                >
-                  <option value="">{t("self.pick")}</option>
-                  {q.matching!.rights.map((r) => <option key={r} value={r}>{r}</option>)}
-                </select>
-              </div>
-            ))}
-          </div>
-        )}
+        <QuestionBody q={q} current={current} set={set} />
 
         {last && !initialCode && (
           <div className="field">
@@ -145,7 +107,7 @@ function Runner({ data, initialCode }: { data: QuestionsResponse; initialCode?: 
             <Button size="big" disabled={!answered || submit.isPending || code.replace(/\D/g, "").length !== 6} onClick={() => submit.mutate()}>{submit.isPending ? t("common.loading") : t("self.submit")}</Button>
           )}
         </div>
-        <button type="button" className="lnk" onClick={() => router.push("/join")}>{t("game.stop")}</button>
+        <button type="button" className="lnk" onClick={() => router.push("/play")}>{t("game.stop")}</button>
       </div>
     </div>
   );

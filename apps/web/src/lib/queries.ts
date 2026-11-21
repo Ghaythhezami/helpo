@@ -11,8 +11,10 @@ import type {
   Me,
   ResultsView,
   SessionTeacherView,
+  PracticeQuiz,
   StudentGame,
   StudentHome,
+  StudentPractice,
   StudentQuizState,
   GameKind,
 } from "@helpo/shared";
@@ -42,6 +44,8 @@ export const qk = {
   playGames: ["play", "games"] as const,
   playGame: (lessonId: string, game: string) => ["play", "game", lessonId, game] as const,
   playQuiz: (sessionId: string) => ["play", "quiz", sessionId] as const,
+  playPractice: ["play", "practice"] as const,
+  playPracticeQuiz: (lessonId: string) => ["play", "practice-quiz", lessonId] as const,
 };
 
 /** Don't retry auth and not-found errors; retry flaky network or 5xx once. */
@@ -153,6 +157,18 @@ export const useStudentQuiz = (sessionId: string) =>
     queryFn: () => api<StudentQuizState>(`/play/sessions/${sessionId}`),
     retry,
     refetchInterval: (query) => (query.state.data?.status === "ENDED" ? false : POLL_MS),
+  });
+
+/** Practice hub: open sessions plus every ready lesson the student can practise at any time. */
+export const usePractice = () => useQuery({ queryKey: qk.playPractice, queryFn: () => api<StudentPractice>("/play/practice"), retry });
+
+export const usePracticeQuiz = (lessonId: string) =>
+  useQuery({
+    queryKey: qk.playPracticeQuiz(lessonId),
+    queryFn: () => api<PracticeQuiz>(`/play/practice/${lessonId}/quiz`),
+    retry,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
   });
 
 export const useAdminOverview = (enabled = true) =>

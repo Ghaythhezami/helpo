@@ -3,10 +3,14 @@ import { Reflector } from "@nestjs/core";
 import type { Request } from "express";
 import IORedis from "ioredis";
 import { ProblemException } from "./problem";
+import { STUDENT_COOKIE, parseCookies, verifyStudentToken } from "./student-cookie";
 
 export const RATE_LIMIT_KEY = "helpo:rate-limit";
-/** Best-effort per-IP limit: `max` requests per `windowMs` for this route. */
-export const RateLimit = (bucket: string, max: number, windowMs = 60_000) => SetMetadata(RATE_LIMIT_KEY, { bucket, max, windowMs });
+/**
+ * Best-effort limit: `max` requests per `windowMs` for this route, per IP by default.
+ * `by: "student"` keys on the signed student cookie instead (a whole class often shares one IP); without a valid cookie it falls back to the IP.
+ */
+export const RateLimit = (bucket: string, max: number, windowMs = 60_000, by: "ip" | "student" = "ip") => SetMetadata(RATE_LIMIT_KEY, { bucket, max, windowMs, by });
 
 interface Hit {
   count: number;
@@ -56,11 +60,12 @@ export class RateLimitGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const cfg = this.reflector.getAllAndOverride<{ bucket: string; max: number; windowMs: number } | undefined>(RATE_LIMIT_KEY, [context.getHandler(), context.getClass()]);
+    const cfg = this.reflector.getAllAndOverride<{ bucket: string; max: number; windowMs: number; by?: "ip" | "student" } | undefined>(RATE_LIMIT_KEY, [context.getHandler(), context.getClass()]);
     if (!cfg || process.env.RATE_LIMIT_DISABLED === "1") return true;
     const req = context.switchToHttp().getRequest<Request>();
     // `req.ip` honours `trust proxy` (1 hop). The raw X-Forwarded-For header is client-controlled, so its first entry is spoofable.
-    const key = `${cfg.bucket}:${req.ip ?? "unknown"}`;
+    const student = cfg.by === "student" ? verifyStudentToken(parseCookies(req.headers?.cookie)[STUDENT_COOKIE]) : null;
+    const key = student ? `${cfg.bucket}:student:${student.studentId}` : `${cfg.bucket}:${req.ip ?? "unknown"}`;
     return this.store ? this.checkRedis(key, cfg.max, cfg.windowMs) : this.check(key, cfg.max, cfg.windowMs);
   }
 

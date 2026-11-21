@@ -327,7 +327,7 @@ describe("Nibras API (demo mode, real DB)", () => {
       expect(res.status).toBe(200);
       expect(res.body.map((a: { key: string; email: string | null; next: string }) => [a.key, a.email, a.next.split("/").slice(0, 3).join("/")])).toEqual([
         ["teacher", "demo@helpo.test", "/app"],
-        ["student", null, "/play/self"],
+        ["student", null, "/play"],
         ["admin", "admin@helpo.test", "/admin"],
       ]);
       expect(JSON.stringify(res.body)).not.toContain("e2e-demo-password");
@@ -365,18 +365,57 @@ describe("Nibras API (demo mode, real DB)", () => {
       expect((await post("/api/auth/sign-in/email", { email: "demo@helpo.test", password: "wrong-password" })).status).not.toBe(200);
     });
 
-    it("student: Layla A. gets the signed cookie and lands on the always-open self-paced quiz", async () => {
+    it("student: Layla A. gets the signed cookie and lands on the practice hub; the open quiz is still one tap away", async () => {
       const res = await post("/api/demo/login", { account: "student" });
-      expect(res.body.next).toMatch(/^\/play\/self\/\w+$/);
+      expect(res.body.next).toBe("/play");
       const cookie = (res.headers["set-cookie"] as unknown as string[]).find((c) => c.startsWith("helpo_student=")) as string;
       expect(cookie).toMatch(/HttpOnly/i);
       const student = { Cookie: cookie.split(";")[0] };
       const home = await request(base()).get("/api/play/me").set(student);
       expect(home.body).toMatchObject({ displayName: "Layla A.", className: "6B", xp: 1240, level: 3 });
-      const sessionId = res.body.next.split("/").pop();
-      const qs = await request(base()).get(`/api/play/sessions/${sessionId}/questions`).set(student);
+      const hub = await request(base()).get("/api/play/practice").set(student);
+      const open = hub.body.open.find((o: { joinCode: string }) => o.joinCode === "303030");
+      expect(open).toMatchObject({ type: "ASSIGNMENT" });
+      const qs = await request(base()).get(`/api/play/sessions/${open.sessionId}/questions`).set(student);
       expect(qs.body.joinCode).toBe("303030");
       expect(qs.body.questions.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it("practice mode: the demo student lists lessons, gets a quiz without answers, submits and reads the review, all without a session", async () => {
+      const res = await post("/api/demo/login", { account: "student" });
+      const cookie = (res.headers["set-cookie"] as unknown as string[]).find((c) => c.startsWith("helpo_student=")) as string;
+      const student = { Cookie: cookie.split(";")[0] };
+      expect((await request(base()).get("/api/play/practice")).status).toBe(401); // student cookie required
+
+      const hub = await request(base()).get("/api/play/practice").set(student);
+      expect(hub.status).toBe(200);
+      expect(hub.body.className).toBe("6B");
+      expect(hub.body.open.some((o: { type: string; joinCode: string }) => o.type === "LIVE_QUIZ" && o.joinCode === "202020")).toBe(true);
+      const lesson = hub.body.lessons.find((l: { quizQuestions: number }) => l.quizQuestions > 0);
+      expect(lesson).toBeDefined();
+      expect(Array.isArray(lesson.games)).toBe(true);
+
+      const quiz = await request(base()).get(`/api/play/practice/${lesson.lessonId}/quiz`).set(student);
+      expect(quiz.status).toBe(200);
+      expect(quiz.body.questions).toHaveLength(lesson.quizQuestions);
+      expect(JSON.stringify(quiz.body)).not.toMatch(/"correct"|acceptedAnswers|explanation/);
+      expect((await request(base()).get("/api/play/practice/not-a-lesson/quiz").set(student)).status).toBe(404);
+
+      const xpBefore = (await request(base()).get("/api/play/me").set(student)).body.xp;
+      const answers = quiz.body.questions.map((q: { id: string; type: string; options: string[] | null; pairs: { left: string }[] | null }) =>
+        q.type === "short" ? { questionId: q.id, text: "I do not know" } : q.type === "matching" ? { questionId: q.id, pairs: (q.pairs ?? []).map((p) => ({ left: p.left, right: "?" })) } : { questionId: q.id, optionIndex: 0 },
+      );
+      const done = await request(base()).post(`/api/play/practice/${lesson.lessonId}/quiz`).set(student).send({ answers, durationSec: 30 });
+      expect(done.status).toBe(200);
+      expect(done.body).toMatchObject({ total: lesson.quizQuestions });
+      expect(done.body.review).toHaveLength(lesson.quizQuestions);
+      for (const r of done.body.review) expect(r).toEqual({ questionId: expect.any(String), correct: expect.any(Boolean), explanation: expect.any(String), correctAnswer: expect.any(String) });
+      expect(done.body.xp).toBeGreaterThan(0);
+      expect(done.body.xp).toBeLessThanOrEqual(20);
+      expect((await request(base()).get("/api/play/me").set(student)).body.xp).toBe(xpBefore + done.body.xp);
+      // a repeat the same day stays under the 20 XP daily cap for that lesson
+      const again = await request(base()).post(`/api/play/practice/${lesson.lessonId}/quiz`).set(student).send({ answers, durationSec: 30 });
+      expect(done.body.xp + again.body.xp).toBeLessThanOrEqual(20);
     });
 
     it("the fixed activities are open: a live quiz lobby (202020) and a self-paced assignment (303030)", async () => {

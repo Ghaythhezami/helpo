@@ -53,7 +53,7 @@ function Quiz({ state }: { state: StudentQuizState }) {
           <Illus name="star-buddy" size={110} className="mascot" />
           <h1>{t("quiz.ended")}</h1>
           <p className="muted">{t("quiz.ended.text")}</p>
-          <ButtonLink href="/join">{t("student.back")}</ButtonLink>
+          <ButtonLink href="/play">{t("student.back")}</ButtonLink>
         </div>
       </div>
     );

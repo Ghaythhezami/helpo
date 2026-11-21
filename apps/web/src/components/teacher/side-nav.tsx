@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { RESOURCE_KINDS } from "@helpo/shared";
-import { BookOpen, ChevronsLeft, ChevronsRight, FilePlus2, LogOut, Monitor, PanelLeftClose, PanelLeftOpen, Send, ShieldCheck, Users, BarChart3 } from "lucide-react";
+import { BookOpen, ChevronsLeft, Eye, ChevronsRight, FilePlus2, LogOut, Monitor, PanelLeftClose, PanelLeftOpen, Send, ShieldCheck, Users, BarChart3 } from "lucide-react";
 import type { ReactNode } from "react";
 import { RESOURCE_ART } from "@/lib/checks";
 import { useI18n } from "@/lib/i18n";
@@ -69,6 +69,7 @@ export function NavItems({ pathname, isAdmin, collapsed, onNavigate, onOpenLesso
                 onClick={done(() => ws.setTab(k))}
               />
             ))}
+            <Item sub icon={<Eye className="ic" />} label={t("preview.student")} href={`/app/lessons/${ws.lessonId}/preview`} collapsed={collapsed} onClick={onNavigate} />
             <Item sub icon={<Monitor className="ic" />} label={t("board.title")} pressed={ws.boardOpen} collapsed={collapsed} onClick={done(ws.toggleBoard)} />
             <Item sub icon={<Send className="ic flip" />} label={t("steps.share")} collapsed={collapsed} onClick={done(ws.openShare)} />
             <Item sub icon={<BarChart3 className="ic" />} label={t("steps.results")} collapsed={collapsed} onClick={done(ws.openResults)} />

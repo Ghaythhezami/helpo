@@ -61,6 +61,9 @@ resource is owned by the signed-in teacher; another teacher's id returns **404**
 | GET | `/api/play/games` | | `{ lessonId, lessonTitle, game, bestStars, assigned }[]` |
 | GET | `/api/play/games/:lessonId/:game` | | `StudentGame` |
 | POST | `/api/play/games/result` | `GameResultBody` | `GameResultView` (server scores with `scoreGame`, caps XP, unlocks badges, updates streak) |
+| GET | `/api/play/practice` | | `StudentPractice`: `open` (LIVE_QUIZ in LOBBY/LIVE, and open, unexpired ASSIGNMENTs, each with `joinCode`) and `lessons` (every READY or PARTIAL, approved lesson of the student's class with `quizQuestions` (0 unless the QUIZ is READY), playable `games` and `bestStars`). Text follows the request locale with fallback. |
+| GET | `/api/play/practice/:lessonId/quiz` | | `PracticeQuiz`: questions with no correct flags, no `acceptedAnswers` and no explanations. Multiple-choice options and the matching right-hand column are shuffled, in an order fixed per student and lesson so the server can map `optionIndex` back when grading. 404 for a lesson outside the student's class or without a READY quiz. |
+| POST | `/api/play/practice/:lessonId/quiz` | `PracticeSubmitBody` (same as `PlaySubmitBody`) | `PracticeResult { score, correct, total, xp, review[] }`, where each review row is `{ questionId, correct, explanation, correctAnswer }`. Graded on the server with the same rules as the self-paced quiz. Creates **no** Participant or Answer rows, so class results and mastery are untouched. Practice XP is 2 per correct answer and 1 per attempt, capped at 20 per lesson per day (XpEvent reason `practice:<lessonId>`). Limited to 20 per minute per student (keyed on the student cookie, not the IP). |
 
 ## Operational
 
@@ -154,7 +157,7 @@ Students:
 
 | Method | Path | Body | Returns |
 |---|---|---|---|
-| GET | `/api/demo/accounts` | | `DemoAccount[]` (teacher, student, admin) with EN/AR labels and descriptions, the email (null for the student) and `next` (`/app`, `/play/self/<assignment id>`, `/admin`). **404 unless `DEMO_LOGIN=true`.** |
+| GET | `/api/demo/accounts` | | `DemoAccount[]` (teacher, student, admin) with EN/AR labels and descriptions, the email (null for the student) and `next` (`/app`, `/play` (the practice hub), `/admin`). **404 unless `DEMO_LOGIN=true`.** |
 | POST | `/api/demo/login` | `DemoLoginBody { account }` | `DemoLoginResult { account, next }`. Teacher and admin: signs in server-side with `DEMO_PASSWORD` and forwards Better Auth's `Set-Cookie` headers (first-party on the web origin through the rewrite). Student: sets the signed `helpo_student` cookie for "Layla A." as a participant of the seeded self-paced quiz. 503 without `DEMO_PASSWORD` or seed data. Rate limited to 30 per minute per IP; logs the account only. **404 unless `DEMO_LOGIN=true`.** |
 | GET | `/api/admin/overview` | | `AdminOverview`: totals, lessons by status, AI tokens with a per-model breakdown, the 10 most recent lessons and sessions, runtime flags. Role `ADMIN` only: another signed-in role gets **404**, nobody signed in gets 401. Bull Board at `/admin/queues` also admits role `ADMIN`. |
 

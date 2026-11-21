@@ -802,3 +802,140 @@
   padding-block: 14px;
   margin-block: -14px;
 }
+
+/* ---------- Practice hub (/play) ---------- */
+.sapp .hubw {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sapp .hubh {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sapp .hubh .mascot { width: 52px; height: 52px; flex: none; }
+.sapp .hubh h1 { font-size: clamp(24px, 4vw, 34px); font-weight: 900; line-height: 1.1; }
+.sapp .hubh p { font-weight: 700; }
+.sapp .hubs { flex: none; display: grid; gap: 8px; min-height: 0; }
+.sapp .hubs.grow { flex: 1; grid-template-rows: auto minmax(0, 1fr); }
+.sapp .hubs h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 clamp(19px, 2.4vw, 24px) / 1.2 var(--font-fredoka), var(--font-nunito), sans-serif;
+  color: var(--ink);
+}
+.sapp .hubs h2 .ic { width: 22px; height: 22px; color: var(--pri); }
+.sapp .livenone { font-weight: 700; }
+.sapp .livec {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 10px;
+  max-height: 34dvh;
+  overflow: auto;
+}
+.sapp .livecard {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  padding: 12px 16px;
+  border-radius: 24px;
+  background: linear-gradient(120deg, #f9f8fe, #f1effd);
+  border: 2px solid #c3b5f2;
+  box-shadow: var(--sh);
+}
+.sapp .livecard b { font-size: 20px; font-weight: 900; line-height: 1.2; overflow-wrap: anywhere; }
+.sapp .livecard .btn { width: 100%; }
+.sapp .lessl {
+  list-style: none;
+  margin: 0;
+  padding: 2px 2px 6px;
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  align-content: start;
+}
+.sapp .lescard {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 24px;
+  background: #fbfafd;
+  border: 1px solid var(--line);
+  box-shadow: var(--sh);
+}
+.sapp .lhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.sapp .lhead h3 { font-size: clamp(17px, 2.2vw, 21px); font-weight: 900; line-height: 1.2; overflow-wrap: anywhere; min-width: 0; }
+.sapp .lstars { display: inline-flex; gap: 2px; flex: none; }
+.sapp .lstars .ic { width: 22px; height: 22px; color: #e4daff; stroke: #c3b5f2; fill: #e4daff; }
+.sapp .lstars .ic.on { color: #ffc83d; stroke: #e8a100; fill: #ffc83d; }
+.sapp .lacts { display: flex; flex-wrap: wrap; gap: 8px; }
+.sapp .lacts .btn { min-height: 48px; padding-inline: 16px; font-size: 16px; }
+.sapp .lacts .btn .ic { width: 20px; height: 20px; flex: none; }
+.sapp .hubf { flex: none; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: center; }
+.sapp .hubf .lnk { display: inline-flex; align-items: center; min-height: 44px; }
+.sapp[data-band="explorer"] .hubw .btn,
+.sapp[data-band="explorer"] .hubf .lnk { min-height: 64px; }
+.sapp[data-band="explorer"] .lacts .btn { padding-inline: 20px; font-size: 18px; }
+
+/* Practice review list: scrolls inside the card, the page never does. */
+.sapp .rvl {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  max-height: min(34dvh, 320px);
+  overflow: auto;
+  text-align: start;
+}
+.sapp .rvl li { display: grid; gap: 2px; padding: 8px 12px; border-radius: 16px; border-inline-start: 6px solid #c3b5f2; background: #fff; }
+.sapp .rvl li.ok { border-color: #2e8f63; }
+.sapp .rvl li.no { border-color: #e8a100; }
+.sapp .rvl li span { font-size: 15px; }
+.sapp .rvw .qcard { justify-items: center; text-align: center; gap: 10px; padding: 16px; }
+.sapp .rvw .qcard .mascot { width: 72px; height: 72px; }
+
+/* ---------- Teacher: Preview as student ---------- */
+.tapp .app-stage:has(.pvw) { overflow: hidden; padding-bottom: 0; }
+.pvw { height: 100%; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+.pvh { flex: none; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; }
+.pvh h1 { flex: 1 1 120px; min-width: 0; font-size: clamp(18px, 2.2vw, 26px); font-weight: 900; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pvback { flex: none; }
+.pvbanner { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 4px 14px; border-radius: 999px; background: #fff1d8; border: 2px solid #f5c77a; font-weight: 900; font-size: 14px; color: var(--ink); }
+.pvbanner .ic { width: 18px; height: 18px; flex: none; }
+.pvsw { flex: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.pvsw .btn { padding-inline: 14px; }
+.pvsw .btn .ic { width: 20px; height: 20px; }
+.pvsw .btn[aria-pressed="true"] { background: #ebe2fd; border-color: #6035cf; outline: 3px solid #e3d7fd; }
+.pvstage { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; padding: 0 2px 8px; }
+.pvstage .pvgame { width: 100%; max-width: 960px; margin-inline: auto; }
+@media (max-width: 640px) {
+  .pvsw .btn { width: 48px; padding-inline: 0; }
+  .pvsw .btn .lbl, .pvback .lbl { display: none; }
+  .pvback { width: 48px; padding-inline: 0; }
+}
+
+/* Short screens: keep the lesson list visible. The live cards get compact and the greeting goes. */
+@media (max-height: 720px) {
+  .sapp .hubh .mascot, .sapp .hubh p { display: none; }
+  .sapp .livec { max-height: 30dvh; }
+  .sapp .livecard { padding: 8px 12px; gap: 4px; }
+  .sapp .livecard b { font-size: 17px; }
+  .sapp:not([data-band="explorer"]) .livecard .btn.big { min-height: 48px; font-size: 18px; }
+  .sapp .rvw .qcard .mascot { display: none; }
+  .sapp .rvw .qcard h1 { font-size: 26px; }
+  .sapp .rvl { max-height: 26dvh; }
+  .sapp:not([data-band="explorer"]) .rvw .toolrow .btn.big { min-height: 48px; font-size: 18px; }
+}

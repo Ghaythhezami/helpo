@@ -57,7 +57,7 @@ describe("live quiz (student)", () => {
     mockFetch({ "GET /play/sessions/se1": () => ({ body: quizState({ status: "ENDED", question: null }) }) });
     renderWithProviders(<QuizView sessionId="se1" />, { scope: "student" });
     expect(await screen.findByText("Quiz finished")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Done" })).toHaveAttribute("href", "/join");
+    expect(screen.getByRole("link", { name: "Done" })).toHaveAttribute("href", "/play");
   });
 
   it("saves an answer once, shows the XP pop, and keeps the answer on re-render", async () => {
@@ -179,7 +179,7 @@ describe("playing a mini-game", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     press(/Pause/);
     press(/Stop for today/);
-    expect(push).toHaveBeenCalledWith("/join");
+    expect(push).toHaveBeenCalledWith("/play");
   });
 
   it("keeps sound off by default and explains when the class has sounds off", async () => {
@@ -221,7 +221,7 @@ describe("win card", () => {
     expect(screen.getByText("Personal best!")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "3 stars earned" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Play again" })).toHaveAttribute("href", "/play/games/l1/SORT");
-    expect(screen.getByRole("link", { name: "Done" })).toHaveAttribute("href", "/join");
+    expect(screen.getByRole("link", { name: "Done" })).toHaveAttribute("href", "/play");
   });
 
   it("does not claim a personal best when there was none, and handles an empty store", async () => {

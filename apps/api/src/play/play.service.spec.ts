@@ -211,6 +211,20 @@ describe("PlayService games and home", () => {
     await expect(service.game("S1", "L1", "SORT", "en")).rejects.toMatchObject({ status: 404 });
   });
 
+  it("game practice needs no teacher session: any READY/PARTIAL lesson of the student's class can be played and scored", async () => {
+    const { db, service } = gameSetup();
+    db.activitySession.findFirst.mockResolvedValue(null);
+    db.activitySession.findMany.mockResolvedValue([]); // nothing assigned or open
+    expect(await service.game("S1", "L1", "SORT", "en")).toMatchObject({ lessonId: "L1", game: "SORT" });
+    expect(db.lesson.findFirst.mock.calls[0][0].where).toEqual({ id: "L1", classId: "C1", status: { in: ["READY", "PARTIAL"] }, approvedAt: { not: null } });
+    expect(db.activitySession.findFirst).not.toHaveBeenCalled();
+    const result = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0 }, "en");
+    expect(result.stars).toBe(3);
+    expect(db.gameResult.create.mock.calls[0][0].data).toMatchObject({ lessonId: "L1", sessionId: null, game: "SORT" });
+    db.lesson.findFirst.mockResolvedValue(null); // another class's lesson: 404
+    await expect(service.submitGame("S1", { lessonId: "OTHER", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0 }, "en")).rejects.toMatchObject({ status: 404 });
+  });
+
   it("lists only the templates the game content can feed for the class band, with assigned flags", async () => {
     const { db, service } = gameSetup();
     db.lesson.findMany.mockResolvedValue([{ id: "L1", titleEn: "Photosynthesis", titleAr: null, resources: [{ contentEn: gameContent, contentAr: null }] }]);

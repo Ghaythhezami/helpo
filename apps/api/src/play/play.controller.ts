@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
 import type { Response } from "express";
-import { AnswerBody, AvatarBody, CodeJoinBody, PlaySubmitBody, GameResultBody, UpdateLocaleBody, type Locale } from "@helpo/shared";
+import { AnswerBody, AvatarBody, CodeJoinBody, PlaySubmitBody, GameResultBody, PracticeSubmitBody, UpdateLocaleBody, type Locale } from "@helpo/shared";
 import type { z } from "zod";
 import { CurrentStudent, StudentGuard, type StudentContext } from "../auth/student.guard";
 import { ReqLocale } from "../common/i18n";
@@ -9,12 +9,14 @@ import { STUDENT_COOKIE, STUDENT_COOKIE_TTL_SECONDS, signStudentToken, studentCo
 import { ZodValidationPipe } from "../common/zod.pipe";
 import { JoinService } from "../join/join.service";
 import { PlayService } from "./play.service";
+import { PracticeService } from "./practice.service";
 
 @Controller("play")
 export class PlayController {
   constructor(
     private readonly play: PlayService,
     private readonly join: JoinService,
+    private readonly practice: PracticeService,
   ) {}
 
   /** Share by code: which class and activity a code opens. Public, child-safe. */
@@ -120,5 +122,27 @@ export class PlayController {
   @UseGuards(StudentGuard)
   game(@CurrentStudent() s: StudentContext, @ReqLocale() locale: Locale, @Param("lessonId") lessonId: string, @Param("game") game: string) {
     return this.play.game(s.id, lessonId, game.toUpperCase(), locale);
+  }
+
+  /** Practice hub: open activities plus every lesson of the class, playable any time. */
+  @Get("practice")
+  @UseGuards(StudentGuard)
+  practiceList(@CurrentStudent() s: StudentContext, @ReqLocale() locale: Locale) {
+    return this.practice.list(s.id, locale);
+  }
+
+  @Get("practice/:lessonId/quiz")
+  @UseGuards(StudentGuard)
+  practiceQuiz(@CurrentStudent() s: StudentContext, @ReqLocale() locale: Locale, @Param("lessonId") lessonId: string) {
+    return this.practice.quiz(s.id, lessonId, locale);
+  }
+
+  /** Graded on the server; no Participant or Answer rows, so class results are untouched. 20 per minute per student. */
+  @Post("practice/:lessonId/quiz")
+  @UseGuards(StudentGuard)
+  @HttpCode(200)
+  @RateLimit("practice", 20, 60_000, "student")
+  practiceSubmit(@CurrentStudent() s: StudentContext, @ReqLocale() locale: Locale, @Param("lessonId") lessonId: string, @Body(new ZodValidationPipe(PracticeSubmitBody)) body: z.infer<typeof PracticeSubmitBody>) {
+    return this.practice.submit(s.id, lessonId, body, locale);
   }
 }

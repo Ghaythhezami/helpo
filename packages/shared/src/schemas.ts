@@ -335,3 +335,6 @@ export const AvatarBody = z.object({
 
 /** POST /api/demo/login: one-click sign-in to a pre-configured demo account (only when DEMO_LOGIN=true). */
 export const DemoLoginBody = z.object({ account: z.enum(["teacher", "student", "admin"]) });
+
+/** POST /api/play/practice/:lessonId/quiz body: same answer shape as a self-paced submit. */
+export const PracticeSubmitBody = PlaySubmitBody;

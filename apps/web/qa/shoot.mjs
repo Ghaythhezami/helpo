@@ -66,6 +66,9 @@ function mock(page, state) {
     if (p === "/join/classes/c1/students") return json(students.map((s) => ({ id: s.id, displayName: s.displayName })));
     if (p === "/join" && method === "POST") return json({ participantId: "pp", displayName: "Sara A.", sessionId: "se1", next: state.next });
     if (p.startsWith("/play/code/")) return json({ classId: "c1", className: "6B", grade: 6, teacherName: "Alex", live });
+    if (p === "/play/practice") return json(state.hubEmpty ? { className: "6B", open: [], lessons: [] } : { className: "6B", open: [live, { sessionId: "se2", type: "ASSIGNMENT", joinCode: "202020", lessonTitle: "The water cycle" }], lessons: ["Photosynthesis: how plants make food", "The water cycle", "Food chains", "States of matter", "Fractions", "Solar system"].map((title, i) => ({ lessonId: i === 0 ? "l1" : `l${i + 1}`, title, number: i + 1, quizQuestions: 10, games: ["MATCH", "MEMORY", "SORT", "EQUATION", "TRUE_FALSE"], bestStars: i % 4 })) });
+    if (p === "/play/practice/l1/quiz" && method === "GET") return json({ lessonId: "l1", lessonTitle: "Photosynthesis", questions: quiz.questions.slice(0, 4).map((q) => ({ id: q.id, type: q.type, prompt: q.prompt, options: q.options.map((o) => o.text), pairs: null, timeLimitSec: 30 })) });
+    if (p === "/play/practice/l1/quiz" && method === "POST") return json({ score: 0.75, correct: 3, total: 4, xp: 12, review: quiz.questions.slice(0, 4).map((q, i) => ({ questionId: q.id, correct: i !== 1, explanation: "Leaves hold chlorophyll.", correctAnswer: q.options.find((o) => o.correct).text })) });
     if (p === "/play/games") return json([{ lessonId: "l1", lessonTitle: "Photosynthesis", game: "MATCH", bestStars: 2, assigned: true }]);
     if (p.startsWith("/play/games/l1/")) return json({ lessonId: "l1", lessonTitle: "Photosynthesis", game: p.split("/").pop(), content: game, bestStars: 0 });
     if (p === "/play/games/result") return json({ stars: 3, xp: 60, personalBest: true, totalXp: 400, level: 7, xpIntoLevel: 400, badgeUnlocked: null, classGoal: { goalXp: 500, earnedXp: 440 } });
@@ -171,6 +174,16 @@ const screens = {
   sort: async (p) => { await p.goto(`${BASE}/play/games/l1/SORT`); await p.waitForSelector(".baskets"); },
   equation: async (p) => { await p.goto(`${BASE}/play/games/l1/EQUATION`); await p.waitForSelector(".eq"); },
   tf: async (p) => { await p.goto(`${BASE}/play/games/l1/TRUE_FALSE`); await p.waitForSelector(".qtf"); },
+  hub: async (p) => { await p.goto(`${BASE}/play`); await p.waitForSelector(".lescard"); },
+  "hub-empty": async (p) => { await p.goto(`${BASE}/play`); await p.waitForSelector(".empty"); },
+  practice: async (p) => { await p.goto(`${BASE}/play/practice/l1`); await p.waitForSelector(".qcard"); },
+  "practice-result": async (p) => { await p.goto(`${BASE}/play/practice/l1`); await p.waitForSelector(".qcard"); for (let i = 0; i < 4; i++) { await p.locator(".qcard .ans").first().click(); await p.locator(".qcard .toolrow .btn.big").click(); } await p.waitForSelector(".rvl"); },
+  "preview-quiz": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvw .qcard"); },
+  "preview-match": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(1).click(); await p.waitForSelector(".pvgame .board"); },
+  "preview-memory": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(2).click(); await p.waitForSelector(".memgrid"); },
+  "preview-sort": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(3).click(); await p.waitForSelector(".baskets"); },
+  "preview-equation": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(4).click(); await p.waitForSelector(".eq"); },
+  "preview-tf": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(5).click(); await p.waitForSelector(".qtf"); },
   admin: async (p) => { await p.goto(`${BASE}/admin`); await p.waitForSelector(".admin", { timeout: 20000 }); },
   landing: async (p) => { await p.goto(`${BASE}/`); await p.waitForSelector(".demo-card"); },
   "login-demo": async (p) => { await p.goto(`${BASE}/login`); await p.waitForSelector(".demo-card"); },
@@ -178,9 +191,15 @@ const screens = {
 };
 
 for (const [name, fn] of Object.entries(screens)) {
-  if (only && !name.startsWith(only)) continue;
+  if ((only && !name.startsWith(only)) || name === "hub-empty") continue;
   for (const lang of ["en", "ar"]) for (const size of SIZES) await run(size, lang, fn, name);
 }
+// practice hub in the Explorer band (64px targets) and with nothing to show
+for (const name of ["hub", "practice", "practice-result"]) {
+  if (only && !`${name}-explorer`.startsWith(only) && !name.startsWith(only)) continue;
+  for (const lang of ["en", "ar"]) for (const size of SIZES) await run(size, lang, screens[name], `${name}-explorer`, { band: "EXPLORER" });
+}
+if (!only || "hub-empty".startsWith(only)) for (const lang of ["en", "ar"]) for (const size of SIZES) await run(size, lang, screens["hub-empty"], "hub-empty", { hubEmpty: true });
 // teacher screens again with the rail saved as collapsed
 for (const name of ["create", "workspace", "ws-quiz", "share", "results", "admin"]) {
   if (only && !name.startsWith(only)) continue;

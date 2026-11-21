@@ -54,6 +54,7 @@ function GameScreen({ lessonId, kind, content, title }: { lessonId: string; kind
       saveLastResult({ game: kind, lessonId, result });
       await queryClient.invalidateQueries({ queryKey: qk.playMe });
       await queryClient.invalidateQueries({ queryKey: qk.playGames });
+      await queryClient.invalidateQueries({ queryKey: qk.playPractice });
       router.push("/play/win");
     },
   });
@@ -97,7 +98,7 @@ function GameScreen({ lessonId, kind, content, title }: { lessonId: string; kind
           onStop={() => {
             setPaused(false);
             toast.show(t("game.stopped"));
-            router.push("/join");
+            router.push("/play");
           }}
         />
       )}
