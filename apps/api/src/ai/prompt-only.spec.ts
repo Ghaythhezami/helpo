@@ -18,7 +18,7 @@ const base: LessonContext = {
 describe("prompt-only lessons (no uploaded document)", () => {
   it("are detected when there is no source text or the source text is the prompt itself", () => {
     expect(isPromptOnly(base)).toBe(true);
-    expect(isPromptOnly({ ...base, sourceText: base.prompt })).toBe(true);
+    expect(isPromptOnly({ ...base, sourceText: base.prompt ?? "" })).toBe(true);
     expect(isPromptOnly({ ...base, sourceText: "Page 1: Volcanoes form where magma rises." })).toBe(false);
   });
 
@@ -44,5 +44,15 @@ describe("prompt-only lessons (no uploaded document)", () => {
   it("get a clean provisional title from a refined brief", () => {
     expect(shortTitle("Lesson brief: Volcanoes for Grade 7 (science)")).toBe("Volcanoes for Grade 7 (science)");
     expect(shortTitle("Lesson plan: The water cycle")).toBe("The water cycle");
+  });
+});
+
+describe("prompt-only topic priority", () => {
+  it("drops Topic/Subject labels so the provisional title is the real topic", () => {
+    expect(shortTitle("Topic: Volcanoes. Grade: 7. Subject: Science")).toBe("Volcanoes");
+    expect(shortTitle("Subject: Fractions, grade 5")).toBe("Fractions");
+  });
+  it("tells Claude the topic text outranks a provisional title", () => {
+    expect(documentBlock({ ...base, title: "Topic" })).toContain("The topic text below is authoritative");
   });
 });
