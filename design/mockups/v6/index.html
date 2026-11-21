@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nibras · Teacher workspace (v6 mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Fredoka:wght@500;600&family=Baloo+Bhaijaan+2:wght@500;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F0FE;--ink:#24185F;--ink2:#4A3F86;--ink3:#5F5596;--pri:#6035CF;--pri-h:#4F24B5;--grad:linear-gradient(135deg,#582BC8,#764BD2);--soft:#EBE2FD;--line:#E6DEFB;--panel:#FBF9FF;
+--ready:#17703F;--ready-bg:#DCF5E3;--chk:#7A4E00;--chk-bg:#FDE4A3;--neu-bg:#E1E1F2;
+--sh:0 10px 30px -14px rgba(91,63,217,.32);--btnsh:0 8px 20px -8px rgba(91,63,217,.55);--ease:cubic-bezier(.16,1,.3,1);
+--f-disp:'Fredoka','Baloo Bhaijaan 2',sans-serif;--f-text:'Nunito','Tajawal',sans-serif}
+html[lang=ar]{--f-disp:'Baloo Bhaijaan 2','Fredoka',sans-serif;--f-text:'Tajawal','Nunito',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--f-text);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.35;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+:focus-visible{outline:3px solid #1D4ED8;outline-offset:2px;border-radius:8px}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+[dir=rtl] .flip{transform:scaleX(-1)}
+#app{height:100dvh;width:100%;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;min-height:0}
+.disp{font-family:var(--f-disp)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:14px;font-weight:800;border:1.5px solid var(--line);background:#fff;color:var(--ink);transition:transform .15s var(--ease),background .15s}
+.btn:hover{background:var(--soft)}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--btnsh)}
+.btn.pri:hover{filter:brightness(1.08);background:var(--grad)}
+.btn.big{min-height:56px;font-size:18px;border-radius:18px;font-family:var(--f-disp);font-weight:600;letter-spacing:.2px}
+.ibtn{width:44px;height:44px;border-radius:12px;display:inline-grid;place-items:center;color:var(--ink2)}
+.ibtn:hover{background:var(--soft)}
+
+/* ---------- Screen 1 ---------- */
+.top{height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;flex:none}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--f-disp);font-size:23px;font-weight:600;color:var(--ink)}
+.spacer{flex:1}
+.lang{display:inline-flex;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:3px}
+.lang button{min-height:36px;min-width:52px;padding:0 10px;border-radius:9px;font-weight:800;font-size:14px;color:var(--ink2)}
+.lang button[aria-pressed=true]{background:var(--pri);color:#fff}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:900;font-family:var(--f-disp)}
+.create{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:4px 20px 18px;overflow-y:auto}
+.card{width:min(780px,100%);background:#fff;border-radius:28px;border:1px solid var(--line);box-shadow:var(--sh);padding:22px 28px 24px;display:flex;flex-direction:column;gap:12px;position:relative;flex:none}
+.eyebrow{font-size:12px;font-weight:900;letter-spacing:.14em;color:var(--pri);text-transform:uppercase}
+html[lang=ar] .eyebrow{letter-spacing:0}
+h1.disp{font-size:34px;font-weight:600;line-height:1.1}
+.drop{display:flex;align-items:center;gap:16px;border:2.5px dashed #B9A3F0;background:linear-gradient(180deg,#FBF8FF,#F4EEFF);border-radius:20px;padding:14px 20px;min-height:104px;cursor:pointer;transition:background .2s,border-color .2s}
+.drop:hover,.drop.over{border-color:var(--pri);background:#EFE6FF}
+.drop:focus-within{outline:3px solid #1D4ED8;outline-offset:2px}
+.drop img{width:68px;height:68px;flex:none}
+.drop b{display:block;font-size:18px;font-family:var(--f-disp);font-weight:600}
+.drop small{color:var(--ink3);font-weight:700;font-size:13.5px}
+.drop input{position:absolute;opacity:0;width:1px;height:1px}
+.filechip{display:inline-flex;align-items:center;gap:6px;margin-top:4px;background:var(--ready-bg);color:var(--ready);padding:2px 10px;border-radius:99px;font-weight:800;font-size:13px}
+.lbl{font-weight:800;font-size:14px;color:var(--ink2)}
+textarea.prompt{width:100%;resize:none;border:1.5px solid var(--line);border-radius:14px;padding:10px 14px;background:#fff;min-height:62px;font-weight:600;font-size:16px}
+textarea.prompt::placeholder{color:#6B6199}
+textarea.prompt:focus{border-color:var(--pri)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-height:34px;padding:0 13px;border-radius:99px;background:var(--soft);color:var(--pri-h);font-weight:800;font-size:13.5px;border:1px solid transparent;white-space:nowrap}
+.chip:hover{border-color:var(--pri)}
+.opts{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sel{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:var(--ink2)}
+.sel select{appearance:none;-webkit-appearance:none;min-height:44px;border:1.5px solid var(--line);border-radius:12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%234A3F86' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E") no-repeat right 12px center;padding:0 34px 0 12px;font-weight:800;font-size:15px;color:var(--ink)}
+[dir=rtl] .sel select{background-position:left 12px center;padding:0 12px 0 34px}
+.more{min-height:44px;padding:0 12px;font-weight:800;color:var(--pri-h);border-radius:12px;display:inline-flex;align-items:center;gap:6px}
+.more:hover{background:var(--soft)}
+.pop{position:absolute;inset-inline-start:28px;bottom:84px;width:min(320px,calc(100% - 32px));background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 24px 50px -16px rgba(36,24,95,.4);padding:14px;z-index:20;display:flex;flex-direction:column;gap:6px}
+.pop h3{font-size:15px;font-family:var(--f-disp);font-weight:600;margin-bottom:2px}
+.pop label{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;font-weight:700;font-size:15px}
+.pop select{min-height:40px;border:1.5px solid var(--line);border-radius:10px;padding:0 8px;background:#fff;font-weight:800;font-size:15px}
+.pop input[type=checkbox]{width:22px;height:22px;accent-color:var(--pri)}
+.prev{width:min(1040px,100%);flex:none;min-width:0}
+.prevhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 4px}
+.prevhead h2{font-size:17px;font-family:var(--f-disp);font-weight:600}
+.link{color:var(--pri-h);font-weight:800;min-height:36px;padding:0 8px;border-radius:8px;text-decoration:underline;text-underline-offset:3px}
+.strip{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.lc{flex:none;width:214px;scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:11px 13px;text-align:start;display:flex;flex-direction:column;gap:6px;box-shadow:0 6px 16px -12px rgba(91,63,217,.4);transition:transform .2s var(--ease),border-color .2s}
+.lc:hover{transform:translateY(-2px);border-color:var(--pri)}
+.lc b{font-size:16px;font-family:var(--f-disp);font-weight:600;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lc .row{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12.5px;font-weight:700;color:var(--ink3)}
+.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:800;white-space:nowrap}
+.t-sci{background:#DCF5E3;color:#17703F}.t-math{background:#DBEAFE;color:#1E40AF}.t-eng{background:#FCE7F3;color:#9D174D}.t-his{background:#FDE4A3;color:#7A4E00}
+.st-ready{background:var(--ready-bg);color:var(--ready)}.st-chk{background:var(--chk-bg);color:var(--chk)}.st-dr{background:var(--neu-bg);color:var(--ink2)}
+
+.tawrap{position:relative}
+.tawrap textarea{padding-inline-end:164px}
+.refine{position:absolute;inset-inline-end:8px;bottom:8px;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:99px;background:var(--grad);color:#fff;font-weight:800;font-size:13px;box-shadow:var(--btnsh)}
+.refine:disabled{background:#E4DEF5;color:#5F5596;box-shadow:none;cursor:not-allowed}
+.refine svg{width:16px;height:16px}
+.tawrap.busy textarea{color:transparent;background:linear-gradient(90deg,#F4EEFF 25%,#E2D6FF 50%,#F4EEFF 75%);background-size:200% 100%;animation:shim 1s linear infinite}
+@keyframes shim{to{background-position:-200% 0}}
+.tawrap.done textarea{min-height:112px}
+.refbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.refbar .rl{display:inline-flex;align-items:center;gap:5px;font-weight:900;font-size:13.5px;color:var(--pri-h)}
+.refbar .rl svg{width:16px;height:16px}
+.refbar .chip.ai{background:#fff;border:1.5px dashed var(--pri)}
+/* ---------- Screen 2 ---------- */
+.wtop{display:flex;align-items:center;gap:10px;padding:8px 14px;min-height:62px;flex:none;background:#fff;border-bottom:1px solid var(--line)}
+.ttl{display:flex;align-items:center;gap:6px;min-width:0;max-width:230px;font-family:var(--f-disp);font-weight:600;font-size:19px}
+.ttl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabs{display:flex;gap:3px;background:var(--soft);padding:4px;border-radius:16px;margin-inline:4px;min-width:0}
+.tab{position:relative;display:flex;align-items:center;gap:7px;min-height:44px;padding:0 12px;border-radius:12px;font-weight:800;font-size:14.5px;color:var(--ink2);white-space:nowrap}
+.tab img{width:24px;height:24px}
+.tab:hover{background:rgba(255,255,255,.6)}
+.tab[aria-selected=true]{background:#fff;color:var(--ink);box-shadow:0 3px 10px -4px rgba(91,63,217,.45)}
+.tab[aria-disabled=true]{opacity:.55;cursor:default}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;background:#8A83B5;border:2px solid #fff;box-shadow:0 0 0 1px rgba(36,24,95,.15)}
+.dot.ready{background:#1E8E4E}.dot.check{background:#D98E04}.dot.making{background:var(--pri);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.45);opacity:.6}}
+.ws{flex:1;min-height:0;display:grid;grid-template-columns:var(--lw,236px) minmax(0,1fr) var(--rw,300px);position:relative}
+.ws.noL{--lw:0px}.ws.noR{--rw:0px}.ws.making{--lw:0px;--rw:0px}
+.side{background:var(--panel);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+.left{border-inline-end:1px solid var(--line)}.right{border-inline-start:1px solid var(--line)}
+.ws.noL .left,.ws.making .left{visibility:hidden;border:0}.ws.noR .right,.ws.making .right{visibility:hidden;border:0}
+.shead{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 6px;font-family:var(--f-disp);font-weight:600;font-size:16px}
+.shead small{font-family:var(--f-text);font-weight:800;color:var(--ink3);font-size:13px}
+.sheetx{display:none}
+.sbody{flex:1;min-height:0;overflow-y:auto;padding:4px 12px 14px;display:flex;flex-direction:column;gap:14px}
+ol.list{list-style:none;display:flex;flex-direction:column;gap:6px;padding:4px 10px 12px;overflow-y:auto;flex:1;min-height:0}
+.it{display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--line);border-radius:13px;min-height:48px;padding:0 8px 0 4px;cursor:pointer}
+[dir=rtl] .it{padding:0 4px 0 8px}
+.it[aria-current=true]{border-color:var(--pri);background:#F3ECFF;box-shadow:0 0 0 2px rgba(96,53,207,.12)}
+.it.dragover{border-style:dashed;border-color:var(--pri)}
+.it .h{width:30px;height:44px;display:grid;place-items:center;color:#7B72AC;cursor:grab;border-radius:8px}
+.it .h svg{width:16px;height:16px}
+.it .n{font-weight:900;font-size:12.5px;color:var(--pri-h);min-width:20px}
+.it .tx{flex:1;min-width:0;font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:start;min-height:44px;display:flex;align-items:center}
+.sec h3{font-family:var(--f-disp);font-weight:600;font-size:15px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.fld{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
+.fld label{font-size:12.5px;font-weight:800;color:var(--ink3)}
+.fld input,.fld textarea{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:8px 10px;background:#fff;font-weight:600;font-size:15px;resize:none}
+.fld input:focus,.fld textarea:focus{border-color:var(--pri)}
+.ask{display:flex;gap:6px}
+.ask input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;min-height:44px;background:#fff;font-weight:600;font-size:15px}
+.ask input::placeholder{color:#6B6199}
+.ask .go{width:44px;height:44px;border-radius:12px;background:var(--grad);color:#fff;display:grid;place-items:center}
+.flag{background:#FFF6DA;border:1.5px solid #F2D27A;border-radius:13px;padding:9px 11px;margin-bottom:8px;font-size:13.5px;font-weight:700;color:#5C3D00}
+.flag .fa{display:flex;gap:6px;margin-top:6px}
+.flag .fa button{min-height:34px;padding:0 12px;border-radius:9px;font-weight:800;font-size:13px;background:#fff;border:1px solid #E2BC57}
+.flag .fa button.ok{background:#5C3D00;color:#fff;border-color:#5C3D00}
+.okline{font-weight:800;color:var(--ready);font-size:14px;display:flex;gap:6px;align-items:center}
+.res{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13.5px;font-weight:700;color:var(--ink2)}
+.res .bar{height:9px;border-radius:9px;background:var(--soft);margin:6px 0;overflow:hidden}
+.res .bar i{display:block;height:100%;width:74%;background:var(--grad);border-radius:9px}
+.res b{font-size:20px;font-family:var(--f-disp);font-weight:600;color:var(--ink)}
+
+.center{display:flex;flex-direction:column;min-width:0;min-height:0;padding:12px 14px 10px;gap:8px;background:radial-gradient(1200px 500px at 50% 0,#fff 0,transparent 70%)}
+.view{flex:1;min-height:0;position:relative;container-type:size}
+.vc{position:absolute;inset:0;display:grid;place-items:center;overflow:auto}
+.ctl{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none}
+.ctl .g{display:flex;align-items:center;gap:6px}
+.cnt{direction:ltr;font-weight:900;font-size:15px;min-width:64px;text-align:center;color:var(--ink2)}
+.tgl{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:12px;font-weight:800;font-size:14px;color:var(--ink2);border:1.5px solid var(--line);background:#fff}
+.tgl[aria-pressed=true]{background:var(--pri);color:#fff;border-color:var(--pri)}
+.tgl .sw{width:30px;height:18px;border-radius:99px;background:#C9BFEA;position:relative;transition:background .2s}
+.tgl .sw::after{content:"";position:absolute;top:2px;inset-inline-start:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s var(--ease)}
+.tgl[aria-pressed=true] .sw{background:rgba(255,255,255,.45)}
+.tgl[aria-pressed=true] .sw::after{transform:translateX(12px)}
+[dir=rtl] .tgl[aria-pressed=true] .sw::after{transform:translateX(-12px)}
+.mbar{display:none}
+
+/* resources */
+.slide{width:min(100cqw,100cqh*1.7778);aspect-ratio:16/9;container-type:inline-size;border-radius:22px;background:linear-gradient(135deg,#fff,#F1EAFF);border:1px solid var(--line);box-shadow:var(--sh);display:grid;grid-template-columns:1.25fr 1fr;align-items:center;gap:3cqw;padding:5cqw 5.5cqw;overflow:hidden;position:relative}
+.slide.first{background:var(--grad);color:#fff;border:0}
+.slide h2{font-family:var(--f-disp);font-weight:600;font-size:clamp(15px,4.6cqw,48px);line-height:1.1;margin-bottom:2.4cqw}
+.slide ul{list-style:none;display:flex;flex-direction:column;gap:1.6cqw}
+.slide li{font-weight:700;font-size:clamp(11px,2.7cqw,28px);line-height:1.25;display:flex;gap:1.2cqw}
+.slide li::before{content:"";flex:none;width:1.1cqw;height:1.1cqw;min-width:6px;min-height:6px;border-radius:50%;background:var(--pri);margin-top:.55em}
+.slide.first li::before{background:#fff}
+.slide .art{width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(36,24,95,.18))}
+.slide .num{position:absolute;inset-inline-end:2.4cqw;bottom:1.6cqw;font-weight:900;font-size:clamp(10px,1.6cqw,16px);opacity:.6}
+.paper{height:100%;width:min(100cqw,100cqh*.8);aspect-ratio:.8;max-height:100%;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh);container-type:inline-size;padding:5cqw 6cqw;overflow:auto;display:flex;flex-direction:column;gap:2.4cqw}
+.paper h2{font-family:var(--f-disp);font-weight:600;font-size:clamp(15px,5cqw,28px)}
+.paper .meta{font-weight:700;font-size:clamp(11px,2.8cqw,14px);color:var(--ink3);border-bottom:2px solid var(--line);padding-bottom:1.6cqw}
+.lvl{border-radius:14px;padding:2.4cqw 3cqw;display:flex;flex-direction:column;gap:1cqw}
+.lvl h3{font-size:clamp(12px,3.2cqw,16px);font-weight:900;display:flex;align-items:center;gap:6px}
+.lvl p{font-weight:600;font-size:clamp(11.5px,3cqw,15px);line-height:1.35}
+.lv0{background:#E5F7EC}.lv1{background:#EDE6FD}.lv2{background:#FFF0CF}
+.qwrap{width:min(100%,720px);padding:6px;display:flex;flex-direction:column;gap:14px}
+.qq{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh);padding:clamp(14px,3cqh,26px) clamp(16px,4cqw,30px);font-family:var(--f-disp);font-weight:600;font-size:clamp(18px,3.2cqw,28px);line-height:1.2}
+.qq small{display:block;font-family:var(--f-text);font-size:13px;font-weight:900;color:var(--pri);letter-spacing:.08em;margin-bottom:4px}
+.opts4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{min-height:56px;border-radius:16px;background:#fff;border:2px solid var(--line);padding:8px 14px;text-align:start;font-weight:800;font-size:clamp(14px,2cqw,18px);display:flex;gap:10px;align-items:center}
+.opt:hover{border-color:var(--pri)}
+.opt i{flex:none;width:28px;height:28px;border-radius:9px;background:var(--soft);color:var(--pri-h);display:grid;place-items:center;font-style:normal;font-weight:900;font-size:14px}
+.opt.right{background:#DCF5E3;border-color:#1E8E4E}.opt.right i{background:#1E8E4E;color:#fff}
+.opt.wrong{background:#FDE7E7;border-color:#C0392B}
+.expl{background:#F3ECFF;border-radius:14px;padding:10px 14px;font-weight:700;font-size:14.5px;color:var(--ink2)}
+.flipwrap{perspective:1200px;width:min(100%,560px);height:min(100%,360px);max-height:100%}
+.flip3{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s var(--ease);border-radius:26px}
+.flip3.on{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:26px;display:grid;place-items:center;text-align:center;padding:22px;box-shadow:var(--sh)}
+.face b{font-family:var(--f-disp);font-weight:600;font-size:clamp(24px,5cqw,44px);line-height:1.1}
+.face small{display:block;font-weight:800;font-size:13px;opacity:.75;margin-top:8px}
+.face.f{background:#fff;border:2px solid var(--line)}
+.face.b{background:var(--grad);color:#fff;transform:rotateY(180deg)}
+.face.b b{font-size:clamp(18px,3.2cqw,30px);font-weight:600}
+.gwrap{width:min(100%,640px);display:flex;flex-direction:column;gap:12px;align-items:stretch;padding:6px}
+.gstat{display:flex;justify-content:space-between;font-weight:900;color:var(--ink2);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.tile{min-height:clamp(64px,16cqh,110px);border-radius:16px;background:#fff;border:2px solid var(--line);font-weight:800;font-size:clamp(13px,2.1cqw,17px);padding:6px;box-shadow:0 6px 14px -10px rgba(91,63,217,.5);line-height:1.15}
+.tile:hover{border-color:var(--pri)}
+.tile.sel{background:#EFE6FF;border-color:var(--pri)}
+.tile.ok{background:#DCF5E3;border-color:#1E8E4E;color:var(--ready)}
+.tile.no{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.gwin{background:#DCF5E3;color:var(--ready);font-weight:900;border-radius:14px;padding:10px;text-align:center}
+.mkcard{width:min(680px,100%);background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:var(--sh);padding:22px 26px;display:flex;flex-direction:column;gap:12px}
+.mkcard h2{font-family:var(--f-disp);font-weight:600;font-size:24px;display:flex;align-items:center;gap:10px}
+.mkcard h2 img{width:44px;height:44px}
+.mkcard ul{padding-inline-start:20px;font-weight:700;display:flex;flex-direction:column;gap:3px}
+.mkrow{display:flex;gap:8px;flex-wrap:wrap}
+.mkp{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:99px;background:var(--neu-bg);font-weight:800;font-size:13.5px;color:var(--ink2)}
+.mkp.ready{background:var(--ready-bg);color:var(--ready)}.mkp.making{background:#EBE2FD;color:var(--pri-h)}
+.kw{background:#EFE6FF;color:var(--pri-h);border-radius:8px;padding:2px 9px;font-weight:800;font-size:13.5px}
+
+/* overlay */
+.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;touch-action:none;z-index:5}
+.ov.on{pointer-events:auto;cursor:crosshair}
+.ovtb{position:absolute;top:6px;inset-inline:6px;margin-inline:auto;width:max-content;max-width:calc(100% - 12px);z-index:6}
+
+/* toolbar */
+.tb{display:flex;align-items:center;gap:4px;flex-wrap:wrap;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:4px 6px;box-shadow:0 8px 20px -12px rgba(36,24,95,.5)}
+.tb .tbtn{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;color:var(--ink2)}
+.tb .tbtn:hover{background:var(--soft)}
+.tb .tbtn[aria-pressed=true]{background:var(--pri);color:#fff}
+.tb .cd{width:34px;height:40px;display:grid;place-items:center;border-radius:10px}
+.tb .cd i{width:22px;height:22px;border-radius:50%;display:block;border:2px solid #fff;box-shadow:0 0 0 1.5px rgba(36,24,95,.25)}
+.tb .cd[aria-pressed=true] i{box-shadow:0 0 0 3px var(--pri)}
+.tb input[type=range]{width:64px;accent-color:var(--pri);height:40px}
+.tb .sepv{width:1px;height:24px;background:var(--line);margin:0 2px}
+
+/* board */
+.board{position:fixed;z-index:60;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 30px 70px -22px rgba(36,24,95,.55);display:none;flex-direction:column;overflow:hidden;min-width:320px;min-height:300px}
+.board.on{display:flex}
+.board.max{inset:0!important;width:auto!important;height:auto!important;border-radius:0}
+.btitle{display:flex;align-items:center;gap:6px;padding:4px 8px 4px 14px;background:#F6F1FF;border-bottom:1px solid var(--line);cursor:grab;touch-action:none;user-select:none;min-height:48px;font-family:var(--f-disp);font-weight:600}
+[dir=rtl] .btitle{padding:4px 14px 4px 8px}
+.btitle .sp{flex:1}
+.bcv{flex:1;min-height:0;position:relative;background:#fff}
+.bcv canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.btb{padding:6px 8px;border-top:1px solid var(--line);background:#FBF9FF;display:flex;justify-content:center}
+.btb .tb{box-shadow:none}
+.rz{position:absolute;right:0;bottom:0;width:30px;height:30px;cursor:nwse-resize;touch-action:none;display:grid;place-items:end;padding:5px;color:#8A83B5}
+.board.max .rz{display:none}
+.pill{position:fixed;z-index:61;bottom:16px;inset-inline-start:16px;background:var(--grad);color:#fff;border-radius:99px;min-height:48px;padding:0 18px;display:flex;align-items:center;gap:8px;font-weight:800;box-shadow:var(--btnsh)}
+
+/* dialog */
+dialog{border:0;border-radius:28px;padding:0;background:#fff;color:var(--ink);box-shadow:0 40px 90px -24px rgba(36,24,95,.6);width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 24px);margin:auto;overflow:auto}
+dialog::backdrop{background:rgba(36,24,95,.5);backdrop-filter:blur(3px)}
+.dlg{padding:22px 26px 24px;display:flex;flex-direction:column;gap:14px}
+.dlg h2{font-family:var(--f-disp);font-weight:600;font-size:26px;display:flex;justify-content:space-between;align-items:center}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:start;padding:18px;border-radius:22px;border:2px solid var(--line);background:#FBF9FF;min-height:150px;transition:border-color .2s,transform .2s var(--ease)}
+.choice:hover{border-color:var(--pri);transform:translateY(-2px)}
+.choice img{width:56px;height:56px}
+.choice b{font-family:var(--f-disp);font-size:20px;font-weight:600;line-height:1.15}
+.choice span{font-size:14px;font-weight:700;color:var(--ink3)}
+.codebox{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
+.code{font-family:var(--f-disp);font-weight:600;font-size:clamp(44px,9vw,64px);letter-spacing:.08em;line-height:1;color:var(--pri-h);direction:ltr}
+.linkrow{display:flex;gap:8px;align-items:center}
+.linkrow code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--soft);border-radius:12px;padding:0 14px;min-height:44px;display:flex;align-items:center;font-weight:800;color:var(--ink2);direction:ltr}
+.qr{width:132px;height:132px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px;flex:none}
+.hint{font-weight:700;color:var(--ink3);font-size:14px}
+
+.toast{position:fixed;inset-inline:0;bottom:84px;margin-inline:auto;width:max-content;max-width:calc(100% - 24px);background:var(--ink);color:#fff;border-radius:14px;padding:10px 18px;font-weight:800;z-index:100;opacity:0;transform:translateY(10px);transition:.3s var(--ease);pointer-events:none}
+.toast.on{opacity:1;transform:none}
+.dev{position:fixed;left:8px;bottom:8px;z-index:200;display:flex;gap:4px;flex-wrap:wrap;background:#111;padding:4px;border-radius:8px}
+.dev button{color:#fff;font-size:11px;padding:3px 7px;background:#333;border-radius:5px}
+
+/* short desktop */
+@media (max-height:780px){.tawrap.done textarea{min-height:70px}
+  .create{gap:12px}.card{padding:16px 24px 18px;gap:9px}h1.disp{font-size:29px}.drop{min-height:88px;padding:10px 18px}.drop img{width:56px;height:56px}textarea.prompt{min-height:54px}
+}
+@media (max-width:1100px){.tab span.tl{display:none}.tab{padding:0 10px}.ttl{max-width:160px}}
+@media (max-width:900px){.ws{--lw:200px;--rw:260px}.btn.dl span{display:none}}
+
+/* mobile */
+@media (max-width:760px){
+  body{font-size:15px}
+  .top{height:52px;padding:0 12px}
+  .create{padding:2px 12px 12px;gap:10px;justify-content:flex-start}
+  .card{padding:14px 14px 16px;gap:9px;border-radius:22px}
+  h1.disp{font-size:24px}
+  .drop{min-height:72px;padding:8px 12px;gap:12px;border-radius:16px}
+  .drop img{width:46px;height:46px}.drop b{font-size:16px}.drop small{font-size:12.5px}
+  textarea.prompt{min-height:56px;font-size:16px;padding:8px 12px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-2px;padding:2px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{min-height:44px}
+  .opts{gap:6px;flex-wrap:nowrap}
+  .sel{flex:1;min-width:0}.sel .sl{display:none}.sel select{width:100%;font-size:16px;padding-inline-end:28px}
+  .more span{display:none}
+  .more{padding:0 8px}
+  .btn.big{min-height:54px}
+  .tawrap textarea{padding-inline-end:56px}.tawrap.done textarea{min-height:56px}.refine{width:44px;height:44px;padding:0;justify-content:center;bottom:6px;inset-inline-end:6px}.refine span{display:none}.refine svg{width:20px;height:20px}
+  .refbar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.refbar::-webkit-scrollbar{display:none}.refbar .chip{min-height:44px;flex:none}.refbar .rl{flex:none}
+  .pop{inset-inline:12px;width:auto;bottom:70px}
+  .lc{width:184px;padding:9px 11px}.prev{margin-top:auto}
+  .prevhead h2{font-size:16px}
+  .create{overflow-y:auto}
+
+  .wtop{flex-wrap:wrap;gap:4px 6px;padding:6px 8px 6px;min-height:0}
+  .ttl{flex:1;max-width:none;font-size:18px}
+  .wtop .btn.share,.wtop .btn.dl.d{display:none}
+  .tabs{order:3;width:100%;margin:0;gap:2px;padding:3px}
+  .tab{flex:1;flex-direction:column;gap:1px;min-height:50px;padding:4px 0;justify-content:center;font-size:11.5px;min-width:0}
+  .tab span.tl{display:block;font-size:11.5px}
+  .tab img{width:22px;height:22px}
+  .tab .dot{position:absolute;top:5px;inset-inline-end:8px;width:9px;height:9px}
+  .ws{grid-template-columns:1fr!important}
+  .center{padding:8px 8px 6px}
+  .side{display:none;position:fixed;inset-inline:0;bottom:0;z-index:70;max-height:74dvh;height:auto;border-radius:24px 24px 0 0;box-shadow:0 -20px 50px -16px rgba(36,24,95,.5);border:0!important;background:#fff;visibility:visible!important}
+  .ws[data-sheet=left] .left,.ws[data-sheet=right] .right{display:flex}
+  .sheetx{display:grid}
+  .sheetbk{position:fixed;inset:0;background:rgba(36,24,95,.45);z-index:65}
+  .mbar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);flex:none}
+  .mbar button{min-height:52px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:800;font-size:12px;color:var(--ink2)}
+  .mbar button:active{background:var(--soft)}
+  .mbar .sh{background:var(--grad);color:#fff;box-shadow:var(--btnsh)}
+  #toggL,#toggR,#boardBtn{display:none}
+  .tgl span.tl2{display:none}
+  .ctl{justify-content:center;gap:12px}
+  .opts4{grid-template-columns:1fr}
+  .opt{min-height:48px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .tile{min-height:54px}
+  .tb .tbtn{width:44px;height:44px}.tb .cd{width:44px;height:44px}.tb input[type=range]{height:44px}.ttl{min-height:44px}
+  .tb input[type=range]{width:90px}
+  .board{min-width:0}
+  .choices{grid-template-columns:1fr}
+  .choice{min-height:0;flex-direction:row;align-items:center;padding:12px 14px}
+  .choice img{width:44px;height:44px}
+  .codebox{grid-template-columns:1fr;justify-items:center;gap:10px}
+  .dlg{padding:16px 16px 18px;gap:10px}
+  .dlg h2{font-size:22px}
+  .toast{bottom:84px}
+  .mkcard{padding:14px 16px;gap:8px}.mkcard h2{font-size:20px}.mkcard h2 img{width:34px;height:34px}
+  .slide{gap:2cqw;padding:4.5cqw}
+  .slide h2{font-size:clamp(15px,5.4cqw,40px);margin-bottom:1.6cqw}.slide li{font-size:clamp(11px,3.5cqw,26px)}
+}
+@media (max-width:760px) and (max-height:700px){.create{gap:8px}.drop{min-height:64px}.drop img{width:40px;height:40px}h1.disp{font-size:22px}.card{gap:7px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol>
+  <symbol id="i-eraser" viewBox="0 0 24 24"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-dl" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-min" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-max" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-corner" viewBox="0 0 24 24"><path d="M21 15v6h-6M21 9 9 21"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/></symbol>
+ </defs>
+</svg>
+
+<div id="app">
+<!-- ================= SCREEN 1: CREATE ================= -->
+<section id="s1" class="screen" aria-label="Create">
+  <header class="top">
+    <div class="logo"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B55E0"/><stop offset="1" stop-color="#5226C2"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lg)"/><path d="M20 12 8.5 17.2 20 22.4l11.5-5.2Z" fill="#fff"/><path d="M13.5 21v4.4c0 1.6 3 3 6.5 3s6.5-1.4 6.5-3V21l-6.5 3Z" fill="#E4DAFF"/><path d="M31.5 17.2v6" stroke="#FFD66B" stroke-width="1.6" stroke-linecap="round"/><path d="M31.5 25.4c-1.3-1-1.3-2.2 0-3.4 1.3 1.2 1.3 2.4 0 3.4Z" fill="#FFD66B"/></svg><span>Nibras</span></div>
+    <div class="spacer"></div>
+    <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="ar" aria-pressed="false" lang="ar">عربي</button></div>
+    <div class="avatar" role="img" aria-label="Teacher account">H</div>
+  </header>
+  <main class="create" id="createMain">
+    <form class="card" id="createCard" onsubmit="return false">
+      <div class="eyebrow" data-i18n="eyebrow">Teacher workspace</div>
+      <h1 class="disp" data-i18n="h1">What are we teaching today?</h1>
+      <label class="drop" id="drop">
+        <img src="assets/cloud-upload.svg" alt="">
+        <span><b data-i18n="dropT">Drop your lesson file</b><small data-i18n="dropS">PDF, Word, PowerPoint, TXT · up to 20 MB</small><span class="filechip" id="fileChip" hidden></span></span>
+        <input type="file" id="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt">
+      </label>
+      <label class="lbl" for="prompt" data-i18n="orDesc">Or describe your lesson</label>
+      <div class="tawrap" id="tawrap"><textarea class="prompt" id="prompt" rows="2" data-i18n-ph="ph" placeholder="e.g. How plants make food, for Grade 6"></textarea><button type="button" class="refine" id="refineBtn" disabled data-i18n-aria="refine" aria-label="Refine with AI"><svg class="i"><use href="#i-spark"/></svg><span data-i18n="refine">Refine with AI</span></button></div>
+      <div class="chips" id="sugg" role="group" aria-label="Suggestions"></div>
+      <div class="refbar" id="refBar" hidden><span class="rl"><svg class="i"><use href="#i-spark"/></svg><span data-i18n="refined">Refined</span></span><button type="button" class="chip" id="refUndo" data-i18n="undo">Undo</button><button type="button" class="chip ai" data-add="aiA" data-i18n="aiAL">+ Add an experiment</button><button type="button" class="chip ai" data-add="aiB" data-i18n="aiBL">+ Focus on vocabulary</button></div>
+      <div class="opts">
+        <label class="sel"><span class="sl" data-i18n="class">Class</span><select id="selClass" aria-label="Class"><option data-i18n="c1">6B · Grade 6</option><option data-i18n="c2">5A · Grade 5</option><option data-i18n="c3">8C · Grade 8</option></select></label>
+        <label class="sel"><span class="sl" data-i18n="langL">Language</span><select id="selLang" aria-label="Language"><option value="auto" data-i18n="auto">Auto</option><option value="en">English</option><option value="ar">العربية</option></select></label>
+        <button type="button" class="more" id="moreBtn" data-i18n-aria="more" aria-label="More options" aria-expanded="false" aria-controls="pop"><svg class="i"><use href="#i-chev"/></svg><span data-i18n="more">More options</span></button>
+      </div>
+      <div class="pop" id="pop" role="dialog" aria-label="More options" hidden>
+        <h3 data-i18n="more">More options</h3>
+        <label><span data-i18n="oLen">Slides</span><select><option>6</option><option selected>8</option><option>12</option></select></label>
+        <label><span data-i18n="oLvl">3 levels on worksheet</span><input type="checkbox" checked></label>
+        <label><span data-i18n="oKey">Answer key</span><input type="checkbox" checked></label>
+      </div>
+      <button type="button" class="btn pri big" id="makeBtn"><span data-i18n="make">Make lesson kit</span> <svg class="i flip"><use href="#i-next"/></svg></button>
+    </form>
+    <section class="prev" aria-labelledby="prevT">
+      <div class="prevhead"><h2 id="prevT" data-i18n="prev">Previous lessons</h2><button type="button" class="link" id="seeAll" data-i18n="seeAll">See all</button></div>
+      <div class="strip" id="strip"></div>
+    </section>
+  </main>
+</section>
+
+<!-- ================= SCREEN 2: WORKSPACE ================= -->
+<section id="s2" class="screen" aria-label="Lesson workspace" hidden>
+  <header class="wtop">
+    <button type="button" class="ibtn" id="backBtn" data-i18n-aria="back" aria-label="Back to Create"><svg class="i flip"><use href="#i-back"/></svg></button>
+    <button type="button" class="ttl" id="ttl" data-i18n-aria="whatU" aria-label="What Nibras understood"><span id="ttlT">Photosynthesis</span><svg class="i" style="width:16px;color:var(--pri)"><use href="#i-info"/></svg></button>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Lesson resources"></div>
+    <div class="spacer"></div>
+    <button type="button" class="btn dl d" id="dlBtn"><svg class="i"><use href="#i-dl"/></svg><span data-i18n="download">Download</span></button>
+    <button type="button" class="btn pri share" id="shareBtn"><svg class="i"><use href="#i-share"/></svg><span data-i18n="share">Share</span></button>
+  </header>
+  <div class="ws" id="ws">
+    <aside class="side left" id="left" aria-label="Items">
+      <div class="shead"><span id="listT"></span><small id="listN"></small><button type="button" class="ibtn sheetx" data-close-sheet data-i18n-aria="close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+      <ol class="list" id="list"></ol>
+    </aside>
+    <main class="center">
+      <div class="view" id="view"><div class="vc" id="vc"></div><canvas class="ov" id="ovc"></canvas><div class="ovtb" id="ovtb" hidden></div></div>
+      <div class="ctl" id="ctl">
+        <div class="g"><button type="button" class="ibtn" id="toggL" aria-pressed="true" data-i18n-aria="tList" aria-label="Toggle list"><svg class="i"><use href="#i-list"/></svg></button></div>
+        <div class="g" id="nav">
+          <button type="button" class="ibtn" id="prevB" data-i18n-aria="prevI" aria-label="Previous"><svg class="i flip"><use href="#i-prev"/></svg></button>
+          <span class="cnt" id="cnt" aria-live="polite"></span>
+          <button type="button" class="ibtn" id="nextB" data-i18n-aria="nextI" aria-label="Next"><svg class="i flip"><use href="#i-next"/></svg></button>
+          <button type="button" class="btn" id="restartB" hidden data-i18n="restart">Restart</button>
+        </div>
+        <div class="g">
+          <button type="button" class="tgl" id="drawTgl" aria-pressed="false"><svg class="i"><use href="#i-pencil"/></svg><span class="tl2" data-i18n="drawOn">Draw on slide</span><span class="sw" aria-hidden="true"></span></button>
+          <button type="button" class="tgl" id="boardBtn" aria-pressed="false"><svg class="i"><use href="#i-board"/></svg><span data-i18n="board">Whiteboard</span></button>
+          <button type="button" class="ibtn" id="toggR" aria-pressed="true" data-i18n-aria="tEdit" aria-label="Toggle edit panel"><svg class="i"><use href="#i-edit"/></svg></button>
+        </div>
+      </div>
+    </main>
+    <aside class="side right" id="right" aria-label="Edit">
+      <div class="shead"><span data-i18n="edit">Edit</span><button type="button" class="ibtn sheetx" data-close-sheet data-i18n-aria="close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+      <div class="sbody" id="rbody"></div>
+    </aside>
+  </div>
+  <nav class="mbar" id="mbar" aria-label="Workspace actions">
+    <button type="button" data-act="list"><svg class="i"><use href="#i-list"/></svg><span data-i18n="mList">List</span></button>
+    <button type="button" data-act="edit"><svg class="i"><use href="#i-edit"/></svg><span data-i18n="mEdit">Edit</span></button>
+    <button type="button" data-act="board"><svg class="i"><use href="#i-board"/></svg><span data-i18n="mBoard">Board</span></button>
+    <button type="button" class="sh" data-act="share"><svg class="i"><use href="#i-share"/></svg><span data-i18n="share">Share</span></button>
+  </nav>
+</section>
+</div>
+
+<!-- Whiteboard -->
+<div class="board" id="board" role="dialog" aria-label="Teaching whiteboard">
+  <div class="btitle" id="btitle"><svg class="i"><use href="#i-board"/></svg><span data-i18n="board">Whiteboard</span><span class="sp"></span>
+    <button type="button" class="ibtn" id="bMin" data-i18n-aria="minimize" aria-label="Minimize"><svg class="i"><use href="#i-min"/></svg></button>
+    <button type="button" class="ibtn" id="bMax" data-i18n-aria="maximize" aria-label="Maximize"><svg class="i"><use href="#i-max"/></svg></button>
+    <button type="button" class="ibtn" id="bX" data-i18n-aria="close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="bcv" id="bcv"><canvas id="bcanvas" aria-label="Whiteboard drawing area"></canvas></div>
+  <div class="btb" id="btb"></div>
+  <div class="rz" id="rz" aria-hidden="true"><svg class="i" style="width:16px;height:16px"><use href="#i-corner"/></svg></div>
+</div>
+<button type="button" class="pill" id="pill" hidden><svg class="i"><use href="#i-board"/></svg><span data-i18n="board">Whiteboard</span></button>
+
+<!-- Share -->
+<dialog id="shareDlg" aria-labelledby="shT">
+  <div class="dlg" id="shA">
+    <h2 id="shT"><span data-i18n="shareT">How will students play?</span><button type="button" class="ibtn" data-dclose data-i18n-aria="close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></h2>
+    <div class="choices">
+      <button type="button" class="choice" data-mode="live"><img src="assets/res-game.svg" alt=""><b data-i18n="live">Play live in class</b><span data-i18n="liveS">You run it on the projector. Everyone answers together.</span></button>
+      <button type="button" class="choice" data-mode="solo"><img src="assets/res-quiz.svg" alt=""><b data-i18n="solo">Students do it on their own</b><span data-i18n="soloS">Homework style. They finish at their own pace.</span></button>
+    </div>
+  </div>
+  <div class="dlg" id="shB" hidden>
+    <h2><span id="shBT"></span><button type="button" class="ibtn" data-dclose data-i18n-aria="close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></h2>
+    <div class="codebox"><div><div class="hint" data-i18n="code">Class code</div><div class="code" id="codeBig">482 913</div></div><svg class="qr" id="qr" viewBox="0 0 29 29" role="img" aria-label="QR code" shape-rendering="crispEdges"></svg></div>
+    <div class="linkrow"><code id="linkTxt">nibras.app/join/482913</code><button type="button" class="btn pri" id="copyBtn"><svg class="i"><use href="#i-copy"/></svg><span data-i18n="copy">Copy</span></button></div>
+    <div class="hint" id="shHint"></div>
+    <button type="button" class="link" id="shBack" style="align-self:flex-start" data-i18n="chBack">Change how they play</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============ i18n ============ */
+const I={en:{eyebrow:"Teacher workspace",h1:"What are we teaching today?",dropT:"Drop your lesson file",dropS:"PDF, Word, PowerPoint, TXT · up to 20 MB",orDesc:"Or describe your lesson",ph:"e.g. How plants make food, for Grade 6",class:"Class",c1:"6B · Grade 6",c2:"5A · Grade 5",c3:"8C · Grade 8",langL:"Language",auto:"Auto",more:"More options",oLen:"Slides",oLvl:"3 levels on worksheet",oKey:"Answer key",make:"Make lesson kit",refine:"Refine with AI",refined:"Refined",undo:"Undo",aiAL:"+ Add an experiment",aiBL:"+ Focus on vocabulary",aiA:" Add a simple hands-on experiment.",aiB:" Focus on key vocabulary with a short glossary.",prev:"Previous lessons",seeAll:"See all",
+back:"Back to Create",whatU:"What Nibras understood",download:"Download",share:"Share",tList:"Toggle list",tEdit:"Toggle edit panel",prevI:"Previous",nextI:"Next",restart:"Restart",drawOn:"Draw on slide",board:"Whiteboard",edit:"Edit",mList:"List",mEdit:"Edit",mBoard:"Board",close:"Close",minimize:"Minimize",maximize:"Maximize",
+shareT:"How will students play?",live:"Play live in class",liveS:"You run it on the projector. Everyone answers together.",solo:"Students do it on their own",soloS:"Homework style. They finish at their own pace.",code:"Class code",copy:"Copy",copied:"Copied",chBack:"Change how they play",
+hintLive:"Students open the link or scan the code. Waiting for them to join.",hintSolo:"Send this link to your class. They can start any time.",tLive:"Join code for your class",tSolo:"Share this link",
+slides:"Slides",worksheet:"Worksheet",quiz:"Quiz",game:"Game",cards:"Cards",items:{slides:"Slides",worksheet:"Levels",quiz:"Questions",game:"Pairs",cards:"Cards"},
+understood:"What Nibras understood",topic:"Topic",topicV:"Photosynthesis · Grade 6 · Science",goals:"Goals for this lesson",g1:"Explain how plants make their own food",g2:"Name what goes in (light, water, CO₂) and what comes out",g3:"Connect plants to the start of a food chain",keys:"Key words",building:"Building your kit",kw:["chlorophyll","glucose","stomata","carbon dioxide","oxygen"],
+ask:"Ask Nibras…",simp:"Simpler",ex:"Add example",tr:"Translate",flags:"2 things to check",accept:"Accept",dismiss:"Dismiss",allgood:"All checked. Nice.",results:"Last class results",resA:"24 students · average",resH:"Hardest: Q4 (chlorophyll)",
+ready:"ready",pending:"waiting",making:"making",check:"needs a check",
+f1:"Slide 5 uses the word “stomata”, which is not in your file.",f2:"Question 7 has answers that are close together. Check the wording.",
+fSlideT:"Title",fSlideB:"Text (one point per line)",fQ:"Question",fQA:"Correct answer",fQE:"Why (shown to students)",fCF:"Front",fCB:"Back",fGL:"Term",fGR:"Match",fWL:"Level name",fWT:"Tasks (one per line)",
+wsTitle:"Photosynthesis worksheet",wsMeta:"Name: ____________   Class: 6B   Date: ________",lv:["Support","Core","Stretch"],lvI:["Start here","Everyone","Challenge"],
+q:"Question",flipH:"Tap the card to flip it",moves:"Moves",won:"All matched. Well done!",kitReady:"Your lesson kit is ready",dl:"Downloading lesson kit (PDF + PowerPoint)…",updated:"Updated",allL:"All lessons: demo only",
+pairsHint:"Tap two cards that belong together",newT:"Photosynthesis",
+mk:["Slides","Worksheet","Quiz","Game","Cards"],drawHint:"Draw",pen:"Pencil",eraser:"Eraser",undo:"Undo",clear:"Clear",size:"Stroke size",color:"Color",
+exSimple:"Plants use sunlight to make food.",exAdd:" Example: a bean plant on a sunny windowsill grows faster than one in a dark cupboard."},
+ar:{eyebrow:"مساحة المعلّم",h1:"ماذا سنُدرّس اليوم؟",dropT:"أفلِت ملف الدرس هنا",dropS:"PDF أو Word أو PowerPoint أو TXT · حتى 20 م.ب",orDesc:"أو صِف درسك",ph:"مثال: كيف تصنع النباتات غذاءها، للصف السادس",class:"الصف",c1:"6ب · الصف السادس",c2:"5أ · الصف الخامس",c3:"8ج · الصف الثامن",langL:"اللغة",auto:"تلقائي",more:"خيارات أكثر",oLen:"عدد الشرائح",oLvl:"3 مستويات في ورقة العمل",oKey:"مفتاح الإجابة",make:"أنشئ حقيبة الدرس",refine:"حسِّن بالذكاء الاصطناعي",refined:"تم التحسين",undo:"تراجع",aiAL:"+ أضف تجربة",aiBL:"+ ركّز على المفردات",aiA:" أضف تجربة عملية بسيطة.",aiB:" ركّز على المفردات الأساسية مع معجم قصير.",prev:"الدروس السابقة",seeAll:"عرض الكل",
+back:"العودة إلى الإنشاء",whatU:"ما الذي فهمه نبراس",download:"تنزيل",share:"مشاركة",tList:"إظهار القائمة",tEdit:"إظهار لوحة التعديل",prevI:"السابق",nextI:"التالي",restart:"إعادة",drawOn:"ارسم على الشريحة",board:"السبّورة",edit:"تعديل",mList:"القائمة",mEdit:"تعديل",mBoard:"السبّورة",close:"إغلاق",minimize:"تصغير",maximize:"تكبير",
+shareT:"كيف سيلعب الطلاب؟",live:"لعب مباشر في الصف",liveS:"تشغّله على جهاز العرض ويجيب الجميع معًا.",solo:"يعمل الطلاب بمفردهم",soloS:"مثل الواجب، يُنهونه بالسرعة التي تناسبهم.",code:"رمز الصف",copy:"نسخ",copied:"تم النسخ",chBack:"تغيير طريقة اللعب",
+hintLive:"يفتح الطلاب الرابط أو يمسحون الرمز. بانتظار انضمامهم.",hintSolo:"أرسل هذا الرابط إلى صفك. يمكنهم البدء في أي وقت.",tLive:"رمز الانضمام لصفك",tSolo:"شارك هذا الرابط",
+slides:"الشرائح",worksheet:"ورقة العمل",quiz:"اختبار",game:"لعبة",cards:"بطاقات",items:{slides:"الشرائح",worksheet:"المستويات",quiz:"الأسئلة",game:"الأزواج",cards:"البطاقات"},
+understood:"ما الذي فهمه نبراس",topic:"الموضوع",topicV:"البناء الضوئي · الصف السادس · علوم",goals:"أهداف هذا الدرس",g1:"شرح كيف تصنع النباتات غذاءها بنفسها",g2:"تسمية ما يدخل (الضوء والماء وCO₂) وما يخرج",g3:"ربط النباتات ببداية السلسلة الغذائية",keys:"كلمات مفتاحية",building:"نُجهّز حقيبتك",kw:["الكلوروفيل","الجلوكوز","الثغور","ثاني أكسيد الكربون","الأكسجين"],
+ask:"اسأل نبراس…",simp:"أبسط",ex:"أضف مثالًا",tr:"ترجمة",flags:"أمران للمراجعة",accept:"قبول",dismiss:"تجاهل",allgood:"تمت المراجعة. رائع.",results:"نتائج آخر حصة",resA:"24 طالبًا · المتوسط",resH:"الأصعب: س4 (الكلوروفيل)",
+ready:"جاهز",pending:"بالانتظار",making:"قيد الإنشاء",check:"يحتاج مراجعة",
+f1:"الشريحة 5 تستخدم كلمة «الثغور» وهي غير موجودة في ملفك.",f2:"السؤال 7 فيه إجابات متقاربة. راجع الصياغة.",
+fSlideT:"العنوان",fSlideB:"النص (نقطة في كل سطر)",fQ:"السؤال",fQA:"الإجابة الصحيحة",fQE:"السبب (يظهر للطلاب)",fCF:"الوجه الأمامي",fCB:"الوجه الخلفي",fGL:"المصطلح",fGR:"ما يقابله",fWL:"اسم المستوى",fWT:"المهام (مهمة في كل سطر)",
+wsTitle:"ورقة عمل البناء الضوئي",wsMeta:"الاسم: ____________   الصف: 6ب   التاريخ: ________",lv:["دعم","أساسي","تحدٍّ"],lvI:["ابدأ هنا","للجميع","تحدٍّ"],
+q:"السؤال",flipH:"اضغط على البطاقة لقلبها",moves:"المحاولات",won:"تمت المطابقة كلها. أحسنت!",kitReady:"حقيبة درسك جاهزة",dl:"جارٍ تنزيل حقيبة الدرس (PDF وPowerPoint)…",updated:"تم التحديث",allL:"كل الدروس: للعرض فقط",
+pairsHint:"اضغط على بطاقتين تنتميان معًا",newT:"البناء الضوئي",
+mk:["الشرائح","ورقة العمل","الاختبار","اللعبة","البطاقات"],drawHint:"ارسم",pen:"قلم",eraser:"ممحاة",undo:"تراجع",clear:"مسح",size:"سماكة الخط",color:"اللون",
+exSimple:"النباتات تستخدم ضوء الشمس لصنع الغذاء.",exAdd:" مثال: نبتة فول على نافذة مشمسة تنمو أسرع من نبتة في خزانة مظلمة."}};
+
+const D={en:{
+slides:[{t:"Photosynthesis",b:["How plants make their own food","Grade 6 · Science"]},{t:"Plants make food",b:["Animals eat food. Plants make it.","They use light from the Sun","This is called photosynthesis"]},{t:"Where it happens",b:["Inside the leaf","Chloroplasts hold chlorophyll","Chlorophyll is the green pigment"]},{t:"Water and light",b:["Light gives the energy","Water travels up from the roots","Both help make food"]},{t:"Carbon dioxide",b:["Air contains CO₂","It enters through tiny holes: stomata","Plants use it to build food"]},{t:"What comes out",b:["Glucose: the plant's sugar food","Oxygen: released into the air","We breathe that oxygen!"]},{t:"The recipe",b:["Water + CO₂ + light","→ glucose + oxygen","Chlorophyll helps the reaction"]},{t:"Let's recap",b:["Plants make food using light","In: water, CO₂, light","Out: glucose, oxygen"]}],
+worksheet:[{lv:"Support",t:["1. Name the gas that plants take in.","2. Colour a leaf green and label the chlorophyll."]},{lv:"Core",t:["3. Write the inputs and outputs of photosynthesis.","4. Explain why most leaves look green."]},{lv:"Stretch",t:["5. A plant sits in a dark box for a week. Predict what happens and explain why.","6. Plan a fair test about light and plant growth."]}],
+quiz:[
+{q:"What do plants make during photosynthesis?",o:["Food (glucose)","Rocks","Soil","Plastic"],c:0,e:"Plants build glucose, a sugar, and use it as food."},
+{q:"Which gas do plants take in?",o:["Oxygen","Carbon dioxide","Nitrogen","Helium"],c:1,e:"Leaves take in carbon dioxide from the air."},
+{q:"Which gas do plants release?",o:["Carbon dioxide","Smoke","Oxygen","Steam"],c:2,e:"Oxygen is released as a by-product."},
+{q:"What gives leaves their green colour?",o:["Water","Chlorophyll","Glucose","Soil"],c:1,e:"Chlorophyll is a green pigment that captures light."},
+{q:"Where does photosynthesis mostly happen?",o:["Roots","Stem","Leaves","Flowers"],c:2,e:"Leaves are full of chloroplasts."},
+{q:"Which energy do plants use?",o:["Wind","Sunlight","Heat from soil","Sound"],c:1,e:"Sunlight is the energy source."},
+{q:"Which is NOT needed for photosynthesis?",o:["Water","Light","Carbon dioxide","Oxygen"],c:3,e:"Oxygen is made, it is not an input."},
+{q:"How does water reach the leaves?",o:["Through roots and stem","Through flowers","From rain on leaves","Through fruit"],c:0,e:"Water travels up from the roots through the stem."},
+{q:"What are the tiny holes in leaves called?",o:["Veins","Stomata","Roots","Petals"],c:1,e:"Stomata let gases in and out."},
+{q:"Why are plants at the start of food chains?",o:["They make their own food","They eat meat","They sleep","They are tall"],c:0,e:"Every other living thing depends on them for food."}],
+game:[{l:"Chlorophyll",r:"Green pigment"},{l:"Sunlight",r:"Energy source"},{l:"CO₂",r:"Gas taken in"},{l:"Oxygen",r:"Gas released"},{l:"Glucose",r:"Plant's food"}],
+cards:[{f:"Chlorophyll",b:"Green pigment that captures sunlight"},{f:"Glucose",b:"Sugar the plant makes as food"},{f:"Stomata",b:"Tiny holes that let gases in and out"},{f:"Chloroplast",b:"Part of a cell where photosynthesis happens"},{f:"Carbon dioxide",b:"Gas plants take from the air"},{f:"Oxygen",b:"Gas plants release"}]},
+ar:{
+slides:[{t:"البناء الضوئي",b:["كيف تصنع النباتات غذاءها","الصف السادس · علوم"]},{t:"النباتات تصنع غذاءها",b:["الحيوانات تأكل الغذاء والنباتات تصنعه","تستخدم ضوء الشمس","وهذا هو البناء الضوئي"]},{t:"أين يحدث؟",b:["داخل الورقة","البلاستيدات تحمل الكلوروفيل","الكلوروفيل صبغة خضراء"]},{t:"الماء والضوء",b:["الضوء يعطي الطاقة","الماء يصعد من الجذور","كلاهما يساعد في صنع الغذاء"]},{t:"ثاني أكسيد الكربون",b:["الهواء يحتوي على CO₂","يدخل عبر ثغور صغيرة","يبني النبات به غذاءه"]},{t:"ماذا ينتج؟",b:["الجلوكوز: سكر النبات وغذاؤه","الأكسجين: يخرج إلى الهواء","ونحن نتنفس هذا الأكسجين!"]},{t:"الوصفة",b:["ماء + CO₂ + ضوء","← جلوكوز + أكسجين","الكلوروفيل يساعد في التفاعل"]},{t:"لنراجع",b:["النبات يصنع غذاءه بالضوء","يدخل: ماء، CO₂، ضوء","يخرج: جلوكوز، أكسجين"]}],
+worksheet:[{lv:"دعم",t:["1. سمِّ الغاز الذي تأخذه النباتات.","2. لوّن ورقة بالأخضر وسمِّ الكلوروفيل."]},{lv:"أساسي",t:["3. اكتب مدخلات البناء الضوئي ومخرجاته.","4. اشرح لماذا تبدو معظم الأوراق خضراء."]},{lv:"تحدٍّ",t:["5. نبتة في صندوق مظلم لمدة أسبوع. توقّع ما سيحدث وفسّر السبب.","6. خطّط لتجربة عادلة عن الضوء ونمو النبات."]}],
+quiz:[
+{q:"ماذا تصنع النباتات في البناء الضوئي؟",o:["غذاء (الجلوكوز)","صخورًا","تربة","بلاستيكًا"],c:0,e:"يبني النبات الجلوكوز، وهو سكر يستخدمه غذاءً."},
+{q:"أي غاز تأخذه النباتات؟",o:["الأكسجين","ثاني أكسيد الكربون","النيتروجين","الهيليوم"],c:1,e:"تأخذ الأوراق ثاني أكسيد الكربون من الهواء."},
+{q:"أي غاز تطلقه النباتات؟",o:["ثاني أكسيد الكربون","الدخان","الأكسجين","البخار"],c:2,e:"يخرج الأكسجين ناتجًا ثانويًا."},
+{q:"ما الذي يعطي الأوراق لونها الأخضر؟",o:["الماء","الكلوروفيل","الجلوكوز","التربة"],c:1,e:"الكلوروفيل صبغة خضراء تلتقط الضوء."},
+{q:"أين يحدث البناء الضوئي غالبًا؟",o:["الجذور","الساق","الأوراق","الأزهار"],c:2,e:"الأوراق مليئة بالبلاستيدات الخضراء."},
+{q:"ما الطاقة التي تستخدمها النباتات؟",o:["الرياح","ضوء الشمس","حرارة التربة","الصوت"],c:1,e:"ضوء الشمس هو مصدر الطاقة."},
+{q:"أيّها ليس مطلوبًا للبناء الضوئي؟",o:["الماء","الضوء","ثاني أكسيد الكربون","الأكسجين"],c:3,e:"الأكسجين يُنتَج ولا يدخل في التفاعل."},
+{q:"كيف يصل الماء إلى الأوراق؟",o:["عبر الجذور والساق","عبر الأزهار","من المطر على الأوراق","عبر الثمار"],c:0,e:"يصعد الماء من الجذور عبر الساق."},
+{q:"ماذا نسمّي الثقوب الصغيرة في الأوراق؟",o:["العروق","الثغور","الجذور","البتلات"],c:1,e:"الثغور تسمح بدخول الغازات وخروجها."},
+{q:"لماذا تقف النباتات في بداية السلسلة الغذائية؟",o:["لأنها تصنع غذاءها","لأنها تأكل اللحوم","لأنها تنام","لأنها طويلة"],c:0,e:"كل الكائنات الأخرى تعتمد عليها في غذائها."}],
+game:[{l:"الكلوروفيل",r:"صبغة خضراء"},{l:"ضوء الشمس",r:"مصدر الطاقة"},{l:"CO₂",r:"غاز يدخل"},{l:"الأكسجين",r:"غاز يخرج"},{l:"الجلوكوز",r:"غذاء النبات"}],
+cards:[{f:"الكلوروفيل",b:"صبغة خضراء تلتقط ضوء الشمس"},{f:"الجلوكوز",b:"سكر يصنعه النبات غذاءً له"},{f:"الثغور",b:"ثقوب صغيرة تدخل منها الغازات وتخرج"},{f:"البلاستيدة الخضراء",b:"جزء من الخلية يحدث فيه البناء الضوئي"},{f:"ثاني أكسيد الكربون",b:"غاز تأخذه النباتات من الهواء"},{f:"الأكسجين",b:"غاز تطلقه النباتات"}]}};
+const IMG=["scene-photosynthesis","sprout-sun","leaf","drop","tile-co2","tile-candy","lightbulb","books-pencils"];
+const TABS=["slides","worksheet","quiz","game","cards"],TICON={slides:"res-slides",worksheet:"res-worksheet",quiz:"res-quiz",game:"res-game",cards:"res-cards"};
+const SUGG={en:["How plants make food","Fractions: adding unlike denominators","The water cycle"],ar:["كيف تصنع النباتات غذاءها","الكسور: جمع الكسور المختلفة المقام","دورة الماء"]};
+const LESSONS={en:[["Photosynthesis","Science","sci","Today","ready"],["Adding fractions","Math","math","Yesterday","ready"],["The water cycle","Science","sci","3 days ago","ready"],["The solar system","Science","sci","Last week","chk"],["Parts of speech","English","eng","Oct 28","ready"],["Ancient Egypt","History","his","Oct 21","dr"]],
+ar:[["البناء الضوئي","علوم","sci","اليوم","ready"],["جمع الكسور","رياضيات","math","أمس","ready"],["دورة الماء","علوم","sci","قبل 3 أيام","ready"],["النظام الشمسي","علوم","sci","الأسبوع الماضي","chk"],["أقسام الكلام","لغة إنجليزية","eng","28 أكتوبر","ready"],["مصر القديمة","تاريخ","his","21 أكتوبر","dr"]]};
+const STL={en:{ready:"Ready",chk:"Needs check",dr:"Draft"},ar:{ready:"جاهز",chk:"يحتاج مراجعة",dr:"مسودة"}};
+
+const S={lang:"en",screen:1,tab:"slides",idx:{slides:0,worksheet:0,quiz:0,game:0,cards:0},st:{},flags:["f1","f2"],lw:true,rw:true,overlay:false,making:false,understood:false,qa:{},flipped:false,g:null,title:"Photosynthesis",mode:"live"};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const t=k=>(I[S.lang][k]??I.en[k]);
+const ic=(n,c="")=>`<svg class="i ${c}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const mobile=()=>matchMedia("(max-width:760px)").matches;
+let toastT;function toast(m){const e=$("#toast");e.textContent=m;e.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove("on"),2200)}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const data=()=>D[S.lang];
+
+/* ============ language ============ */
+function setLang(l){S.lang=l;document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr";
+ $$("[data-i18n]").forEach(e=>e.textContent=t(e.dataset.i18n));
+ $$("[data-i18n-ph]").forEach(e=>e.placeholder=t(e.dataset.i18nPh));
+ $$("[data-i18n-aria]").forEach(e=>e.setAttribute("aria-label",t(e.dataset.i18nAria)));
+ $$(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===l));
+ $("#ttlT").textContent=S.lang==="ar"&&S.title==="Photosynthesis"?"البناء الضوئي":S.title;
+ renderSugg();renderStrip();if(typeof refCheck==="function")refCheck();if(S.screen===2){renderAll();buildToolbars()}
+ document.title="Nibras · "+(l==="ar"?"مساحة المعلّم":"Teacher workspace")}
+$$(".lang button").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+
+/* ============ Screen 1 ============ */
+function renderSugg(){const w=$("#sugg");w.innerHTML=SUGG[S.lang].map((s,i)=>`<button type="button" class="chip" data-i="${i}">${esc(s)}</button>`).join("");
+ w.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{const p=$("#prompt");p.value=SUGG[S.lang][b.dataset.i];p.focus()})}
+function renderStrip(){$("#strip").innerHTML=LESSONS[S.lang].map((l,i)=>`<button type="button" class="lc" data-i="${i}"><span><span class="tag t-${l[2]}">${l[1]}</span></span><b>${esc(l[0])}</b><span class="row"><span>${l[3]}</span><span class="tag st-${l[4]}">${STL[S.lang][l[4]]}</span></span></button>`).join("");
+ $$(".lc").forEach(b=>b.onclick=()=>openLesson(LESSONS.en[b.dataset.i][0],false))}
+$("#seeAll").onclick=()=>toast(t("allL"));
+const pop=$("#pop"),moreBtn=$("#moreBtn");
+function closePop(){pop.hidden=true;moreBtn.setAttribute("aria-expanded","false")}
+moreBtn.onclick=()=>{const o=pop.hidden;pop.hidden=!o;moreBtn.setAttribute("aria-expanded",o)};
+document.addEventListener("click",e=>{if(!pop.hidden&&!pop.contains(e.target)&&!moreBtn.contains(e.target))closePop()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!pop.hidden){closePop();moreBtn.focus()}else if(S.sheet){closeSheet()}else if($("#board").classList.contains("max")){toggleMax(false)}}});
+const drop=$("#drop"),file=$("#file");
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over")}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over")}));
+drop.addEventListener("drop",e=>{if(e.dataTransfer.files[0])showFile(e.dataTransfer.files[0].name)});
+file.onchange=()=>{if(file.files[0])showFile(file.files[0].name)};
+function showFile(n){const c=$("#fileChip");c.hidden=false;c.innerHTML=ic("check")+esc(n)}
+
+/* Refine with AI (faked) */
+const REF={en:[[/photosyn|plants?|leaf|leaves/i,"Grade 6 science, 45 min: how plants make food by photosynthesis — inputs (light, water, CO₂), outputs (glucose, oxygen), where it happens (chloroplasts). Include a word equation, a diagram slide and a matching game; check the misconception that plants get food from soil."],[/fraction|denominator/i,"Grade 6 math, 45 min: adding fractions with unlike denominators — find a common denominator, add, then simplify. Include a worked example, a fraction-bar slide and a matching game; check the misconception of adding the denominators."],[/water|cycle|evapor/i,"Grade 6 science, 45 min: the water cycle — evaporation, condensation, precipitation and collection. Include a diagram slide, a sequencing activity and a short quiz; check the misconception that clouds are made of steam."]],
+ar:[[/نبات|ضوئي|photosyn|plant/i,"الصف السادس علوم، 45 دقيقة: كيف تصنع النباتات غذاءها بالبناء الضوئي — المدخلات (الضوء والماء وCO₂) والمخرجات (الجلوكوز والأكسجين) وأين يحدث (البلاستيدات الخضراء). أضف معادلة لفظية وشريحة برسم توضيحي ولعبة مطابقة، وتحقق من الفكرة الخاطئة بأن النباتات تأخذ غذاءها من التربة."],[/كسور|كسر|fraction/i,"الصف السادس رياضيات، 45 دقيقة: جمع الكسور المختلفة المقام — إيجاد مقام مشترك ثم الجمع ثم التبسيط. أضف مثالًا محلولًا وشريحة بأشرطة الكسور ولعبة مطابقة، وتحقق من الفكرة الخاطئة بجمع المقامات."],[/ماء|دورة|water/i,"الصف السادس علوم، 45 دقيقة: دورة الماء — التبخر والتكاثف والهطول والتجمع. أضف شريحة برسم توضيحي ونشاط ترتيب واختبارًا قصيرًا، وتحقق من الفكرة الخاطئة بأن السحب مصنوعة من البخار."]]};
+const pr=$("#prompt"),rb=$("#refineBtn"),rbar=$("#refBar"),taw=$("#tawrap");let refOrig="";
+function refCheck(){rb.disabled=pr.value.trim().length<10}
+pr.addEventListener("input",refCheck);
+function fakeRefine(txt){const hit=REF[S.lang].find(r=>r[0].test(txt));if(hit)return hit[1];const c=txt.trim().replace(/[.،]+$/,"");return S.lang==="ar"?`الصف السادس، 45 دقيقة: ${c}. أضف أهدافًا واضحة ومثالًا محلولًا واختبارًا قصيرًا ولعبة مطابقة، وتحقق من الأفكار الخاطئة الشائعة.`:`Grade 6, 45 min: ${c}. Include clear objectives, a worked example, a short quiz and a matching game; check common misconceptions.`}
+rb.onclick=()=>{if(rb.disabled||taw.classList.contains("busy"))return;refOrig=pr.value;taw.classList.add("busy");rb.disabled=true;pr.readOnly=true;
+ setTimeout(()=>{pr.value=fakeRefine(refOrig);pr.readOnly=false;taw.classList.remove("busy");taw.classList.add("done");rb.disabled=false;$("#sugg").hidden=true;rbar.hidden=false;pr.scrollTop=0},reduce()?200:1000)};
+$("#refUndo").onclick=()=>{pr.value=refOrig;taw.classList.remove("done");rbar.hidden=true;$("#sugg").hidden=false;$$("#refBar [data-add]").forEach(b=>b.hidden=false);refCheck();pr.focus()};
+$$("#refBar [data-add]").forEach(b=>b.onclick=()=>{pr.value=pr.value.replace(/\s+$/,"")+t(b.dataset.add);b.hidden=true;pr.scrollTop=pr.scrollHeight});
+$("#makeBtn").onclick=()=>openLesson("Photosynthesis",true);
+
+/* ============ navigation ============ */
+function showScreen(n){S.screen=n;$("#s1").hidden=n!==1;$("#s2").hidden=n!==2;if(n===1){hideBoard(true)}}
+function openLesson(title,make){S.title=title;$("#ttlT").textContent=S.lang==="ar"&&title==="Photosynthesis"?"البناء الضوئي":title;
+ S.idx={slides:0,worksheet:0,quiz:0,game:0,cards:0};S.qa={};S.flags=["f1","f2"];S.g=null;S.flipped=false;setOverlay(false);
+ showScreen(2);buildToolbars();
+ if(make){startMaking()}else{S.making=false;S.understood=false;S.tab="slides";TABS.forEach(k=>S.st[k]="ready");updateStatus();renderAll()}}
+$("#backBtn").onclick=()=>{S.making=false;clearTimeout(S.mkT);showScreen(1)};
+function startMaking(){S.making=true;S.understood=true;S.tab="understood";TABS.forEach(k=>S.st[k]="pending");renderAll();
+ let i=0;const step=()=>{if(S.screen!==2||!S.making)return;if(i>0){S.st[TABS[i-1]]="ready"}
+  if(i<TABS.length){S.st[TABS[i]]="making";renderTabs();renderUnderstood();i++;S.mkT=setTimeout(step,reduce()?250:800)}
+  else{S.making=false;updateStatus();renderTabs();toast(t("kitReady"));S.mkT=setTimeout(()=>{S.understood=false;S.tab="slides";renderAll()},900)}};
+ S.mkT=setTimeout(step,500)}
+const reduce=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
+function updateStatus(){const f=S.flags.length;TABS.forEach(k=>{if(S.st[k]==="making"||S.st[k]==="pending")return;S.st[k]=((k==="slides"&&S.flags.includes("f1"))||(k==="quiz"&&S.flags.includes("f2")))?"check":"ready"})}
+
+/* ============ Screen 2 render ============ */
+function renderAll(){$("#ws").classList.toggle("making",S.making);$("#ws").classList.toggle("noL",!S.lw);$("#ws").classList.toggle("noR",!S.rw);renderTabs();renderList();renderEdit();renderCenter();renderCtl()}
+function renderTabs(){const w=$("#tabs");w.innerHTML=TABS.map(k=>{const st=S.st[k]||"pending",sel=S.tab===k&&!S.understood;
+ return `<button type="button" role="tab" class="tab" id="tab-${k}" data-k="${k}" aria-selected="${sel}" ${S.making?'aria-disabled="true"':""} tabindex="0"><img src="assets/${TICON[k]}.svg" alt=""><span class="tl">${t(k)}</span><span class="dot ${st}" role="img" aria-label="${t(st)}"></span></button>`}).join("");
+ w.querySelectorAll(".tab").forEach(b=>{b.onclick=()=>{if(S.making)return;S.understood=false;S.tab=b.dataset.k;renderAll()};
+  b.onkeydown=e=>{const i=TABS.indexOf(b.dataset.k);let n=null;if(e.key==="ArrowRight")n=i+(S.lang==="ar"?-1:1);if(e.key==="ArrowLeft")n=i+(S.lang==="ar"?1:-1);if(n!==null&&n>=0&&n<5){e.preventDefault();w.querySelectorAll(".tab")[n].focus()}}})}
+$("#ttl").onclick=()=>{if(S.making)return;S.understood=true;renderAll()};
+function fieldsFor(k){const T=t;
+ if(k==="slides")return[{l:T("fSlideT"),g:i=>i.t,s:(i,v)=>i.t=v,ta:0},{l:T("fSlideB"),g:i=>i.b.join("\n"),s:(i,v)=>i.b=v.split("\n").filter(x=>x.trim()),ta:1}];
+ if(k==="quiz")return[{l:T("fQ"),g:i=>i.q,s:(i,v)=>i.q=v,ta:1},{l:T("fQA"),g:i=>i.o[i.c],s:(i,v)=>i.o[i.c]=v,ta:0},{l:T("fQE"),g:i=>i.e,s:(i,v)=>i.e=v,ta:1}];
+ if(k==="cards")return[{l:T("fCF"),g:i=>i.f,s:(i,v)=>i.f=v,ta:0},{l:T("fCB"),g:i=>i.b,s:(i,v)=>i.b=v,ta:1}];
+ if(k==="game")return[{l:T("fGL"),g:i=>i.l,s:(i,v)=>i.l=v,ta:0},{l:T("fGR"),g:i=>i.r,s:(i,v)=>i.r=v,ta:0}];
+ return[{l:T("fWL"),g:i=>i.lv,s:(i,v)=>i.lv=v,ta:0},{l:T("fWT"),g:i=>i.t.join("\n"),s:(i,v)=>i.t=v.split("\n").filter(x=>x.trim()),ta:1}]}
+const itemText=(k,i)=>k==="slides"?i.t:k==="quiz"?i.q:k==="cards"?i.f:k==="game"?i.l:i.lv;
+function renderList(){const k=S.tab==="understood"?"slides":S.tab,arr=data()[k];
+ $("#listT").textContent=t("items")[k];$("#listN").textContent=arr.length;
+ $("#list").innerHTML=arr.map((it,i)=>`<li class="it" draggable="true" data-i="${i}" ${S.idx[k]===i?'aria-current="true"':""}><button type="button" class="h" aria-label="Move ${i+1} (Alt + Arrow keys)" data-h>${ic("grip")}</button><span class="n">${i+1}</span><button type="button" class="tx" data-s>${esc(itemText(k,it))}</button></li>`).join("");
+ $$("#list .it").forEach(li=>{const i=+li.dataset.i;li.querySelector("[data-s]").onclick=()=>{S.idx[k]=i;S.flipped=false;saveOv();renderList();renderEdit();renderCenter();renderCtl();if(mobile())closeSheet()};
+  li.ondragstart=e=>{e.dataTransfer.setData("text/plain",i);S.drag=i};
+  li.ondragover=e=>{e.preventDefault();li.classList.add("dragover")};li.ondragleave=()=>li.classList.remove("dragover");
+  li.ondrop=e=>{e.preventDefault();li.classList.remove("dragover");moveItem(k,S.drag,i)};
+  li.querySelector("[data-h]").onkeydown=e=>{if(e.altKey&&(e.key==="ArrowUp"||e.key==="ArrowDown")){e.preventDefault();const j=i+(e.key==="ArrowUp"?-1:1);if(j>=0&&j<arr.length){moveItem(k,i,j);setTimeout(()=>$$("#list .it")[j].querySelector("[data-h]").focus(),0)}}}})}
+function moveItem(k,from,to){if(from==null||from===to)return;const a=data()[k],[x]=a.splice(from,1);a.splice(to,0,x);S.idx[k]=to;renderList();renderCenter();renderCtl()}
+function renderEdit(){const k=S.tab==="understood"?"slides":S.tab,it=data()[k][S.idx[k]],f=fieldsFor(k);
+ const fl=S.flags.map(id=>`<div class="flag" data-f="${id}">${esc(t(id))}<div class="fa"><button type="button" class="ok" data-a="ok">${t("accept")}</button><button type="button" data-a="no">${t("dismiss")}</button></div></div>`).join("")||`<div class="okline">${ic("check")}${t("allgood")}</div>`;
+ const res=(k==="quiz"||k==="game")?`<div class="sec"><h3>${t("results")}</h3><div class="res">${t("resA")} <b>74%</b><div class="bar"><i></i></div>${t("resH")}</div></div>`:"";
+ $("#rbody").innerHTML=`<div class="sec">${f.map((x,n)=>`<div class="fld"><label for="ef${n}">${x.l}</label>${x.ta?`<textarea id="ef${n}" rows="${n===1&&k!=="quiz"?3:2}"></textarea>`:`<input id="ef${n}">`}</div>`).join("")}</div>
+ <div class="sec"><h3>${ic("spark")}${t("ask")}</h3><form class="ask" id="askF"><input id="askI" placeholder="${t("ask")}" aria-label="${t("ask")}"><button class="go" aria-label="Send">${ic("send","flip")}</button></form><div class="chips" style="margin-top:8px"><button type="button" class="chip" data-c="simp">${t("simp")}</button><button type="button" class="chip" data-c="ex">${t("ex")}</button><button type="button" class="chip" data-c="tr">${t("tr")}</button></div></div>
+ <div class="sec"><h3>${S.flags.length?t("flags"):""}</h3>${fl}</div>${res}`;
+ f.forEach((x,n)=>{const e=$("#ef"+n);e.value=x.g(it);e.oninput=()=>{x.s(it,e.value);const li=$$("#list .it")[S.idx[k]];if(li)li.querySelector("[data-s]").textContent=itemText(k,it);if(k!=="game")renderCenter();else if(S.g){S.g=null;renderCenter()}}});
+ $$("#rbody [data-a]").forEach(b=>b.onclick=()=>{const id=b.closest(".flag").dataset.f;S.flags=S.flags.filter(x=>x!==id);updateStatus();renderTabs();renderEdit();toast(t("updated"))});
+ $$("#rbody [data-c]").forEach(b=>b.onclick=()=>ask(b.dataset.c));
+ $("#askF").onsubmit=e=>{e.preventDefault();if($("#askI").value.trim())ask("simp");$("#askI").value=""}}
+function ask(c){if(c==="tr"){setLang(S.lang==="en"?"ar":"en");return}
+ const k=S.tab==="understood"?"slides":S.tab,it=data()[k][S.idx[k]];
+ if(k==="slides"){if(c==="simp")it.b=[t("exSimple")];else it.b[it.b.length-1]+=t("exAdd")}
+ else if(k==="quiz"){if(c==="simp")it.e=t("exSimple");else it.e+=t("exAdd")}
+ else if(k==="cards"){if(c==="simp")it.b=t("exSimple");else it.b+=t("exAdd")}
+ else if(k==="worksheet"){if(c==="ex")it.t.push(t("exAdd").replace(/^ /,""));else it.t=it.t.slice(0,1)}
+ renderEdit();renderCenter();toast(t("updated"))}
+
+function renderUnderstood(){const l=$("#vc");const pills=TABS.map(k=>`<span class="mkp ${S.st[k]||""}">${S.st[k]==="ready"?ic("check"):S.st[k]==="making"?'<span class="dot making"></span>':'<span class="dot"></span>'}${t(k)}</span>`).join("");
+ l.innerHTML=`<div class="mkcard"><h2><img src="assets/magic-book.svg" alt="">${t("understood")}</h2>
+ <div><div class="lbl">${t("topic")}</div><b style="font-size:17px">${t("topicV")}</b></div>
+ <div><div class="lbl">${t("goals")}</div><ul><li>${t("g1")}</li><li>${t("g2")}</li><li>${t("g3")}</li></ul></div>
+ <div><div class="lbl" style="margin-bottom:4px">${t("keys")}</div><div class="mkrow">${t("kw").map(w=>`<span class="kw">${w}</span>`).join("")}</div></div>
+ <div><div class="lbl" style="margin-bottom:6px">${t("building")}</div><div class="mkrow" id="mkp">${pills}</div></div></div>`}
+
+let ovRO;
+function renderCenter(){const k=S.tab,vc=$("#vc");
+ if(S.understood||k==="understood"){renderUnderstood();return}
+ const d=data(),i=S.idx[k];
+ if(k==="slides"){const s=d.slides[i];vc.innerHTML=`<div class="slide ${i===0?"first":""}"><div><h2>${esc(s.t)}</h2><ul>${s.b.map(b=>`<li>${esc(b)}</li>`).join("")}</ul></div><img class="art" src="assets/${IMG[i]}.svg" alt=""><span class="num">${i+1} / ${d.slides.length}</span></div>`}
+ else if(k==="worksheet"){vc.innerHTML=`<div class="paper"><h2>${t("wsTitle")}</h2><div class="meta">${t("wsMeta")}</div>${d.worksheet.map((l,n)=>`<div class="lvl lv${n}"><h3>${["●","◆","★"][n]} ${esc(l.lv)} <span style="font-weight:700;opacity:.7">· ${t("lvI")[n]}</span></h3>${l.t.map(x=>`<p>${esc(x)}</p>`).join("")}</div>`).join("")}</div>`}
+ else if(k==="quiz"){const q=d.quiz[i],a=S.qa[S.lang+i];vc.innerHTML=`<div class="qwrap"><div class="qq"><small>${t("q").toUpperCase()} ${i+1} / ${d.quiz.length}</small>${esc(q.q)}</div><div class="opts4">${q.o.map((o,n)=>`<button type="button" class="opt ${a!=null?(n===q.c?"right":n===a?"wrong":""):""}" data-n="${n}"><i>${"ABCD"[n]}</i>${esc(o)}</button>`).join("")}</div>${a!=null?`<div class="expl">${esc(q.e)}</div>`:""}</div>`;
+  vc.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{S.qa[S.lang+i]=+b.dataset.n;renderCenter()})}
+ else if(k==="cards"){const c=d.cards[i];vc.innerHTML=`<div class="flipwrap"><button type="button" class="flip3 ${S.flipped?"on":""}" id="fc" style="display:block;width:100%;height:100%" aria-label="${esc(c.f)}. ${t("flipH")}"><span class="face f"><span><b>${esc(c.f)}</b><small>${t("flipH")}</small></span></span><span class="face b"><b>${esc(c.b)}</b></span></button></div>`;
+  $("#fc").onclick=()=>{S.flipped=!S.flipped;$("#fc").classList.toggle("on",S.flipped)}}
+ else if(k==="game"){renderGame()}
+ renderCtl()}
+function renderGame(){const d=data().game;if(!S.g){const tiles=[];d.forEach((p,n)=>{tiles.push({id:n,x:p.l,s:0},{id:n,x:p.r,s:1})});for(let n=tiles.length-1;n>0;n--){const j=(n*7+3)%(n+1);[tiles[n],tiles[j]]=[tiles[j],tiles[n]]}S.g={tiles,sel:null,ok:new Set(),moves:0}}
+ const g=S.g,vc=$("#vc");vc.innerHTML=`<div class="gwrap"><div class="gstat"><span>${t("pairsHint")}</span><span>${t("moves")}: ${g.moves}</span></div><div class="grid">${g.tiles.map((x,n)=>`<button type="button" class="tile ${g.ok.has(x.id)?"ok":""} ${g.sel===n?"sel":""}" data-n="${n}" ${g.ok.has(x.id)?"disabled":""}>${esc(x.x)}</button>`).join("")}</div>${g.ok.size===d.length?`<div class="gwin">${t("won")}</div>`:""}</div>`;
+ vc.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{const n=+b.dataset.n;if(g.sel===null){g.sel=n;renderGame();return}if(g.sel===n){g.sel=null;renderGame();return}
+  const a=g.tiles[g.sel],c=g.tiles[n];g.moves++;if(a.id===c.id&&a.s!==c.s){g.ok.add(a.id);g.sel=null;renderGame()}else{const sel=g.sel;g.sel=null;renderGame();const bs=$$(".tile");[bs[sel],bs[n]].forEach(e=>e&&e.classList.add("no"))}})}
+function renderCtl(){const k=S.tab,und=S.understood;const nav=$("#nav");const arr=und?[]:data()[k];
+ const hasNav=!und&&(k==="slides"||k==="quiz"||k==="cards");
+ $("#prevB").hidden=$("#nextB").hidden=$("#cnt").hidden=!hasNav;$("#restartB").hidden=und||k!=="game";
+ if(hasNav){const i=S.idx[k];$("#cnt").textContent=`${i+1} / ${arr.length}`;$("#prevB").disabled=i===0;$("#nextB").disabled=i===arr.length-1;$("#prevB").style.opacity=i===0?.4:1;$("#nextB").style.opacity=i===arr.length-1?.4:1}
+ $("#drawTgl").disabled=und;$("#toggL").setAttribute("aria-pressed",S.lw);$("#toggR").setAttribute("aria-pressed",S.rw)}
+function go(d){const k=S.tab;if(S.understood)return;const n=S.idx[k]+d;const len=data()[k].length;if(n<0||n>=len)return;saveOv();S.idx[k]=n;S.flipped=false;renderList();renderEdit();renderCenter();restoreOv()}
+$("#prevB").onclick=()=>go(-1);$("#nextB").onclick=()=>go(1);
+$("#restartB").onclick=()=>{S.g=null;renderCenter()};
+$("#toggL").onclick=()=>{S.lw=!S.lw;renderAll()};$("#toggR").onclick=()=>{S.rw=!S.rw;renderAll()};
+document.addEventListener("keydown",e=>{if(S.screen!==2||e.target.matches("input,textarea,select"))return;if(e.key==="ArrowRight")go(S.lang==="ar"?-1:1);if(e.key==="ArrowLeft")go(S.lang==="ar"?1:-1)});
+
+/* ============ sheets (mobile) ============ */
+function openSheet(w){S.sheet=w;$("#ws").dataset.sheet=w;let bk=$(".sheetbk");if(!bk){bk=document.createElement("div");bk.className="sheetbk";bk.onclick=closeSheet;$("#s2").appendChild(bk)}
+ setTimeout(()=>{const f=(w==="left"?$("#left"):$("#right")).querySelector("button.tx,input,textarea");f&&f.focus()},30)}
+function closeSheet(){S.sheet=null;delete $("#ws").dataset.sheet;$$(".sheetbk").forEach(e=>e.remove())}
+$$("[data-close-sheet]").forEach(b=>b.onclick=closeSheet);
+$$("#mbar [data-act]").forEach(b=>b.onclick=()=>{const a=b.dataset.act;if(a==="list")openSheet("left");if(a==="edit")openSheet("right");if(a==="board"){showBoard(true)}if(a==="share")openShare()});
+
+/* ============ Drawing ============ */
+const TOOL={mode:"pen",color:"#1A1A2E",size:5};
+const COLORS=["#1A1A2E","#6035CF","#D62839","#1E8E4E","#1D6FD8"];
+class Surface{
+ constructor(cv){this.cv=cv;this.ctx=cv.getContext("2d");this.undo=[];this.drawing=false;this.fit();
+  new ResizeObserver(()=>this.fit()).observe(cv.parentElement);
+  cv.addEventListener("pointerdown",e=>this.down(e));cv.addEventListener("pointermove",e=>this.move(e));
+  ["pointerup","pointercancel","lostpointercapture"].forEach(n=>cv.addEventListener(n,e=>this.up(e)))}
+ fit(){const p=this.cv.parentElement,w=p.clientWidth,h=p.clientHeight;if(!w||!h)return;const r=window.devicePixelRatio||1,W=Math.round(w*r),H=Math.round(h*r);
+  if(W===this.cv.width&&H===this.cv.height)return;let snap=null;
+  if(this.cv.width&&this.cv.height){snap=document.createElement("canvas");snap.width=this.cv.width;snap.height=this.cv.height;snap.getContext("2d").drawImage(this.cv,0,0)}
+  this.cv.width=W;this.cv.height=H;this.r=r;this.ctx.setTransform(r,0,0,r,0,0);
+  if(snap){this.ctx.save();this.ctx.setTransform(1,0,0,1,0,0);this.ctx.drawImage(snap,0,0);this.ctx.restore()}this.undo=[]}
+ pt(e){const b=this.cv.getBoundingClientRect();return{x:e.clientX-b.left,y:e.clientY-b.top}}
+ style(e){const c=this.ctx;c.lineCap=c.lineJoin="round";const pen=e&&e.pointerType==="pen"&&e.pressure?.5+e.pressure:1;
+  if(TOOL.mode==="eraser"){c.globalCompositeOperation="destination-out";c.strokeStyle="#000";c.lineWidth=TOOL.size*3.2}else{c.globalCompositeOperation="source-over";c.strokeStyle=TOOL.color;c.lineWidth=TOOL.size*pen}}
+ down(e){if(e.pointerType==="mouse"&&e.button!==0)return;e.preventDefault();this.cv.setPointerCapture(e.pointerId);
+  this.undo.push(this.ctx.getImageData(0,0,this.cv.width,this.cv.height));if(this.undo.length>30)this.undo.shift();
+  this.drawing=true;this.last=this.pt(e);this.style(e);const c=this.ctx;c.beginPath();c.moveTo(this.last.x,this.last.y);c.lineTo(this.last.x+.01,this.last.y);c.stroke();this.dirty=true}
+ move(e){if(!this.drawing)return;e.preventDefault();const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];this.style(e);const c=this.ctx;
+  for(const ev of(evs.length?evs:[e])){const p=this.pt(ev);c.beginPath();c.moveTo(this.last.x,this.last.y);c.lineTo(p.x,p.y);c.stroke();this.last=p}}
+ up(){this.drawing=false}
+ doUndo(){const s=this.undo.pop();if(s){this.ctx.save();this.ctx.setTransform(1,0,0,1,0,0);this.ctx.globalCompositeOperation="source-over";this.ctx.putImageData(s,0,0);this.ctx.restore()}}
+ clear(){this.undo.push(this.ctx.getImageData(0,0,this.cv.width,this.cv.height));this.ctx.save();this.ctx.setTransform(1,0,0,1,0,0);this.ctx.clearRect(0,0,this.cv.width,this.cv.height);this.ctx.restore()}
+ isBlank(){const d=this.ctx.getImageData(0,0,this.cv.width,this.cv.height).data;for(let i=3;i<d.length;i+=4)if(d[i])return false;return true}
+}
+let boardS,ovS;const ovStore={};
+function toolbar(host,getS){host.innerHTML=`<div class="tb" role="toolbar" aria-label="${t("board")}"><button type="button" class="tbtn" data-m="pen" aria-label="${t("pen")}" title="${t("pen")}">${ic("pencil")}</button><button type="button" class="tbtn" data-m="eraser" aria-label="${t("eraser")}" title="${t("eraser")}">${ic("eraser")}</button><span class="sepv"></span>${COLORS.map(c=>`<button type="button" class="cd" data-c="${c}" aria-label="${t("color")} ${c}"><i style="background:${c}"></i></button>`).join("")}<span class="sepv"></span><input type="range" min="2" max="24" value="${TOOL.size}" aria-label="${t("size")}"><span class="sepv"></span><button type="button" class="tbtn" data-u aria-label="${t("undo")}" title="${t("undo")}">${ic("undo")}</button><button type="button" class="tbtn" data-x aria-label="${t("clear")}" title="${t("clear")}">${ic("trash")}</button></div>`;
+ host.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{TOOL.mode=b.dataset.m;syncTools()});
+ host.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{TOOL.color=b.dataset.c;TOOL.mode="pen";syncTools()});
+ host.querySelector("input").oninput=e=>{TOOL.size=+e.target.value;syncTools()};
+ host.querySelector("[data-u]").onclick=()=>getS().doUndo();host.querySelector("[data-x]").onclick=()=>getS().clear()}
+function syncTools(){$$(".tb").forEach(tb=>{tb.querySelectorAll("[data-m]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===TOOL.mode));tb.querySelectorAll("[data-c]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.c===TOOL.color&&TOOL.mode==="pen"));tb.querySelector("input").value=TOOL.size})}
+function buildToolbars(){toolbar($("#btb"),()=>boardS);toolbar($("#ovtb"),()=>ovS);syncTools()}
+boardS=new Surface($("#bcanvas"));ovS=new Surface($("#ovc"));
+
+/* overlay */
+function setOverlay(on){S.overlay=on;$("#drawTgl").setAttribute("aria-pressed",on);$("#ovc").classList.toggle("on",on);$("#ovtb").hidden=!on}
+$("#drawTgl").onclick=()=>setOverlay(!S.overlay);
+const ovKey=()=>S.tab+":"+S.idx[S.tab];
+function saveOv(){if(!ovS.cv.width)return;ovStore[ovKey()]=ovS.isBlank()?null:ovS.cv.toDataURL();ovS.ctx.save();ovS.ctx.setTransform(1,0,0,1,0,0);ovS.ctx.clearRect(0,0,ovS.cv.width,ovS.cv.height);ovS.ctx.restore();ovS.undo=[]}
+function restoreOv(){const u=ovStore[ovKey()];if(!u)return;const im=new Image();im.onload=()=>{ovS.ctx.save();ovS.ctx.setTransform(1,0,0,1,0,0);ovS.ctx.drawImage(im,0,0,ovS.cv.width,ovS.cv.height);ovS.ctx.restore()};im.src=u}
+$$(".tab").forEach(()=>{});
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#tabs .tab")&&S.screen===2){}},true);
+
+/* board window */
+const B=$("#board"),BT=$("#btitle");
+function placeBoard(){const w=Math.min(600,innerWidth-24),h=Math.min(440,innerHeight-100);B.style.width=w+"px";B.style.height=h+"px";B.style.left=Math.max(12,innerWidth-w-(S.rw&&!mobile()?330:24))+"px";B.style.top=Math.max(70,Math.round((innerHeight-h)/2)-20)+"px"}
+let placed=false;
+function showBoard(full){if(!placed){placeBoard();placed=true}B.classList.add("on");$("#pill").hidden=true;toggleMax(!!(full||mobile()));$("#boardBtn").setAttribute("aria-pressed","true");S.boardOpen=true;S.boardMin=false;setTimeout(()=>boardS.fit(),30)}
+function hideBoard(close){B.classList.remove("on");$("#pill").hidden=true;$("#boardBtn").setAttribute("aria-pressed","false");S.boardOpen=false}
+function minBoard(){B.classList.remove("on");$("#pill").hidden=false;S.boardMin=true}
+function toggleMax(on){B.classList.toggle("max",on);$("#bMax").setAttribute("aria-label",on?"Restore":t("maximize"));setTimeout(()=>boardS.fit(),30)}
+$("#boardBtn").onclick=()=>S.boardOpen?hideBoard():showBoard(false);
+$("#bX").onclick=()=>hideBoard();$("#bMin").onclick=()=>{if(mobile())hideBoard();else minBoard()};
+$("#bMax").onclick=()=>{if(mobile()){hideBoard();return}toggleMax(!B.classList.contains("max"))};
+$("#pill").onclick=()=>showBoard(false);
+let drag=null;
+BT.addEventListener("pointerdown",e=>{if(e.target.closest("button")||B.classList.contains("max"))return;const r=B.getBoundingClientRect();drag={dx:e.clientX-r.left,dy:e.clientY-r.top};BT.setPointerCapture(e.pointerId);BT.style.cursor="grabbing"});
+BT.addEventListener("pointermove",e=>{if(!drag)return;const w=B.offsetWidth,h=B.offsetHeight;B.style.left=Math.min(Math.max(0,e.clientX-drag.dx),innerWidth-Math.min(w,120))+"px";B.style.top=Math.min(Math.max(0,e.clientY-drag.dy),innerHeight-48)+"px"});
+["pointerup","pointercancel"].forEach(n=>BT.addEventListener(n,()=>{drag=null;BT.style.cursor=""}));
+BT.addEventListener("dblclick",e=>{if(!e.target.closest("button")&&!mobile())toggleMax(!B.classList.contains("max"))});
+let rzs=null;const RZ=$("#rz");
+RZ.addEventListener("pointerdown",e=>{const r=B.getBoundingClientRect();rzs={x:e.clientX,y:e.clientY,w:r.width,h:r.height};RZ.setPointerCapture(e.pointerId);e.preventDefault()});
+RZ.addEventListener("pointermove",e=>{if(!rzs)return;const l=B.offsetLeft,tp=B.offsetTop;B.style.width=Math.min(Math.max(320,rzs.w+e.clientX-rzs.x),innerWidth-l)+"px";B.style.height=Math.min(Math.max(300,rzs.h+e.clientY-rzs.y),innerHeight-tp)+"px"});
+["pointerup","pointercancel"].forEach(n=>RZ.addEventListener(n,()=>rzs=null));
+addEventListener("resize",()=>{if(!B.classList.contains("max")){const r=B.getBoundingClientRect();if(r.right>innerWidth)B.style.left=Math.max(0,innerWidth-r.width)+"px";if(r.bottom>innerHeight)B.style.top=Math.max(0,innerHeight-r.height)+"px"}if(S.sheet&&!mobile())closeSheet()});
+
+/* ============ Share ============ */
+const dlg=$("#shareDlg");
+function openShare(){$("#shA").hidden=false;$("#shB").hidden=true;if(!dlg.open)dlg.showModal()}
+$("#shareBtn").onclick=openShare;
+$$("[data-dclose]").forEach(b=>b.onclick=()=>dlg.close());
+dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
+$$(".choice").forEach(b=>b.onclick=()=>{S.mode=b.dataset.mode;shareStep()});
+function shareStep(){$("#shA").hidden=true;$("#shB").hidden=false;$("#shBT").textContent=t(S.mode==="live"?"tLive":"tSolo");$("#shHint").textContent=t(S.mode==="live"?"hintLive":"hintSolo");drawQR();$("#copyBtn").focus()}
+$("#shBack").onclick=()=>{$("#shA").hidden=false;$("#shB").hidden=true};
+$("#copyBtn").onclick=async()=>{const txt=$("#linkTxt").textContent;try{await navigator.clipboard.writeText("https://"+txt)}catch(e){}toast(t("copied"))};
+function drawQR(){const N=29,rng=(()=>{let s=482913;return()=>(s=(s*1664525+1013904223)>>>0)/4294967296})();const m=Array.from({length:N},()=>Array(N).fill(0));
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++)m[y][x]=rng()>.52?1:0;
+ const fin=(ox,oy)=>{for(let y=-1;y<8;y++)for(let x=-1;x<8;x++){const X=ox+x,Y=oy+y;if(X<0||Y<0||X>=N||Y>=N)continue;const edge=x===0||x===6||y===0||y===6,core=x>=2&&x<=4&&y>=2&&y<=4;m[Y][X]=(x>=0&&x<=6&&y>=0&&y<=6&&(edge||core))?1:0}};
+ fin(0,0);fin(N-7,0);fin(0,N-7);let r="";for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(m[y][x])r+=`<rect x="${x}" y="${y}" width="1" height="1"/>`;$("#qr").innerHTML=`<g fill="#24185F">${r}</g>`}
+$("#dlBtn").onclick=()=>toast(t("dl"));
+
+/* ============ init + dev ============ */
+const P=new URLSearchParams(location.search);
+setLang(P.get("lang")==="ar"?"ar":"en");
+if(P.has("dev")){const d=document.createElement("div");d.className="dev";d.innerHTML='<button data-d="1">Create</button><button data-d="2">Workspace</button><button data-d="3">Making</button><button data-d="4">Share</button><button data-d="5">Board</button>';document.body.appendChild(d);
+ d.onclick=e=>{const v=e.target.dataset.d;if(!v)return;if(v==="1")showScreen(1);if(v==="2")openLesson("Photosynthesis",false);if(v==="3")openLesson("Photosynthesis",true);if(v==="4"){if(S.screen!==2)openLesson("Photosynthesis",false);openShare()}if(v==="5"){if(S.screen!==2)openLesson("Photosynthesis",false);showBoard(false)}}}
+const sc=P.get("screen");if(sc==="2")openLesson("Photosynthesis",false);if(sc==="3")openLesson("Photosynthesis",true);
+const tb0=P.get("tab");if(tb0&&TABS.includes(tb0)&&S.screen===2){S.tab=tb0;renderAll()}
+/* test hook */
+window.__nibras={S,boardS,ovS,openLesson,showBoard,openShare,setOverlay};
+</script>
+</body>
+</html>
