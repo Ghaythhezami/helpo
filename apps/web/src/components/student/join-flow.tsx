@@ -10,6 +10,7 @@ import { useI18n, type TFunction } from "@/lib/i18n";
 import { qk, useJoinClasses, useJoinStudents } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Illus } from "@/components/ui/illus";
+import { Skeleton } from "@/components/ui/motion";
 import { ReadAloud } from "./read-aloud";
 
 type Live = JoinOption["live"];
@@ -133,7 +134,7 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
               {grade === null ? (
                 <p className="muted small">{t("join.class.first")}</p>
               ) : classes.isPending ? (
-                <p className="muted" role="status">{t("common.loading")}</p>
+                <div role="status" aria-busy="true"><Skeleton block={{ h: 64, r: 18 }} /><span className="sr">{t("common.loading")}</span></div>
               ) : classes.isError ? (
                 <p className="err" role="alert">{errorMessage(classes.error)}</p>
               ) : classes.data.length === 0 ? (
@@ -155,7 +156,7 @@ export function JoinFlow({ initialCode, school = "riverside", onBand }: { initia
               {!classId ? (
                 <p className="muted small">{t("join.name.first")}</p>
               ) : students.isPending ? (
-                <p className="muted" role="status">{t("common.loading")}</p>
+                <div role="status" aria-busy="true"><Skeleton block={{ h: 64, r: 18 }} /><span className="sr">{t("common.loading")}</span></div>
               ) : (
                 <div className="ntiles" role="group" aria-labelledby="j3">
                   {students.data?.map((s) => (

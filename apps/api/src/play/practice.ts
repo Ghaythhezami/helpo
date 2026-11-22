@@ -18,7 +18,7 @@ export function seededRng(seed: string): () => number {
   }
   let a = Math.imul(h ^ (h >>> 16), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909);
   return () => {
-    a = (a + 0x6d2b79f5) | 0;
+    a = Math.imul(a + 0x6d2b79f5, 1); // explicit int32 wrap (mulberry32), same sequence as `| 0`
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;

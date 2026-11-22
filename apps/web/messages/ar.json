@@ -302,6 +302,7 @@
   "new.subtitle": "شرائح وورقة عمل واختبار ولعبة وبطاقات، من ملفك في دقائق.",
   "new.select": "اختر ملف الدرس",
   "new.drop": "أو أفلته هنا",
+  "new.dropNow": "أفلت الملف هنا",
   "new.types": "PDF أو DOCX أو PPTX أو TXT، حتى 20 ميغابايت",
   "new.describe.link": "لا يوجد ملف؟ صِف الموضوع بدلًا من ذلك",
   "new.describe.label": "صِف الدرس",

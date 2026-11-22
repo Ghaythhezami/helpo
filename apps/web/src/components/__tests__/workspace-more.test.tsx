@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Workspace } from "@/components/teacher/workspace";
 import { itemRows } from "@/components/teacher/workspace";
@@ -148,8 +148,9 @@ describe("editing", () => {
     let returned = "Which organ catches light?";
     const { calls } = await open(lesson(), { "POST /resources/r-QUIZ/rewrite": () => ({ body: { text: returned } }), "PATCH /resources/r-QUIZ": () => ({ body: {} }) });
     const select = (text: string) => {
-      window.getSelection = (() => ({ toString: () => text })) as unknown as typeof window.getSelection;
-      fireEvent.mouseUp(document.querySelector(".ws-stage")!);
+      const stage = document.querySelector(".ws-stage")!;
+      window.getSelection = (() => ({ toString: () => text, anchorNode: stage.firstChild ?? stage })) as unknown as typeof window.getSelection;
+      act(() => { document.dispatchEvent(new Event("selectionchange")); });
     };
     select("Which part catches light?");
     expect(statusText()).toMatch(/Selected: Which part catches light\?/);

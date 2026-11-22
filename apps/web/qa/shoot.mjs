@@ -81,7 +81,7 @@ function mock(page, state) {
   });
 }
 
-const SIZES = [
+const ALL_SIZES = [
   { name: "tablet1024", w: 1024, h: 768 },
   { name: "mobile320", w: 320, h: 568 },
   { name: "desktop", w: 1440, h: 900 },
@@ -89,6 +89,8 @@ const SIZES = [
   { name: "mobile390", w: 390, h: 844 },
   { name: "mobile360", w: 360, h: 740 },
 ];
+
+const SIZES = process.env.SIZES ? ALL_SIZES.filter((s) => process.env.SIZES.split(",").includes(s.name)) : ALL_SIZES;
 
 const results_log = [];
 
@@ -120,6 +122,7 @@ async function run(size, lang, fn, name, state = {}) {
     await page.waitForTimeout(400);
     await page.screenshot({ path: `${dir}${name}-${lang}-${size.name}.png` });
     await scan(page, `${name} ${lang} ${size.name}`);
+    if (process.env.EVAL) results_log.push(`EVAL ${name} ${lang} ${size.name}: ` + JSON.stringify(await page.evaluate(process.env.EVAL)));
     if (size.w >= 1024 && name === "create" || name === "create-railcollapsed") {
       const box = await page.locator("aside.rail").boundingBox();
       const onRight = box.x > size.w / 2;

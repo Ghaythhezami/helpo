@@ -302,6 +302,7 @@
   "new.subtitle": "Slides, worksheet, quiz, game and cards, made from your file in minutes.",
   "new.select": "Select lesson file",
   "new.drop": "or drop it here",
+  "new.dropNow": "Release to add this file",
   "new.types": "PDF, DOCX, PPTX or TXT, up to 20 MB",
   "new.describe.link": "No file? Describe the topic instead",
   "new.describe.label": "Describe the lesson",

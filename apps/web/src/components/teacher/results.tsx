@@ -13,6 +13,7 @@ import { Panel, PillHeader } from "@/components/ui/card";
 import { Pill } from "@/components/ui/pill";
 import { Progress } from "@/components/ui/progress";
 import { Async, EmptyState } from "@/components/ui/states";
+import { CountUp } from "@/components/ui/motion";
 import { Tabs } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/toast";
 import { Donut, LineChart, StatusMark, TargetBar, masteryStatus } from "./charts";
@@ -134,9 +135,9 @@ export function ResultsBody({ lesson, results }: { lesson: LessonDetail; results
               )}
               <TableToggle pressed={Boolean(tables.donut)} onToggle={() => flip("donut")} />
               <div className="tiles" style={{ marginTop: 16 }}>
-                <div className="tile"><span className="muted small">{t("results.tile.correct")}</span><b><bdi dir="ltr">{correct} / {correct + wrong}</bdi></b></div>
-                <div className="tile"><span className="muted small">{t("results.tile.answered")}</span><b><bdi dir="ltr">{results.answered} / {results.classSize}</bdi></b></div>
-                <div className="tile"><span className="muted small">{t("results.tile.best")}</span><b>{pct(best)}</b></div>
+                <div className="tile"><span className="muted small">{t("results.tile.correct")}</span><b><bdi dir="ltr"><CountUp value={correct} format={(n) => `${Math.round(n)} / ${correct + wrong}`} /></bdi></b></div>
+                <div className="tile"><span className="muted small">{t("results.tile.answered")}</span><b><bdi dir="ltr"><CountUp value={results.answered} format={(n) => `${Math.round(n)} / ${results.classSize}`} /></bdi></b></div>
+                <div className="tile"><span className="muted small">{t("results.tile.best")}</span><b><CountUp value={best} format={(n) => pct(n)} /></b></div>
               </div>
             </Panel>)}
 
@@ -417,8 +418,8 @@ function ResultsSummary({ results, reteach }: { lesson: LessonDetail; results: R
   return (
     <>
       <div className="res-numbers" role="group" aria-label={t("results.numbers")}>
-        <div className="tile"><span className="muted small">{t("results.joined")}</span><b><bdi dir="ltr">{results.answered} / {results.classSize}</bdi></b></div>
-        <div className="tile"><span className="muted small">{t("results.average")}</span><b>{pct(results.average)}</b></div>
+        <div className="tile"><span className="muted small">{t("results.joined")}</span><b><bdi dir="ltr"><CountUp value={results.answered} format={(n) => `${Math.round(n)} / ${results.classSize}`} /></bdi></b></div>
+        <div className="tile"><span className="muted small">{t("results.average")}</span><b><CountUp value={results.average ?? 0} format={(n) => (results.average == null ? "–" : pct(n))} /></b></div>
         <div className="tile"><span className="muted small">{t("results.time")}</span><b>{minutes === null ? "–" : t("min.n", { n: Math.max(1, minutes) })}</b></div>
       </div>
       <Panel aria-labelledby="next-h" className="res-next">

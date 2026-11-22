@@ -59,3 +59,38 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  e2e:
+    name: Browser end-to-end (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: helpo
+          POSTGRES_PASSWORD: helpo-ci-only
+          POSTGRES_DB: helpo
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U helpo" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # The stack script swaps the database name to nibras_e2e on this server.
+      DATABASE_URL: postgresql://helpo:helpo-ci-only@localhost:5432/helpo?schema=public
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+      - run: npm run e2e -w @helpo/web
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: .e2e-stack/
+          retention-days: 7

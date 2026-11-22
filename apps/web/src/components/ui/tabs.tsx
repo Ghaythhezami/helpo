@@ -1,5 +1,7 @@
 "use client";
 import { useRef, type KeyboardEvent, type ReactNode } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { IS_TEST, SPRING } from "@/lib/motion";
 import { useI18n } from "@/lib/i18n";
 
 export interface TabItem {
@@ -18,6 +20,7 @@ export const panelDomId = (group: string, id: string) => `${group}-panel-${id}`;
 export function Tabs({ group, tabs, value, onChange, label }: { group: string; tabs: TabItem[]; value: string; onChange: (id: string) => void; label: string }) {
   const { t, dir } = useI18n();
   const refs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const reduce = useReducedMotion();
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const index = tabs.findIndex((t) => t.id === value);
@@ -52,6 +55,7 @@ export function Tabs({ group, tabs, value, onChange, label }: { group: string; t
           tabIndex={tab.id === value ? 0 : -1}
           onClick={() => onChange(tab.id)}
         >
+          {tab.id === value && <motion.span layoutId={`${group}-indicator`} className="tab-ind" aria-hidden="true" transition={reduce || IS_TEST ? { duration: 0 } : SPRING.snappy} />}
           {tab.label}
           {tab.badge ? (
             <span className="n">

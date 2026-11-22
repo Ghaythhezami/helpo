@@ -10,7 +10,7 @@ export default createJestConfig({
     "^better-auth/react$": "<rootDir>/src/test/better-auth-react.ts",
     "^motion/react$": "<rootDir>/src/test/motion.tsx",
   },
-  testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
+  testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/", "<rootDir>/e2e/"],
   collectCoverageFrom: ["src/lib/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}", "!src/**/*.d.ts", "!src/test/**"],
   coverageDirectory: "coverage",
   coverageReporters: ["text-summary", "lcov"],

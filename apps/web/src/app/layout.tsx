@@ -7,6 +7,7 @@ import "@/styles/teacher.css";
 import "@/styles/student.css";
 import "@/styles/extras.css";
 import "@/styles/app.css";
+import "@/styles/v7.css";
 import { layoutMetadata } from "@/lib/meta";
 import { Providers } from "./providers";
 

@@ -12,6 +12,7 @@ import { LessonCard, LessonsDialog } from "./lessons-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Illus } from "@/components/ui/illus";
+import { Skeleton } from "@/components/ui/motion";
 import { ErrorState } from "@/components/ui/states";
 import { ClassManager } from "./class-manager";
 import { useSelectedClassId } from "./shell";
@@ -25,7 +26,19 @@ export function CreateScreen() {
   const classes = useClasses();
   const { t } = useI18n();
   const [manage, setManage] = useState(false);
-  if (classes.isPending) return <p className="muted" role="status">{t("common.loading")}…</p>;
+  if (classes.isPending) {
+    return (
+      <div className="create" role="status" aria-busy="true">
+        <div className="create-skel">
+          <Skeleton block={{ h: 34, w: "58%", r: 10 }} />
+          <Skeleton block={{ h: 112, r: 24 }} />
+          <Skeleton block={{ h: 96, r: 20 }} />
+          <Skeleton block={{ h: 56, r: 999 }} />
+        </div>
+        <span className="sr">{t("common.loading")}…</span>
+      </div>
+    );
+  }
   // A failed load is not "no classes yet": say so and offer a retry instead of the empty state.
   if (classes.isError) return <ErrorState error={classes.error} onRetry={() => void classes.refetch()} />;
   const list = classes.data ?? [];
@@ -154,8 +167,8 @@ function CreateForm({ classes, onManage }: { classes: ClassSummary[]; onManage: 
           </div>
         ) : (
           <label className={`create-drop ${dragging ? "dragging" : ""}`}>
-            <FileText className="ic" aria-hidden="true" />
-            <span className="drop-main">{t("new.select")}</span>
+            <Illus name="cloud-upload" size={48} className="drop-ill" />
+            <span className="drop-main">{dragging ? t("new.dropNow") : t("new.select")}</span>
             <span className="drop-sub">{t("new.drop")} · {t("new.types")}</span>
             <input ref={input} type="file" className="sr" accept={FILE_TYPES} onChange={(e) => choose(e.target.files?.[0] ?? null)} />
           </label>
@@ -231,7 +244,7 @@ function CreateForm({ classes, onManage }: { classes: ClassSummary[]; onManage: 
               <button type="button" className="lnk" onClick={onManage}>{t("classes.manage")}</button>
             </div>
           </details>
-          <Button size="big" className="create-make" disabled={busy || !hasSource || (needRange && !RANGE.test(pageRange.trim()))} onClick={() => create.mutate(true)}>
+          <Button size="big" className="create-make" aria-busy={busy || undefined} disabled={busy || !hasSource || (needRange && !RANGE.test(pageRange.trim()))} onClick={() => create.mutate(true)}>
             {busy ? t("new.uploading") : t("new.make")}
           </Button>
         </div>
@@ -254,11 +267,14 @@ function PreviousLessons() {
         {list.length > 4 && <button type="button" className="lnk" onClick={() => setAll(true)}>{t("create.seeAll")}</button>}
       </div>
       {lessons.isPending ? (
-        <p className="muted" role="status">{t("common.loading")}…</p>
+        <div className="prev-skel" role="status" aria-busy="true">
+          {[0, 1, 2, 3].map((i) => <Skeleton key={i} block={{ h: 96, r: 18 }} />)}
+          <span className="sr">{t("common.loading")}…</span>
+        </div>
       ) : lessons.isError ? (
         <p className="err" role="alert">{errorMessage(lessons.error)}</p>
       ) : list.length === 0 ? (
-        <p className="muted">{t("create.previous.empty")}</p>
+        <div className="prev-empty"><Illus name="magic-book" size={44} /><p className="muted">{t("create.previous.empty")}</p></div>
       ) : (
         <ul className="prev-strip">
           {list.slice(0, 12).map((l) => <LessonCard key={l.id} lesson={l} />)}

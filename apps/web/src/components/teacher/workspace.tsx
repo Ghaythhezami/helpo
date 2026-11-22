@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   LOCALE_LABELS,
@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Async, EmptyState } from "@/components/ui/states";
 import { Tabs, panelDomId, tabDomId } from "@/components/ui/tabs";
+import { useFlip } from "@/lib/use-flip";
 import { useToast } from "@/components/ui/toast";
 import { RESOURCE_ART, RESOURCE_CARD_CLASS } from "@/lib/checks";
 import { Illus } from "@/components/ui/illus";
@@ -121,6 +122,25 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
   const openResults = useCallback(() => setDialog("results"), []);
   useRegisterWorkspace({ lessonId: lesson.id, title: lesson.title, tab, setTab: selectTab, boardOpen: board, toggleBoard, openShare, openResults });
   const [menu, setMenu] = useState(false);
+  const dlRef = useRef<HTMLDivElement>(null);
+  // The Download menu closes on Esc (focus back to its button), on a click outside, and when the tab changes.
+  useEffect(() => {
+    if (!menu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setMenu(false);
+      dlRef.current?.querySelector("button")?.focus();
+    };
+    const onDown = (e: PointerEvent) => {
+      if (dlRef.current && !dlRef.current.contains(e.target as Node)) setMenu(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onDown);
+    };
+  }, [menu]);
   const [dragFrom, setDragFrom] = useState<number | null>(null);
   const [menuRow, setMenuRow] = useState<number | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -206,10 +226,21 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [active, lesson.checks, resolve, focusCheck, board, dialog]);
 
-  const captureSelection = () => {
-    const text = window.getSelection()?.toString().trim() ?? "";
-    setSelection(text.length >= 3 ? text : "");
-  };
+  // "Ask Nibras" works on the passage selected inside the lesson stage. Listening to selectionchange covers mouse, touch
+  // and keyboard selection without making the stage a fake interactive element. A selection that moves outside the stage
+  // (for example into the Ask field) keeps the last passage.
+  const stageRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onSelection = () => {
+      const sel = window.getSelection();
+      const node = sel?.anchorNode;
+      if (!node || !stageRef.current?.contains(node)) return;
+      const text = sel?.toString().trim() ?? "";
+      setSelection(text.length >= 3 ? text : "");
+    };
+    document.addEventListener("selectionchange", onSelection);
+    return () => document.removeEventListener("selectionchange", onSelection);
+  }, []);
 
   /** Re-order / duplicate / delete items in the resource, saved as a new version with Undo. */
   const edit = (op: "up" | "down" | "dup" | "del" | "move", i: number, to?: number) => {
@@ -265,16 +296,28 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
     };
   });
 
+  const listRef = useRef<HTMLOListElement>(null);
+  useFlip(listRef);
+  const flipKeys = (() => {
+    const seen = new Map<string, number>();
+    return rows.map((r) => {
+      const base = r.label.replace(/^\d+\.\s*/, "");
+      const n = (seen.get(base) ?? 0) + 1;
+      seen.set(base, n);
+      return `${base}#${n}`;
+    });
+  })();
   const list = (
     <div className="ws-list" aria-label={t("ws.items")}>
       <h2>{t("ws.items")} <span className="muted small">({rows.length})</span></h2>
       {rows.length === 0 ? (
         <p className="muted small">{t("ws.items.none")}</p>
       ) : (
-        <ol>
+        <ol ref={listRef}>
           {rows.map((row, i) => (
             <li
-              key={i}
+              key={flipKeys[i]}
+              data-flip={flipKeys[i]}
               draggable={canEditList}
               className={dragFrom === i ? "dragging" : undefined}
               onDragStart={() => setDragFrom(i)}
@@ -380,12 +423,12 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
       <header className="ws-head">
         <Link href="/app" className="rbtn ws-back" aria-label={t("ws.back")}><ArrowLeft className="ic flip" aria-hidden="true" /></Link>
         <div className="ws-title">
-          <h1>{lesson.title}</h1>
+          <h1 title={lesson.title}>{lesson.title}</h1>
           <button type="button" className="info-btn" aria-label={t("ws.understood")} onClick={() => setDialog("info")}><Info className="ic" aria-hidden="true" /></button>
         </div>
-        <Tabs group="kit" tabs={tabs} value={tab} onChange={(id) => { setTab(id as ResourceKind); setSlideIndex(0); }} label={t("check.resources")} />
+        <Tabs group="kit" tabs={tabs} value={tab} onChange={(id) => { setTab(id as ResourceKind); setSlideIndex(0); setMenu(false); }} label={t("check.resources")} />
         <div className="ws-actions">
-          <div className="dl">
+          <div className="dl" ref={dlRef}>
             <button type="button" className="btn sm sec" aria-expanded={menu} disabled={!resource || resource.status !== "READY" || exportOptions(resource.kind).length === 0} onClick={() => setMenu((v) => !v)}>
               <Download className="ic" aria-hidden="true" /><span className="lbl">{t("ws.download")}</span>
             </button>
@@ -412,7 +455,7 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
       <div className={`ws-body ${left ? "" : "no-left"} ${right ? "" : "no-right"}`}>
         <aside className="ws-side ws-left">{left && !narrow && list}</aside>
         <section className="ws-center" role="tabpanel" id={panelDomId("kit", tab)} aria-labelledby={tabDomId("kit", tab)}>
-          <div className="ws-stage" tabIndex={0} onMouseUp={captureSelection} onKeyUp={captureSelection}>
+          <div key={tab} ref={stageRef} className="ws-stage enter">
             {!usable && lesson.status !== "READY" ? (
               <Making lesson={lesson} />
             ) : !resource ? (

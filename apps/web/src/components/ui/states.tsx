@@ -4,17 +4,15 @@ import type { ReactNode } from "react";
 import { ApiError, errorMessage } from "@/lib/api";
 import { Button } from "./button";
 import { Illus } from "./illus";
+import { Skeleton } from "./motion";
 import { useI18n } from "@/lib/i18n";
 
 export function LoadingState({ label }: { label?: string }) {
   const { t } = useI18n();
   return (
-    <div className="panel loading-state" role="status" aria-live="polite">
-      <span className="skel" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
+    <div className="panel loading-state" role="status" aria-live="polite" aria-busy="true">
+      <Skeleton block={{ h: 28, w: "46%", r: 10 }} lines={3} />
+      <Skeleton block={{ h: 120, r: 18 }} />
       <span className="sr">{label ?? t("common.loading")}…</span>
     </div>
   );
