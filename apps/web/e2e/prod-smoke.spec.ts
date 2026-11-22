@@ -22,7 +22,7 @@ test.describe("production smoke", () => {
     await page.goto("/login");
     await page.getByText("Student", { exact: true }).first().click();
     await expect(page).toHaveURL(/\/play$/);
-    await expect(page.getByRole("heading", { name: "Practice" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Practice", exact: true })).toBeVisible();
   });
 
   test("Admin card lands on the admin overview", async ({ page }) => {
