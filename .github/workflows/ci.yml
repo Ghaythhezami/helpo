@@ -84,6 +84,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run build -w @helpo/shared
+      - run: npm run db:generate
       - run: npx playwright install --with-deps chromium
         working-directory: apps/web
       - run: npm run e2e -w @helpo/web
