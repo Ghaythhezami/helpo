@@ -4,6 +4,7 @@ import { LIMITS, RESOURCE_KINDS, cleanPrompt, type CreateLessonBody, type Locale
 import type { z } from "zod";
 import { AI_PROVIDER, type AiProvider } from "../ai/ai.provider";
 import { asLocale, initialTranslations, writeCol } from "../common/i18n";
+import { shortTitle } from "../common/short-title";
 import { ProblemException, badRequest, notFound } from "../common/problem";
 import { lessonQuotaLimit } from "../common/quota";
 import { sharedCounterStore, type CounterStore } from "../common/rate-limit";
@@ -31,22 +32,7 @@ interface CachedSource {
   blueprint: Prisma.JsonValue | null;
 }
 
-/**
- * A short provisional title from a rough prompt: no "Lesson on:" lead-in, the first clause, at most 60 characters,
- * cut at a word boundary. The blueprint's title replaces it after analysis.
- */
-export function shortTitle(prompt: string): string {
-  const cleaned = prompt
-    .replace(/\s+/g, " ")
-    .replace(/^please\s+/i, "")
-    .replace(/^(lesson\s+(brief|plan|outline)|brief|topic|subject|title)\s*:\s*/i, "")
-    .replace(/^((teach|make|create|write|prepare|build)\s+(me\s+)?(a\s+)?)?(lesson|class|unit)\s+(on|about|for)\s*:?\s*/i, "")
-    .replace(/^(teach|explain)\s+/i, "")
-    .trim();
-  const clause = cleaned.split(/[.,;:\n!?]|\s[-\u2013\u2014]\s/)[0].trim() || cleaned;
-  const text = clause.length > 60 ? clause.slice(0, 60).replace(/\s+\S*$/, "") || clause.slice(0, 60) : clause;
-  return text ? text[0].toUpperCase() + text.slice(1) : "New lesson";
-}
+export { shortTitle };
 
 /**
  * Per-teacher upload limiter: 10 uploads per hour. Shared across instances through the Redis counter store when
@@ -150,6 +136,7 @@ export class PipelineService {
         ...(writeCol("unitTitle", cl, body.unitTitle ?? null) as object),
         lessonNumber: body.lessonNumber,
         durationMin: body.durationMin,
+        curriculum: body.curriculum ?? "GENERAL",
         prompt: prompt ?? null,
         aiWritten: !file,
         requestedKinds: (body.resources?.length ? body.resources : [...RESOURCE_KINDS]) as ResourceKind[],

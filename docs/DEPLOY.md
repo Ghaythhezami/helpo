@@ -26,6 +26,8 @@ Variables on `nibras-api`:
 ```
 DATABASE_URL=${{Postgres.DATABASE_URL}}   REDIS_URL=${{Redis.REDIS_URL}}   NODE_ENV=production
 QUEUE_DRIVER=inline|bullmq                REALTIME=poll|socket              WORKER_ONLY=false
+GENERATION_MODE=sequential|parallel       (default sequential: SLIDES, WORKSHEET, QUIZ, CARDS, GAME one after another; also shapes the BullMQ flow)
+QUIZ_CACHE_TTL_MS=60000                   (optional; memory bound of the in-process quiz content cache)
 WEB_URL / WEB_ORIGIN / BETTER_AUTH_URL = the web origin (https://nibras-web-sage.vercel.app)
 CORS_ORIGINS = extra allowed origins, comma-separated
 BETTER_AUTH_SECRET, STUDENT_COOKIE_SECRET, REALTIME_TOKEN_SECRET   (generated; local copy in .local/prod-secrets.env, gitignored)

@@ -1,5 +1,5 @@
 import { LOCALE_HEADER } from "@helpo/shared";
-import { ApiError, api, errorMessage, getApiLocale, setApiLocale } from "../api";
+import { ApiError, api, errorMessage, getApiLocale, getRequestStats, resetRequestStats, setApiLocale } from "../api";
 
 function respond(status: number, body?: unknown, contentType = "application/problem+json") {
   global.fetch = jest.fn(async () => new Response(body === undefined ? null : JSON.stringify(body), { status, headers: { "Content-Type": contentType } })) as unknown as typeof fetch;
@@ -65,5 +65,31 @@ describe("api client", () => {
   it("translates friendly messages by locale", () => {
     setApiLocale("ar");
     expect(errorMessage(new ApiError({ status: 404, title: "Not found" }))).toBe("لم نجد ما تبحث عنه.");
+  });
+});
+
+describe("request counter", () => {
+  beforeEach(() => resetRequestStats());
+
+  it("counts every call by path (query string excluded) and logs method and time", async () => {
+    respond(200, { ok: true }, "application/json");
+    await api("/lessons", { query: { classId: "c1" } });
+    await api("/lessons");
+    await api("/lessons", { method: "POST", body: {} });
+    await api("/me");
+    const stats = getRequestStats();
+    expect(stats.total).toBe(4);
+    expect(stats.byPath).toEqual({ "/lessons": 3, "/me": 1 });
+    expect(stats.log.map((l) => l.method)).toEqual(["GET", "GET", "POST", "GET"]);
+    expect(stats.log[0]).toEqual({ t: expect.any(Number), method: "GET", path: "/lessons" });
+  });
+
+  it("counts failed calls too, exposes itself on window and resets", async () => {
+    respond(500, { title: "x", status: 500 });
+    await api("/me").catch(() => undefined);
+    expect(window.__nibrasRequests).toBe(getRequestStats());
+    expect(window.__nibrasRequests?.total).toBe(1);
+    window.__nibrasRequests?.reset();
+    expect(getRequestStats()).toMatchObject({ total: 0, byPath: {}, log: [] });
   });
 });

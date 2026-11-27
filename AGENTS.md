@@ -52,7 +52,8 @@ The following must pass before you call a change finished:
 
 ## Product rules (owner decisions, do not change without asking)
 
-- **Navigation.** The logo always goes home: `/app` when signed in, `/` when signed out, `/join` on student screens. Teachers and admins get a collapsible side menu on the start side (mirrored in RTL), which becomes a drawer on phones. Students get no menu.
+- **Navigation.** The logo always goes home: `/app` when signed in, `/` when signed out, `/join` on student screens. Teachers and admins get a compact **top navigation bar** (logo, New lesson, My lessons, Classes, Admin for admins only, and an avatar menu with the EN/عربي switch and Sign out). There is no side rail. On phones the same items open in a drawer from a menu button (Esc closes it, focus is trapped, 44 px targets). The current lesson's tabs, whiteboard, Share and Results live **only** in the workspace header and bottom bar, never in the navigation, so no action appears twice. Students get no menu.
+- **Generation focus lock.** While a kit is generating (UPLOADED to GENERATING) the teacher sees one full-viewport generation view; the rest of the app is `inert`, Esc does nothing, other URLs redirect back to the lesson, and `beforeunload` warns. Exits: a confirmed "Cancel generation", or the kit finishing (READY or PARTIAL). The lock id lives in `localStorage` (`lib/generation-lock.ts`).
 - **Teacher app has two screens, and no page ever scrolls.**
   - `/app` (Create) holds upload or describe, Refine with AI, and the previous lessons.
   - `/app/lessons/[id]` (Workspace) holds the five tabs, the edit margins and the draggable whiteboard. Share and Results
@@ -108,8 +109,8 @@ The following must pass before you call a change finished:
 - Realtime:
   - `REALTIME=socket`: Socket.IO on the same port, rooms `lesson:{id}` and `session:{id}`, auth with a 5-minute token
     from `GET /api/realtime/token`.
-  - `REALTIME=poll`: the web app polls every 1.5 s.
-  - Polling always stays on as the fallback.
+  - `REALTIME=poll`: the web app polls every 5 s.
+  - Polling is only a fallback: while the one shared socket (`lib/realtime.ts`) is connected, the web app does not poll at all.
 - The rate limiter keys on `req.ip`. Set `TRUST_PROXY_HOPS` to the number of proxies in front (production uses 2:
   Vercel rewrite, then Railway).
 - **Migrations are created only with `npx prisma migrate dev --name <x>` in `apps/api`. Never hand-edit migration SQL.**
@@ -118,7 +119,7 @@ The following must pass before you call a change finished:
 
 - Every `/api/*` call goes through the Next.js rewrite to `API_ORIGIN` (same-origin cookies). Use `lib/api.ts` and the
   hooks in `lib/queries.ts`.
-- Live updates use `useRealtimeRoom` (`lib/realtime.ts`). It is enabled by `NEXT_PUBLIC_REALTIME=socket`; keep it.
+- Live updates use `useRealtimeRoom` (`lib/realtime.ts`): ONE Socket.IO connection per tab with ref-counted room joins, enabled by `NEXT_PUBLIC_REALTIME=socket`; keep it. Hooks in `lib/queries.ts` stop polling while it is connected and fall back to 5 s polling only while it is not. `window.__nibrasRequests` (with `NEXT_PUBLIC_DEBUG_REQUESTS=1`, or in tests) counts requests.
 - All UI strings live in `apps/web/messages/en.json` and `ar.json`. Keys must stay in parity (a test checks this).
 - Read `apps/web/AGENTS.md`: this Next.js version differs from training data, so check `node_modules/next/dist/docs/`.
 - Design: follow the v6 mockups and the UX audit in `docs/best-practices/ux.md`. Use one primitive system
@@ -145,3 +146,4 @@ The following must pass before you call a change finished:
 - Run **one `npm install` at a time from the repo root.** Concurrent installs corrupted `node_modules` before.
 - Don't push to Ghayth's repo except the `mockups` branch. Commit and push only when asked, and end commit messages
   with the co-author line.
+- **Generation is a focus mode.** While a kit is generating, a full-screen generation view locks the app: no navigation, no resource tabs, and direct URLs redirect back. The only exits are "Cancel generation" (with a confirm step) and completion. Progress is honest and tied to the real steps (analysis, then Slides → Worksheet → Quiz → Cards → Games).

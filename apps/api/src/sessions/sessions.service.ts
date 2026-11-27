@@ -1,11 +1,11 @@
 import { Injectable, Optional } from "@nestjs/common";
 import { EventBus } from "../jobs/job-queue";
 import { randomInt } from "node:crypto";
-import type { ActivitySession } from "@prisma/client";
-import { leaderboardAllowed, type CreateSessionBody, type LeaderboardMode, type Locale, QuizContent, SessionActionBody, SessionTeacherView } from "@helpo/shared";
+import { Prisma, type ActivitySession } from "@prisma/client";
+import { GAME_KINDS, leaderboardAllowed, splitGamePoints, type CreateSessionBody, type GameKind, type LeaderboardMode, type Locale, QuizContent, SessionActionBody, SessionTeacherView } from "@helpo/shared";
 import type { z } from "zod";
 import { badRequest, conflict, notFound } from "../common/problem";
-import { contentOf } from "../common/views";
+import { QUIZ_REF_SELECT, cachedQuiz, qrCache } from "../common/content-cache";
 import { PrismaService } from "../prisma/prisma.service";
 
 /** Student join URL carrying the code. */
@@ -15,12 +15,25 @@ export function joinLink(code: string): string {
 
 /** QR code of the join link as SVG (the qrcode package). Falls back to an empty string if it cannot be made. */
 export async function qrSvg(link: string): Promise<string> {
+  const cached = qrCache.get(link);
+  if (cached) return cached.value;
   try {
     const QRCode = await import("qrcode");
-    return await QRCode.toString(link, { type: "svg", margin: 1 });
+    const svg = await QRCode.toString(link, { type: "svg", margin: 1 });
+    qrCache.set(link, svg);
+    return svg;
   } catch {
     return "";
   }
+}
+
+/** The games published with a session: the stored list, else the single game, else null (nothing restricted). */
+export function sessionGames(s: { games?: unknown; game?: GameKind | null }): GameKind[] | null {
+  if (Array.isArray(s.games)) {
+    const valid = s.games.filter((g): g is GameKind => typeof g === "string" && (GAME_KINDS as string[]).includes(g));
+    if (valid.length) return [...new Set(valid)];
+  }
+  return s.game ? [s.game] : null;
 }
 
 /** The shared actions plus open/close of a share link. */
@@ -39,6 +52,18 @@ export class SessionsService {
     private readonly prisma: PrismaService,
     @Optional() private readonly events?: EventBus,
   ) {}
+
+  /** session.state: the room learns every change of the session (counts and flags only, never answers). */
+  private emitState(view: SessionTeacherView): SessionTeacherView {
+    this.events?.emit(`session:${view.id}`, "session.state", {
+      sessionId: view.id,
+      status: view.status,
+      currentQuestion: view.currentQuestion,
+      revealed: view.revealed,
+      isOpen: view.isOpen,
+    });
+    return view;
+  }
 
   /** session.question: the room learns which question is open (students poll in poll mode). */
   private async emitQuestion(view: SessionTeacherView): Promise<SessionTeacherView> {
@@ -63,7 +88,7 @@ export class SessionsService {
     throw conflict("Could not find a free join code. Try again in a moment.");
   }
 
-  async create(teacherId: string, body: z.infer<typeof CreateSessionBody>, locale: Locale, extra: { expiresInHours?: number; leaderboard?: LeaderboardMode } = {}): Promise<SessionTeacherView> {
+  async create(teacherId: string, body: z.infer<typeof CreateSessionBody>, locale: Locale, extra: { expiresInHours?: number; leaderboard?: LeaderboardMode; games?: GameKind[] } = {}): Promise<SessionTeacherView> {
     const lesson = await this.prisma.lesson.findFirst({
       where: { id: body.lessonId, teacherId },
       include: { resources: { select: { kind: true, status: true } }, classRoom: { select: { band: true } } },
@@ -74,6 +99,7 @@ export class SessionsService {
     if (body.type === "LIVE_QUIZ" && !ready("QUIZ")) throw badRequest("The quiz is not ready yet.");
     if (body.type === "GAME" && !ready("GAME")) throw badRequest("The game is not ready yet.");
     if (body.type === "ASSIGNMENT" && !ready("QUIZ") && !ready("GAME")) throw badRequest("Nothing is ready to assign yet.");
+    const publishedGames = body.type === "LIVE_QUIZ" ? undefined : extra.games?.length ? [...new Set(extra.games)] : undefined;
     const joinCode = await this.uniqueJoinCode();
     const live = body.type !== "LIVE_QUIZ"; // games and assignments have no lobby
     const session = await this.prisma.activitySession.create({
@@ -81,7 +107,9 @@ export class SessionsService {
         lessonId: lesson.id,
         classId: lesson.classId,
         type: body.type,
-        game: body.type === "GAME" ? (body.game ?? "MATCH") : (body.game ?? null),
+        // the teacher's published games (a share may publish 2 of 6); `game` stays the first one for older clients
+        game: body.type === "GAME" ? (publishedGames?.[0] ?? body.game ?? "MATCH") : (publishedGames?.[0] ?? body.game ?? null),
+        games: publishedGames ? (publishedGames as unknown as Prisma.InputJsonValue) : Prisma.DbNull,
         status: live ? "LIVE" : "LOBBY",
         startedAt: live ? new Date() : null,
         joinCode,
@@ -101,6 +129,10 @@ export class SessionsService {
   }
 
   async action(teacherId: string, id: string, action: SessionAction, locale: Locale): Promise<SessionTeacherView> {
+    return this.emitState(await this.perform(teacherId, id, action, locale));
+  }
+
+  private async perform(teacherId: string, id: string, action: SessionAction, locale: Locale): Promise<SessionTeacherView> {
     const session = await this.owned(teacherId, id);
     if (session.status === "ENDED") throw conflict("This session has ended.");
     if (action === "open" || action === "close") {
@@ -140,15 +172,16 @@ export class SessionsService {
     return (await this.quiz(lessonId, "en"))?.questions.length ?? 0;
   }
 
+  /** The lesson's quiz: a light key lookup, then the parsed content from the LRU (one query on a miss, none on a hit). */
   private async quiz(lessonId: string, locale: Locale): Promise<QuizContent | null> {
-    const r = await this.prisma.resource.findUnique({ where: { lessonId_kind: { lessonId, kind: "QUIZ" } }, select: { contentEn: true, contentAr: true } });
-    return r ? contentOf<QuizContent>(r, locale).content : null;
+    const ref = await this.prisma.resource.findUnique({ where: { lessonId_kind: { lessonId, kind: "QUIZ" } }, select: QUIZ_REF_SELECT });
+    return cachedQuiz(this.prisma, ref, locale);
   }
 
   async view(s: ActivitySession, locale: Locale): Promise<SessionTeacherView> {
     const isQuiz = s.type === "LIVE_QUIZ";
     const [quiz, participants, classSize, answers] = await Promise.all([
-      isQuiz ? this.quiz(s.lessonId, locale) : Promise.resolve(null),
+      isQuiz ? this.quiz(s.lessonId, locale) : Promise.resolve(null), // key lookup + cache: the quiz JSON is not reloaded per poll
       this.prisma.participant.findMany({ where: { sessionId: s.id }, select: { id: true, displayName: true, student: { select: { fullName: true } } } }),
       this.prisma.student.count({ where: { classId: s.classId } }),
       isQuiz ? this.prisma.answer.findMany({ where: { sessionId: s.id, questionIndex: s.currentQuestion }, select: { participantId: true, optionIndex: true } }) : Promise.resolve([]),
@@ -167,6 +200,7 @@ export class SessionsService {
       lessonId: s.lessonId,
       type: s.type,
       game: s.game,
+      games: splitGamePoints(sessionGames(s) ?? []),
       status: s.status,
       joinCode: s.joinCode,
       namesHidden: s.namesHidden,

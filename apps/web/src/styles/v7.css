@@ -266,17 +266,6 @@
 }
 
 /* The older `.rail button` rule (56 px white tiles) out-ranked the rail items; rail items are one flat list now. */
-.tapp .rail .rail-item, .tapp .rail .rail-toggle { min-height: 44px; border: 0; border-radius: var(--r-md); background: transparent; }
-.tapp .rail .rail-item:hover, .tapp .rail .rail-toggle:hover { background: var(--soft); }
-.tapp .rail .rail-item[aria-current="page"] { background: var(--grad); color: #fff; box-shadow: var(--btnsh); }
-.tapp .rail .rail-item[aria-pressed="true"] { background: var(--soft); }
-.tapp .rail { display: flex; flex-direction: column; gap: var(--sp-1); }
-.rail-body { overflow: hidden; }
-.rail-nav { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; align-content: start; }
-.rail-foot { flex: none; }
-.tapp .rail .rail-item { transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast), transform var(--dur-press) var(--ease-out); }
-.tapp .rail .rail-item:active { transform: scale(0.98); }
-.drawer-menu .rail-nav { overflow: visible; }
 
 /* ───────────── Share: code reveal and QR ───────────── */
 .share-code .code { animation: v7-pop var(--dur-enter) var(--ease-out) backwards; transform-origin: var(--origin-start); }

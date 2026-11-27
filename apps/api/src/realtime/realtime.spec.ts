@@ -3,7 +3,7 @@ import { REALTIME_TOKEN_TTL_SECONDS, signRealtimeToken, verifyRealtimeToken } fr
 import { mockPrisma } from "../testing/mock-prisma";
 import { adminEmails, adminGuard } from "../admin/bull-board";
 import { captureError, initSentry, sentryEnabled } from "../observability/sentry";
-import { canJoin } from "./realtime.gateway";
+import { RealtimeGateway, canJoin } from "./realtime.gateway";
 import { RealtimeController } from "./realtime.controller";
 
 beforeAll(() => {
@@ -108,5 +108,49 @@ describe("Bull Board guard and Sentry", () => {
     expect(initSentry({} as NodeJS.ProcessEnv)).toBe(false);
     expect(sentryEnabled()).toBe(false);
     expect(() => captureError(new Error("x"))).not.toThrow();
+  });
+});
+
+describe("RealtimeGateway", () => {
+  const fakeSocket = (identity?: unknown) => ({ data: { identity }, join: jest.fn(), leave: jest.fn() });
+
+  it("rejects a handshake without a valid token and accepts a student token", () => {
+    const gateway = new RealtimeGateway(mockPrisma());
+    let middleware: (socket: unknown, next: (e?: Error) => void) => void = () => undefined;
+    gateway.afterInit({ use: (fn: typeof middleware) => (middleware = fn) } as never);
+    const bad = jest.fn();
+    middleware({ handshake: { auth: { token: "nope" } }, data: {} }, bad);
+    expect(bad.mock.calls[0][0]).toBeInstanceOf(Error);
+    const ok = jest.fn();
+    const socket = { handshake: { auth: { token: signRealtimeToken({ kind: "student", id: "S1", classId: "C1" }) } }, data: {} as Record<string, unknown> };
+    middleware(socket, ok);
+    expect(ok).toHaveBeenCalledWith();
+    expect(socket.data.identity).toMatchObject({ kind: "student", id: "S1", classId: "C1" });
+  });
+
+  it("a student joins the session room of their own class with their realtime token, and nothing else", async () => {
+    const db = mockPrisma();
+    const gateway = new RealtimeGateway(db);
+    const student = { kind: "student", id: "S1", classId: "C1", exp: 1 };
+    db.activitySession.findFirst.mockResolvedValue({ id: "SE1" });
+    const socket = fakeSocket(student);
+    expect(await gateway.join(socket as never, { room: "session:SE1" })).toEqual({ ok: true });
+    expect(socket.join).toHaveBeenCalledWith("session:SE1");
+    expect(db.activitySession.findFirst).toHaveBeenLastCalledWith({ where: { id: "SE1", classId: "C1" }, select: { id: true } });
+    // another class's session, a lesson room, a missing identity and a malformed body are all refused
+    db.activitySession.findFirst.mockResolvedValue(null);
+    expect(await gateway.join(socket as never, { room: "session:OTHER" })).toEqual({ ok: false });
+    expect(await gateway.join(socket as never, { room: "lesson:L1" })).toEqual({ ok: false });
+    expect(await gateway.join(fakeSocket() as never, { room: "session:SE1" })).toEqual({ ok: false });
+    expect(await gateway.join(socket as never, {} as never)).toEqual({ ok: false });
+    expect(socket.join).toHaveBeenCalledTimes(1);
+  });
+
+  it("leave drops the room", async () => {
+    const gateway = new RealtimeGateway(mockPrisma());
+    const socket = fakeSocket({ kind: "teacher", id: "T1", exp: 1 });
+    expect(await gateway.leave(socket as never, { room: "session:SE1" })).toEqual({ ok: true });
+    expect(socket.leave).toHaveBeenCalledWith("session:SE1");
+    expect(await gateway.leave(socket as never, {} as never)).toEqual({ ok: true });
   });
 });

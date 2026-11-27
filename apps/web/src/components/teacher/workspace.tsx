@@ -37,11 +37,11 @@ import { Illus } from "@/components/ui/illus";
 import { Note } from "./check-view";
 import { ExportBar } from "./lesson-actions";
 import { Making } from "./making";
-import { CardsPreview, GamePreview, QuizPreview, SlidesPreview, WorksheetPreview } from "./previews";
+import { CardsPreview } from "./cards-deck";
+import { GamePreview, QuizPreview, SlidesPreview, WorksheetPreview } from "./previews";
 import { ResultsBody } from "./results";
 import { ShareDialogBody } from "./share-dialog";
 import { ItemEditor } from "./item-editor";
-import { useRegisterWorkspace } from "./workspace-bridge";
 import { BlueprintPanel } from "./lesson-actions";
 import { ShownInChip, TranslationBanner, useAutoTranslate } from "./translation-banner";
 import { DrawLayer, Whiteboard } from "./whiteboard";
@@ -117,10 +117,6 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
     setTab(k);
     setSlideIndex(0);
   }, []);
-  const toggleBoard = useCallback(() => setBoard((v) => !v), []);
-  const openShare = useCallback(() => setDialog("share"), []);
-  const openResults = useCallback(() => setDialog("results"), []);
-  useRegisterWorkspace({ lessonId: lesson.id, title: lesson.title, tab, setTab: selectTab, boardOpen: board, toggleBoard, openShare, openResults });
   const [menu, setMenu] = useState(false);
   const dlRef = useRef<HTMLDivElement>(null);
   // The Download menu closes on Esc (focus back to its button), on a click outside, and when the tab changes.
@@ -371,7 +367,6 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
       {resource?.status === "READY" && resource.content && resource.kind !== "GAME" && (
         <ItemEditor resource={resource} index={slideIndex} onSave={(content) => save.mutate({ resource, content, undoTo: resource.content })} />
       )}
-      <Button size="sm" variant="secondary" disabled={!usable} onClick={() => { setSheet(null); setDialog("results"); }}><BarChart3 className="ic" aria-hidden="true" />{t("steps.results")}</Button>
       {resource?.status === "READY" && (
         <form
           className="ask"
@@ -426,7 +421,7 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
           <h1 title={lesson.title}>{lesson.title}</h1>
           <button type="button" className="info-btn" aria-label={t("ws.understood")} onClick={() => setDialog("info")}><Info className="ic" aria-hidden="true" /></button>
         </div>
-        <Tabs group="kit" tabs={tabs} value={tab} onChange={(id) => { setTab(id as ResourceKind); setSlideIndex(0); setMenu(false); }} label={t("check.resources")} />
+        <Tabs group="kit" tabs={tabs} value={tab} onChange={(id) => { selectTab(id as ResourceKind); setMenu(false); }} label={t("check.resources")} />
         <div className="ws-actions">
           <div className="dl" ref={dlRef}>
             <button type="button" className="btn sm sec" aria-expanded={menu} disabled={!resource || resource.status !== "READY" || exportOptions(resource.kind).length === 0} onClick={() => setMenu((v) => !v)}>
@@ -447,7 +442,8 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
               <Eye className="ic" aria-hidden="true" /><span className="lbl">{t("preview.student")}</span>
             </Link>
           )}
-          <button type="button" className="btn sm" disabled={!usable} onClick={() => setDialog("share")}><Send className="ic flip" aria-hidden="true" /><span className="lbl">{t("share.cta")}</span></button>
+          <button type="button" className="btn sm sec keep" aria-label={t("steps.results")} disabled={!usable} onClick={() => setDialog("results")}><BarChart3 className="ic" aria-hidden="true" /><span className="lbl">{t("steps.results")}</span></button>
+          <button type="button" className="btn sm keep" disabled={!usable} onClick={() => setDialog("share")}><Send className="ic flip" aria-hidden="true" /><span className="lbl">{t("share.cta")}</span></button>
         </div>
       </header>
       <TranslationBanner lesson={lesson} failed={auto.failed} onRetry={auto.retry} />
@@ -492,6 +488,7 @@ function WorkspaceBody({ lesson }: { lesson: LessonDetail }) {
         <button type="button" className="tool mob" onClick={() => setSheet("list")}><ListChecks className="ic" aria-hidden="true" />{t("ws.list")}</button>
         <button type="button" className="tool mob" onClick={() => setSheet("edit")}><PenLine className="ic" aria-hidden="true" />{t("ws.edit")}{open.length > 0 ? ` (${open.length})` : ""}</button>
         <button type="button" className="tool mob" aria-pressed={board} onClick={() => setBoard((v) => !v)}><Monitor className="ic" aria-hidden="true" />{t("ws.board")}</button>
+        <button type="button" className="tool mob" disabled={!usable} onClick={() => setDialog("results")}><BarChart3 className="ic" aria-hidden="true" />{t("steps.results")}</button>
         <button type="button" className="tool mob primary" disabled={!usable} onClick={() => setDialog("share")}><Send className="ic flip" aria-hidden="true" />{t("ws.share")}</button>
       </nav>
 

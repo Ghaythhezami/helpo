@@ -11,7 +11,8 @@ import { saveLastResult } from "@/lib/student-helpers";
 import { Async } from "@/components/ui/states";
 import { useToast } from "@/components/ui/toast";
 import { GameBar, PauseDialog, type GameProps } from "./game-bits";
-import { EquationGame, MatchGame, MemoryGame, SortGame, TrueFalseGame } from "./games";
+import type { GameResult } from "@/lib/games/result";
+import { EquationGame, MatchGame, MemoryGame, OddOneOutGame, SortGame, TrueFalseGame } from "./games";
 
 export function GamePlay({ lessonId, game }: { lessonId: string; game: string }) {
   const { t } = useI18n();
@@ -48,7 +49,7 @@ function GameScreen({ lessonId, kind, content, title }: { lessonId: string; kind
   }, [timer, paused]);
 
   const submit = useMutation({
-    mutationFn: (r: { total: number; firstTryCorrect: number; retriedCorrect: number }) =>
+    mutationFn: (r: GameResult) =>
       api<GameResultView>("/play/games/result", { method: "POST", body: { lessonId, game: kind, ...r } }),
     onSuccess: async (result) => {
       saveLastResult({ game: kind, lessonId, result });
@@ -80,10 +81,11 @@ function GameScreen({ lessonId, kind, content, title }: { lessonId: string; kind
       />
       <p className="sr" role="status">{title}</p>
       <div key={attempt}>
-        {kind === "MATCH" && <MatchGame {...props} />}
-        {kind === "MEMORY" && <MemoryGame {...props} />}
         {kind === "SORT" && <SortGame {...props} />}
         {kind === "EQUATION" && <EquationGame {...props} />}
+        {kind === "ODD_ONE_OUT" && <OddOneOutGame {...props} />}
+        {kind === "MATCH" && <MatchGame {...props} />}
+        {kind === "MEMORY" && <MemoryGame {...props} />}
         {kind === "TRUE_FALSE" && <TrueFalseGame {...props} timed={ui.timers || band === "NAVIGATOR"} />}
       </div>
       {submit.isError && (

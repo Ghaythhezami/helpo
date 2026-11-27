@@ -1,0 +1,55 @@
+/* v8-cards: flip-card deck, grid and piles (tokens from v7.css) */
+.cdk-doc { display: flex; flex-direction: column; gap: var(--sp-2); min-height: 0; }
+.cdk-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); }
+.cdk-head h3 { margin: 0; margin-inline-end: auto; }
+.cdk-seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--r-pill); background: var(--c-surface-sunk); border: 2px solid var(--c-border); }
+.cdk-seg button { min-height: 44px; min-width: 64px; padding: 0 var(--sp-4); border: 0; border-radius: var(--r-pill); background: transparent; color: var(--c-text); font: inherit; font-weight: var(--fw-strong); cursor: pointer; }
+.cdk-seg button[aria-checked="true"] { background: var(--c-accent); color: #fff; box-shadow: var(--e1); }
+.cdk-seg button:focus-visible, .cdk-card:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+
+.cdk { display: flex; flex-direction: column; gap: var(--sp-3); min-height: 0; width: 100%; max-width: 640px; margin-inline: auto; }
+.cdk-top { display: flex; align-items: center; gap: var(--sp-3); }
+.cdk-bar { flex: 1; }
+.cdk-count { font-weight: var(--fw-strong); font-variant-numeric: tabular-nums; color: var(--c-text-muted); }
+
+.cdk-stage { perspective: 1200px; display: grid; place-items: center; min-height: 200px; height: clamp(200px, 38vh, 340px); }
+.cdk-card { position: relative; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; cursor: pointer; touch-action: pan-y; border-radius: var(--r-xl); -webkit-tap-highlight-color: transparent; }
+.cdk-flip { position: absolute; inset: 0; display: block; transform-style: preserve-3d; }
+.cdk-face { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-3); padding: var(--sp-5); border-radius: var(--r-xl); box-shadow: var(--e2); text-align: center; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: auto; }
+.cdk-face b { font-size: clamp(1.25rem, 3.4vw, 1.9rem); line-height: var(--lh-snug); overflow-wrap: anywhere; }
+.cdk-face .chip { align-self: center; }
+.cdk-face.front { background: var(--grad); color: #fff; }
+.cdk-face.front .chip { background: rgba(255, 255, 255, 0.92); color: var(--c-text); }
+.cdk-face.back { background: var(--c-surface-sunk); color: var(--c-text); border: 2px solid var(--c-border-strong); transform: rotateY(180deg); }
+.cdk-emoji { font-size: 2.6rem; line-height: 1; }
+.cdk-card:active .cdk-flip { scale: 0.99; }
+
+/* Reduced motion: no rotation, the faces cross-fade and sit on top of each other. */
+@media (prefers-reduced-motion: reduce) {
+  .cdk-face.back { transform: none; }
+  .cdk-card:active .cdk-flip { scale: 1; }
+}
+
+.cdk-hint { margin: 0; text-align: center; font-size: var(--fs-sm); }
+.cdk-sort { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.cdk-sort .btn { min-height: 48px; width: 100%; padding-inline: var(--sp-3); }
+.cdk-sort .btn[aria-disabled="true"] { opacity: 0.55; cursor: default; }
+.cdk-nav { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); flex-wrap: wrap; }
+.cdk-nav .btn { min-height: 44px; }
+.cdk-icon { min-width: 44px; padding-inline: var(--sp-3); }
+.cdk-piles { display: flex; gap: var(--sp-3); margin: 0; padding: 0; list-style: none; font-size: var(--fs-sm); font-weight: var(--fw-strong); color: var(--c-text-muted); }
+.cdk-piles li { padding: var(--sp-1) var(--sp-3); border-radius: var(--r-pill); background: var(--c-surface-sunk); border: 1px solid var(--c-border); }
+
+.cdk-finish { display: grid; gap: var(--sp-3); place-items: center; text-align: center; padding: var(--sp-5); border-radius: var(--r-xl); background: var(--c-surface-sunk); border: 2px solid var(--c-border); box-shadow: var(--e1); min-height: 200px; align-content: center; }
+.cdk-finish h4, .cdk-finish p { margin: 0; }
+.cdk-actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); justify-content: center; }
+
+.cdk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--sp-3); margin: 0; padding: 0 0 var(--sp-2); list-style: none; overflow: auto; max-height: 100%; }
+.cdk-mini { display: grid; gap: var(--sp-2); align-content: start; padding: var(--sp-3); border-radius: var(--r-md); background: var(--c-surface); border: 2px solid var(--c-border-strong); box-shadow: var(--e1); }
+.cdk-mini b { padding-bottom: var(--sp-2); border-bottom: 1px dashed var(--c-border-strong); }
+.cdk-mini > span:last-child { color: var(--c-text-muted); }
+
+@media (max-width: 480px) {
+  .cdk-stage { height: clamp(200px, 34vh, 300px); }
+  .cdk-nav { justify-content: center; }
+}

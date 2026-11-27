@@ -77,3 +77,59 @@ Every animation uses `transform` and `opacity` (the chart reveals use SVG stroke
 - Reducing the heavy 800 to 900 weights across the old sheets.
 - Rewriting the landing page and moving the demo credentials out of public view.
 - A rendered Windows High Contrast check, screen-reader pass and a MotionScore audit (the Motion+ audit methodology needs the paid Motion+ MCP; a manual review against its rules is in the final report).
+
+
+---
+
+## v8 refinement (2026-11-27, after the team review meeting)
+
+Brief: better navigation and use of space, much better mini-games and cards, far fewer requests, refinement throughout. The owner then added a focus lock and a signature loading animation for kit generation.
+
+### What changed
+
+| Area | Change |
+|---|---|
+| Navigation | The side rail is gone. A compact top bar holds the logo, New lesson, My lessons, Classes, Admin (admins) and the avatar menu (EN/عربي, Sign out). Phones get the same items in a drawer (Esc closes, focus trapped, 44 px). The open lesson's tabs, whiteboard, Share and Results live only in the workspace header and bottom bar. The workspace now uses the full width. |
+| Create | A Curriculum select sits next to Class and Language (default General, labels from `CURRICULUM_LABELS`, sent in `CreateLessonBody`). |
+| Generation | Making a kit opens one full-viewport generation view and a focus lock (`lib/generation-lock.ts`): the app behind is `inert`, Esc does nothing, other URLs redirect back, `beforeunload` warns, a refresh re-locks from `localStorage` or from the lessons list. Exits: confirmed Cancel, or READY / PARTIAL. A lamp hero draws a line of light to each resource as it is made (real `resource.progress`), with analysis then Slides, Worksheet, Quiz, Cards, Games each in waiting / working / done / failed with retry. Reduced motion shows a static ring. |
+| Requests | One shared socket per tab, ref-counted rooms, one token fetch, backoff. No polling while connected; 5 s light-status fallback only while disconnected. See `apps/web/src/lib/REQUESTS.md`. |
+| Games | Thinking games first everywhere (`GAME_KINDS`). New Odd one out. Reasons on wrong answers, optional hints with their cost, Match rounds of 3, 4, 5 pairs, Sort and Sequence by drag, tap or keyboard. Points shown apart from XP, `wrongTries` and `hintsUsed` posted. |
+| Cards | Flip deck (tap, Space, arrows, swipe), progress bar, shuffle, Got it / Review again piles with a review loop, grid toggle and a print-to-PDF link for teachers. |
+| Share | The teacher ticks the games to publish (top two thinking games by default), sees the points split live, and `ShareBody.games` is sent. The live board lists the published games and their points. |
+
+### Audit findings and fixes
+
+Method: every screen captured with `qa/shoot.mjs` (mocked API) at 1440, 1280, 1024, 390 and 360 in EN and AR, plus the generation frames (`qa/gen-frames.mjs`). Lenses: the impeccable critique questions (hierarchy, rhythm, use of space, states), the UX KB rules on loading, motion and navigation (`kbq rules`). The `impeccable` and `taste` skills were not run as skills in this pass; their checks were applied by hand.
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 | The old `.board` rule in `teacher.css` (a two-column grid for the live board) leaked into every game board. In the Explorer sort game the how-to text sat beside the tiles and the baskets fell off the screen. | Game boards are plain blocks (`v8-games.css`). |
+| 2 | Explorer tiles: the read-aloud button covered the label ("Choc", "Sunli"). | Wider Explorer tiles, label wraps, compact tiles on short screens so the baskets stay in view at 1280x720. |
+| 3 | Workspace header at 1280 and below hid the labels of every action, including Share and Results, and wasted the free space on the title row. | Share and Results keep their labels above 700 px; Download and Preview stay icon-only. |
+| 4 | RTL item rows clipped the start of Latin text ("otosynthesis"). | Item rows are flex rows that wrap. |
+| 5 | A lesson title in the other language lost its start to the ellipsis ("...s: how plants make food"). | `unicode-bidi: plaintext` on titles. |
+| 6 | Odd one out cards were a thin strip in the top half of a 900 px screen. | Larger cards and gaps on tall desktops. |
+| 7 | Curriculum labels were cut in the select ("General (no national cur"). | Select may grow to 300 px. |
+| 8 | Generation view on a 360 px phone pushed Cancel and the last step off screen; the percent overlapped the lamp. | Compact hero, smaller title and rows on small screens, percent under the lamp. The view fits 360x740, 390x844, 1024x768, 1280x720 and 1440x900 without scrolling. |
+| 9 | The generation view stalled when a lesson rested at ANALYZED (polling stopped). | The generation view treats ANALYZED as busy (`awaitGeneration`); the workspace does not. |
+| 10 | Duplicated actions: Results was in the rail, the edit panel and a dialog; the lesson's tabs were in the rail and the header. | One place each: the workspace header. |
+| 11 | Dead CSS: about 40 rules for the side rail. | Removed from `app.css` and `v7.css`. |
+
+### Motion inventory (new)
+
+| Where | Motion | Purpose | Reduced motion |
+|---|---|---|---|
+| Generation hero | Glow scales with overall percent (spring); a line of light draws from the lamp to each resource (`pathLength`); the node ring fills with the live percent; the node pops once when done; the flame breathes; 7 sparks rise | Honest progress, tied to real steps | Static ring and percent, no sparks |
+| Generation steps | Working row has a light sweep and a live percent bar; the done icon pops; a real "what Nibras is doing" line rotates every 3.2 s | Status without fake tips | One fixed line, no sweep |
+| Reveal | The workspace fades in from 0.985 scale for 700 ms after the lock lifts | Orientation | None |
+| Games | Spring on drag, drop and baskets; calm shake on a miss | Feedback | Opacity and colour only |
+| Cards | 3D flip (rotateY spring) | Object permanence | Cross-fade |
+
+All new motion animates `transform`, `opacity` or SVG stroke offset. Decorative loops pause in background tabs (`visibilitychange`).
+
+### Not done or not verified
+
+- The MotionScore audit needs the paid Motion+ MCP, which is not authorised in this environment. A manual check against its rules found no layout-property animation.
+- The 21st catalogue and lucide-animated icons were not used.
+- Live-points counter in the games assumes a weight of 100; the server value (`GameResultView.points`, `StudentGame.pointsWeight`) is what the result screen shows.
+- Cross-device lock relies on the lessons list (a lesson still being made and created within 30 minutes); a lesson waiting at ANALYZED is not re-locked on its own.

@@ -302,6 +302,90 @@ describe("Nibras API (demo mode, real DB)", () => {
     expect(done.title).toBe(done.blueprint.title.trim());
   });
 
+  describe("a prompt-only lesson keeps the teacher's topic (production regression), with curriculum, sequential generation and chosen games", () => {
+    const PROMPT = "Grade 11 Science, 45-minute lesson on cyber security measures. Key concepts: phishing, strong passwords, two-factor authentication, malware.";
+    let cyberId: string;
+    let session: { id: string; joinCode: string; games: { game: string; points: number }[] };
+
+    it("the title, blueprint and kit are about cyber security, never plants or 'Grade 11 Science'", async () => {
+      const res = await request(base()).post("/api/lessons").set(as(a)).send({ classId, prompt: PROMPT, curriculum: "AMERICAN" });
+      expect(res.status).toBe(201);
+      cyberId = res.body.lessonId;
+      const first = (await request(base()).get(`/api/lessons/${cyberId}`).set(as(a))).body;
+      expect(first).toMatchObject({ title: "Cyber security measures", curriculum: "AMERICAN", prompt: PROMPT, aiWritten: true });
+      expect(first.title).not.toBe("Grade 11 Science");
+
+      const ready = (await pollLesson(a, cyberId, (l) => ["READY", "PARTIAL", "FAILED"].includes(l.status))) as Record<string, any>;
+      expect(ready.status).toBe("READY");
+      expect(ready.blueprint.title).toMatch(/cyber security/i);
+      expect(ready.title.toLowerCase()).toContain("cyber security");
+      const everything = JSON.stringify([ready.blueprint, ready.resources.map((r: { content: unknown }) => r.content)]).toLowerCase();
+      expect(everything).toContain("cyber security");
+      expect(everything).toMatch(/phishing/);
+      expect(everything).not.toMatch(/photosynth|chlorophyll|chemical reaction/);
+      const game = ready.resources.find((r: { kind: string }) => r.kind === "GAME").content;
+      expect(game.oddOneOut.length).toBeGreaterThanOrEqual(4);
+      expect(game.oddOneOut[0].items).toHaveLength(4);
+    });
+
+    it("GET /lessons/:id/status is the light poll target: status, per-resource progress in generation order, translations, updatedAt", async () => {
+      const res = await request(base()).get(`/api/lessons/${cyberId}/status`).set(as(a));
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({ status: "READY", translations: { en: "ready", ar: "missing" } });
+      expect(res.body.resources.map((r: { kind: string }) => r.kind)).toEqual(["SLIDES", "WORKSHEET", "QUIZ", "CARDS", "GAME"]);
+      expect(res.body.resources.every((r: { status: string; progress: number; error: unknown }) => r.status === "READY" && r.progress === 100 && r.error === null)).toBe(true);
+      expect(new Date(res.body.updatedAt).getTime()).toBeGreaterThan(0);
+      expect(JSON.stringify(res.body)).not.toMatch(/content/);
+      expect((await request(base()).get(`/api/lessons/${cyberId}/status`).set(as(b))).status).toBe(404);
+      expect((await request(base()).get(`/api/lessons/${cyberId}/status`)).status).toBe(401);
+    });
+
+    it("an unknown curriculum is a 400 problem; the default is GENERAL", async () => {
+      expect((await request(base()).post("/api/lessons").set(as(a)).send({ classId, prompt: PROMPT, curriculum: "MARTIAN" })).status).toBe(400);
+      const plain = await request(base()).post("/api/lessons").set(as(a)).send({ classId, prompt: "Lesson on: fractions for grade 6", autoGenerate: false });
+      expect((await request(base()).get(`/api/lessons/${plain.body.lessonId}`).set(as(a))).body.curriculum).toBe("GENERAL");
+    });
+
+    it("the teacher publishes only 2 games: 50 points each, students see only those two, and points follow wrong tries and hints", async () => {
+      const lesson = (await request(base()).get(`/api/lessons/${cyberId}`).set(as(a))).body;
+      const game = lesson.resources.find((r: { kind: string }) => r.kind === "GAME");
+      const bad = await request(base()).post(`/api/resources/${game.id}/share`).set(as(a)).send({ mode: "GAME", games: ["SORT", "EQUATION", "NOT_A_GAME"], approveAnyway: true });
+      expect(bad.status).toBe(400);
+      const shared = await request(base()).post(`/api/resources/${game.id}/share`).set(as(a)).send({ mode: "GAME", games: ["SORT", "ODD_ONE_OUT"], approveAnyway: true });
+      expect(shared.status).toBe(201);
+      session = shared.body;
+      expect(session.games).toEqual([{ game: "SORT", points: 50 }, { game: "ODD_ONE_OUT", points: 50 }]);
+      expect((await request(base()).get(`/api/sessions/${session.id}`).set(as(a))).body.games).toEqual(session.games);
+
+      const joined = await request(base()).post(`/api/play/code/${session.joinCode}/join`).send({ name: "Maya Points" });
+      expect(joined.status).toBe(200);
+      const student = { Cookie: ((joined.headers["set-cookie"] as unknown as string[])[0] as string).split(";")[0], "x-helpo-locale": "en" };
+
+      const list = (await request(base()).get(`/api/play/games?sessionId=${session.id}`).set(student)).body as { game: string; points: number; lessonId: string }[];
+      expect(list.map((g) => [g.game, g.points])).toEqual([["SORT", 50], ["ODD_ONE_OUT", 50]]);
+      const everything = (await request(base()).get("/api/play/games").set(student)).body as { game: string }[];
+      expect(everything.map((g) => g.game)).toEqual(expect.arrayContaining(["SORT", "ODD_ONE_OUT", "MATCH"]));
+      const hub = (await request(base()).get("/api/play/practice").set(student)).body;
+      expect(hub.open.find((o: { sessionId: string }) => o.sessionId === session.id)).toMatchObject({ type: "GAME", games: session.games });
+
+      expect((await request(base()).get(`/api/play/games/${cyberId}/ODD_ONE_OUT?sessionId=${session.id}`).set(student)).body).toMatchObject({ game: "ODD_ONE_OUT", pointsWeight: 50 });
+      expect((await request(base()).get(`/api/play/games/${cyberId}/MATCH?sessionId=${session.id}`).set(student)).status).toBe(404);
+      expect((await request(base()).get(`/api/play/games?sessionId=nope`).set(student)).status).toBe(404);
+
+      const round = (await request(base()).get(`/api/play/games/${cyberId}/ODD_ONE_OUT?sessionId=${session.id}`).set(student)).body.content.oddOneOut.length;
+      const perfect = await request(base()).post("/api/play/games/result").set(student).send({ lessonId: cyberId, sessionId: session.id, game: "ODD_ONE_OUT", total: round, firstTryCorrect: round, retriedCorrect: 0 });
+      expect(perfect.status).toBe(201);
+      expect(perfect.body).toMatchObject({ stars: 3, points: 50 });
+      const messy = await request(base()).post("/api/play/games/result").set(student).send({ lessonId: cyberId, sessionId: session.id, game: "ODD_ONE_OUT", total: round, firstTryCorrect: round, retriedCorrect: 0, wrongTries: 2, hintsUsed: 1 });
+      expect(messy.body.points).toBe(50 - 2 - 5);
+      expect(messy.body.xp).toBeLessThanOrEqual(perfect.body.xp); // XP keeps rewarding effort, points are separate
+      const outside = await request(base()).post("/api/play/games/result").set(student).send({ lessonId: cyberId, sessionId: session.id, game: "MATCH", total: 7, firstTryCorrect: 7, retriedCorrect: 0 });
+      expect(outside.status).toBe(400);
+      const practice = await request(base()).post("/api/play/games/result").set(student).send({ lessonId: cyberId, game: "ODD_ONE_OUT", total: round, firstTryCorrect: round, retriedCorrect: 0, wrongTries: 3 });
+      expect(practice.body.points).toBe(100 - 3); // practice has no session: the weight is 100
+    });
+  });
+
   it("the legacy /source alias returns 409 with the existing lesson id for a duplicate file", async () => {
     const text = Buffer.from("A brand new lesson text about the water cycle: evaporation, condensation and precipitation.");
     const one = await request(base()).post("/api/lessons").set(as(a)).field("classId", classId).field("autoGenerate", "false").attach("file", text, "water.txt");

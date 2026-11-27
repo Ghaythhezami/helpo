@@ -46,6 +46,7 @@ export const gameContent: GameContent = {
   sortItems: [["Sunlight", true], ["Water", true], ["Candy", false], ["Plastic", false]].map(([label, belongsInYes]) => ({ label: label as string, belongsInYes: belongsInYes as boolean })),
   equationTiles: ["carbon dioxide", "+", "water", "->", "glucose", "+", "oxygen"],
   statements: [{ text: "Plants make food.", isTrue: true, explanation: "With light." }, { text: "Roots make seeds.", isTrue: false, explanation: "Flowers do." }, { text: "Leaves catch light.", isTrue: true, explanation: "Yes." }, { text: "Plants eat soil.", isTrue: false, explanation: "No." }, { text: "Stems carry water.", isTrue: true, explanation: "Yes." }],
+  oddOneOut: [{ items: ["Roots", "Stem", "Leaf", "Candy"], oddIndex: 3, explanation: "Candy is not a plant part." }, { items: ["Water", "Light", "Plastic", "Air"], oddIndex: 2, explanation: "Plants do not need plastic." }, { items: ["Flower", "Seed", "Fruit", "Rock"], oddIndex: 3, explanation: "A rock is not part of a plant." }, { items: ["Sun", "Rain", "Soil", "Phone"], oddIndex: 3, explanation: "A phone is not something plants need." }],
 };
 
 export const cardsContent = { cards: [1, 2, 3].map((i) => ({ front: `Term ${i}`, back: `Meaning ${i}`, emoji: "x", tag: "concept", concept: "c", objectiveCode: "O1" })) };

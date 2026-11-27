@@ -127,3 +127,30 @@ describe("ResourcesService rewrite and change", () => {
     await expect(service.change("T1", "R1", "make it easier", "en")).rejects.toMatchObject({ status: 400 });
   });
 });
+
+describe("ResourcesService.share with published games", () => {
+  const body = (over: object = {}) => ({ mode: "GAME" as const, expiresInHours: 24, leaderboard: "TEAMS" as const, approveAnyway: true, ...over });
+
+  it("passes the teacher's games to the session, de-duplicated", async () => {
+    const { db, sessions, service } = await setup({ kind: "GAME" });
+    db.aiCheck.count.mockResolvedValue(0);
+    await service.share("T1", "R1", body({ games: ["SORT", "ODD_ONE_OUT", "SORT"] }), "en");
+    expect(sessions.create.mock.calls[0][3]).toMatchObject({ games: ["SORT", "ODD_ONE_OUT"], expiresInHours: 24 });
+  });
+
+  it("refuses a game the lesson's content cannot play, naming it", async () => {
+    const { resource, sessions, service } = await setup({ kind: "GAME" });
+    (resource.contentEn as { oddOneOut: unknown[] }).oddOneOut = []; // not enough rounds
+    await expect(service.share("T1", "R1", body({ games: ["SORT", "ODD_ONE_OUT"] }), "en")).rejects.toMatchObject({ status: 400, detail: expect.stringContaining("ODD_ONE_OUT") });
+    expect(sessions.create).not.toHaveBeenCalled();
+  });
+
+  it("a quiz share ignores games, and a plain game share publishes none (every playable game)", async () => {
+    const quiz = await setup();
+    await quiz.service.share("T1", "R1", { mode: "LIVE_QUIZ", expiresInHours: 24, leaderboard: "TEAMS", approveAnyway: true, games: ["SORT"] }, "en");
+    expect(quiz.sessions.create.mock.calls[0][3].games).toBeUndefined();
+    const game = await setup({ kind: "GAME" });
+    await game.service.share("T1", "R1", body({ game: "MEMORY" }), "en");
+    expect(game.sessions.create.mock.calls[0][3].games).toBeUndefined();
+  });
+});

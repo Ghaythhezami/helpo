@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import QRCode from "qrcode";
-import { formatJoinCode, playableTemplates, type GameContent, type LessonDetail, type ResourceKind, type SessionTeacherView, type GameKind } from "@helpo/shared";
+import { GAME_KINDS, formatJoinCode, playableTemplates, splitGamePoints, type GameContent, type LessonDetail, type ResourceKind, type SessionTeacherView, type GameKind } from "@helpo/shared";
 import { Copy, Radio, Users } from "lucide-react";
 import { api, errorMessage } from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
@@ -11,7 +11,10 @@ import { Button } from "@/components/ui/button";
 import { InlineConfirm } from "@/components/ui/confirm";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/toast";
+import { GAME_ICONS, gameName } from "@/components/student/practice-hub";
 import { LiveBoard } from "./live-board";
+
+const inDays = (n: number) => new Date(Date.now() + n * 86400000).toISOString();
 
 type Mode = "LIVE_QUIZ" | "GAME" | "ASSIGNMENT";
 
@@ -24,10 +27,25 @@ export function shareTarget(lesson: LessonDetail, tab: ResourceKind) {
   return { kind, resource, game };
 }
 
+/** Games the lesson can play, in thinking-first order (GAME_KINDS). Empty until the Game resource is ready. */
+export function playableGames(lesson: LessonDetail): GameKind[] {
+  const resource = lesson.resources.find((r) => r.kind === "GAME" && r.status === "READY");
+  if (!resource?.content) return [];
+  const playable = new Set(playableTemplates(resource.content as GameContent, lesson.band));
+  return GAME_KINDS.filter((k) => playable.has(k));
+}
+
+/** Default publication: the top two thinking games. */
+export const DEFAULT_GAME_COUNT = 2;
+
 /** Step 1: two big choices. Step 2: the code, QR, link and switch. */
 export function ShareDialogBody({ lesson, tab }: { lesson: LessonDetail; tab: ResourceKind }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const toast = useToast();
+  const available = playableGames(lesson);
+  const [chosen, setChosen] = useState<GameKind[] | null>(null);
+  const picked = (chosen ?? available.slice(0, DEFAULT_GAME_COUNT)).filter((g) => available.includes(g));
+  const split = splitGamePoints(GAME_KINDS.filter((g) => picked.includes(g)));
   const target = shareTarget(lesson, tab);
   const [expiry, setExpiry] = useState(24);
   const [board, setBoard] = useState<"OFF" | "TEAMS" | "INDIVIDUAL">("TEAMS");
@@ -46,8 +64,9 @@ export function ShareDialogBody({ lesson, tab }: { lesson: LessonDetail; tab: Re
         method: "POST",
         body: {
           mode: mode === "LIVE_QUIZ" && target.kind === "GAME" ? "GAME" : mode,
-          game: target.game,
-          dueAt: mode === "ASSIGNMENT" ? new Date(Date.now() + 7 * 86400000).toISOString() : undefined,
+          game: picked[0] ?? target.game,
+          ...(mode !== "LIVE_QUIZ" || target.kind === "GAME" ? (picked.length > 0 ? { games: GAME_KINDS.filter((g) => picked.includes(g)) } : {}) : {}),
+          dueAt: mode === "ASSIGNMENT" ? inDays(7) : undefined,
           expiresInHours: expiry,
           leaderboard: board,
           ...(open > 0 ? { approveAnyway: true } : {}),
@@ -96,6 +115,30 @@ export function ShareDialogBody({ lesson, tab }: { lesson: LessonDetail; tab: Re
             <span>{t("share.self.text")}</span>
           </button>
         </div>
+        {available.length > 0 && (
+          <fieldset className="share-games">
+            <legend>{t("share.games")}</legend>
+            <p className="muted small">{t("share.games.hint")}</p>
+            <div className="sg-list">
+              {available.map((g) => {
+                const Icon = GAME_ICONS[g];
+                const on = picked.includes(g);
+                const pts = split.find((s) => s.game === g)?.points;
+                return (
+                  <label key={g} className={`sg-item ${on ? "on" : ""}`}>
+                    <input type="checkbox" checked={on} onChange={(e) => setChosen(e.target.checked ? [...picked, g] : picked.filter((x) => x !== g))} />
+                    <Icon className="ic" aria-hidden="true" />
+                    <span>{gameName(g, locale, t)}</span>
+                    <b className="sg-pts">{on && pts !== undefined ? t("share.games.pts", { n: pts }) : ""}</b>
+                  </label>
+                );
+              })}
+            </div>
+            <p className="sg-sum" role="status" aria-live="polite">
+              {picked.length === 0 ? t("share.games.none") : `${t("share.games.split")} ${split.map((s) => `${gameName(s.game, locale, t)} ${s.points}`).join(" · ")}`}
+            </p>
+          </fieldset>
+        )}
         {confirm && (
           <InlineConfirm message={t("share.confirm", { n: open })} confirmLabel={t("share.confirm.yes")} cancelLabel={t("share.confirm.no")} onConfirm={() => create.mutate(confirm)} onCancel={() => setConfirm(null)} />
         )}

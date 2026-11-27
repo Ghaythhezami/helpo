@@ -72,6 +72,12 @@ export class LessonsController {
     return this.pipeline.create(t.id, parseCreateBody(raw), file);
   }
 
+  /** Lightweight poll target for a generating kit: status, per-resource progress, translations, updatedAt. */
+  @Get(":id/status")
+  status(@CurrentTeacher() t: TeacherContext, @Param("id") id: string) {
+    return this.lessons.status(t.id, id);
+  }
+
   @Get(":id")
   get(@CurrentTeacher() t: TeacherContext, @ReqLocale() locale: Locale, @Param("id") id: string) {
     return this.lessons.get(t.id, id, locale);

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useReducer, useState, type ReactNode } from "react";
-import type { CardsContent, CheckView, GameContent, QuizContent, ResourceView, SlidesContent, WorksheetContent } from "@helpo/shared";
+import type { CheckView, GameContent, QuizContent, ResourceView, SlidesContent, WorksheetContent } from "@helpo/shared";
 import { Check } from "lucide-react";
 import { toLines, updateQuestion, updateSlide } from "@/lib/content-edit";
 import { initEquation } from "@/lib/games/equation";
@@ -275,12 +275,28 @@ export function GamePreview({ resource }: { resource: ResourceView }) {
   const [state, dispatch] = useReducer(matchReducer, pairs, (p) => initMatch(p, resource.id));
   const order = state.rightOrder[0] ?? [];
   const eq = useMemo(() => initEquation(content.equationTiles), [content.equationTiles]);
+  const odd = content.oddOneOut?.find((r) => r.items.length === 4);
 
   return (
     <div className="doc" data-resource-id={resource.id}>
       <h3>{content.title}</h3>
       <p>{content.instructions}</p>
       <div className="dm"><span>{t("preview.game.meta", { n: content.pairs.length })}</span><span>{t("preview.game.try")}</span></div>
+      {content.sortItems.length > 0 && <p className="small"><b>{t("preview.game.sort")}</b> {content.sortBaskets.yes} / {content.sortBaskets.no}: {content.sortItems.map((s) => s.label).join(", ")}</p>}
+      {content.equationTiles.length > 0 && <p className="small"><b>{t("preview.game.equation")}</b> <bdi dir="ltr">{eq.model.parts.map((p) => (p.kind === "op" ? p.text : eq.model.terms[p.slot])).join(" ")}</bdi></p>}
+      {odd && (
+        <div className="small" role="group" aria-label={t("preview.game.odd")}>
+          <b>{t("preview.game.odd")}</b>{" "}
+          {odd.items.map((item, i) => (
+            <span key={i} style={{ marginInlineEnd: 10, fontWeight: i === odd.oddIndex ? 800 : 500 }}>
+              {i === odd.oddIndex && <Check className="ic" aria-hidden="true" />}
+              {item}
+              {i === odd.oddIndex && <> ({t("preview.game.oddMark")})</>}
+            </span>
+          ))}
+          <span className="muted">{odd.explanation}</span>
+        </div>
+      )}
       {pairs.length > 0 && (
         <div className="mg">
           <div style={{ display: "grid", gap: 12 }} role="group" aria-label={t("preview.game.left")}>
@@ -296,31 +312,7 @@ export function GamePreview({ resource }: { resource: ResourceView }) {
         </div>
       )}
       <p role="status" aria-live="polite" className="muted">{matchMessageText(state.message)}</p>
-      {content.sortItems.length > 0 && <p className="small"><b>{t("preview.game.sort")}</b> {content.sortBaskets.yes} / {content.sortBaskets.no}: {content.sortItems.map((s) => s.label).join(", ")}</p>}
-      {content.equationTiles.length > 0 && <p className="small"><b>{t("preview.game.equation")}</b> <bdi dir="ltr">{eq.model.parts.map((p) => (p.kind === "op" ? p.text : eq.model.terms[p.slot])).join(" ")}</bdi></p>}
       {content.statements?.length > 0 && <p className="small"><b>{t("preview.game.statements")}</b> {t("preview.game.statementsN", { n: content.statements.length })}</p>}
-    </div>
-  );
-}
-
-/* ----------------------------------- cards ----------------------------------- */
-
-export function CardsPreview({ resource }: { resource: ResourceView }) {
-  const { t } = useI18n();
-  const content = resource.content as CardsContent;
-  const [flipped, setFlipped] = useState<Record<number, boolean>>({});
-  return (
-    <div className="doc" data-resource-id={resource.id}>
-      <h3>{t("resource.CARDS")}</h3>
-      <div className="dm"><span>{t("preview.cards.meta", { n: content.cards.length })}</span></div>
-      <div className="cards3">
-        {content.cards.map((c, i) => (
-          <button key={i} id={`item-cards-${i}`} type="button" className="fc" aria-pressed={Boolean(flipped[i])} onClick={() => setFlipped({ ...flipped, [i]: !flipped[i] })}>
-            <small>{t(flipped[i] ? "preview.cards.back" : "preview.cards.front", { n: i + 1 })} · {t(`tag.${c.tag}` as "tag.concept")}</small>
-            <b>{c.emoji ? <span aria-hidden="true">{c.emoji} </span> : null}{flipped[i] ? c.back : c.front}</b>
-          </button>
-        ))}
-      </div>
     </div>
   );
 }

@@ -129,15 +129,26 @@ describe("LessonViewService summaries and averages", () => {
     const quiz = { questions: Array.from({ length: 4 }, (_, i) => ({ id: `Q${i + 1}` })) };
     db.resource.findMany.mockResolvedValue([{ lessonId: "L1", contentEn: quiz, contentAr: null }]);
     db.activitySession.findMany.mockResolvedValue([
-      // newest first: only this one counts for L1
-      { lessonId: "L1", answers: [{ participantId: "P1", questionIndex: 0, correct: true, partial: false }, { participantId: "P1", questionIndex: 1, correct: true, partial: false }, { participantId: "P2", questionIndex: 0, correct: true, partial: false }] },
-      { lessonId: "L1", answers: [{ participantId: "P9", questionIndex: 0, correct: false, partial: false }] },
+      // newest first: only SE2 counts for L1
+      { id: "SE2", lessonId: "L1" },
+      { id: "SE1", lessonId: "L1" },
+    ]);
+    // ONE grouped count of the latest session's answers: P1 has 2 correct, P2 has 1 correct
+    db.answer.groupBy.mockResolvedValue([
+      { sessionId: "SE2", participantId: "P1", correct: true, partial: false, _count: { _all: 2 } },
+      { sessionId: "SE2", participantId: "P2", correct: true, partial: false, _count: { _all: 1 } },
+      { sessionId: "SE2", participantId: "P2", correct: false, partial: false, _count: { _all: 1 } },
     ]);
     const out = await service.summaries([row() as never, row({ id: "L2", titleEn: "Seeds", titleAr: null }) as never], "en");
     expect(out[0]).toMatchObject({ id: "L1", title: "Photosynthesis", openChecks: 3, lessonNumber: 4, createdAt: "2026-11-19T09:00:00.000Z" });
     expect(out[0].averageScore).toBeCloseTo((2 / 4 + 1 / 4) / 2); // P1 scored 2/4, P2 1/4
     expect(out[1]).toMatchObject({ id: "L2", openChecks: 0, averageScore: null });
     expect(db.activitySession.findMany.mock.calls[0][0].where).toMatchObject({ lessonId: { in: ["L1", "L2"] }, type: "LIVE_QUIZ", status: "ENDED" });
+    // bounded reads: sessions carry no answers, and only the latest session's answers are counted (grouped, not loaded)
+    expect(db.activitySession.findMany.mock.calls[0][0].select).toEqual({ id: true, lessonId: true });
+    expect(db.answer.groupBy.mock.calls[0][0].where).toEqual({ sessionId: { in: ["SE2"] } });
+    expect(db.answer.findMany).not.toHaveBeenCalled();
+    expect(db.resource.findMany.mock.calls[0][0].where.lessonId).toEqual({ in: ["L1"] }); // only lessons that have a finished quiz
   });
 
   it("no lessons means no queries; a lesson without answers has no average", async () => {
@@ -145,7 +156,8 @@ describe("LessonViewService summaries and averages", () => {
     expect(await service.summaries([], "en")).toEqual([]);
     expect(db.aiCheck.groupBy).not.toHaveBeenCalled();
     db.resource.findMany.mockResolvedValue([{ lessonId: "L1", contentEn: { questions: [{}] }, contentAr: null }]);
-    db.activitySession.findMany.mockResolvedValue([{ lessonId: "L1", answers: [] }]);
+    db.activitySession.findMany.mockResolvedValue([{ id: "SE1", lessonId: "L1" }]);
+    db.answer.groupBy.mockResolvedValue([]);
     expect((await service.summary(row() as never, "en")).averageScore).toBeNull();
   });
 
@@ -157,5 +169,60 @@ describe("LessonViewService summaries and averages", () => {
     expect(db.lesson.count.mock.calls[0][0].where.createdAt.gte).toBeInstanceOf(Date);
     delete process.env.MONTHLY_LESSON_QUOTA;
     expect((await service.quota("T1")).limit).toBe(100);
+  });
+});
+
+describe("LessonViewService.status (the light poll target)", () => {
+  it("is ONE teacher-scoped query with no resource content, in generation order, with the latest updatedAt", async () => {
+    const { db, service } = setup();
+    db.lesson.findFirst.mockResolvedValue({
+      status: "GENERATING",
+      updatedAt: new Date("2026-11-27T10:00:00Z"),
+      contentLocale: "en",
+      translationStatus: { en: "ready", ar: "missing" },
+      resources: [
+        { kind: "GAME", status: "WAITING", progress: 0, error: null, updatedAt: new Date("2026-11-27T10:00:00Z") },
+        { kind: "QUIZ", status: "WORKING", progress: 35, error: null, updatedAt: new Date("2026-11-27T10:00:09Z") },
+        { kind: "SLIDES", status: "READY", progress: 100, error: null, updatedAt: new Date("2026-11-27T10:00:05Z") },
+        { kind: "WORKSHEET", status: "FAILED", progress: 0, error: "Try again.", updatedAt: new Date("2026-11-27T10:00:07Z") },
+      ],
+    });
+    const out = await service.status("T1", "L1");
+    expect(out).toEqual({
+      status: "GENERATING",
+      resources: [
+        { kind: "SLIDES", status: "READY", progress: 100, error: null },
+        { kind: "WORKSHEET", status: "FAILED", progress: 0, error: "Try again." },
+        { kind: "QUIZ", status: "WORKING", progress: 35, error: null },
+        { kind: "GAME", status: "WAITING", progress: 0, error: null },
+      ],
+      translations: { en: "ready", ar: "missing" },
+      updatedAt: "2026-11-27T10:00:09.000Z",
+    });
+    expect(db.lesson.findFirst).toHaveBeenCalledTimes(1);
+    expect(db.lesson.findFirst.mock.calls[0][0].where).toEqual({ id: "L1", teacherId: "T1" });
+    const select = db.lesson.findFirst.mock.calls[0][0].select;
+    expect(select.resources.select).not.toHaveProperty("contentEn");
+    expect(select.resources.select).not.toHaveProperty("contentAr");
+    expect(db.resource.findMany).not.toHaveBeenCalled();
+    expect(db.aiCheck.findMany).not.toHaveBeenCalled();
+  });
+
+  it("someone else's lesson is a 404; a lesson with no resources uses its own updatedAt", async () => {
+    const { db, service } = setup();
+    db.lesson.findFirst.mockResolvedValue(null);
+    await expect(service.status("T2", "L1")).rejects.toMatchObject({ status: 404 });
+    db.lesson.findFirst.mockResolvedValue({ status: "ANALYZING", updatedAt: new Date("2026-11-27T09:00:00Z"), contentLocale: "ar", translationStatus: { en: "missing", ar: "ready" }, resources: [] });
+    expect(await service.status("T1", "L1")).toMatchObject({ status: "ANALYZING", resources: [], updatedAt: "2026-11-27T09:00:00.000Z", translations: { en: "missing", ar: "ready" } });
+  });
+
+  it("the full detail carries the lesson's curriculum, GENERAL when unknown", async () => {
+    const { db, service } = setup();
+    db.lesson.findFirst.mockResolvedValue(row({ curriculum: "BRITISH" }));
+    expect((await service.detail("T1", "L1", "en")).curriculum).toBe("BRITISH");
+    db.lesson.findFirst.mockResolvedValue(row({ curriculum: "martian" }));
+    expect((await service.detail("T1", "L1", "en")).curriculum).toBe("GENERAL");
+    db.lesson.findFirst.mockResolvedValue(row());
+    expect((await service.detail("T1", "L1", "en")).curriculum).toBe("GENERAL");
   });
 });

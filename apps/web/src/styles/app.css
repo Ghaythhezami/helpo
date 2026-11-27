@@ -1526,54 +1526,22 @@ body:has(.app-shell) {
   .admin-grid .panel { max-height: 260px; }
 }
 
-/* side menu: rail on the start side, drawer on phones */
+/* phone drawer shell (the top navigation itself lives in v8.css) */
 .app-body { flex: 1; min-height: 0; display: flex; position: relative; z-index: 1; }
 .app-body > .app-stage { min-width: 0; }
-.rail {
-  flex: none; width: 240px; display: flex; flex-direction: column; gap: 6px; min-height: 0;
-  margin: 0 0 12px clamp(8px, 1.5vw, 16px); padding: 8px; border-radius: 24px; background: #fbfafd; border: 1px solid var(--line);
-  box-shadow: var(--sh); transition: width 0.2s var(--ease);
-}
-[dir="rtl"] .rail { margin: 0 clamp(8px, 1.5vw, 16px) 12px 0; }
-.rail.collapsed { width: 64px; }
-.rail-toggle { min-height: 44px; min-width: 44px; display: grid; place-items: center; border: 0; background: transparent; color: var(--ink); cursor: pointer; border-radius: 14px; align-self: flex-start; }
-.rail.collapsed .rail-toggle { align-self: center; }
-.rail-toggle:hover { background: var(--soft); }
-.rail-body { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
-.rail-nav { display: grid; gap: 2px; align-content: start; flex: 1; }
-.rail-item {
-  display: flex; align-items: center; gap: 10px; min-height: 44px; width: 100%; padding: 0 10px; border-radius: 14px; border: 0;
-  background: transparent; color: var(--ink); font-weight: 800; font-size: 15px; cursor: pointer; text-decoration: none; text-align: start;
-}
-.rail-item:hover { background: var(--soft); }
-.rail-item[aria-current="page"] { background: var(--grad); color: #fff; }
-.rail-item[aria-pressed="true"] { background: var(--soft); }
-.rail-item.sub { padding-inline-start: 18px; font-weight: 700; }
-.rail.collapsed .rail-item { justify-content: center; padding: 0; }
-.rail.collapsed .rail-item.sub { padding: 0; }
-.ri-ic { width: 24px; height: 24px; display: grid; place-items: center; flex: none; }
-.ri-ic img { width: 22px; height: 22px; }
-.ri-lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rail-title { font-size: 12px; font-weight: 900; color: var(--ink2); padding: 6px 10px 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rail-group { display: grid; gap: 2px; padding: 4px 0; border-block: 1px solid var(--line); margin-block: 4px; }
-.rail-foot { display: grid; gap: 6px; padding-top: 6px; border-top: 1px solid var(--line); }
-.rail-foot .langsw { justify-self: stretch; justify-content: center; }
 .menu-btn { width: 44px; height: 44px; border-radius: 50%; border: 0; background: #fff; display: grid; place-items: center; cursor: pointer; flex: none; }
 .drawer-ovl { place-items: stretch; justify-items: start; padding: 0; }
 .app-dlg.drawer { width: min(300px, 86vw); height: 100dvh; max-height: 100dvh; border-radius: 0 28px 28px 0; }
 [dir="rtl"] .app-dlg.drawer { border-radius: 28px 0 0 28px; }
 .drawer-menu { display: flex; flex-direction: column; gap: 8px; min-height: 100%; }
-.drawer-menu .rail-nav { flex: 1; }
 /* workspace margins shrink to sit beside the rail */
 .tapp .ws-body { grid-template-columns: clamp(170px, 19%, 250px) minmax(0, 1fr) clamp(230px, 25%, 320px); }
 .tapp .ws-body.no-left { grid-template-columns: minmax(0, 1fr) clamp(230px, 25%, 320px); }
 .tapp .ws-body.no-right { grid-template-columns: clamp(170px, 19%, 250px) minmax(0, 1fr); }
 .tapp .ws-body.no-left.no-right { grid-template-columns: minmax(0, 1fr); }
-@media (max-width: 1023px) { .app-body .rail { display: none; } }
 @media (max-width: 900px) {
   .tapp .ws-body, .tapp .ws-body.no-left, .tapp .ws-body.no-right, .tapp .ws-body.no-left.no-right { grid-template-columns: minmax(0, 1fr); }
 }
-@media (prefers-reduced-motion: reduce) { .rail { transition: none; } }
 
 /* tab status dots carry a glyph too, so colour is never the only signal */
 .tapp .tab .dot { display: inline-grid; place-items: center; width: 16px; height: 16px; font-size: 11px; font-weight: 900; line-height: 1; color: #fff; }
@@ -1613,16 +1581,16 @@ body:has(.app-shell) {
 @media (prefers-contrast: more) {
   :root { --line: #4a3f86; --field-line: #24185f; }
   :focus-visible { outline-width: 4px; }
-  .panel, .tile, .rail, .app-dlg, .lcard-link, .demo-card, .share-choice, .note, .chip-btn, .tool, .tab, .thumb, .btn.sec, .rail-item { border-width: 2px; border-color: #24185f; }
+  .panel, .tile, .app-dlg, .lcard-link, .demo-card, .share-choice, .note, .chip-btn, .tool, .tab, .thumb, .btn.sec, .nav-item { border-width: 2px; border-color: #24185f; }
   .st, .chip { border: 1px solid #24185f; }
   .muted, .small { color: #24185f; }
 }
 /* forced colours (Windows High Contrast): keep borders, focus rings and state indicators visible */
 @media (forced-colors: active) {
   :focus-visible { outline: 3px solid Highlight; outline-offset: 2px; }
-  .panel, .tile, .rail, .app-dlg, .lcard-link, .demo-card, .share-choice, .note, .chip-btn, .tool, .tab, .thumb, .btn, .rail-item, .row-menu, .board-float, .gcard, .item, .badge, input, select, textarea { border: 2px solid ButtonText; }
-  .btn, .tab, .rail-item, .tool, .chip-btn, .demo-card, .share-choice { forced-color-adjust: auto; }
-  .tab[aria-selected="true"], .rail-item[aria-current="page"], .tool[aria-pressed="true"], .thumb[aria-pressed="true"], .swatch[aria-pressed="true"], .langsw button[aria-pressed="true"], .tg[aria-pressed="true"], .sw2[aria-checked="true"] { outline: 3px solid Highlight; outline-offset: -3px; background: Highlight; color: HighlightText; }
+  .panel, .tile, .app-dlg, .lcard-link, .demo-card, .share-choice, .note, .chip-btn, .tool, .tab, .thumb, .btn, .nav-item, .row-menu, .board-float, .gcard, .item, .badge, input, select, textarea { border: 2px solid ButtonText; }
+  .btn, .tab, .nav-item, .tool, .chip-btn, .demo-card, .share-choice { forced-color-adjust: auto; }
+  .tab[aria-selected="true"], .nav-item[aria-current="page"], .tool[aria-pressed="true"], .thumb[aria-pressed="true"], .swatch[aria-pressed="true"], .langsw button[aria-pressed="true"], .tg[aria-pressed="true"], .sw2[aria-checked="true"] { outline: 3px solid Highlight; outline-offset: -3px; background: Highlight; color: HighlightText; }
   .bar { border: 1px solid ButtonText; background: Canvas; }
   .bar i { background: Highlight; forced-color-adjust: none; }
   .swatch { forced-color-adjust: none; border: 2px solid ButtonText; box-shadow: none; }

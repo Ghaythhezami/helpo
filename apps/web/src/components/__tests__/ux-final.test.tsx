@@ -127,18 +127,20 @@ describe("Admin", () => {
   });
 });
 
-describe("Side menu and logo", () => {
+describe("Top navigation and logo", () => {
   const routes = (role: string) => ({ "GET /me": () => ({ body: { ...baseMe, role } }), "GET /classes": () => ({ body: [] }), "GET /lessons": () => ({ body: [] }) });
 
-  it("the avatar menu shows Admin only for admins", async () => {
+  it("shows Admin in the top bar only for admins, and nothing about the open lesson", async () => {
+    viewport(true);
     mockFetch(routes("ADMIN"));
     const { unmount } = renderWithProviders(<TeacherShell><p>x</p></TeacherShell>, { scope: "teacher" });
-    await userEvent.click(await screen.findByRole("button", { name: "AG account menu" }));
-    expect(screen.getAllByRole("link", { name: "Admin" }).length).toBeGreaterThan(1);
+    const nav = await screen.findByRole("navigation", { name: "Menu" });
+    expect(await within(nav).findByRole("link", { name: "Admin" })).toHaveAttribute("href", "/admin");
+    for (const name of ["Slides", "Share", "Results", "Whiteboard", "Preview as student"]) expect(within(nav).queryByRole("button", { name })).toBeNull();
     unmount();
     mockFetch(routes("TEACHER"));
     renderWithProviders(<TeacherShell><p>x</p></TeacherShell>, { scope: "teacher" });
-    await userEvent.click(await screen.findByRole("button", { name: "AG account menu" }));
+    expect(await screen.findByRole("navigation", { name: "Menu" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Admin" })).toBeNull();
   });
 
@@ -158,51 +160,41 @@ describe("Side menu and logo", () => {
     expect(screen.getByRole("link", { name: "الصفحة الرئيسية لنبراس" })).toHaveAttribute("href", "/");
   });
 
-  it("the desktop rail toggles, remembers its state and marks the current page", async () => {
-    mockFetch(routes("ADMIN"));
-    renderWithProviders(<TeacherShell><p>x</p></TeacherShell>, { scope: "teacher" });
-    const toggle = await screen.findByRole("button", { name: "Collapse the menu" });
-    expect(toggle).toHaveAttribute("aria-expanded", "true");
-    const create = screen.getAllByRole("link", { name: "Create" })[0];
-    expect(create).toHaveAttribute("aria-current", "page");
-    expect(await screen.findByRole("link", { name: "Admin", hidden: false })).not.toHaveAttribute("aria-current");
-    await userEvent.click(toggle);
-    expect(window.localStorage.getItem("helpo:rail")).toBe("collapsed");
-    expect(screen.getByRole("button", { name: "Expand the menu" })).toHaveAttribute("aria-expanded", "false");
-    await userEvent.click(screen.getByRole("button", { name: "Expand the menu" }));
-    expect(window.localStorage.getItem("helpo:rail")).toBe("expanded");
-  });
-
-  it("starts collapsed when the saved state says so, and opens My lessons and Classes from the rail", async () => {
-    window.localStorage.setItem("helpo:rail", "collapsed");
+  it("marks New lesson as the current page and opens My lessons and Classes from the bar", async () => {
+    viewport(true);
     mockFetch(routes("TEACHER"));
     renderWithProviders(<TeacherShell><p>x</p></TeacherShell>, { scope: "teacher" });
-    expect(await screen.findByRole("button", { name: "Expand the menu" })).toHaveAttribute("aria-expanded", "false");
-    await userEvent.click(screen.getByRole("button", { name: "My lessons" }));
+    const nav = await screen.findByRole("navigation", { name: "Menu" });
+    expect(within(nav).getByRole("link", { name: "New lesson" })).toHaveAttribute("aria-current", "page");
+    await userEvent.click(within(nav).getByRole("button", { name: "My lessons" }));
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    await userEvent.click(within(nav).getByRole("button", { name: "Classes" }));
+    expect(await screen.findByRole("dialog", { name: "Your classes" })).toBeInTheDocument();
   });
 
-  it("in Arabic the rail comes first in the DOM inside an RTL document, so it sits on the right", async () => {
+  it("the account menu holds the language switch and sign out; there is no side rail", async () => {
+    viewport(true);
     mockFetch(routes("TEACHER"));
-    const { container } = renderWithProviders(<TeacherShell><p>x</p></TeacherShell>, { scope: "teacher", locale: "ar" });
-    await screen.findByRole("button", { name: /اطوِ|القائمة/ });
-    const body = container.querySelector(".app-body")!;
-    expect(body.firstElementChild?.tagName).toBe("ASIDE");
-    const css = fs.readFileSync(path.join(__dirname, "../../styles/app.css"), "utf8");
-    expect(css).not.toMatch(/\.rail[^{]*\{[^}]*\b(left|right)\s*:/);
+    const { container } = renderWithProviders(<TeacherShell><p>x</p></TeacherShell>, { scope: "teacher" });
+    await userEvent.click(await screen.findByRole("button", { name: "AG account menu" }));
+    expect(screen.getByRole("button", { name: "العربية" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
+    expect(container.querySelector("aside")).toBeNull();
+    const css = fs.readFileSync(path.join(__dirname, "../../styles/v8.css"), "utf8");
+    expect(css).not.toMatch(/\.top-nav[^{]*\{[^}]*\b(left|right)\s*:/);
   });
 
-  it("on a phone the menu is a drawer that closes with Escape and returns focus to the button", async () => {
+  it("on a phone the menu is a drawer with the same items; Esc closes it and returns focus", async () => {
     viewport(false);
-    mockFetch(routes("TEACHER"));
+    mockFetch(routes("ADMIN"));
     renderWithProviders(<TeacherShell><p>x</p></TeacherShell>, { scope: "teacher" });
     const button = await screen.findByRole("button", { name: "Open the menu" });
-    expect(screen.queryByRole("complementary")).toBeNull();
     await userEvent.click(button);
     expect(button).toHaveAttribute("aria-expanded", "true");
-    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    const dialog = await screen.findByRole("dialog");
+    for (const name of ["New lesson", "My lessons", "Classes", "Admin"]) expect(within(dialog).getByText(name)).toBeInTheDocument();
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(button).toHaveFocus();

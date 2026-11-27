@@ -1,0 +1,8 @@
+{
+  "share.games": "Games to publish",
+  "share.games.hint": "Pick the games that fit your time. 100 points are shared between them.",
+  "share.games.pts": "{n} pts",
+  "share.games.split": "Points:",
+  "share.games.none": "No games published. Students will only do the quiz.",
+  "board.games": "Published games and their points"
+}

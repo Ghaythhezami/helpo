@@ -6,13 +6,25 @@ export const TEACHER_EMAIL = "demo@helpo.test";
 export const ADMIN_EMAIL = "admin@helpo.test";
 
 export type DemoRole = "Teacher" | "Student" | "Admin";
-const LANDING: Record<DemoRole, RegExp> = { Teacher: /\/app$/, Student: /\/play$/, Admin: /\/admin$/ };
+/** A teacher whose kit is still being made (another test, another tab) lands on that lesson: the generation focus lock. */
+const LANDING: Record<DemoRole, RegExp> = { Teacher: /\/app(\/lessons\/[^/]+)?$/, Student: /\/play$/, Admin: /\/admin$/ };
 
 /** One click on a demo card on /login. Locators are role based so the redesign does not break them. */
 export async function demoLogin(page: Page, role: DemoRole): Promise<void> {
   await page.goto("/login");
   await page.getByRole("button", { name: new RegExp(`^${role}`) }).click();
   await expect(page).toHaveURL(LANDING[role]);
+  if (role === "Teacher") await settleOnCreate(page);
+}
+
+/**
+ * All specs share one demo teacher. If another spec's kit is still being made, the app (rightly) locks onto that lesson;
+ * wait for the lock to lift, then go back to Create so every spec starts from the same place.
+ */
+export async function settleOnCreate(page: Page): Promise<void> {
+  await page.waitForTimeout(1500);
+  await page.locator(".gen-ovl").waitFor({ state: "detached", timeout: 120_000 });
+  if (!/\/app$/.test(new URL(page.url()).pathname)) await page.goto("/app");
 }
 
 /** A fresh, isolated browser context (own cookies, like another person's device) with a viewport and optional UI locale. */
@@ -28,7 +40,9 @@ export async function createLessonKit(page: Page, prompt: string): Promise<strin
   await page.goto("/app");
   await page.getByRole("textbox", { name: "Or describe your lesson" }).fill(prompt);
   await page.getByRole("button", { name: "Make lesson kit" }).click();
+  // The focus lock holds on the generation view until the kit is ready, then the workspace opens.
   await expect(page).toHaveURL(/\/app\/lessons\/[^/]+$/);
+  await expect(page.locator(".gen-ovl")).toHaveCount(0, { timeout: 60_000 });
   await expect(page.getByRole("tab", { name: /\(ready\)/ })).toHaveCount(5, { timeout: 60_000 });
   return new URL(page.url()).pathname.split("/").pop() as string;
 }

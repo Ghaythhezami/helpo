@@ -16,7 +16,8 @@ import type {
 } from "@helpo/shared";
 import type { AiProvider, CheckText, RefineInput, GenerateOptions, GeneratedResource, LessonContext, LessonMeta, RewriteAction } from "./ai.provider";
 import { worksheetItems, type ResourceContent } from "./content";
-import { buildTopic, isPlantTopic, sourceSentences, type Topic } from "./demo-topic";
+import { PROMPT_VERSIONS } from "./prompts/index";
+import { buildTopic, demoTitle, isPlantTopic, sourceSentences, type Topic } from "./demo-topic";
 
 const SIMPLE_WORDS: Record<string, string> = {
   utilize: "use",
@@ -91,6 +92,7 @@ interface Strings {
   whyBack: (plants: boolean, title: string) => string;
   gameTitle: (plants: boolean, title: string) => string;
   termIs: (term: string, def: string) => string;
+  oddWhy: (odd: string, title: string) => string;
   matchHeading: string;
   fillHeading: string;
   mcqHeading: string;
@@ -131,6 +133,7 @@ const EN: Strings = {
   whyBack: (plants, title) => (plants ? "Plants make the food and oxygen that other living things need." : `${title} helps us explain what we see around us.`),
   gameTitle: (plants, title) => (plants ? "Plant parts match-up" : `${title}: match-up`),
   termIs: (term, def) => `${term} is ${def}.`,
+  oddWhy: (odd, title) => `${odd} does not belong with the others: it is not part of ${title}.`,
   matchHeading: "Match the word to its meaning",
   fillHeading: "Fill in the blank",
   mcqHeading: "Choose the best answer",
@@ -171,6 +174,7 @@ const AR: Strings = {
   whyBack: (plants, title) => (plants ? "تصنع النباتات الغذاء والأكسجين اللذين تحتاجهما الكائنات الحية الأخرى." : `يساعدنا ${title} على تفسير ما نراه حولنا.`),
   gameTitle: (plants, title) => (plants ? "مطابقة أجزاء النبات" : `${title}: مطابقة`),
   termIs: (term, def) => `${term}: ${def}.`,
+  oddWhy: (odd, title) => `${odd} لا ينتمي إلى البقية: فهو ليس جزءًا من ${title}.`,
   matchHeading: "طابِق الكلمة بمعناها",
   fillHeading: "أكمل الفراغ",
   mcqHeading: "اختر أفضل إجابة",
@@ -246,10 +250,9 @@ export class DemoAiProvider implements AiProvider {
       vocabulary: topic.terms.slice(0, 15).map((t) => ({ term: t.term, meaning: t.def })),
       processes: [{ name: ar ? "العملية" : "The process", steps: topic.equationTiles.filter((t) => !["+", "->", "←"].includes(t)) }],
       relations: topic.terms.slice(0, 6).map((t) => ({ left: t.term, right: t.def })),
-      commonMisconceptions: [
-        ar ? "تأخذ النباتات غذاءها من التربة." : "Plants eat soil.",
-        ar ? "الأكسجين هو غذاء النبات." : "Oxygen is the food a plant makes.",
-      ],
+      commonMisconceptions: topic.plants
+        ? [ar ? "تأخذ النباتات غذاءها من التربة." : "Plants eat soil.", ar ? "الأكسجين هو غذاء النبات." : "Oxygen is the food a plant makes."]
+        : [`${topic.title} is only about memorising words.`, `One example is enough to explain all of ${topic.title}.`],
       difficulty: ctx.grade <= 5 ? "easy" : ctx.grade <= 8 ? "medium" : "hard",
       suggestedGameType: topic.plants ? "matching" : "memory",
     };
@@ -273,7 +276,8 @@ export class DemoAiProvider implements AiProvider {
     return "";
   }
 
-  private async plan(ctx: LessonContext): Promise<LessonPlan> {
+  private async plan(rawCtx: LessonContext): Promise<LessonPlan> {
+    const ctx = { ...rawCtx, title: demoTitle(rawCtx) };
     const plants = isPlantTopic(ctx.title);
     const ar = ctx.locale === "ar";
     const sentences = sourceSentences(ctx.sourceText, 3);
@@ -322,11 +326,11 @@ export class DemoAiProvider implements AiProvider {
       const q = built as QuizContent;
       return { content: { questions: q.questions.slice(0, Math.max(5, Math.min(opts.quizCount, q.questions.length))) }, usage: { model: "demo", promptVersion: "quiz.v1", tokensIn: 0, tokensOut: 0 } };
     }
-    return { content: built, usage: { model: "demo", promptVersion: `${kind.toLowerCase()}.v1`, tokensIn: 0, tokensOut: 0 } };
+    return { content: built, usage: { model: "demo", promptVersion: PROMPT_VERSIONS[kind], tokensIn: 0, tokensOut: 0 } };
   }
 
   private async build(kind: ResourceKind, ctx: LessonContext): Promise<ResourceContent> {
-    const plants = isPlantTopic(ctx.title);
+    const plants = isPlantTopic(demoTitle(ctx));
     if (ctx.locale === "ar" && !plants) {
       const english = await this.build(kind, { ...ctx, locale: "en" });
       return placeholderTranslate(english, "ar");
@@ -573,6 +577,14 @@ export class DemoAiProvider implements AiProvider {
       sortBaskets: topic.sortBaskets,
       sortItems: [yes[0], no[0], yes[1], no[1], yes[2], no[2], yes[3]],
       equationTiles: topic.equationTiles,
+      oddOneOut: [0, 1, 2, 3].map((r) => {
+        const odd = topic.sortNo[r % topic.sortNo.length];
+        const same = [0, 1, 2].map((k) => T[(r * 3 + k) % T.length].term);
+        const oddIndex = (r + 1) % 4;
+        const items = [...same];
+        items.splice(oddIndex, 0, odd);
+        return { items, oddIndex, explanation: S.oddWhy(odd, topic.title) };
+      }),
       statements: T.slice(0, 6).map((t, i) =>
         i % 2 === 0
           ? { text: S.termIs(t.term, t.def), isTrue: true, explanation: S.termIs(t.term, t.def) }

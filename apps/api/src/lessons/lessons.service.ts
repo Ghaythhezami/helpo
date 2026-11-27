@@ -9,7 +9,7 @@ import { HourlyLimiter } from "../common/quota";
 import { ProblemException, conflict, duplicateUpload, notFound } from "../common/problem";
 import { PrismaService } from "../prisma/prisma.service";
 import { DocumentsService, sha256Hex } from "../documents/documents.service";
-import { LESSON_INCLUDE, LessonViewService } from "./lesson-view.service";
+import { LESSON_INCLUDE, LessonViewService, type LessonStatusView } from "./lesson-view.service";
 import { PipelineService } from "./pipeline.service";
 
 /** Safety cap on the lesson list (a teacher holds a few dozen; the monthly quota is 100). */
@@ -55,6 +55,10 @@ export class LessonsService {
       grade: cls?.grade,
       subject: cls ? ((l === "ar" ? cls.subjectAr : cls.subjectEn) ?? cls.subjectEn) : undefined,
     });
+  }
+
+  status(teacherId: string, id: string): Promise<LessonStatusView> {
+    return this.views.status(teacherId, id);
   }
 
   get(teacherId: string, id: string, locale: Locale): Promise<LessonDetail> {

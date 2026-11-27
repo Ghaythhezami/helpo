@@ -1,4 +1,4 @@
-import { BAND_LABELS, type Band, type Locale } from "@helpo/shared";
+import { BAND_LABELS, CURRICULUM_LABELS, type Band, type Locale } from "@helpo/shared";
 import type { LessonContext } from "./ai.provider";
 import { analysis } from "./prompts/index";
 
@@ -25,6 +25,13 @@ export function languageRule(locale: Locale): string {
     : "Write all text in English at the class reading level.";
 }
 
+/** "Curriculum: American (Common Core / NGSS). Use its terminology, ..." (GENERAL means no national curriculum). */
+export function curriculumLine(ctx: LessonContext): string {
+  const c = ctx.curriculum ?? "GENERAL";
+  if (c === "GENERAL") return "Curriculum: no national curriculum. Use clear, internationally neutral terminology and examples.";
+  return `Curriculum: ${CURRICULUM_LABELS[c].en}. Use its terminology, standard codes and examples where they apply.`;
+}
+
 function header(ctx: LessonContext): string[] {
   const objectives = ctx.objectives.length
     ? ctx.objectives.map((o) => `- ${o.code} (${o.bloom}${o.sourcePage ? `, page ${o.sourcePage}` : ""}): ${o.text}`).join("\n")
@@ -37,6 +44,7 @@ function header(ctx: LessonContext): string[] {
     `Output language: ${ctx.language}. ${languageRule(ctx.locale)}`,
     `Duration: ${ctx.durationMin} minutes`,
     `Curriculum standard: ${ctx.standard ?? "none chosen"}`,
+    curriculumLine(ctx),
     ctx.description ? `Teacher's description: ${ctx.description}` : "",
     "",
     "## Objectives",
@@ -80,7 +88,9 @@ export function lessonSourceBlock(ctx: LessonContext): string {
 
 /** Analysis and review calls read the document itself. */
 export function documentBlock(ctx: LessonContext): string {
-  return compact([...header(ctx), ctx.prompt ? `## Teacher's instructions\n${ctx.prompt}\n` : "", ...documentSection(ctx)]);
+  // a prompt-only lesson already carries the prompt in its <topic> section: do not send it twice
+  const instructions = ctx.prompt && !isPromptOnly(ctx) ? `## Teacher's instructions\n${ctx.prompt}\n` : "";
+  return compact([...header(ctx), instructions, ...documentSection(ctx)]);
 }
 
 /** A lesson made from a prompt alone: no file was uploaded, so the source text is the teacher's own description. */

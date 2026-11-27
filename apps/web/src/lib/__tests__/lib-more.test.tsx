@@ -112,19 +112,19 @@ describe("whiteboard drawing maths", () => {
 
 describe("game messages and branches", () => {
   it("writes every match message", () => {
-    const kinds = [{ kind: "start" }, { kind: "picked", label: "A" }, { kind: "need-left" }, { kind: "match", left: "A", right: "B", xp: 10, retry: true, combo: 3 }, { kind: "miss" }, { kind: "hint", left: "A", right: "B" }, { kind: "round-done", round: 1 }, { kind: "finished" }] as const;
+    const kinds = [{ kind: "start" }, { kind: "picked", label: "A" }, { kind: "need-left" }, { kind: "match", left: "A", right: "B", xp: 10, retry: true, combo: 3 }, { kind: "miss", left: "A", right: "B", again: true }, { kind: "hint", left: "A", right: "B" }, { kind: "round-done", round: 1 }, { kind: "finished" }] as const;
     for (const m of kinds) expect(matchMessageText(m).length).toBeGreaterThan(3);
   });
   it("writes every sort and equation message", () => {
     const b = { yes: "Y", no: "N" };
-    for (const m of [{ kind: "start" }, { kind: "picked", label: "A" }, { kind: "need-item" }, { kind: "placed", label: "A", basket: "no", xp: 5, retry: true }, { kind: "miss" }, { kind: "finished", total: 3 }] as const) expect(sortMessageText(m, b).length).toBeGreaterThan(3);
-    for (const m of [{ kind: "start" }, { kind: "taken", label: "A" }, { kind: "full" }, { kind: "incomplete" }, { kind: "wrong", wrongSlots: 2 }, { kind: "correct", retry: true }, { kind: "correct", retry: false }] as const) expect(equationMessageText(m).length).toBeGreaterThan(3);
+    for (const m of [{ kind: "start" }, { kind: "picked", label: "A" }, { kind: "need-item" }, { kind: "placed", label: "A", basket: "no", xp: 5, retry: true }, { kind: "miss", index: 0, label: "A", basket: "no" }, { kind: "finished", total: 3 }] as const) expect(sortMessageText(m, b).length).toBeGreaterThan(3);
+    for (const m of [{ kind: "start" }, { kind: "taken", label: "A" }, { kind: "full" }, { kind: "incomplete" }, { kind: "wrong", slots: [0, 1] as number[] }, { kind: "correct", retry: true }, { kind: "correct", retry: false }] as const) expect(equationMessageText(m).length).toBeGreaterThan(3);
   });
   it("folds a lone last pair into the previous round and ignores moves after the end", () => {
-    const pairs = Array.from({ length: 5 }, (_, i) => ({ left: `L${i}`, right: `R${i}` }));
+    const pairs = Array.from({ length: 3 }, (_, i) => ({ left: `L${i}`, right: `R${i}` }));
     const s = initMatch(pairs, "x");
     expect(matchRoundCount(s)).toBe(1);
-    expect(s.rounds[0]).toHaveLength(5);
+    expect(s.rounds[0]).toHaveLength(3);
     expect(matchReducer(s, { type: "nextRound" })).toBe(s);
     expect(matchReducer(s, { type: "selectLeft", index: 99 })).toBe(s);
   });

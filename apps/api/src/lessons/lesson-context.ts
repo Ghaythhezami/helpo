@@ -1,8 +1,12 @@
-import type { Locale } from "@helpo/shared";
+import { CURRICULA, type Curriculum, type Locale } from "@helpo/shared";
 import type { LessonContext } from "../ai/ai.provider";
 import { asLocale, pickText } from "../common/i18n";
 import { objectivesOf } from "../common/views";
 import { parseBlueprint, type LessonWithClass } from "./lesson-view.service";
+
+export function asCurriculum(v: string | null | undefined): Curriculum {
+  return (CURRICULA as readonly string[]).includes(v ?? "") ? (v as Curriculum) : "GENERAL";
+}
 
 /** The lesson as the AI sees it: always in `locale` (default: the language the kit was created in). */
 export function lessonContext(lesson: LessonWithClass, locale: Locale = asLocale(lesson.contentLocale)): LessonContext {
@@ -18,5 +22,7 @@ export function lessonContext(lesson: LessonWithClass, locale: Locale = asLocale
     sourceText: lesson.sourceText ?? "",
     description: pickText(lesson.descriptionEn, lesson.descriptionAr, locale),
     blueprint: parseBlueprint(lesson.blueprint),
+    prompt: lesson.prompt,
+    curriculum: asCurriculum(lesson.curriculum),
   };
 }

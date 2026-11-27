@@ -1,5 +1,7 @@
 import type { Objective } from "@helpo/shared";
+import { shortTitle } from "../common/short-title";
 import type { LessonContext } from "./ai.provider";
+import { isPromptOnly } from "./prompts";
 
 /** Small, deterministic knowledge base the demo provider builds every resource from. */
 export interface Term {
@@ -129,8 +131,31 @@ export function sourceSentences(text: string, max: number): string[] {
     .slice(0, max);
 }
 
-function genericTerms(title: string, objectives: Objective[], source: string): Term[] {
-  const terms: Term[] = objectives.map((o, i) => ({ term: `Key idea ${i + 1}`, def: lowerFirst(o.text.replace(/\.$/, "")), page: o.sourcePage ?? i + 1 }));
+/** Key concepts a teacher listed in the prompt ("Key concepts: phishing, passwords and malware"). */
+export function promptConcepts(prompt: string | null | undefined): string[] {
+  const m = (prompt ?? "").match(/key\s+(?:concepts?|ideas?|terms?|words?)\s*:\s*([^.\n]+)/i);
+  if (!m) return [];
+  return m[1]
+    .split(/\s*(?:,|;|\band\b)\s*/i)
+    .map((c) => c.replace(/^(?:the|a|an)\s+/i, "").trim())
+    .filter((c) => c.length >= 3 && c.length <= 40)
+    .map((c) => c[0].toUpperCase() + c.slice(1))
+    .slice(0, 10);
+}
+
+/**
+ * The topic the demo builds on. A prompt-only lesson whose title is missing or just class metadata ("Grade 11 Science")
+ * takes its topic from the teacher's prompt, so a cyber security prompt never turns into a plants kit.
+ */
+export function demoTitle(ctx: LessonContext): string {
+  const title = (ctx.title ?? "").trim();
+  if (ctx.prompt && isPromptOnly(ctx) && (!title || /^(?:grade|year)\s*\d+/i.test(title))) return shortTitle(ctx.prompt);
+  return title;
+}
+
+function genericTerms(title: string, objectives: Objective[], source: string, concepts: string[] = []): Term[] {
+  const terms: Term[] = concepts.map((c, i) => ({ term: c, def: `an important idea in ${title.toLowerCase()}: ${c.toLowerCase()}`, page: i + 1 }));
+  objectives.forEach((o, i) => terms.push({ term: `Key idea ${i + 1}`, def: lowerFirst(o.text.replace(/\.$/, "")), page: o.sourcePage ?? i + 1 }));
   sourceSentences(source, 12).forEach((s, i) => {
     if (terms.length < 10) terms.push({ term: `Point ${terms.length + 1}`, def: lowerFirst(s.replace(/[.!?]$/, "")), page: i + 1 });
   });
@@ -181,7 +206,8 @@ function genericQuestions(title: string, terms: Term[]): DemoQuestion[] {
   return ordered;
 }
 
-export function buildTopic(ctx: LessonContext): Topic {
+export function buildTopic(rawCtx: LessonContext): Topic {
+  const ctx = { ...rawCtx, title: demoTitle(rawCtx) };
   const plants = isPlantTopic(ctx.title);
   if (plants && ctx.locale === "ar") {
     return {
@@ -214,7 +240,7 @@ export function buildTopic(ctx: LessonContext): Topic {
     meaning: v.meaning,
     page: ctx.blueprint?.keyConcepts[i]?.sourcePage ?? 1,
   })).map(({ term, meaning, page }) => ({ term, def: meaning, page }));
-  const terms = fromBlueprint.length >= 10 ? fromBlueprint : genericTerms(ctx.title, ctx.objectives, ctx.sourceText);
+  const terms = fromBlueprint.length >= 10 ? fromBlueprint : genericTerms(ctx.title, ctx.objectives, ctx.sourceText || (isPromptOnly(ctx) ? "" : ctx.prompt ?? ""), isPromptOnly(ctx) ? promptConcepts(ctx.prompt) : []);
   return {
     plants,
     title: ctx.title,

@@ -1,18 +1,38 @@
 import { shuffleSeeded } from "./shuffle";
+import type { GameResult } from "./result";
 
 export interface MatchPair {
   left: string;
   right: string;
 }
 
-export const MATCH_ROUND_SIZE = 4;
+/** Rounds get harder: 3 pairs, then 4, then 5, then 5 each. */
+export const MATCH_FIRST_ROUND = 3;
+export const MATCH_MAX_ROUND = 5;
+
+/** Round sizes for `n` pairs. A trailing single pair is folded into the previous round. */
+export function matchRoundSizes(n: number): number[] {
+  const sizes: number[] = [];
+  let left = n;
+  while (left > 0) {
+    const size = Math.min(left, Math.min(MATCH_MAX_ROUND, MATCH_FIRST_ROUND + sizes.length));
+    sizes.push(size);
+    left -= size;
+  }
+  if (sizes.length > 1 && sizes[sizes.length - 1] === 1) {
+    sizes.pop();
+    sizes[sizes.length - 1] += 1;
+  }
+  return sizes;
+}
 
 export type MatchMessage =
   | { kind: "start" }
   | { kind: "picked"; label: string }
   | { kind: "need-left" }
   | { kind: "match"; left: string; right: string; xp: number; retry: boolean; combo: number }
-  | { kind: "miss" }
+  /** `right` is the partner the item really goes with; `again` is true from the second miss on the same item. */
+  | { kind: "miss"; left: string; right: string; again: boolean }
   | { kind: "hint"; left: string; right: string }
   | { kind: "round-done"; round: number }
   | { kind: "finished" };
@@ -29,6 +49,10 @@ export interface MatchState {
   matched: number[];
   /** Left indexes that had at least one wrong try. */
   missed: number[];
+  /** Wrong tries per left index. */
+  missCount: Record<number, number>;
+  wrongTries: number;
+  hintsUsed: number;
   firstTry: number;
   retried: number;
   combo: number;
@@ -46,15 +70,12 @@ export type MatchAction =
   | { type: "hint" }
   | { type: "nextRound" };
 
-export function initMatch(pairs: MatchPair[], seed = "match", roundSize = MATCH_ROUND_SIZE): MatchState {
+export function initMatch(pairs: MatchPair[], seed = "match"): MatchState {
   const rounds: number[][] = [];
-  for (let i = 0; i < pairs.length; i += roundSize) {
-    rounds.push(pairs.slice(i, i + roundSize).map((_, k) => i + k));
-  }
-  // A last round of one pair is folded into the previous round so every round is a real choice.
-  if (rounds.length > 1 && rounds[rounds.length - 1].length === 1) {
-    const last = rounds.pop() as number[];
-    rounds[rounds.length - 1].push(...last);
+  let at = 0;
+  for (const size of matchRoundSizes(pairs.length)) {
+    rounds.push(Array.from({ length: size }, (_, k) => at + k));
+    at += size;
   }
   const rightOrder = rounds.map((r, i) => shuffleSeeded(r, `${seed}:${i}`));
   return {
@@ -66,6 +87,9 @@ export function initMatch(pairs: MatchPair[], seed = "match", roundSize = MATCH_
     selected: null,
     matched: [],
     missed: [],
+    missCount: {},
+    wrongTries: 0,
+    hintsUsed: 0,
     firstTry: 0,
     retried: 0,
     combo: 0,
@@ -105,13 +129,17 @@ export function matchReducer(state: MatchState, action: MatchAction): MatchState
       if (!state.rounds[state.round]?.includes(action.index)) return state;
       if (state.selected === null) return { ...state, hint: null, message: { kind: "need-left" } };
       if (state.selected !== action.index) {
+        const wrongFor = state.selected;
+        const count = (state.missCount[wrongFor] ?? 0) + 1;
         return {
           ...state,
           selected: null,
           hint: null,
           combo: 0,
-          missed: state.missed.includes(state.selected) ? state.missed : [...state.missed, state.selected],
-          message: { kind: "miss" },
+          wrongTries: state.wrongTries + 1,
+          missCount: { ...state.missCount, [wrongFor]: count },
+          missed: state.missed.includes(wrongFor) ? state.missed : [...state.missed, wrongFor],
+          message: { kind: "miss", left: state.pairs[wrongFor].left, right: state.pairs[wrongFor].right, again: count >= 2 },
         };
       }
       const retry = state.missed.includes(action.index);
@@ -146,6 +174,7 @@ export function matchReducer(state: MatchState, action: MatchAction): MatchState
       return {
         ...state,
         hint: next,
+        hintsUsed: state.hintsUsed + 1,
         selected: null,
         message: { kind: "hint", left: state.pairs[next].left, right: state.pairs[next].right },
       };
@@ -157,8 +186,8 @@ export function matchReducer(state: MatchState, action: MatchAction): MatchState
   }
 }
 
-export function matchResult(state: MatchState): { total: number; firstTryCorrect: number; retriedCorrect: number } {
-  return { total: state.pairs.length, firstTryCorrect: state.firstTry, retriedCorrect: state.retried };
+export function matchResult(state: MatchState): GameResult {
+  return { total: state.pairs.length, firstTryCorrect: state.firstTry, retriedCorrect: state.retried, wrongTries: state.wrongTries, hintsUsed: state.hintsUsed };
 }
 
 /** Plain-text status line for the aria-live region. */
@@ -173,7 +202,7 @@ export function matchMessageText(message: MatchMessage): string {
     case "match":
       return `Matched: ${message.left} and ${message.right.toLowerCase()}. +${message.xp} XP${message.retry ? " for trying again" : ""}.${message.combo >= 2 ? ` ${message.combo} in a row!` : ""}`;
     case "miss":
-      return "Not yet, try another.";
+      return message.again ? `Not yet. ${message.left} goes with ${message.right.toLowerCase()}.` : `Not that one. Take another look at ${message.left}.`;
     case "hint":
       return `Hint: ${message.left} goes with ${message.right.toLowerCase()}.`;
     case "round-done":

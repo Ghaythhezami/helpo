@@ -94,6 +94,7 @@ export function contentProblems(kind: ResourceKind, content: ResourceContent, op
       if (g.sortItems.length < 6) out.push("Expected at least 6 sort items.");
       if (g.equationTiles.length < 4) out.push("Expected at least 4 equation tiles.");
       if (g.statements.length < 6) out.push("Expected at least 6 true/false statements.");
+      out.push(...oddOneOutProblems(g));
       break;
     }
     case "CARDS": {
@@ -107,6 +108,22 @@ export function contentProblems(kind: ResourceKind, content: ResourceContent, op
       break;
     }
   }
+  return out;
+}
+
+/** Odd-one-out rules: 4 to 6 rounds, exactly 4 distinct items each, oddIndex 0..3, a reason. */
+export function oddOneOutProblems(g: GameContent): string[] {
+  const rounds = g.oddOneOut ?? [];
+  const out: string[] = [];
+  if (rounds.length < 4 || rounds.length > 6) out.push(`Expected 4 to 6 odd-one-out rounds, got ${rounds.length}.`);
+  rounds.forEach((r, i) => {
+    const n = i + 1;
+    if (r.items.length !== 4) out.push(`Odd-one-out round ${n} needs exactly 4 items, has ${r.items.length}.`);
+    if (!Number.isInteger(r.oddIndex) || r.oddIndex < 0 || r.oddIndex > 3) out.push(`Odd-one-out round ${n} needs oddIndex between 0 and 3.`);
+    if (r.items.some((x) => !x.trim())) out.push(`Odd-one-out round ${n} has an empty item.`);
+    if (new Set(r.items.map(normalizeText)).size !== r.items.length) out.push(`Odd-one-out round ${n} has duplicate items.`);
+    if (!r.explanation.trim()) out.push(`Odd-one-out round ${n} needs an explanation.`);
+  });
   return out;
 }
 
@@ -198,6 +215,15 @@ export function collectTexts(value: unknown, out: string[] = []): string[] {
 }
 
 /* --------------------------------- post-processing --------------------------------- */
+
+/** Odd-one-out: keep well-formed rounds only (a broken round would be unplayable), at most 6. Fewer than 4 triggers a retry. */
+export function postProcessGame(g: GameContent): GameContent {
+  const rounds = (g.oddOneOut ?? [])
+    .map((r) => ({ ...r, items: r.items.map((x) => x.trim()), explanation: r.explanation.trim() }))
+    .filter((r) => r.items.length === 4 && Number.isInteger(r.oddIndex) && r.oddIndex >= 0 && r.oddIndex <= 3 && new Set(r.items.map(normalizeText)).size === 4 && r.items.every(Boolean))
+    .slice(0, 6);
+  return { ...g, oddOneOut: rounds };
+}
 
 /** Mulberry32, so tests (and the demo) can shuffle deterministically. */
 export function seededRng(seed: number): () => number {

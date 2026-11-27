@@ -68,6 +68,7 @@ enum GameKind {
   EQUATION
   MEMORY
   TRUE_FALSE
+  ODD_ONE_OUT
 }
 
 model School {
@@ -142,6 +143,8 @@ model Lesson {
   lessonNumber      Int?
   durationMin       Int           @default(45)
   language          String        @default("English")
+  /// National curriculum the lesson follows (GENERAL, AMERICAN, BRITISH, EGYPTIAN, TUNISIAN).
+  curriculum        String        @default("GENERAL")
   descriptionEn     String?
   descriptionAr     String?
   standard          String?
@@ -265,6 +268,8 @@ model ActivitySession {
   classId         String
   type            SessionType
   game            GameKind?
+  /// Games the teacher published with this share (GameKind[]); null = every playable game.
+  games           Json?
   status          SessionStatus @default(LOBBY)
   joinCode        String
   namesHidden     Boolean       @default(true)
@@ -334,6 +339,10 @@ model GameResult {
   total       Int
   firstTry    Int
   retried     Int
+  /// Wrong attempts and hints used, and the points earned (0..weight), separate from XP.
+  wrongTries  Int      @default(0)
+  hintsUsed   Int      @default(0)
+  points      Int      @default(0)
   createdAt   DateTime @default(now())
   student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)

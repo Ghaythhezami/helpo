@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Param, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
 import type { Response } from "express";
 import { AnswerBody, AvatarBody, CodeJoinBody, PlaySubmitBody, GameResultBody, PracticeSubmitBody, UpdateLocaleBody, type Locale } from "@helpo/shared";
 import type { z } from "zod";
@@ -107,8 +107,8 @@ export class PlayController {
 
   @Get("games")
   @UseGuards(StudentGuard)
-  games(@CurrentStudent() s: StudentContext, @ReqLocale() locale: Locale) {
-    return this.play.listGames(s.id, locale);
+  games(@CurrentStudent() s: StudentContext, @ReqLocale() locale: Locale, @Query("sessionId") sessionId?: string) {
+    return this.play.listGames(s.id, locale, sessionId || undefined);
   }
 
   @Post("games/result")
@@ -120,8 +120,8 @@ export class PlayController {
 
   @Get("games/:lessonId/:game")
   @UseGuards(StudentGuard)
-  game(@CurrentStudent() s: StudentContext, @ReqLocale() locale: Locale, @Param("lessonId") lessonId: string, @Param("game") game: string) {
-    return this.play.game(s.id, lessonId, game.toUpperCase(), locale);
+  game(@CurrentStudent() s: StudentContext, @ReqLocale() locale: Locale, @Param("lessonId") lessonId: string, @Param("game") game: string, @Query("sessionId") sessionId?: string) {
+    return this.play.game(s.id, lessonId, game.toUpperCase(), locale, sessionId || undefined);
   }
 
   /** Practice hub: open activities plus every lesson of the class, playable any time. */

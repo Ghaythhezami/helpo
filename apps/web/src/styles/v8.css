@@ -1,0 +1,134 @@
+/* v8 */
+
+/* ───────────── v8: top navigation (replaces the side rail) ───────────── */
+.top-nav { display: flex; align-items: center; gap: var(--sp-1, 4px); min-width: 0; margin-inline-start: 8px; }
+.nav-item {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 999px;
+  background: transparent; color: var(--ink); font: inherit; font-weight: 800; font-size: 15px; cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: background-color 140ms ease-out, color 140ms ease-out, transform 90ms ease-out;
+}
+.nav-item:hover { background: var(--soft); }
+.nav-item:active { transform: scale(0.98); }
+.nav-item[aria-current="page"] { background: var(--grad); color: #fff; box-shadow: var(--btnsh, none); }
+.nav-item:focus-visible { outline: 3px solid var(--pri); outline-offset: 2px; }
+.ri-ic { width: 22px; height: 22px; display: grid; place-items: center; flex: none; }
+.ri-lbl { overflow: hidden; text-overflow: ellipsis; }
+.drawer-menu .top-nav { flex-direction: column; align-items: stretch; margin: 0; gap: 4px; flex: 1; }
+.drawer-menu .nav-item { min-height: 48px; border-radius: 16px; justify-content: flex-start; font-size: 16px; }
+.app-head .avpop .langsw { justify-self: stretch; justify-content: center; }
+@media (max-width: 1180px) { .top-nav .ri-lbl { font-size: 14px; } .nav-item { padding: 0 10px; } }
+@media (prefers-reduced-motion: reduce) { .nav-item { transition: none; } .nav-item:active { transform: none; } }
+
+/* ───────────── v8: curriculum field ───────────── */
+.create-row .curriculum-field select { max-width: 300px; }
+
+/* ───────────── v8: full-screen generation view ───────────── */
+.gen-ovl { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px; background: var(--bg); overflow: auto; }
+.gen-card { width: min(560px, 100%); display: grid; gap: 12px; justify-items: center; text-align: center; max-height: 100%; }
+.gen-card h1 { font: 700 clamp(1.5rem, 3.4vw, 2rem) var(--font-fredoka), var(--font-nunito), sans-serif; color: var(--ink); outline: none; margin: 0; }
+.gen-mascot { animation: gen-bob 3.2s ease-in-out infinite; }
+.gen-total { width: 100%; height: 10px; border-radius: 999px; background: var(--soft); overflow: hidden; }
+.gen-total > i { display: block; height: 100%; background: var(--grad); transform-origin: var(--origin-start, left); transition: transform 600ms cubic-bezier(.16, 1, .3, 1); }
+.gen-steps { width: 100%; display: grid; gap: 8px; list-style: none; padding: 0; margin: 4px 0; text-align: start; }
+.gen-step { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; border-radius: 18px; background: #fff; border: 1px solid var(--line); transition: border-color 200ms, background-color 200ms; }
+.gen-step .gs-ic { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; flex: none; background: var(--neu-bg); color: var(--ink2); }
+.gen-step .gs-ic .ic { width: 16px; height: 16px; }
+.gen-step .gs-art { flex: none; }
+.gen-step .gs-name { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.gen-step.waiting { opacity: 0.78; }
+.gen-step.working { border-color: var(--pri); box-shadow: 0 0 0 3px rgba(96, 53, 207, 0.12); }
+.gen-step.working .gs-ic { background: var(--soft); color: var(--pri); }
+.gen-step.done .gs-ic { background: var(--ready-bg); color: var(--ready); }
+.gen-step.failed { border-color: #e2b64f; background: #fffaf0; }
+.gen-step.failed .gs-ic { background: var(--chk-bg); color: var(--chk); }
+.gs-bar { display: block; height: 6px; border-radius: 999px; background: var(--soft); overflow: hidden; margin-top: 2px; }
+.gs-bar > i { display: block; height: 100%; background: var(--pri); transform-origin: var(--origin-start, left); transition: transform 500ms cubic-bezier(.16, 1, .3, 1); }
+.gen-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.ic.spin { animation: gen-spin 1.1s linear infinite; }
+@keyframes gen-spin { to { transform: rotate(360deg); } }
+@keyframes gen-bob { 50% { transform: translateY(-5px); } }
+@media (max-height: 720px) { .gen-mascot { display: none; } .gen-step { min-height: 48px; padding-block: 4px; } .gen-card { gap: 8px; } }
+@media (prefers-reduced-motion: reduce) { .gen-mascot, .ic.spin { animation: none; } .gen-total > i, .gs-bar > i { transition: none; } }
+
+/* ───────────── v8: share, choose the games ───────────── */
+.share-games { border: 1px solid var(--line); border-radius: 20px; padding: 12px 14px; margin: 12px 0 0; display: grid; gap: 8px; background: #fff; min-width: 0; }
+.share-games legend { font-weight: 900; padding-inline: 6px; color: var(--ink); }
+.sg-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px; }
+.sg-item { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 12px; border-radius: 14px; border: 2px solid var(--line); cursor: pointer; font-weight: 800; }
+.sg-item.on { border-color: var(--pri); background: var(--soft); }
+.sg-item input { width: 20px; height: 20px; flex: none; accent-color: var(--pri); }
+.sg-item:focus-within { outline: 3px solid var(--pri); outline-offset: 2px; }
+.sg-pts { margin-inline-start: auto; color: var(--pri-h); font-size: 0.9rem; }
+.sg-sum { margin: 0; font-weight: 800; color: var(--ink2); }
+.board-games { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 6px 0 0; }
+
+/* ───────────── v8: generation view v2 (focus lock, lamp hero) ───────────── */
+.app-inert { display: contents; }
+.gen-ovl { background: radial-gradient(120% 90% at 50% 0%, #ffffff 0%, var(--bg) 60%); }
+.gen-card { width: min(980px, 100%); grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: center; }
+.gen-left, .gen-right { display: grid; gap: 10px; justify-items: center; min-width: 0; }
+.gen-right { width: 100%; }
+.gen-right .gen-steps { margin: 0; }
+.gen-hero { position: relative; width: min(420px, 100%); }
+.gen-hero svg { width: 100%; height: auto; max-height: 30dvh; display: block; overflow: visible; }
+.gen-pct { margin: 2px 0 0; text-align: center; font: 700 1.35rem var(--font-fredoka), var(--font-nunito), sans-serif; color: var(--pri-h); font-variant-numeric: tabular-nums; }
+.gen-hero.static { width: 150px; }
+.gen-hero.static svg { max-height: none; }
+.gen-hero.static .gen-pct { bottom: 50%; transform: translateY(50%); font-size: 1.6rem; }
+.gh-ring-bg { fill: none; stroke: var(--soft); stroke-width: 10; }
+.gh-ring { fill: none; stroke: var(--pri); stroke-width: 10; stroke-linecap: round; }
+.gh-line-bg { fill: none; stroke: var(--line); stroke-width: 2; stroke-dasharray: 3 5; }
+.gh-line { fill: none; stroke: #b39bff; stroke-width: 3; stroke-linecap: round; }
+.gh-line.working { stroke: var(--pri); }
+.gh-line.done { stroke: #f2b01e; }
+.gh-shade { fill: #ffd86b; stroke: #e8a100; stroke-width: 2; stroke-linejoin: round; }
+.gh-base { fill: var(--pri); }
+.gh-bulb { fill: #fff6cf; }
+.gh-node-bg { fill: #fff; stroke: var(--line); stroke-width: 2; }
+.gh-node-ring { stroke: var(--pri); stroke-width: 3; stroke-linecap: round; }
+.gh-node.done .gh-node-bg { fill: var(--pri); stroke: var(--pri); }
+.gh-node.done .gh-node-ring { stroke: #f2b01e; }
+.gh-node.waiting { opacity: 0.8; }
+.gh-ic { color: var(--pri-h); stroke: currentColor; }
+.gh-node.done .gh-ic { color: #fff; }
+.gh-particles circle { fill: #ffd86b; opacity: 0; transform-box: fill-box; animation: gh-rise 3.4s ease-out infinite; animation-delay: calc(var(--i) * 0.45s); }
+.gen-hero.paused .gh-particles circle, .gen-hero.paused .gh-bulb { animation-play-state: paused; }
+.gs-now { display: block; color: var(--ink2); min-height: 1.2em; animation: gen-fade 400ms ease-out; }
+.gen-step.working { position: relative; overflow: hidden; }
+.gen-step.working::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(96, 53, 207, 0.08), transparent); transform: translateX(-100%); animation: gen-shimmer 1.8s ease-in-out infinite; pointer-events: none; }
+[dir="rtl"] .gen-step.working::after { animation-direction: reverse; }
+.gen-step.done .gs-ic { animation: gen-pop 360ms cubic-bezier(.34, 1.56, .64, 1); }
+.gen-actions .conf { margin: 0; }
+.gen-reveal { animation: gen-reveal 700ms cubic-bezier(.16, 1, .3, 1); }
+@keyframes gh-rise { 0% { opacity: 0; transform: translateY(0) scale(1); } 20% { opacity: 0.9; } 100% { opacity: 0; transform: translateY(-70px) scale(0.4); } }
+@keyframes gen-shimmer { to { transform: translateX(100%); } }
+@keyframes gen-fade { from { opacity: 0; transform: translateY(3px); } }
+@keyframes gen-pop { 0% { transform: scale(0.6); } 100% { transform: scale(1); } }
+@keyframes gen-reveal { from { opacity: 0; transform: scale(0.985); } }
+@media (min-width: 860px) { .gen-card { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; } .gen-hero { width: min(460px, 100%); } .gen-hero svg { max-height: 44dvh; } .gen-left h1 { font-size: 1.9rem; } }
+@media (max-height: 700px) { .gen-hero svg { max-height: 20dvh; } .gen-step { min-height: 44px; padding-block: 2px; } .gen-step .gs-art { display: none; } .gen-total { height: 8px; } .gen-hero.static { width: 96px; } }
+@media (max-width: 859px) { .gen-card { gap: 8px; } .gen-steps { gap: 5px; } .gs-now { display: none; } }
+@media (prefers-reduced-motion: reduce) { .gh-particles, .gen-step.working::after { display: none; } .gen-step.done .gs-ic, .gs-now, .gen-reveal { animation: none; } }
+@media (max-width: 859px) {
+  .gen-ovl { padding: 10px; align-items: start; }
+  .gen-card { gap: 6px; }
+  .gen-left { gap: 6px; }
+  .gen-left h1 { font-size: 1.2rem; line-height: 1.2; }
+  .gen-hero svg { max-height: 22dvh; }
+  .gen-step { min-height: 44px; padding-block: 2px; gap: 10px; }
+  .gen-step .gs-art { display: none; }
+  .gen-total { height: 8px; }
+}
+
+/* ───────────── v8: workspace header, Share and Results stay labelled ───────────── */
+@media (min-width: 701px) { .tapp .ws-actions .btn.keep .lbl { display: inline; } }
+
+/* ───────────── v8 audit fixes ───────────── */
+/* Item rows: -webkit-box clipped the start of LTR text inside RTL rows ("otosynthesis"). A flex row wraps it instead. */
+.tapp .ws-list .row-main { display: flex; align-items: center; gap: 8px; -webkit-line-clamp: unset; overflow-wrap: anywhere; min-width: 0; }
+.tapp .ws-list .row-main .num { flex: none; margin-inline-end: 0; }
+/* A lesson title in the other language must not lose its start to the ellipsis ("...s: how plants make food" in RTL). */
+.tapp .ws-title h1, .lcard-link b, .gen-left h1 { unicode-bidi: plaintext; text-align: start; }
+.pvh h1 { unicode-bidi: plaintext; text-align: start; }
+.sg-pts { white-space: nowrap; }
+.sg-item span { min-width: 0; }

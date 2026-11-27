@@ -8,6 +8,9 @@ import "@/styles/student.css";
 import "@/styles/extras.css";
 import "@/styles/app.css";
 import "@/styles/v7.css";
+import "@/styles/v8.css";
+import "@/styles/v8-games.css";
+import "@/styles/v8-cards.css";
 import { layoutMetadata } from "@/lib/meta";
 import { Providers } from "./providers";
 

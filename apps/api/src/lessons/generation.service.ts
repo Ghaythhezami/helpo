@@ -7,12 +7,13 @@ import { AiError } from "../ai/errors";
 import { generateWithRepair } from "../ai/generators";
 import { asLocale, initialTranslations, pickJson, writeCol } from "../common/i18n";
 import { badRequest } from "../common/problem";
-import { EventBus, JobQueue, type GenerationJob } from "../jobs/job-queue";
+import { EventBus, JobQueue, generationMode, orderKinds, type GenerationJob } from "../jobs/job-queue";
 import { PrismaService } from "../prisma/prisma.service";
 import { lessonContext } from "./lesson-context";
 import { LessonViewService } from "./lesson-view.service";
 
-const STALE_GENERATION_MS = LIMITS.jobTimeoutMs * 4;
+/** A GENERATING lesson older than this is considered abandoned. Sequential generation runs five jobs one after another. */
+const staleGenerationMs = () => LIMITS.jobTimeoutMs * (generationMode() === "sequential" ? 8 : 4);
 
 /** What one click generates; stored on the lesson (`generationOptions`). */
 export interface GenerationOptions {
@@ -30,7 +31,8 @@ export function readOptions(json: unknown): GenerationOptions {
 
 /**
  * Generation flow: claim the lesson atomically (a double click starts nothing twice), set GENERATING + WAITING rows,
- * return 202, then generate all kinds in parallel (inline) or as a BullMQ flow. Each resource moves WAITING ->
+ * return 202, then generate the kinds one after another (GENERATION_MODE=sequential, the default: SLIDES, WORKSHEET,
+ * QUIZ, CARDS, GAME) or in parallel, inline or as a BullMQ flow (a chain when sequential). Each resource moves WAITING ->
  * WORKING -> READY/FAILED with progress, tokens and prompt version persisted. Checks and the final status run once
  * every resource has finished. Everything is written to the lesson's contentLocale columns.
  */
@@ -69,7 +71,7 @@ export class GenerationService {
     const cl = asLocale(lesson.contentLocale);
 
     // Atomic claim: only one caller flips the lesson to GENERATING (idempotent double click).
-    const stale = new Date(Date.now() - STALE_GENERATION_MS);
+    const stale = new Date(Date.now() - staleGenerationMs());
     const claimed = await this.prisma.lesson.updateMany({
       where: { id: lesson.id, OR: [{ status: { not: "GENERATING" } }, { generationStartedAt: { lt: stale } }] },
       data: {
@@ -146,7 +148,14 @@ export class GenerationService {
       const lesson = await this.prisma.lesson.findUnique({ where: { id: lessonId }, include: { classRoom: { select: { name: true, grade: true, band: true } } } });
       if (!lesson) return;
       const ctx = await this.ensureBlueprint(lessonContext(lesson, asLocale(lesson.contentLocale)), lessonId);
-      await Promise.all(kinds.map((k) => this.queue.guard(`${lessonId}:${k}`, () => this.runKind(ctx, lessonId, k, { final: true }))));
+      const step = (k: ResourceKind) => this.queue.guard(`${lessonId}:${k}`, () => this.runKind(ctx, lessonId, k, { final: true }));
+      if (generationMode() === "parallel") {
+        await Promise.all(kinds.map(step));
+      } else {
+        // sequential (default): SLIDES, WORKSHEET, QUIZ, CARDS, GAME, one at a time. runKind never throws for a
+        // failed step (it records FAILED on the row), so a failure does not block the next resource.
+        for (const k of orderKinds(kinds)) await step(k);
+      }
       await this.finalize({ lessonId, kinds, replaceAllChecks });
     } catch (e) {
       this.logger.error(`Generation crashed for lesson ${lessonId}: ${e instanceof Error ? e.message : String(e)}`);
@@ -178,7 +187,7 @@ export class GenerationService {
     const options = readOptions(lessonRow?.generationOptions);
     const genOptions: GenerateOptions = { quizCount: options.quizCount, difficulty: options.difficulty };
     await this.prisma.resource.update({ where, data: { status: "WORKING", error: null, progress: 5 } });
-    this.events.emit(`lesson:${lessonId}`, "resource.progress", { lessonId, kind, percent: 5 });
+    this.events.emit(`lesson:${lessonId}`, "resource.progress", { lessonId, kind, status: "WORKING", percent: 5 });
     try {
       const out = await generateWithRepair(this.ai, kind, ctx, genOptions, {
         lessonId,
@@ -186,7 +195,7 @@ export class GenerationService {
           const percent = Math.min(90, 5 + attempt * 30);
           await this.prisma.resource.update({ where, data: { progress: percent } });
           await opts.onProgress?.(percent);
-          this.events.emit(`lesson:${lessonId}`, "resource.progress", { lessonId, kind, percent });
+          this.events.emit(`lesson:${lessonId}`, "resource.progress", { lessonId, kind, status: "WORKING", percent });
         },
       });
       const saved = await this.prisma.resource.update({

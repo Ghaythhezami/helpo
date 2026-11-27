@@ -1,6 +1,8 @@
+import { Prisma } from "@prisma/client";
 import { DemoAiProvider } from "../ai/demo.provider";
+import { quizCache, qrCache } from "../common/content-cache";
 import { mockPrisma } from "../testing/mock-prisma";
-import { SessionsService, randomJoinCode } from "./sessions.service";
+import { SessionsService, randomJoinCode, sessionGames } from "./sessions.service";
 
 async function quiz() {
   return (await new DemoAiProvider().generateResource("QUIZ", { title: "Photosynthesis", grade: 6, band: "NAVIGATOR", locale: "en", language: "English", durationMin: 45, standard: null, objectives: [], sourceText: "" })).content;
@@ -15,13 +17,16 @@ const lessonRow = (over: Record<string, unknown> = {}) => ({
 });
 
 const sessionRow = (over: object = {}) => ({
-  id: "SE1", lessonId: "L1", classId: "C1", type: "LIVE_QUIZ", game: null, status: "LOBBY", joinCode: "123456", namesHidden: true, currentQuestion: 0, revealed: false, ...over,
+  id: "SE1", lessonId: "L1", classId: "C1", type: "LIVE_QUIZ", game: null, status: "LOBBY", joinCode: "123456", namesHidden: true, currentQuestion: 0, revealed: false, isOpen: true, ...over,
 });
 
 async function setup() {
+  quizCache.clear();
+  qrCache.clear();
   const db = mockPrisma();
   const q = (await quiz()) as unknown as { questions: { prompt: string; options: string[]; type: string }[] };
-  db.resource.findUnique.mockResolvedValue({ contentEn: q, contentAr: null });
+  // the lookup by (lesson, kind) is the light key; the lookup by id is the content (only on a cache miss)
+  db.resource.findUnique.mockImplementation(async ({ where }: { where: { id?: string } }) => (where.id ? { contentEn: q, contentAr: null } : { id: "R1", updatedAt: new Date(1000), status: "READY" }));
   db.participant.findMany.mockResolvedValue([]);
   db.student.count.mockResolvedValue(24);
   db.answer.findMany.mockResolvedValue([]);
@@ -116,6 +121,55 @@ describe("SessionsService actions and view", () => {
     expect(revealed.distribution?.[1]).toBe(1);
     db.activitySession.findFirst.mockResolvedValue(sessionRow());
     expect((await service.get("T1", "SE1", "en")).question).toBeNull();
+  });
+});
+
+describe("SessionsService realtime and games", () => {
+  it("emits session.state on start, next, prev, reveal, end, open and close (flags only, no answers)", async () => {
+    const { db, q } = await setup();
+    void q;
+    const events = { emit: jest.fn() };
+    const service = new SessionsService(db, events as never);
+    db.activitySession.findFirst.mockResolvedValue(sessionRow());
+    await service.action("T1", "SE1", "start", "en");
+    db.activitySession.findFirst.mockResolvedValue(sessionRow({ status: "LIVE", isOpen: true }));
+    for (const a of ["next", "prev", "reveal", "close", "open", "end"] as const) await service.action("T1", "SE1", a, "en");
+    const states = events.emit.mock.calls.filter((c) => c[1] === "session.state");
+    expect(states).toHaveLength(7);
+    expect(states[0]).toEqual(["session:SE1", "session.state", { sessionId: "SE1", status: "LIVE", currentQuestion: 0, revealed: false, isOpen: true }]);
+    expect(states[1][2]).toMatchObject({ currentQuestion: 1, revealed: false });
+    expect(states[3][2]).toMatchObject({ revealed: true });
+    expect(states[4][2]).toMatchObject({ isOpen: false });
+    expect(states[6][2]).toMatchObject({ status: "ENDED" });
+    expect(JSON.stringify(states)).not.toMatch(/answer|correct|option/i);
+    expect(events.emit.mock.calls.filter((c) => c[1] === "session.question")).toHaveLength(3); // start, next, prev
+  });
+
+  it("stores the published games and shows the 100 points split among them", async () => {
+    const { db, service } = await setup();
+    db.lesson.findFirst.mockResolvedValue(lessonRow());
+    const view = await service.create("T1", { lessonId: "L1", type: "GAME", namesHidden: true }, "en", { games: ["SORT", "ODD_ONE_OUT", "SORT"] });
+    const data = db.activitySession.create.mock.calls[0][0].data;
+    expect(data.games).toEqual(["SORT", "ODD_ONE_OUT"]);
+    expect(data.game).toBe("SORT");
+    expect(view.games).toEqual([{ game: "SORT", points: 50 }, { game: "ODD_ONE_OUT", points: 50 }]);
+    // a live quiz publishes no games; a single `game` still counts as a one-game list worth 100
+    await service.create("T1", { lessonId: "L1", type: "LIVE_QUIZ", namesHidden: true }, "en", { games: ["SORT"] });
+    expect(db.activitySession.create.mock.calls[1][0].data.games).toBe(Prisma.DbNull);
+    const single = await service.create("T1", { lessonId: "L1", type: "GAME", game: "MEMORY", namesHidden: true }, "en");
+    expect(single.games).toEqual([{ game: "MEMORY", points: 100 }]);
+    expect(sessionGames({ games: ["bogus"], game: null })).toBeNull();
+    expect(sessionGames({ games: [], game: "SORT" })).toEqual(["SORT"]);
+  });
+
+  it("the teacher's session view reloads no quiz content and makes the QR once", async () => {
+    const { db, service } = await setup();
+    db.activitySession.findFirst.mockResolvedValue(sessionRow({ status: "LIVE" }));
+    await service.get("T1", "SE1", "en");
+    await service.get("T1", "SE1", "en");
+    await service.get("T1", "SE1", "en");
+    const contentLoads = db.resource.findUnique.mock.calls.filter((c: { where: { id?: string } }[]) => c[0].where.id);
+    expect(contentLoads).toHaveLength(1);
   });
 });
 

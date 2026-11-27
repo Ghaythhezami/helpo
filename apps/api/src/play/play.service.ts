@@ -3,12 +3,14 @@ import { EventBus } from "../jobs/job-queue";
 import { Prisma, type ActivitySession, type Student } from "@prisma/client";
 import {
   BADGES,
-  GAME_TEMPLATES,
+  GAME_KINDS,
   daysBetween,
   levelForXp,
+  gamePoints,
   levelTitle,
   playableTemplates,
   scoreGame,
+  splitGamePoints,
   type AvatarBody,
   type GameContent,
   type GameKind,
@@ -26,15 +28,18 @@ import type { z } from "zod";
 import { badRequest, conflict, notFound } from "../common/problem";
 import { asLocale } from "../common/i18n";
 import { schoolDay, startOfDay, startOfIsoWeek } from "../common/time";
+import { QUIZ_REF_SELECT, cachedQuiz, type QuizRef } from "../common/content-cache";
 import { contentOf, lessonTitle, toClassSettings } from "../common/views";
 import { classWeekXp } from "../common/xp";
 import { PrismaService } from "../prisma/prisma.service";
 import { DAILY_GAME_XP_CAP, badgeForGame, correctIndex, firstAnswerXp, gradeAnswer, neverGivesUpEarned, retryXpDelta, studentType, stripForStudent, unlockedAvatar, type StudentQuestion } from "./grading";
+import { sessionGames } from "../sessions/sessions.service";
 import { GamificationService } from "./gamification.service";
 
-type SessionWithTitle = ActivitySession & { lesson: { titleEn: string | null; titleAr: string | null } };
+/** A session with what the student screens need from its lesson: the title and the key of the quiz content. */
+type SessionWithTitle = ActivitySession & { lesson: { titleEn: string | null; titleAr: string | null; resources: QuizRef[] } };
 
-const GAME_KINDS = Object.keys(GAME_TEMPLATES) as GameKind[];
+const SESSION_LESSON = { select: { titleEn: true, titleAr: true, resources: { where: { kind: "QUIZ" as const }, select: QUIZ_REF_SELECT } } };
 
 @Injectable()
 export class PlayService {
@@ -135,33 +140,49 @@ export class PlayService {
 
   /* ---------------------------------- quiz ---------------------------------- */
 
-  private async quizFor(lessonId: string, locale: Locale): Promise<QuizContent> {
-    const r = await this.prisma.resource.findUnique({ where: { lessonId_kind: { lessonId, kind: "QUIZ" } }, select: { contentEn: true, contentAr: true, status: true } });
-    const content = r && r.status === "READY" ? contentOf<QuizContent>(r, locale).content : null;
+  /** The session's quiz, from the LRU (keyed by resource id + updatedAt + locale). 404 until the quiz is READY. */
+  private async quizOf(session: SessionWithTitle, locale: Locale): Promise<QuizContent> {
+    const ref = session.lesson.resources[0];
+    const content = ref && ref.status === "READY" ? await cachedQuiz(this.prisma, ref, locale) : null;
     if (!content) throw notFound("Quiz");
     return content;
   }
 
-  private async sessionFor(student: Student, sessionId: string): Promise<SessionWithTitle> {
+  /**
+   * A quiz session of the student's class. Scoped through the relation (a student of another class gets 404), so it
+   * needs no separate student lookup and can run in parallel with the other reads of a poll.
+   */
+  private async sessionOf(studentId: string, sessionId: string): Promise<SessionWithTitle> {
     const session = await this.prisma.activitySession.findFirst({
-      where: { id: sessionId, classId: student.classId, type: { in: ["LIVE_QUIZ", "ASSIGNMENT"] } },
-      include: { lesson: { select: { titleEn: true, titleAr: true } } },
+      where: { id: sessionId, type: { in: ["LIVE_QUIZ", "ASSIGNMENT"] }, classRoom: { students: { some: { id: studentId } } } },
+      include: { lesson: SESSION_LESSON },
     });
     if (!session) throw notFound("Session");
     return session;
   }
 
+  /** GET /play/sessions/:id (polled): 2 parallel queries, plus one for the quiz content only on a cache miss. */
   async quizState(studentId: string, sessionId: string, locale: Locale): Promise<StudentQuizState> {
-    const s = await this.student(studentId);
-    const session = await this.sessionFor(s, sessionId);
-    return this.buildState(s, session, locale);
+    const [session, mine] = await Promise.all([this.sessionOf(studentId, sessionId), this.myAnswers(studentId, sessionId)]);
+    return this.stateFrom(session, mine, locale);
+  }
+
+  private myAnswers(studentId: string, sessionId: string) {
+    return this.prisma.answer.findMany({
+      where: { sessionId, participant: { studentId } },
+      orderBy: { questionIndex: "asc" },
+      select: { questionIndex: true, optionIndex: true, text: true, correct: true },
+    });
+  }
+
+  private async buildState(studentId: string, session: SessionWithTitle, locale: Locale): Promise<StudentQuizState> {
+    return this.stateFrom(session, await this.myAnswers(studentId, session.id), locale);
   }
 
   /** Never includes the correct answer or explanation before reveal. */
-  private async buildState(student: Student, session: SessionWithTitle, locale: Locale): Promise<StudentQuizState> {
-    const quiz = await this.quizFor(session.lessonId, locale);
+  private async stateFrom(session: SessionWithTitle, mine: { questionIndex: number; optionIndex: number | null; text: string | null; correct: boolean }[], locale: Locale): Promise<StudentQuizState> {
+    const quiz = await this.quizOf(session, locale);
     const count = quiz.questions.length;
-    const mine = await this.prisma.answer.findMany({ where: { sessionId: session.id, participant: { studentId: student.id } }, orderBy: { questionIndex: "asc" } });
     const selfPaced = session.type === "ASSIGNMENT";
     const index = selfPaced ? Math.min(mine.length, Math.max(count - 1, 0)) : session.currentQuestion;
     const q = quiz.questions[index] ?? null;
@@ -181,10 +202,9 @@ export class PlayService {
   }
 
   async submitAnswer(studentId: string, sessionId: string, body: { questionIndex: number; optionIndex?: number; text?: string }, locale: Locale): Promise<StudentQuizState> {
-    const s = await this.student(studentId);
-    const session = await this.sessionFor(s, sessionId);
+    const [s, session] = await Promise.all([this.student(studentId), this.sessionOf(studentId, sessionId)]);
     if (session.status !== "LIVE") throw conflict("This quiz is not running right now.");
-    const quiz = await this.quizFor(session.lessonId, locale);
+    const quiz = await this.quizOf(session, locale);
     const question = quiz.questions[body.questionIndex];
     if (!question) throw notFound("Question");
     if (session.type === "LIVE_QUIZ") {
@@ -204,7 +224,7 @@ export class PlayService {
 
     // Idempotent: the same answer again, or any change after a correct answer, is a no-op.
     const same = existing && existing.optionIndex === (body.optionIndex ?? null) && (existing.text ?? null) === (body.text ?? null);
-    if (existing && (same || existing.correct)) return this.buildState(s, session, locale);
+    if (existing && (same || existing.correct)) return this.buildState(s.id, session, locale);
 
     try {
       await this.prisma.$transaction(async (tx) => {
@@ -239,16 +259,25 @@ export class PlayService {
     } catch (e) {
       if (!(e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002")) throw e; // concurrent duplicate: fine
     }
-    this.events?.emit(`session:${session.id}`, "session.answer", { sessionId: session.id, questionId: question.id, choice: body.optionIndex ?? body.text ?? "" });
-    return this.buildState(s, session, locale);
+    await this.announceAnswer(session.id, body.questionIndex);
+    return this.buildState(s.id, session, locale);
+  }
+
+  /**
+   * session.answer: how many students have answered this question. Counts only: the choice, the correct answer and
+   * the student are never sent to the room (the teacher's screen reads names from GET /sessions/:id).
+   */
+  private async announceAnswer(sessionId: string, questionIndex: number): Promise<void> {
+    if (!this.events) return;
+    const answered = await this.prisma.answer.count({ where: { sessionId, questionIndex } });
+    this.events.emit(`session:${sessionId}`, "session.answer", { sessionId, questionIndex, answered });
   }
 
   /** Self-paced quiz / assignment: every question WITHOUT correct flags or accepted answers. */
   async questionsFor(studentId: string, sessionId: string, locale: Locale): Promise<{ sessionId: string; joinCode: string; lessonTitle: string; questions: StudentQuestion[] }> {
-    const s = await this.student(studentId);
-    const session = await this.sessionFor(s, sessionId);
+    const session = await this.sessionOf(studentId, sessionId);
     if (session.type !== "ASSIGNMENT") throw conflict("Questions are shown one at a time in a live quiz.");
-    const quiz = await this.quizFor(session.lessonId, locale);
+    const quiz = await this.quizOf(session, locale);
     return { sessionId: session.id, joinCode: session.joinCode, lessonTitle: lessonTitle(session.lesson, locale), questions: quiz.questions.map((q) => stripForStudent(q)) };
   }
 
@@ -268,11 +297,11 @@ export class PlayService {
     const s = await this.student(studentId);
     const session = await this.prisma.activitySession.findFirst({
       where: { joinCode: code, classId: s.classId, type: "ASSIGNMENT", status: { not: "ENDED" } },
-      include: { lesson: { select: { titleEn: true, titleAr: true } } },
+      include: { lesson: SESSION_LESSON },
     });
     if (!session) throw notFound("Assignment");
     if (!session.isOpen || (session.expiresAt && session.expiresAt < new Date())) throw conflict("This activity is closed.");
-    const quiz = await this.quizFor(session.lessonId, locale);
+    const quiz = await this.quizOf(session, locale);
     const participant = await this.prisma.participant.upsert({
       where: { sessionId_studentId: { sessionId: session.id, studentId: s.id } },
       create: { sessionId: session.id, studentId: s.id, displayName: s.displayName },
@@ -318,28 +347,45 @@ export class PlayService {
 
   /* ---------------------------------- games ---------------------------------- */
 
-  async listGames(studentId: string, locale: Locale): Promise<{ lessonId: string; lessonTitle: string; game: GameKind; bestStars: number; assigned: boolean }[]> {
+  /**
+   * The session a student plays games in: their class, not ended. Returns its published games (null = unrestricted).
+   * 404 for another class's session, so an id guess reveals nothing.
+   */
+  private async gameSession(student: Student, sessionId: string): Promise<{ id: string; lessonId: string; games: GameKind[] | null }> {
+    const session = await this.prisma.activitySession.findFirst({
+      where: { id: sessionId, classId: student.classId, type: { in: ["GAME", "ASSIGNMENT"] }, status: { not: "ENDED" } },
+      select: { id: true, lessonId: true, game: true, games: true },
+    });
+    if (!session) throw notFound("Session");
+    return { id: session.id, lessonId: session.lessonId, games: sessionGames(session) };
+  }
+
+  /** GET /play/games[?sessionId=]: with a sessionId only that session's lesson and its published games. */
+  async listGames(studentId: string, locale: Locale, sessionId?: string): Promise<{ lessonId: string; lessonTitle: string; game: GameKind; bestStars: number; assigned: boolean; points?: number }[]> {
     const s = await this.student(studentId);
+    const scoped = sessionId ? await this.gameSession(s, sessionId) : null;
+    const split = scoped?.games ? new Map(splitGamePoints(scoped.games).map((g) => [g.game, g.points])) : null;
     const [lessons, bests, open] = await Promise.all([
       this.prisma.lesson.findMany({
-        where: { classId: s.classId, status: { in: ["READY", "PARTIAL"] }, approvedAt: { not: null }, resources: { some: { kind: "GAME", status: "READY" } } },
+        where: { classId: s.classId, status: { in: ["READY", "PARTIAL"] }, approvedAt: { not: null }, ...(scoped ? { id: scoped.lessonId } : {}), resources: { some: { kind: "GAME", status: "READY" } } },
         orderBy: [{ lessonNumber: "asc" }, { createdAt: "asc" }],
         select: { id: true, titleEn: true, titleAr: true, resources: { where: { kind: "GAME", status: "READY" }, select: { contentEn: true, contentAr: true } } },
       }),
       this.prisma.gameResult.groupBy({ by: ["lessonId", "game"], where: { studentId }, _max: { stars: true } }),
-      this.prisma.activitySession.findMany({ where: { classId: s.classId, status: { not: "ENDED" }, type: { in: ["GAME", "ASSIGNMENT"] } }, select: { lessonId: true, game: true } }),
+      this.prisma.activitySession.findMany({ where: { classId: s.classId, status: { not: "ENDED" }, type: { in: ["GAME", "ASSIGNMENT"] } }, select: { lessonId: true, game: true, games: true } }),
     ]);
     const best = new Map(bests.map((b) => [`${b.lessonId}:${b.game}`, b._max.stars ?? 0]));
-    // Only templates the lesson's game content can feed, and that suit the class band.
+    // Only templates the lesson's game content can feed, that suit the class band and, in a session, that the teacher published.
     return lessons.flatMap((l) => {
       const content = l.resources[0] ? contentOf<GameContent>(l.resources[0], locale).content : null;
       const playable = content ? playableTemplates(content, s.classRoom.band) : [];
-      return GAME_KINDS.filter((g) => playable.includes(g)).map((game) => ({
+      return GAME_KINDS.filter((g) => playable.includes(g) && (!split || split.has(g))).map((game) => ({
         lessonId: l.id,
         lessonTitle: lessonTitle(l, locale),
         game,
         bestStars: best.get(`${l.id}:${game}`) ?? 0,
-        assigned: open.some((o) => o.lessonId === l.id && (o.game === null || o.game === game)),
+        assigned: open.some((o) => o.lessonId === l.id && ((sessionGames(o) ?? [game]).includes(game))),
+        ...(split ? { points: split.get(game) } : {}),
       }));
     });
   }
@@ -355,20 +401,31 @@ export class PlayService {
     return { title: lessonTitle(lesson, locale), content };
   }
 
-  async game(studentId: string, lessonId: string, game: string, locale: Locale): Promise<StudentGame> {
+  /** GET /play/games/:lessonId/:game[?sessionId=]: with a sessionId the game must be one the teacher published. */
+  async game(studentId: string, lessonId: string, game: string, locale: Locale, sessionId?: string): Promise<StudentGame & { pointsWeight: number }> {
     if (!GAME_KINDS.includes(game as GameKind)) throw notFound("Game");
     const s = await this.student(studentId);
+    const weight = sessionId ? await this.weightFor(s, sessionId, lessonId, game as GameKind) : 100;
     const { title, content } = await this.gameFor(s, lessonId, locale);
     const best = await this.prisma.gameResult.aggregate({ where: { studentId, lessonId, game: game as GameKind }, _max: { stars: true } });
-    return { lessonId, lessonTitle: title, game: game as GameKind, content, bestStars: best._max.stars ?? 0 };
+    return { lessonId, lessonTitle: title, game: game as GameKind, content, bestStars: best._max?.stars ?? 0, pointsWeight: weight };
+  }
+
+  /** What a game is worth: its share of the 100 points when the session published a list, else the whole 100. */
+  private async weightFor(student: Student, sessionId: string, lessonId: string, game: GameKind): Promise<number> {
+    const session = await this.gameSession(student, sessionId);
+    if (session.lessonId !== lessonId) throw notFound("Game");
+    if (!session.games) return 100;
+    const share = splitGamePoints(session.games).find((g) => g.game === game);
+    if (!share) throw notFound("Game"); // not published with this share
+    return share.points;
   }
 
   /** The client reports counts only; the server decides the round size, stars, capped XP, badges and streak. */
   async submitGame(studentId: string, body: z.infer<typeof GameResultBody>, locale: Locale = "en"): Promise<GameResultView> {
     const s = await this.student(studentId);
     const { content } = await this.gameFor(s, body.lessonId, locale);
-    const roundSize =
-      body.game === "MATCH" || body.game === "MEMORY" ? content.pairs.length : body.game === "SORT" ? content.sortItems.length : body.game === "TRUE_FALSE" ? content.statements.length : content.equationTiles.length;
+    const roundSize = gameRoundSize(body.game, content);
     const best = await this.prisma.gameResult.aggregate({ where: { studentId, lessonId: body.lessonId, game: body.game }, _max: { stars: true } });
     const score = scoreGame({
       pairsOrItems: roundSize,
@@ -376,11 +433,17 @@ export class PlayService {
       retriedCorrect: body.retriedCorrect,
       previousBestStars: best._max.stars ?? 0,
     });
-    const sessionId = body.sessionId
-      ? ((await this.prisma.activitySession.findFirst({ where: { id: body.sessionId, classId: s.classId, lessonId: body.lessonId }, select: { id: true } }))?.id ?? null)
+    const session = body.sessionId
+      ? await this.prisma.activitySession.findFirst({ where: { id: body.sessionId, classId: s.classId, lessonId: body.lessonId }, select: { id: true, game: true, games: true } })
       : null;
+    const sessionId = session?.id ?? null;
+    // Points: the game's share of the session's 100 when the teacher published a list, else 100 (practice).
+    const published = session ? sessionGames(session) : null;
+    if (published && !published.includes(body.game)) throw badRequest("That game is not part of this activity.");
+    const weight = published ? (splitGamePoints(published).find((g) => g.game === body.game)?.points ?? 100) : 100;
     const first = Math.min(body.firstTryCorrect, roundSize);
     const retried = Math.min(body.retriedCorrect, roundSize - first);
+    const points = gamePoints({ weight, total: roundSize, firstTryCorrect: first, retriedCorrect: retried, wrongTries: body.wrongTries, hintsUsed: body.hintsUsed });
 
     let unlocked: { key: BadgeKey; name: string } | null = null;
     let totalXp = s.xp;
@@ -391,7 +454,7 @@ export class PlayService {
         xp = Math.max(0, Math.min(score.xp, DAILY_GAME_XP_CAP - (today._sum.amount ?? 0)));
       }
       await tx.gameResult.create({
-        data: { studentId: s.id, lessonId: body.lessonId, sessionId, game: body.game, stars: score.stars, xp, total: roundSize, firstTry: first, retried },
+        data: { studentId: s.id, lessonId: body.lessonId, sessionId, game: body.game, stars: score.stars, xp, total: roundSize, firstTry: first, retried, wrongTries: body.wrongTries, hintsUsed: body.hintsUsed, points },
       });
       await this.gamification.awardXp(tx, s, xp, `game:${body.game.toLowerCase()}`);
       await this.gamification.touchStreak(tx, s.id);
@@ -405,6 +468,7 @@ export class PlayService {
     const level = levelForXp(totalXp);
     return {
       stars: score.stars,
+      points,
       xp,
       personalBest: score.personalBest,
       totalXp,
@@ -416,3 +480,20 @@ export class PlayService {
   }
 }
 
+
+/** How many items one round of a game has, read from the lesson's game content (the client only reports counts). */
+export function gameRoundSize(game: GameKind, content: GameContent): number {
+  switch (game) {
+    case "MATCH":
+    case "MEMORY":
+      return content.pairs.length;
+    case "SORT":
+      return content.sortItems.length;
+    case "TRUE_FALSE":
+      return content.statements.length;
+    case "ODD_ONE_OUT":
+      return content.oddOneOut?.length ?? 0;
+    case "EQUATION":
+      return content.equationTiles.length;
+  }
+}

@@ -1,4 +1,5 @@
-import type { CardsContent, QuizContent, ResourceKind, WorksheetContent } from "@helpo/shared";
+import { playableTemplates, type CardsContent, type GameContent, type QuizContent, type ResourceKind, type WorksheetContent } from "@helpo/shared";
+import { PROMPT_VERSIONS, taskFor } from "./prompts/index";
 import type { AiProvider, GenerateOptions, GeneratedResource, LessonContext } from "./ai.provider";
 import {
   blueprintProblems,
@@ -8,6 +9,8 @@ import {
   dropUngrounded,
   languageMatches,
   normalizeText,
+  oddOneOutProblems,
+  postProcessGame,
   postProcessQuiz,
   postProcessWorksheet,
   seededRng,
@@ -49,7 +52,7 @@ describe("validators", () => {
     expect(contentProblems("CARDS", { cards: [] }).join(" ")).toMatch(/8 to 15/);
     const long = { cards: Array.from({ length: 8 }, (_, i) => ({ front: `word ${i} `.repeat(30), back: "b", emoji: null, tag: "fact" as const, concept: "c", objectiveCode: "O1" })) };
     expect(contentProblems("CARDS", long).join(" ")).toMatch(/too long/);
-    expect(contentProblems("GAME", { type: "matching", title: "", instructions: "", timeLimitSec: null, pairs: [], gridSize: null, sortBaskets: { yes: "", no: "" }, sortItems: [], equationTiles: [], statements: [] })).toHaveLength(4);
+    expect(contentProblems("GAME", { type: "matching", title: "", instructions: "", timeLimitSec: null, pairs: [], gridSize: null, sortBaskets: { yes: "", no: "" }, sortItems: [], equationTiles: [], statements: [], oddOneOut: [] })).toHaveLength(5);
     const ws = (await demo.generateResource("WORKSHEET", ctx)).content as WorksheetContent;
     expect(contentProblems("WORKSHEET", ws)).toEqual([]);
   });
@@ -249,5 +252,69 @@ describe("repair loop", () => {
     const { provider } = scripted(() => ({ content: good, usage: usage(1) }));
     await generateWithRepair(provider, "QUIZ", ctx, {}, { onAttempt: (a) => void seen.push(a) });
     expect(seen).toEqual([1]);
+  });
+});
+
+describe("odd one out (game.v2)", () => {
+  const round = (over: Record<string, unknown> = {}) => ({ items: ["Phishing", "Malware", "Firewall", "Sandwich"], oddIndex: 3, explanation: "A sandwich is not a security measure.", ...over });
+  const game = async () => (await demo.generateResource("GAME", ctx)).content as GameContent;
+
+  it("the game prompt is game.v2 and asks for 4 to 6 rounds of exactly 4 items", () => {
+    expect(PROMPT_VERSIONS.GAME).toBe("game.v2");
+    const text = taskFor("GAME", { suggestedGame: "matching" });
+    expect(text).toMatch(/oddOneOut \(4 to 6 rounds/);
+    expect(text).toMatch(/EXACTLY 4/);
+    expect(text).toMatch(/oddIndex/);
+    expect(text).toMatch(/blueprint/);
+  });
+
+  it("the demo game fills valid rounds that pass every rule", async () => {
+    const g = await game();
+    expect(g.oddOneOut.length).toBeGreaterThanOrEqual(4);
+    expect(oddOneOutProblems(g)).toEqual([]);
+    expect(contentProblems("GAME", g)).toEqual([]);
+    expect(new Set(g.oddOneOut.map((r) => r.oddIndex)).size).toBeGreaterThan(1); // the odd item moves around
+    expect(playableTemplates(g, "NAVIGATOR")).toContain("ODD_ONE_OUT");
+  });
+
+  it("validators: round count, exactly 4 items, oddIndex 0..3, no duplicates or blanks, an explanation", async () => {
+    const g = await game();
+    const make = (rounds: unknown[]) => ({ ...g, oddOneOut: rounds }) as GameContent;
+    expect(oddOneOutProblems(make([round(), round(), round()])).join(" ")).toMatch(/4 to 6 odd-one-out rounds, got 3/);
+    expect(oddOneOutProblems(make(Array.from({ length: 7 }, () => round()))).join(" ")).toMatch(/got 7/);
+    const four = (r: unknown) => make([round(), round(), round(), r]);
+    expect(oddOneOutProblems(four(round({ items: ["a", "b", "c"] }))).join(" ")).toMatch(/round 4 needs exactly 4 items, has 3/);
+    expect(oddOneOutProblems(four(round({ items: ["a", "b", "c", "d", "e"] }))).join(" ")).toMatch(/exactly 4 items, has 5/);
+    expect(oddOneOutProblems(four(round({ oddIndex: 4 }))).join(" ")).toMatch(/oddIndex between 0 and 3/);
+    expect(oddOneOutProblems(four(round({ oddIndex: -1 }))).join(" ")).toMatch(/oddIndex/);
+    expect(oddOneOutProblems(four(round({ oddIndex: 1.5 }))).join(" ")).toMatch(/oddIndex/);
+    expect(oddOneOutProblems(four(round({ items: ["Malware", "malware!", "Firewall", "Sandwich"] }))).join(" ")).toMatch(/duplicate/);
+    expect(oddOneOutProblems(four(round({ items: ["a", " ", "c", "d"] }))).join(" ")).toMatch(/empty item/);
+    expect(oddOneOutProblems(four(round({ explanation: "  " }))).join(" ")).toMatch(/needs an explanation/);
+    expect(oddOneOutProblems(four(round()))).toEqual([]);
+    expect(oddOneOutProblems({ ...g, oddOneOut: undefined } as unknown as GameContent).join(" ")).toMatch(/got 0/); // older content without the field
+  });
+
+  it("post-processing keeps only playable rounds and at most 6", async () => {
+    const g = await game();
+    const out = postProcessGame({ ...g, oddOneOut: [round(), round({ items: ["a", "b", "c"] }), round({ oddIndex: 9 }), round({ items: ["x", "x", "y", "z"] }), ...Array.from({ length: 8 }, (_, i) => round({ items: [`a${i}`, `b${i}`, `c${i}`, `d${i}`] }))] });
+    expect(out.oddOneOut).toHaveLength(6);
+    expect(out.oddOneOut.every((r) => r.items.length === 4)).toBe(true);
+    expect(postProcessGame({ ...g, oddOneOut: undefined } as unknown as GameContent).oddOneOut).toEqual([]);
+  });
+
+  it("the repair loop retries a game with a bad round and then accepts the fixed one", async () => {
+    const good = await game();
+    const bad = { ...good, oddOneOut: good.oddOneOut.slice(0, 2) };
+    const calls: (string[] | undefined)[] = [];
+    const provider: AiProvider = Object.assign(Object.create(demo), {
+      generateResource: jest.fn(async (_k: ResourceKind, _c: LessonContext, o: GenerateOptions): Promise<GeneratedResource> => {
+        calls.push(o.problems);
+        return { content: calls.length === 1 ? bad : good, usage: { model: "m", promptVersion: "game.v2", tokensIn: 1, tokensOut: 1 } };
+      }),
+    });
+    const out = await generateWithRepair(provider, "GAME", ctx);
+    expect(out.attempts).toBe(2);
+    expect(calls[1]?.join(" ")).toMatch(/odd-one-out rounds/);
   });
 });

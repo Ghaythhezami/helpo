@@ -38,8 +38,12 @@ export class DashboardService {
     const untaught = ready.filter((l) => l.sessions.length === 0).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())[0];
     const nextRaw = untaught ?? ready[0] ?? null;
 
-    const summaries = await this.lessons.summaries(recent, locale);
-    const next = nextRaw ? (summaries.find((s) => s.id === nextRaw.id) ?? (await this.lessons.summary(nextRaw, locale))) : null;
+    // ONE summaries() call covers the recent lessons and the next lesson (it used to cost a second 3-query call when
+    // the next lesson was not among the six most recent).
+    const wanted = nextRaw && !recent.some((l) => l.id === nextRaw.id) ? [...recent, nextRaw] : recent;
+    const all = await this.lessons.summaries(wanted, locale);
+    const summaries = all.slice(0, recent.length);
+    const next = nextRaw ? (all.find((s) => s.id === nextRaw.id) ?? null) : null;
 
     const [kitsMade, liveQuizzes, xpAgg] = await Promise.all([
       this.prisma.lesson.count({ where: { teacherId: teacher.id, status: { in: ["READY", "PARTIAL"] }, generationFinishedAt: { gte: weekStart } } }),

@@ -65,10 +65,11 @@ export type CheckStatus = "OPEN" | "ACCEPTED" | "EDITED" | "DISMISSED";
 export type SessionType = "LIVE_QUIZ" | "GAME" | "ASSIGNMENT";
 export type SessionStatus = "LOBBY" | "LIVE" | "ENDED";
 /** Spec names: matching=MATCH, sorting=SORT, sequence=EQUATION, memory=MEMORY, truefalse_rush=TRUE_FALSE. */
-export type GameKind = "MATCH" | "SORT" | "EQUATION" | "MEMORY" | "TRUE_FALSE";
-export const GAME_KINDS: GameKind[] = ["MATCH", "MEMORY", "SORT", "EQUATION", "TRUE_FALSE"];
-export const SPEC_GAME_TYPE: Record<GameKind, "matching" | "sorting" | "sequence" | "memory" | "truefalse_rush"> = {
-  MATCH: "matching", SORT: "sorting", EQUATION: "sequence", MEMORY: "memory", TRUE_FALSE: "truefalse_rush",
+export type GameKind = "MATCH" | "SORT" | "EQUATION" | "MEMORY" | "TRUE_FALSE" | "ODD_ONE_OUT";
+/** Ordered by learning value: the thinking games (sort, sequence, odd one out) first, memory last (team review). */
+export const GAME_KINDS: GameKind[] = ["SORT", "EQUATION", "ODD_ONE_OUT", "MATCH", "TRUE_FALSE", "MEMORY"];
+export const SPEC_GAME_TYPE: Record<GameKind, "matching" | "sorting" | "sequence" | "memory" | "truefalse_rush" | "odd_one_out"> = {
+  MATCH: "matching", SORT: "sorting", EQUATION: "sequence", MEMORY: "memory", TRUE_FALSE: "truefalse_rush", ODD_ONE_OUT: "odd_one_out",
 };
 
 /**
@@ -82,7 +83,7 @@ export interface GameTemplate {
   name: string;
   nameAr: string;
   description: string;
-  uses: ("pairs" | "sortItems" | "equationTiles" | "statements")[]; // GameContent fields the template reads
+  uses: ("pairs" | "sortItems" | "equationTiles" | "statements" | "oddOneOut")[]; // GameContent fields the template reads
   minItems: number;
   bands: Band[]; // age bands it suits
   timed: boolean; // never timed for the Explorer band
@@ -94,11 +95,12 @@ export const GAME_TEMPLATES: Record<GameKind, GameTemplate> = {
   SORT: { kind: "SORT", name: "Sort it", nameAr: "صنِّف", description: "Put each item in the right basket.", uses: ["sortItems"], minItems: 4, bands: ["EXPLORER", "NAVIGATOR", "STUDIO"], timed: false },
   EQUATION: { kind: "EQUATION", name: "Build the sequence", nameAr: "رتِّب الخطوات", description: "Put the tiles in the right order.", uses: ["equationTiles"], minItems: 3, bands: ["NAVIGATOR", "STUDIO"], timed: false },
   TRUE_FALSE: { kind: "TRUE_FALSE", name: "True or false rush", nameAr: "صح أم خطأ", description: "Decide fast: true or false? See why after each one.", uses: ["statements"], minItems: 5, bands: ["EXPLORER", "NAVIGATOR", "STUDIO"], timed: true },
+  ODD_ONE_OUT: { kind: "ODD_ONE_OUT", name: "Odd one out", nameAr: "الدخيل", description: "Four items, one does not belong. Find it and say why.", uses: ["oddOneOut"], minItems: 4, bands: ["EXPLORER", "NAVIGATOR", "STUDIO"], timed: false },
 };
 
 /** Templates a given lesson's GameContent can feed (enough items for each field the template reads). */
-export function playableTemplates(content: { pairs: unknown[]; sortItems: unknown[]; equationTiles: unknown[]; statements?: unknown[] }, band: Band): GameKind[] {
-  return (Object.values(GAME_TEMPLATES) as GameTemplate[])
+export function playableTemplates(content: { pairs: unknown[]; sortItems: unknown[]; equationTiles: unknown[]; statements?: unknown[]; oddOneOut?: unknown[] }, band: Band): GameKind[] {
+  return GAME_KINDS.map((k) => GAME_TEMPLATES[k])
     .filter((t) => t.bands.includes(band))
     .filter((t) => t.uses.every((field) => ((content as Record<string, unknown[] | undefined>)[field]?.length ?? 0) >= t.minItems))
     .map((t) => t.kind);
@@ -350,4 +352,42 @@ export function childSafeName(fullName: string): string {
 
 function clampInt(n: number, min: number, max: number): number {
   return Math.min(Math.max(Math.floor(Number.isFinite(n) ? n : 0), min), max);
+}
+
+/* ------------------------------ Curriculum ------------------------------
+ * The teacher picks the curriculum the lesson follows (meeting 2026-11-27): it steers vocabulary, standards and
+ * examples in the analysis call. GENERAL means no national curriculum.
+ */
+export const CURRICULA = ["GENERAL", "AMERICAN", "BRITISH", "EGYPTIAN", "TUNISIAN"] as const;
+export type Curriculum = (typeof CURRICULA)[number];
+export const CURRICULUM_LABELS: Record<Curriculum, { en: string; ar: string }> = {
+  GENERAL: { en: "General (no national curriculum)", ar: "عام (دون منهج وطني)" },
+  AMERICAN: { en: "American (Common Core / NGSS)", ar: "الأمريكي" },
+  BRITISH: { en: "British (National Curriculum)", ar: "البريطاني" },
+  EGYPTIAN: { en: "Egyptian", ar: "المصري" },
+  TUNISIAN: { en: "Tunisian", ar: "التونسي" },
+};
+
+/* ------------------------------ Game points ------------------------------
+ * The teacher publishes only the games that fit the time (for example 2 of 6). 100 points are shared among the
+ * published games, so if five games at 20 points drop to four, each is worth 25. Points are separate from XP: XP keeps
+ * rewarding effort, points rank the round. A wrong try costs 1 point and a hint costs 5, never below zero.
+ */
+export const GAME_POINTS_TOTAL = 100;
+export const POINTS_PER_WRONG_TRY = 1;
+export const POINTS_PER_HINT = 5;
+
+export function splitGamePoints(games: GameKind[]): { game: GameKind; points: number }[] {
+  const unique = [...new Set(games)];
+  if (unique.length === 0) return [];
+  const base = Math.floor(GAME_POINTS_TOTAL / unique.length);
+  const rest = GAME_POINTS_TOTAL - base * unique.length;
+  return unique.map((game, i) => ({ game, points: base + (i < rest ? 1 : 0) }));
+}
+
+export function gamePoints(r: { weight: number; total: number; firstTryCorrect: number; retriedCorrect: number; wrongTries?: number; hintsUsed?: number }): number {
+  if (r.total <= 0 || r.weight <= 0) return 0;
+  const accuracy = Math.min(1, (r.firstTryCorrect + 0.5 * r.retriedCorrect) / r.total);
+  const raw = Math.round(r.weight * accuracy) - (r.wrongTries ?? 0) * POINTS_PER_WRONG_TRY - (r.hintsUsed ?? 0) * POINTS_PER_HINT;
+  return Math.max(0, Math.min(r.weight, raw));
 }

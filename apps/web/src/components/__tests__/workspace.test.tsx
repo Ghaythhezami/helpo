@@ -75,8 +75,31 @@ describe("Create screen", () => {
     renderWithProviders(<CreateScreen />, { scope: "teacher" });
     await userEvent.type(await screen.findByLabelText("Or describe your lesson"), "Fractions for grade 4 with word problems");
     await userEvent.click(screen.getByRole("button", { name: "Make lesson kit" }));
-    await waitFor(() => expect(push).toHaveBeenCalledWith("/app/lessons/l9"));
-    expect(calls.find((c) => c.path === "/lessons" && c.method === "POST")).toBeTruthy();
+    const post = await waitFor(() => {
+      const c = calls.find((x) => x.path === "/lessons" && x.method === "POST");
+      expect(c).toBeTruthy();
+      return c;
+    });
+    expect((post?.body as FormData).get("curriculum")).toBe("GENERAL");
+    await waitFor(() => expect(window.localStorage.getItem("helpo:gen-lock")).toBe("l9"));
+    window.localStorage.removeItem("helpo:gen-lock");
+  });
+
+  it("sends the chosen curriculum next to the class and language", async () => {
+    const { calls } = mockFetch({ ...base, "POST /lessons": () => ({ body: { lessonId: "l9" } }) });
+    renderWithProviders(<CreateScreen />, { scope: "teacher" });
+    await userEvent.type(await screen.findByLabelText("Or describe your lesson"), "Fractions for grade 4 with word problems");
+    const pick = screen.getByLabelText("Curriculum");
+    expect(pick).toHaveValue("GENERAL");
+    await userEvent.selectOptions(pick, "EGYPTIAN");
+    await userEvent.click(screen.getByRole("button", { name: "Make lesson kit" }));
+    const post = await waitFor(() => {
+      const c = calls.find((x) => x.path === "/lessons" && x.method === "POST");
+      expect(c).toBeTruthy();
+      return c;
+    });
+    expect((post?.body as FormData).get("curriculum")).toBe("EGYPTIAN");
+    window.localStorage.removeItem("helpo:gen-lock");
   });
 
   it("offers Open it / Make a new one on a duplicate upload and asks for a page range over 150 pages", async () => {

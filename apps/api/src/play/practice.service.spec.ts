@@ -47,8 +47,9 @@ describe("PracticeService.list", () => {
   it("lists open sessions (with join codes) and every READY/PARTIAL lesson with quiz size, playable games and best stars", async () => {
     const { db, service } = setup();
     db.activitySession.findMany.mockResolvedValue([
-      { id: "SE1", type: "LIVE_QUIZ", joinCode: "202020", lesson: { titleEn: "Live one", titleAr: null } },
-      { id: "SE2", type: "ASSIGNMENT", joinCode: "303030", lesson: { titleEn: "Homework", titleAr: null } },
+      { id: "SE1", type: "LIVE_QUIZ", joinCode: "202020", game: null, games: null, lesson: { titleEn: "Live one", titleAr: null } },
+      { id: "SE2", type: "ASSIGNMENT", joinCode: "303030", game: null, games: null, lesson: { titleEn: "Homework", titleAr: null } },
+      { id: "SE3", type: "GAME", joinCode: "404040", game: "SORT", games: ["SORT", "ODD_ONE_OUT", "MATCH"], lesson: { titleEn: "Games", titleAr: null } },
     ]);
     db.lesson.findMany.mockResolvedValue([
       { id: "L1", titleEn: "Photosynthesis", titleAr: "التمثيل الضوئي", lessonNumber: 1, resources: [{ kind: "QUIZ", contentEn: quiz, contentAr: null }, { kind: "GAME", contentEn: gameContent, contentAr: null }] },
@@ -61,12 +62,14 @@ describe("PracticeService.list", () => {
 
     expect(out.className).toBe("6B");
     expect(out.open).toEqual([
-      { sessionId: "SE1", type: "LIVE_QUIZ", joinCode: "202020", lessonTitle: "Live one" },
-      { sessionId: "SE2", type: "ASSIGNMENT", joinCode: "303030", lessonTitle: "Homework" },
+      { sessionId: "SE1", type: "LIVE_QUIZ", joinCode: "202020", lessonTitle: "Live one", games: [] },
+      { sessionId: "SE2", type: "ASSIGNMENT", joinCode: "303030", lessonTitle: "Homework", games: [] },
+      // the games the teacher published, with their share of the 100 points (the 100 / 3 remainder goes to the first)
+      { sessionId: "SE3", type: "GAME", joinCode: "404040", lessonTitle: "Games", games: [{ game: "SORT", points: 34 }, { game: "ODD_ONE_OUT", points: 33 }, { game: "MATCH", points: 33 }] },
     ]);
     expect(out.lessons).toHaveLength(3);
     expect(out.lessons[0]).toMatchObject({ lessonId: "L1", title: "Photosynthesis", number: 1, quizQuestions: 4, bestStars: 2 });
-    expect(out.lessons[0].games.sort()).toEqual(["EQUATION", "MATCH", "MEMORY", "SORT", "TRUE_FALSE"]);
+    expect([...out.lessons[0].games].sort()).toEqual(["EQUATION", "MATCH", "MEMORY", "SORT", "TRUE_FALSE"]);
     expect(out.lessons[1]).toMatchObject({ lessonId: "L2", number: null, quizQuestions: 4, games: [], bestStars: 0 });
     expect(out.lessons[2]).toMatchObject({ lessonId: "L3", quizQuestions: 0, games: [] });
   });
@@ -80,7 +83,7 @@ describe("PracticeService.list", () => {
     const sessionWhere = db.activitySession.findMany.mock.calls[0][0].where;
     expect(sessionWhere.classId).toBe("C1");
     expect(sessionWhere.OR[0]).toEqual({ type: "LIVE_QUIZ", status: { in: ["LOBBY", "LIVE"] } });
-    expect(sessionWhere.OR[1]).toMatchObject({ type: "ASSIGNMENT", status: { not: "ENDED" }, isOpen: true });
+    expect(sessionWhere.OR[1]).toMatchObject({ type: { in: ["ASSIGNMENT", "GAME"] }, status: { not: "ENDED" }, isOpen: true });
     expect(sessionWhere.OR[1].OR).toEqual([{ expiresAt: null }, { expiresAt: { gt: expect.any(Date) } }]);
     expect(db.lesson.findMany.mock.calls[0][0].where).toMatchObject({ classId: "C1", status: { in: ["READY", "PARTIAL"] } });
     expect(db.gameResult.groupBy.mock.calls[0][0].where).toEqual({ studentId: "S1" });

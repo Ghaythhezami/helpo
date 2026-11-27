@@ -34,7 +34,7 @@ const tap = (text: string, which = 0) => {
   fireEvent.click((nodes[which] ?? nodes[0]).closest("button")!);
 };
 const press = (name: RegExp) => fireEvent.click(screen.getByRole("button", { name, hidden: true }));
-const result = { stars: 3, xp: 60, personalBest: true, totalXp: 400, level: 7, xpIntoLevel: 400, badgeUnlocked: null, classGoal: { goalXp: 500, earnedXp: 440 } };
+const result = { stars: 3, xp: 60, points: 84, personalBest: true, totalXp: 400, level: 7, xpIntoLevel: 400, badgeUnlocked: null, classGoal: { goalXp: 500, earnedXp: 440 } };
 
 const quizState = (extra: Partial<StudentQuizState> = {}): StudentQuizState => ({
   sessionId: "se1",
@@ -128,19 +128,54 @@ describe("playing a mini-game", () => {
     const { calls } = mockFetch(routes("MATCH"));
     renderWithProviders(<GamePlay lessonId="l1" game="match" />, { scope: "student" });
     await screen.findByText("Roots");
-    for (const [l, r] of [["Roots", "Take in water"], ["Leaf", "Makes food"], ["Stem", "Carries water"], ["Flower", "Makes seeds"]]) {
+    for (const [l, r] of [["Roots", "Take in water"], ["Leaf", "Makes food"], ["Stem", "Carries water"]]) {
       tap(l);
       tap(r);
     }
     press(/Start round 2/);
-    for (const [l, r] of [["Seed", "New plant"], ["Sun", "Energy"]]) {
+    for (const [l, r] of [["Flower", "Makes seeds"], ["Seed", "New plant"], ["Sun", "Energy"]]) {
       tap(l);
       tap(r);
     }
     press(/See my results/);
     await waitFor(() => expect(push).toHaveBeenCalledWith("/play/win"));
-    expect(calls.find((c) => c.path === "/play/games/result")?.body).toEqual({ lessonId: "l1", game: "MATCH", total: 6, firstTryCorrect: 6, retriedCorrect: 0 });
+    expect(calls.find((c) => c.path === "/play/games/result")?.body).toEqual({ lessonId: "l1", game: "MATCH", total: 6, firstTryCorrect: 6, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 });
     expect(readLastResult()?.result.stars).toBe(3);
+  });
+
+  it("posts the wrong tries and hints a sort game used", async () => {
+    const { calls } = mockFetch(routes("SORT"));
+    renderWithProviders(<GamePlay lessonId="l1" game="SORT" />, { scope: "student" });
+    await screen.findByText("Sunlight");
+    const basket = (yes: boolean) => document.querySelector(`.basket.${yes ? "yes" : "no"}`) as HTMLElement;
+    press(/^Hint \(-5 points\)$/);
+    tap("Sunlight");
+    fireEvent.click(basket(false));
+    for (const it of ["Sunlight", "Water", "Candy", "Plastic"]) {
+      tap(it);
+      fireEvent.click(basket(it === "Sunlight" || it === "Water"));
+    }
+    press(/See my results/);
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/play/win"));
+    expect(calls.find((c) => c.path === "/play/games/result")?.body).toEqual({ lessonId: "l1", game: "SORT", total: 4, firstTryCorrect: 3, retriedCorrect: 1, wrongTries: 1, hintsUsed: 1 });
+  });
+
+  it("plays odd one out through the page and posts its counts", async () => {
+    const odd = { ...gameContent, oddOneOut: [{ items: ["Oak", "Pine", "Rose", "Maple"], oddIndex: 2, explanation: "A rose is a flower." }, { items: ["Cat", "Dog", "Cow", "Rock"], oddIndex: 3, explanation: "A rock is not alive." }] };
+    const { calls } = mockFetch({
+      ...routes("ODD_ONE_OUT"),
+      "GET /play/games/l1/ODD_ONE_OUT": () => ({ body: { lessonId: "l1", lessonTitle: "Photosynthesis", game: "ODD_ONE_OUT", content: odd, bestStars: 0 } }),
+    });
+    renderWithProviders(<GamePlay lessonId="l1" game="odd_one_out" />, { scope: "student" });
+    await screen.findByText("Which card does not belong?");
+    for (const [odd1, why] of [["Rose", "A rose is a flower."], ["Rock", "A rock is not alive."]]) {
+      fireEvent.click(screen.getByRole("button", { name: odd1 }));
+      expect(screen.getByText(why)).toBeInTheDocument();
+      if (odd1 === "Rose") press(/Next round/);
+    }
+    press(/See my results/);
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/play/win"));
+    expect(calls.find((c) => c.path === "/play/games/result")?.body).toEqual({ lessonId: "l1", game: "ODD_ONE_OUT", total: 2, firstTryCorrect: 2, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 });
   });
 
   it("finishes true-or-false and posts the result", async () => {
@@ -218,6 +253,8 @@ describe("win card", () => {
     saveLastResult({ game: "SORT", lessonId: "l1", result });
     renderWithProviders(<WinView />, { scope: "student" });
     expect(await screen.findByText("+60 XP")).toBeInTheDocument();
+    // points are the API value, on their own line, separate from XP
+    expect(screen.getByText("84 points")).toBeInTheDocument();
     expect(screen.getByText("Personal best!")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "3 stars earned" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Play again" })).toHaveAttribute("href", "/play/games/l1/SORT");

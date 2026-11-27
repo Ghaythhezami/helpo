@@ -2,7 +2,7 @@ import { Logger, type OnModuleDestroy } from "@nestjs/common";
 import { FlowProducer, Queue, Worker, type Job } from "bullmq";
 import IORedis from "ioredis";
 import { LIMITS, type ResourceKind } from "@helpo/shared";
-import { InlineJobQueue, JobQueue, type GenerationHandlers, type GenerationJob } from "./job-queue";
+import { InlineJobQueue, JobQueue, generationMode, orderKinds, type GenerationHandlers, type GenerationJob, type GenerationMode } from "./job-queue";
 
 export const GENERATION_QUEUE = "nibras-generation";
 export const AI_CONCURRENCY = 5;
@@ -29,19 +29,32 @@ export const CHILD_JOB_OPTS = {
 };
 
 /** The flow tree for one generation: parent `finalize`, children `generate.{kind}` with jobId `${lessonId}__${kind}` (BullMQ forbids ":" in custom ids). */
-export function buildFlow(job: GenerationJob) {
+type ChainNode = { name: string; queueName: string; data: { lessonId: string; kind: ResourceKind }; opts: Record<string, unknown>; children?: ChainNode[] };
+
+export function buildFlow(job: GenerationJob, mode: GenerationMode = generationMode()) {
   const retry = !job.replaceAllChecks ? `__retry__${job.kinds.join("+")}` : "";
+  const child = (kind: ResourceKind): ChainNode => ({
+    name: `generate.${kind}`,
+    queueName: GENERATION_QUEUE,
+    data: { lessonId: job.lessonId, kind },
+    opts: { ...CHILD_JOB_OPTS, jobId: `${job.lessonId}__${kind}` },
+  });
+  // Sequential: a chain. BullMQ runs the deepest child first, and a parent starts when its child has finished
+  // (ignoreDependencyOnFailure lets a failed step pass the baton on), so SLIDES runs first and GAME last.
+  let children: ChainNode[];
+  if (mode === "sequential") {
+    let node: ChainNode | undefined;
+    for (const kind of orderKinds(job.kinds)) node = node ? { ...child(kind), children: [node] } : child(kind);
+    children = node ? [node] : [];
+  } else {
+    children = job.kinds.map((kind) => child(kind));
+  }
   return {
     name: "finalize",
     queueName: GENERATION_QUEUE,
     data: job,
     opts: { jobId: `${job.lessonId}__finalize${retry}`, removeOnComplete: true, removeOnFail: { age: 86_400 } },
-    children: job.kinds.map((kind) => ({
-      name: `generate.${kind}`,
-      queueName: GENERATION_QUEUE,
-      data: { lessonId: job.lessonId, kind },
-      opts: { ...CHILD_JOB_OPTS, jobId: `${job.lessonId}__${kind}` },
-    })),
+    children,
   };
 }
 

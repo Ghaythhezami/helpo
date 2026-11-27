@@ -6,8 +6,6 @@ import { PracticeQuizView } from "@/components/student/practice-quiz";
 import { resolvePath } from "@/components/student/join-flow";
 import { PreviewAsStudent } from "@/components/teacher/preview-student";
 import { Workspace } from "@/components/teacher/workspace";
-import { WorkspaceBridgeProvider } from "@/components/teacher/workspace-bridge";
-import { NavItems } from "@/components/teacher/side-nav";
 import { gradeLocally, normalizeAnswer, outcomeFromPractice, previewGames, practiceQuestions, previewQuestions } from "@/lib/practice";
 import { gameContent, lesson, quizContent, resource } from "@/test/fixtures";
 import { mockFetch, renderWithProviders } from "@/test/utils";
@@ -27,7 +25,8 @@ beforeEach(() => {
   replace.mockReset();
 });
 
-const ALL: GameKind[] = ["MATCH", "MEMORY", "SORT", "EQUATION", "TRUE_FALSE"];
+// GAME_KINDS order: the thinking games first, memory last.
+const ALL: GameKind[] = ["SORT", "EQUATION", "MATCH", "TRUE_FALSE", "MEMORY"];
 const practice = (extra: Partial<StudentPractice> = {}): StudentPractice => ({
   className: "6B",
   open: [{ sessionId: "se1", type: "LIVE_QUIZ", joinCode: "482913", lessonTitle: "Photosynthesis" }],
@@ -62,10 +61,20 @@ describe("practice hub", () => {
     expect(screen.getByRole("link", { name: "Switch class" })).toHaveAttribute("href", "/join");
   });
 
+  it("lists the games thinking-first, whatever order the API gives, with the odd one out icon and name", async () => {
+    const lessons = [{ lessonId: "l1", title: "Photosynthesis", number: 4, quizQuestions: 0, games: ["MEMORY", "MATCH", "ODD_ONE_OUT", "TRUE_FALSE", "SORT", "EQUATION"] as GameKind[], bestStars: 0 }];
+    mockFetch({ "GET /play/practice": () => ({ body: practice({ open: [], lessons }) }), "GET /play/me": () => ({ body: me }) });
+    renderWithProviders(<PracticeHub />, { scope: "student" });
+    const list = await screen.findByRole("list", { name: "Lessons to practice" });
+    expect(within(list).getAllByRole("link").map((a) => a.textContent)).toEqual(["Sort it", "Build the sequence", "Odd one out", "Match it", "True or false rush", "Memory cards"]);
+    expect(within(list).getByRole("link", { name: "Odd one out" })).toHaveAttribute("href", "/play/games/l1/ODD_ONE_OUT");
+    expect(openHref({ sessionId: "s", type: "GAME", joinCode: "1", lessonTitle: "Photosynthesis" }, lessons)).toBe("/play/games/l1/SORT");
+  });
+
   it("routes homework to the self-paced screen and a live game to the lesson's first game", () => {
     const p = practice();
     expect(openHref({ sessionId: "s2", type: "ASSIGNMENT", joinCode: "111222", lessonTitle: "x" }, p.lessons)).toBe("/play/self/s2?code=111222");
-    expect(openHref({ sessionId: "s3", type: "GAME", joinCode: "1", lessonTitle: "Photosynthesis" }, p.lessons)).toBe("/play/games/l1/MATCH");
+    expect(openHref({ sessionId: "s3", type: "GAME", joinCode: "1", lessonTitle: "Photosynthesis" }, p.lessons)).toBe("/play/games/l1/SORT");
     expect(openHref({ sessionId: "s3", type: "GAME", joinCode: "1", lessonTitle: "Unknown" }, p.lessons)).toBeNull();
   });
 
@@ -180,7 +189,7 @@ describe("practice quiz", () => {
     expect(within(review).getByText("Which part catches light?")).toBeInTheDocument();
     expect(within(review).getByText(/Not yet\. Here is why: Correct answer: green pigment It is a pigment\./)).toBeInTheDocument();
     expect(within(review).getByText(/Nice work! Leaves hold chlorophyll\./)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Play a game" })).toHaveAttribute("href", "/play/games/l1/MATCH");
+    expect(screen.getByRole("link", { name: "Play a game" })).toHaveAttribute("href", "/play/games/l1/SORT");
     expect(screen.getByRole("link", { name: "Back to practice" })).toHaveAttribute("href", "/play");
   });
 
@@ -255,9 +264,9 @@ describe("practice helpers", () => {
   });
 
   it("lists every template the content can feed, whatever the band", () => {
-    expect(previewGames(gameContent)).toEqual(ALL);
+    expect(previewGames(gameContent)).toEqual(["SORT", "EQUATION", "ODD_ONE_OUT", "MATCH", "TRUE_FALSE", "MEMORY"]);
     expect(previewGames(null)).toEqual([]);
-    expect(previewGames({ ...gameContent, statements: [], equationTiles: [] } as never)).toEqual(["MATCH", "MEMORY", "SORT"]);
+    expect(previewGames({ ...gameContent, statements: [], equationTiles: [] } as never)).toEqual(["SORT", "ODD_ONE_OUT", "MATCH", "MEMORY"]);
   });
 
   it("keeps the English and Arabic keys in step for the new screens", () => {
@@ -296,7 +305,7 @@ describe("preview as student (teacher)", () => {
     renderWithProviders(<PreviewAsStudent id="l1" />, { scope: "teacher" });
     await screen.findByText("Which part catches light?");
     const group = screen.getByRole("group", { name: "What to preview" });
-    expect(within(group).getAllByRole("button")).toHaveLength(6);
+    expect(within(group).getAllByRole("button")).toHaveLength(7);
     await userEvent.click(within(group).getByRole("button", { name: "Sort it" }));
     expect(within(group).getByRole("button", { name: "Sort it" })).toHaveAttribute("aria-pressed", "true");
     expect(await screen.findByText("Sunlight")).toBeInTheDocument();
@@ -349,18 +358,11 @@ describe("preview as student (teacher)", () => {
     expect(await screen.findByRole("button", { name: "Try again" }, { timeout: 8000 })).toBeInTheDocument();
   });
 
-  it("is reachable from the workspace header and from the side menu", async () => {
+  it("is reachable from the workspace header only (the top navigation has no lesson items)", async () => {
     mockFetch({ "GET /lessons/l1": () => ({ body: lesson() }) });
-    renderWithProviders(
-      <WorkspaceBridgeProvider>
-        <NavItems pathname="/app/lessons/l1" isAdmin={false} onOpenLessons={jest.fn()} onOpenClasses={jest.fn()} onSignOut={jest.fn()} />
-        <Workspace id="l1" />
-      </WorkspaceBridgeProvider>,
-      { scope: "teacher" },
-    );
+    renderWithProviders(<Workspace id="l1" />, { scope: "teacher" });
     const links = await screen.findAllByRole("link", { name: "Preview as student" });
-    await waitFor(() => expect(screen.getAllByRole("link", { name: "Preview as student" })).toHaveLength(2));
-    for (const a of screen.getAllByRole("link", { name: "Preview as student" })) expect(a).toHaveAttribute("href", "/app/lessons/l1/preview");
-    expect(links.length).toBeGreaterThan(0);
+    expect(links).toHaveLength(1);
+    expect(links[0]).toHaveAttribute("href", "/app/lessons/l1/preview");
   });
 });

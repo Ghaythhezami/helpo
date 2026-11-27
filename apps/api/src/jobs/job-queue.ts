@@ -2,6 +2,25 @@ import { Logger } from "@nestjs/common";
 import type { ResourceKind } from "@helpo/shared";
 import { runInBackground } from "../common/background";
 
+/**
+ * Order the five resources are made in when GENERATION_MODE=sequential (team decision 2026-11-27): the slides come
+ * first so the teacher can start explaining, the game last. One analysis call precedes them, one review call follows.
+ */
+export const GENERATION_ORDER: readonly ResourceKind[] = ["SLIDES", "WORKSHEET", "QUIZ", "CARDS", "GAME"];
+
+export type GenerationMode = "sequential" | "parallel";
+
+/** GENERATION_MODE=sequential|parallel (default sequential), read at call time so it can change without a rebuild. */
+export function generationMode(env: NodeJS.ProcessEnv = process.env): GenerationMode {
+  return env.GENERATION_MODE === "parallel" ? "parallel" : "sequential";
+}
+
+/** The requested kinds in generation order (unknown or repeated kinds are dropped). */
+export function orderKinds(kinds: readonly ResourceKind[]): ResourceKind[] {
+  const wanted = new Set(kinds);
+  return GENERATION_ORDER.filter((k) => wanted.has(k));
+}
+
 export interface GenerationJob {
   lessonId: string;
   kinds: ResourceKind[];
@@ -23,8 +42,8 @@ export interface GenerationHandlers {
  * The job runner port. Two drivers, chosen by QUEUE_DRIVER:
  *  - inline (default, Vercel): work runs in this process (waitUntil on Vercel) with an idempotency key per job;
  *    retries and progress are persisted in Postgres by the processors.
- *  - bullmq (+ REDIS_URL): a Flow with one parent `finalize` and one child `generate.{kind}` per resource,
- *    jobId `${lessonId}:${kind}`, 3 attempts with exponential backoff (4 s), a 3 min timeout and a global limiter.
+ *  - bullmq (+ REDIS_URL): a Flow with one parent `finalize` and one `generate.{kind}` job per resource (a chain in
+ *    sequential mode, siblings in parallel mode), jobId `${lessonId}__${kind}`, 3 attempts with exponential backoff (4 s), a 3 min timeout and a global limiter.
  */
 export abstract class JobQueue {
   abstract readonly driver: "inline" | "bullmq";

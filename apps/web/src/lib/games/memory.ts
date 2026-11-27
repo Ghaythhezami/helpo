@@ -1,4 +1,5 @@
 import { shuffleSeeded } from "./shuffle";
+import type { GameResult } from "./result";
 
 export interface MemoryCard {
   id: number;
@@ -15,6 +16,8 @@ export interface MemoryState {
   /** Pairs where the player has flipped a wrong partner at least once. */
   missed: number[];
   attempts: number;
+  wrongTries: number;
+  hintsUsed: number;
   firstTry: number;
   retried: number;
   hint: number | null; // pair index
@@ -34,7 +37,7 @@ export function initMemory(pairs: { left: string; right: string }[], seed = "mem
     { pair: i, text: p.right },
   ]);
   const cards = shuffleSeeded(base, seed).map((c, id) => ({ id, ...c }));
-  return { cards, pairCount: used.length, flipped: [], matched: [], missed: [], attempts: 0, firstTry: 0, retried: 0, hint: null, mismatch: false, finished: false };
+  return { cards, pairCount: used.length, flipped: [], matched: [], missed: [], attempts: 0, wrongTries: 0, hintsUsed: 0, firstTry: 0, retried: 0, hint: null, mismatch: false, finished: false };
 }
 
 export function memoryReducer(state: MemoryState, action: MemoryAction): MemoryState {
@@ -62,18 +65,18 @@ export function memoryReducer(state: MemoryState, action: MemoryAction): MemoryS
         };
       }
       const missed = [...new Set([...state.missed, a.pair, b.pair])];
-      return { ...state, flipped, attempts, missed, mismatch: true, hint: null };
+      return { ...state, flipped, attempts, missed, wrongTries: state.wrongTries + 1, mismatch: true, hint: null };
     }
     case "resolve":
       return state.mismatch ? { ...state, flipped: [], mismatch: false } : state;
     case "hint": {
       if (state.finished) return state;
       const pair = state.cards.find((c) => !state.matched.includes(c.pair))?.pair ?? null;
-      return { ...state, hint: pair };
+      return { ...state, hint: pair, hintsUsed: state.hintsUsed + (pair === null ? 0 : 1) };
     }
   }
 }
 
-export function memoryResult(state: MemoryState): { total: number; firstTryCorrect: number; retriedCorrect: number } {
-  return { total: state.pairCount, firstTryCorrect: state.firstTry, retriedCorrect: state.retried };
+export function memoryResult(state: MemoryState): GameResult {
+  return { total: state.pairCount, firstTryCorrect: state.firstTry, retriedCorrect: state.retried, wrongTries: state.wrongTries, hintsUsed: state.hintsUsed };
 }

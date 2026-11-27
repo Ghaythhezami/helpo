@@ -1,5 +1,5 @@
 import type {
-  Locale, Band, CheckKind, CheckStatus, GameKind, LessonStatus, ResourceKind, ResourceStatus, SessionStatus, SessionType, BadgeKey,
+  Locale, Band, Curriculum, CheckKind, CheckStatus, GameKind, LessonStatus, ResourceKind, ResourceStatus, SessionStatus, SessionType, BadgeKey,
 } from "./domain.js";
 import type { Blueprint, LessonBlueprint, CardsContent, GameContent, Objective, QuizContent, SlidesContent, WorksheetContent, ReteachPlan } from "./schemas.js";
 
@@ -161,6 +161,7 @@ export interface LessonDetail extends LessonSummary {
   quota: { used: number; limit: number }; // monthly lesson quota
   source: { fileName: string | null; type: string | null; pages: number | null; chars: number; detectedLocale: Locale | null; sha256: string | null } | null;
   contentLocale: Locale; // language the kit was generated in first
+  curriculum: Curriculum;
   translations: Translations; // whole-lesson translation state per language
 }
 
@@ -178,6 +179,7 @@ export interface DashboardView {
 
 export interface SessionTeacherView {
   id: string;
+  games: { game: GameKind; points: number }[]; // games published with this share and their share of 100 points
   link: string; // student join URL with the code
   qrSvg: string; // QR code of `link`
   isOpen: boolean;
@@ -283,16 +285,26 @@ export interface StudentQuizState {
   revealed: { correctIndex: number | null; explanation: string; correct: boolean | null } | null;
 }
 
+/** GET /lessons/:id/status: light polling view while generating (no resource content). */
+export interface LessonStatusView {
+  status: LessonStatus;
+  resources: { kind: ResourceKind; status: ResourceStatus; progress: number; error: string | null }[];
+  translations: Translations;
+  updatedAt: string;
+}
+
 export interface StudentGame {
   lessonId: string;
   lessonTitle: string;
   game: GameKind;
   content: GameContent;
   bestStars: number;
+  pointsWeight?: number; // this game's share of 100 points in the session (100 in practice)
 }
 
 export interface GameResultView {
   stars: number;
+  points: number; // this game's points (0..weight), separate from XP
   xp: number;
   personalBest: boolean;
   totalXp: number;
@@ -311,7 +323,7 @@ export type { ReteachPlan };
  */
 export interface StudentPractice {
   className: string;
-  open: { sessionId: string; type: SessionType; joinCode: string; lessonTitle: string }[];
+  open: { sessionId: string; type: SessionType; joinCode: string; lessonTitle: string; games?: { game: GameKind; points: number }[] }[];
   lessons: { lessonId: string; title: string; number: number | null; quizQuestions: number; games: GameKind[]; bestStars: number }[];
 }
 

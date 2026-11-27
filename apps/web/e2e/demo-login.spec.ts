@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { ADMIN_EMAIL, DEMO_PASSWORD, TEACHER_EMAIL, demoLogin, type DemoRole } from "./support";
+import { ADMIN_EMAIL, DEMO_PASSWORD, TEACHER_EMAIL, demoLogin, settleOnCreate, type DemoRole } from "./support";
 
 const CARDS: { role: DemoRole; path: RegExp }[] = [
   { role: "Teacher", path: /\/app$/ },
@@ -34,7 +34,8 @@ test.describe("demo login", () => {
     await page.getByRole("textbox", { name: /^Email/ }).fill(TEACHER_EMAIL);
     await page.getByRole("textbox", { name: /^Password/ }).fill(DEMO_PASSWORD);
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page).toHaveURL(/\/app$/);
+    await expect(page).toHaveURL(/\/app(\/lessons\/[^/]+)?$/);
+    await settleOnCreate(page);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 

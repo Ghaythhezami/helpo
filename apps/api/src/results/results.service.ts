@@ -47,13 +47,13 @@ export class ResultsService {
 
   async get(teacherId: string, lessonId: string, locale: Locale, sessionId?: string): Promise<ResultsView> {
     const lesson = await this.lessons.findOwned(teacherId, lessonId);
-    const [quizRes, students, gameRows, goalXp] = await Promise.all([
+    const [quizRes, students, gameRows, goalXp, classRoom] = await Promise.all([
       this.prisma.resource.findUnique({ where: { lessonId_kind: { lessonId, kind: "QUIZ" } }, select: { contentEn: true, contentAr: true } }),
       this.prisma.student.findMany({ where: { classId: lesson.classId }, select: { id: true, fullName: true } }),
       this.prisma.gameResult.groupBy({ by: ["game"], where: { lessonId }, _count: { _all: true }, _avg: { stars: true } }),
       classWeekXp(this.prisma, lesson.classId),
+      this.prisma.classRoom.findUnique({ where: { id: lesson.classId }, select: { weeklyGoalXp: true } }),
     ]);
-    const classRoom = await this.prisma.classRoom.findUnique({ where: { id: lesson.classId }, select: { weeklyGoalXp: true } });
     const classGoal = { goalXp: classRoom?.weeklyGoalXp ?? 500, earnedXp: goalXp };
     const gameInsights = gameRows.map((g) => ({ game: g.game as GameKind, plays: g._count._all, averageStars: Math.round((g._avg.stars ?? 0) * 10) / 10 }));
 
@@ -103,11 +103,13 @@ export class ResultsService {
     const mastery = masteryByObjective(records, questions.map((q) => q.objectiveCode));
     const objectives = objectivesOf(lesson, locale);
 
+    // one pass over the answers instead of a records.find() per participant per question
+    const cellOf = new Map(records.map((r) => [`${r.participantId}:${r.questionIndex}`, r]));
     const grid = answeredIds
       .map((pid) => {
         const p = byParticipant.get(pid);
         const cells = questions.map((_, qi) => {
-          const a = records.find((r) => r.participantId === pid && r.questionIndex === qi);
+          const a = cellOf.get(`${pid}:${qi}`);
           return a ? (a.correct ? "correct" : a.partial ? "partial" : "wrong") : "none";
         }) as ResultsView["grid"][number]["cells"];
         return { participantId: pid, name: p?.student?.fullName ?? p?.displayName ?? "Student", score: studentScore(records, pid, questions.length), cells };

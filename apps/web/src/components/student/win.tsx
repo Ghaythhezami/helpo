@@ -56,6 +56,7 @@ export function WinView() {
           ))}
         </div>
         <p className="xpbig2"><CountUp value={result.xp} duration={0.9} format={(n) => `+${Math.round(n)} XP`} /></p>
+        {typeof result.points === "number" && <p className="ptsbig">{t("win.points", { points: result.points })}</p>}
         {result.personalBest && <span className="st ready" style={{ position: "relative" }}>{t("win.best")}</span>}
         <div className="winbar" hidden>
           <div className="l">

@@ -163,8 +163,11 @@ describe("teacher shell", () => {
     await userEvent.click(avatar);
     fireEvent.mouseDown(document.body);
     expect(screen.queryByRole("button", { name: "Sign out" })).not.toBeInTheDocument();
-    await userEvent.click(avatar);
-    await userEvent.click(screen.getByRole("button", { name: "Classes and students" }));
+    const mm = window.matchMedia;
+    window.matchMedia = ((q: string) => ({ ...mm(q), matches: q.includes("min-width: 1024px") })) as typeof window.matchMedia;
+    renderWithProviders(<TeacherShell><p>content</p></TeacherShell>, { scope: "teacher" });
+    await userEvent.click(await screen.findByRole("button", { name: "Classes" }));
+    window.matchMedia = mm;
     expect(await screen.findByRole("dialog", { name: "Your classes" })).toBeInTheDocument();
   });
 
@@ -190,6 +193,7 @@ describe("teacher shell", () => {
     const mm = window.matchMedia;
     window.matchMedia = ((q: string) => ({ ...mm(q), matches: q.includes("min-width: 1024px") })) as typeof window.matchMedia;
     renderWithProviders(<TeacherShell><p>x</p></TeacherShell>, { scope: "teacher" });
+    await userEvent.click(await screen.findByRole("button", { name: "AG account menu" }));
     await userEvent.click(await screen.findByRole("button", { name: "العربية" }));
     window.matchMedia = mm;
     await waitFor(() => expect(calls.some((c) => c.path === "/me/locale")).toBe(true));

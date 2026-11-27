@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useRef, useState, type DragEvent } from "react";
-import { LOCALES, LOCALE_LABELS, type ClassSummary, type Locale, type RefinedPrompt } from "@helpo/shared";
+import { CURRICULA, CURRICULUM_LABELS, LOCALES, LOCALE_LABELS, type ClassSummary, type Curriculum, type Locale, type RefinedPrompt } from "@helpo/shared";
 import { FileText, Settings2, Sparkles, X } from "lucide-react";
 import { ApiError, api, errorMessage } from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
+import { lockGeneration } from "@/lib/generation-lock";
 import { qk, useClasses, useLessons } from "@/lib/queries";
 import { LessonCard, LessonsDialog } from "./lessons-dialog";
 import { Button } from "@/components/ui/button";
@@ -65,13 +65,13 @@ export function CreateScreen() {
 
 function CreateForm({ classes, onManage }: { classes: ClassSummary[]; onManage: () => void }) {
   const { t, locale } = useI18n();
-  const router = useRouter();
   const queryClient = useQueryClient();
   const { classId: selected, setClassId } = useSelectedClassId();
   const classId = classes.find((c) => c.id === selected)?.id ?? classes[0].id;
   const [file, setFile] = useState<File | null>(null);
   const [prompt, setPrompt] = useState("");
   const [language, setLanguage] = useState<Locale>(locale);
+  const [curriculum, setCurriculum] = useState<Curriculum>("GENERAL");
   const [duration, setDuration] = useState(45);
   const [title, setTitle] = useState("");
   const [pageRange, setPageRange] = useState("");
@@ -122,6 +122,7 @@ function CreateForm({ classes, onManage }: { classes: ClassSummary[]; onManage: 
       if (prompt.trim()) form.append("prompt", prompt.trim());
       form.append("durationMin", String(duration));
       form.append("contentLocale", language);
+      form.append("curriculum", curriculum);
       form.append("reuse", String(reuse));
       form.append("autoGenerate", "true");
       if (pageRange.trim()) form.append("pageRange", pageRange.trim());
@@ -130,8 +131,9 @@ function CreateForm({ classes, onManage }: { classes: ClassSummary[]; onManage: 
       return (res.lessonId ?? res.id) as string;
     },
     onSuccess: async (id) => {
-      await queryClient.invalidateQueries({ queryKey: qk.lessons() });
-      router.push(`/app/lessons/${id}`);
+      void queryClient.invalidateQueries({ queryKey: qk.lessons() });
+      // The shell shows the full-screen generation view and holds the focus lock until the kit is ready or cancelled.
+      lockGeneration(id);
     },
     onError: (e) => {
       if (e instanceof ApiError && e.status === 409 && typeof e.extra.existingLessonId === "string") return setDuplicate(e.extra.existingLessonId);
@@ -222,6 +224,12 @@ function CreateForm({ classes, onManage }: { classes: ClassSummary[]; onManage: 
             {LOCALES.map((code) => (
               <button key={code} type="button" role="radio" lang={code} aria-checked={language === code} onClick={() => setLanguage(code)}>{LOCALE_LABELS[code]}</button>
             ))}
+          </div>
+          <div className="inline-field curriculum-field">
+            <label htmlFor="curriculum-pick">{t("new.curriculum")}</label>
+            <select id="curriculum-pick" value={curriculum} onChange={(e) => setCurriculum(e.target.value as Curriculum)}>
+              {CURRICULA.map((c) => <option key={c} value={c}>{CURRICULUM_LABELS[c][locale]}</option>)}
+            </select>
           </div>
           <details className="more">
             <summary><Settings2 className="ic" aria-hidden="true" />{t("new.more")}</summary>

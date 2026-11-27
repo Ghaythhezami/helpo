@@ -13,11 +13,12 @@ import { InlineConfirm } from "@/components/ui/confirm";
 import { Pill } from "@/components/ui/pill";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
+import { gameName } from "@/components/student/practice-hub";
 
 /* ------------------------------- projector board ------------------------------- */
 
 export function LiveBoard({ lesson, session, onEnded }: { lesson: LessonDetail; session: SessionTeacherView; onEnded: () => void }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const queryClient = useQueryClient();
   const [confirmEnd, setConfirmEnd] = useState(false);
   const [origin, setOrigin] = useState("");
@@ -68,6 +69,13 @@ export function LiveBoard({ lesson, session, onEnded }: { lesson: LessonDetail; 
             {t("teach.joined", { n: session.joined, total: session.classSize, name: lesson.className })}
             {session.namesHidden ? ` · ${t("teach.namesHiddenNote")}` : ""}
           </p>
+          {session.games && session.games.length > 0 && (
+            <ul className="board-games" aria-label={t("board.games")}>
+              {session.games.map((g) => (
+                <li key={g.game} className="chip">{gameName(g.game, locale, t)} <b><bdi dir="ltr">{t("share.games.pts", { n: g.points })}</bdi></b></li>
+              ))}
+            </ul>
+          )}
         </div>
         <div className="hide-names">
           <Switch checked={session.namesHidden} labelledBy="names-hidden-label" onChange={() => act.mutate("toggleNames")} />

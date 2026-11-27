@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import type { QuizContent } from "@helpo/shared";
 import { correctIndex } from "../ai/content";
+import { quizCache } from "../common/content-cache";
 import { DemoAiProvider } from "../ai/demo.provider";
 import { mockPrisma } from "../testing/mock-prisma";
 import { GamificationService } from "./gamification.service";
@@ -14,19 +15,20 @@ async function quiz(): Promise<QuizContent> {
 }
 
 function setup() {
+  quizCache.clear(); // the quiz LRU is process-wide: every test starts cold
   const db = mockPrisma();
   db.student.findUnique.mockResolvedValue({ ...student });
   const service = new PlayService(db, new GamificationService());
   return { db, service };
 }
 
-const session = (over: Record<string, unknown> = {}) => ({ id: "SE1", lessonId: "L1", classId: "C1", type: "LIVE_QUIZ", status: "LIVE", currentQuestion: 0, revealed: false, game: null, lesson: { titleEn: "Photosynthesis", titleAr: "التمثيل الضوئي" }, ...over });
+const session = (over: Record<string, unknown> = {}) => ({ id: "SE1", lessonId: "L1", classId: "C1", type: "LIVE_QUIZ", status: "LIVE", currentQuestion: 0, revealed: false, game: null, lesson: { titleEn: "Photosynthesis", titleAr: "التمثيل الضوئي", resources: [{ id: "R1", updatedAt: new Date(1000), status: "READY" }] }, ...over });
 
 async function quizSetup(sessionOver: Record<string, unknown> = {}) {
   const ctx = setup();
   const q = await quiz();
   ctx.db.activitySession.findFirst.mockResolvedValue(session(sessionOver));
-  ctx.db.resource.findUnique.mockResolvedValue({ contentEn: q, contentAr: null, status: "READY" });
+  ctx.db.resource.findUnique.mockResolvedValue({ contentEn: q, contentAr: null });
   ctx.db.participant.upsert.mockResolvedValue({ id: "P1" });
   ctx.db.answer.findMany.mockResolvedValue([]);
   ctx.db.answer.findUnique.mockResolvedValue(null);
@@ -136,7 +138,7 @@ describe("PlayService quiz", () => {
 
   it("serves the quiz in the requested language", async () => {
     const { db, service, q } = await quizSetup();
-    db.resource.findUnique.mockResolvedValue({ contentEn: q, contentAr: { questions: q.questions.map((x) => ({ ...x, prompt: "سؤال" })) }, status: "READY" });
+    db.resource.findUnique.mockResolvedValue({ contentEn: q, contentAr: { questions: q.questions.map((x) => ({ ...x, prompt: "سؤال" })) } });
     expect((await service.quizState("S1", "SE1", "ar")).question?.prompt).toBe("سؤال");
     expect((await service.quizState("S1", "SE1", "ar")).lessonTitle).toBe("التمثيل الضوئي");
   });
@@ -149,6 +151,49 @@ describe("PlayService quiz", () => {
     expect(state.revealed).toBeNull();
     db.answer.findMany.mockResolvedValue(q.questions.map((_, i) => ({ questionIndex: i, optionIndex: 0, text: null, correct: true })));
     expect((await service.quizState("S1", "SE1", "en")).revealed).not.toBeNull();
+  });
+});
+
+describe("PlayService quiz polling cost", () => {
+  it("a poll is 2 parallel queries and, once the quiz is cached, never reloads the quiz content", async () => {
+    const { db, service } = await quizSetup();
+    await service.quizState("S1", "SE1", "en");
+    expect(db.student.findUnique).not.toHaveBeenCalled(); // scoped through the session's class relation instead
+    expect(db.activitySession.findFirst).toHaveBeenCalledTimes(1);
+    expect(db.answer.findMany).toHaveBeenCalledTimes(1);
+    expect(db.resource.findUnique).toHaveBeenCalledTimes(1); // cold: one content load
+    await service.quizState("S1", "SE1", "en");
+    await service.quizState("S1", "SE1", "en");
+    expect(db.resource.findUnique).toHaveBeenCalledTimes(1); // warm: zero
+    expect(db.activitySession.findFirst.mock.calls[0][0].where).toMatchObject({ classRoom: { students: { some: { id: "S1" } } } });
+    expect(db.answer.findMany.mock.calls[0][0].select).toEqual({ questionIndex: true, optionIndex: true, text: true, correct: true });
+  });
+
+  it("a teacher edit (new updatedAt) or another language is a new cache key", async () => {
+    const { db, service } = await quizSetup();
+    await service.quizState("S1", "SE1", "en");
+    db.activitySession.findFirst.mockResolvedValue(session({ lesson: { titleEn: "P", titleAr: null, resources: [{ id: "R1", updatedAt: new Date(2000), status: "READY" }] } }));
+    await service.quizState("S1", "SE1", "en");
+    await service.quizState("S1", "SE1", "ar");
+    expect(db.resource.findUnique).toHaveBeenCalledTimes(3);
+  });
+
+  it("404s while the quiz is not READY", async () => {
+    const { db, service } = await quizSetup();
+    db.activitySession.findFirst.mockResolvedValue(session({ lesson: { titleEn: "P", titleAr: null, resources: [{ id: "R1", updatedAt: new Date(1000), status: "WORKING" }] } }));
+    await expect(service.quizState("S1", "SE1", "en")).rejects.toMatchObject({ status: 404 });
+    db.activitySession.findFirst.mockResolvedValue(session({ lesson: { titleEn: "P", titleAr: null, resources: [] } }));
+    await expect(service.quizState("S1", "SE1", "en")).rejects.toMatchObject({ status: 404 });
+  });
+
+  it("emits session.answer with counts only: no choice, no correct answer, no student", async () => {
+    const { db, q } = await quizSetup();
+    const events = { emit: jest.fn() };
+    const service = new PlayService(db, new GamificationService(), events as never);
+    db.answer.count.mockResolvedValue(7);
+    await service.submitAnswer("S1", "SE1", { questionIndex: 0, optionIndex: correctIndex(q.questions[0]) as number }, "en");
+    expect(events.emit).toHaveBeenCalledWith("session:SE1", "session.answer", { sessionId: "SE1", questionIndex: 0, answered: 7 });
+    expect(JSON.stringify(events.emit.mock.calls)).not.toMatch(/correct|choice|optionIndex|S1/);
   });
 });
 
@@ -170,7 +215,7 @@ describe("PlayService games and home", () => {
 
   it("scores a perfect MATCH round server-side, caps XP, unlocks PLANT_SCOUT and streams the new level", async () => {
     const { db, service } = gameSetup();
-    const result = await service.submitGame("S1", { lessonId: "L1", game: "MATCH", total: 7, firstTryCorrect: 7, retriedCorrect: 0 }, "en");
+    const result = await service.submitGame("S1", { lessonId: "L1", game: "MATCH", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en");
     expect(result).toMatchObject({ stars: 3, xp: 80, personalBest: true, totalXp: 3415, level: 7, badgeUnlocked: { key: "PLANT_SCOUT" } });
     expect(db.gameResult.create.mock.calls[0][0].data).toMatchObject({ stars: 3, xp: 80, total: 7 });
     expect(db.xpEvent.create.mock.calls[0][0].data).toMatchObject({ amount: 80, reason: "game:match" });
@@ -178,7 +223,7 @@ describe("PlayService games and home", () => {
 
   it("ignores inflated client counts and a fake total", async () => {
     const { db, service } = gameSetup();
-    await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 40, firstTryCorrect: 40, retriedCorrect: 40 }, "en");
+    await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 40, firstTryCorrect: 40, retriedCorrect: 40, wrongTries: 0, hintsUsed: 0 }, "en");
     expect(db.gameResult.create.mock.calls[0][0].data).toMatchObject({ total: 7, firstTry: 7, retried: 0 });
     expect(db.xpEvent.create.mock.calls[0][0].data.amount).toBeLessThanOrEqual(80);
   });
@@ -186,18 +231,49 @@ describe("PlayService games and home", () => {
   it("caps game XP per day", async () => {
     const { db, service } = gameSetup();
     db.xpEvent.aggregate.mockResolvedValue({ _sum: { amount: 395 } });
-    const r = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0 }, "en");
+    const r = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en");
     expect(r.xp).toBe(5);
     db.xpEvent.aggregate.mockResolvedValue({ _sum: { amount: 400 } });
-    expect((await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0 }, "en")).xp).toBe(0);
+    expect((await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en")).xp).toBe(0);
+  });
+
+  it("practice games are worth 100 points; wrong tries cost 1 and hints cost 5", async () => {
+    const { db, service } = gameSetup();
+    const perfect = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en");
+    expect(perfect.points).toBe(100);
+    const messy = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 3, hintsUsed: 2 }, "en");
+    expect(messy.points).toBe(100 - 3 - 10);
+    expect(db.gameResult.create.mock.calls[1][0].data).toMatchObject({ points: 87, wrongTries: 3, hintsUsed: 2 });
+    expect(messy.xp).toBe(perfect.xp); // XP rules are unchanged: they reward effort, not points
+  });
+
+  it("a session's published games split the 100 points; a game outside the list is refused", async () => {
+    const { db, service } = gameSetup();
+    db.activitySession.findFirst.mockResolvedValue({ id: "SE5", game: "SORT", games: ["SORT", "MATCH", "TRUE_FALSE"] });
+    const r = await service.submitGame("S1", { lessonId: "L1", sessionId: "SE5", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 1, hintsUsed: 0 }, "en");
+    expect(r.points).toBe(34 - 1); // 100 / 3 -> 34, 33, 33; the first game gets the extra point
+    expect(db.gameResult.create.mock.calls[0][0].data).toMatchObject({ sessionId: "SE5", points: 33 });
+    await expect(service.submitGame("S1", { lessonId: "L1", sessionId: "SE5", game: "EQUATION", total: 3, firstTryCorrect: 3, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en")).rejects.toMatchObject({ status: 400 });
+    db.activitySession.findFirst.mockResolvedValue({ id: "SE6", game: null, games: null }); // unrestricted share
+    expect((await service.submitGame("S1", { lessonId: "L1", sessionId: "SE6", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en")).points).toBe(100);
+    db.activitySession.findFirst.mockResolvedValue(null); // a session of another class is simply ignored: practice weight
+    expect((await service.submitGame("S1", { lessonId: "L1", sessionId: "NOPE", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en")).points).toBe(100);
+  });
+
+  it("odd one out rounds are sized by the lesson's oddOneOut rounds", async () => {
+    const { db, service } = gameSetup();
+    const round = (i: number) => ({ items: [`a${i}`, `b${i}`, `c${i}`, `d${i}`], oddIndex: i % 4, explanation: "because" });
+    db.lesson.findFirst.mockResolvedValue({ titleEn: "P", titleAr: null, resources: [{ contentEn: { ...gameContent, oddOneOut: [0, 1, 2, 3, 4].map(round) }, contentAr: null }] });
+    await service.submitGame("S1", { lessonId: "L1", game: "ODD_ONE_OUT", total: 40, firstTryCorrect: 40, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en");
+    expect(db.gameResult.create.mock.calls[0][0].data).toMatchObject({ game: "ODD_ONE_OUT", total: 5, firstTry: 5 });
   });
 
   it("only MATCH with 3 stars earns PLANT_SCOUT; five retried games unlock NEVER_GIVES_UP", async () => {
     const { db, service } = gameSetup();
-    const r = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0 }, "en");
+    const r = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en");
     expect(r.badgeUnlocked).toBeNull();
     db.gameResult.count.mockResolvedValue(5);
-    const r2 = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 4, retriedCorrect: 3 }, "en");
+    const r2 = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 4, retriedCorrect: 3, wrongTries: 0, hintsUsed: 0 }, "en");
     expect(r2.badgeUnlocked).toMatchObject({ key: "NEVER_GIVES_UP" });
   });
 
@@ -218,11 +294,11 @@ describe("PlayService games and home", () => {
     expect(await service.game("S1", "L1", "SORT", "en")).toMatchObject({ lessonId: "L1", game: "SORT" });
     expect(db.lesson.findFirst.mock.calls[0][0].where).toEqual({ id: "L1", classId: "C1", status: { in: ["READY", "PARTIAL"] }, approvedAt: { not: null } });
     expect(db.activitySession.findFirst).not.toHaveBeenCalled();
-    const result = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0 }, "en");
+    const result = await service.submitGame("S1", { lessonId: "L1", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en");
     expect(result.stars).toBe(3);
     expect(db.gameResult.create.mock.calls[0][0].data).toMatchObject({ lessonId: "L1", sessionId: null, game: "SORT" });
     db.lesson.findFirst.mockResolvedValue(null); // another class's lesson: 404
-    await expect(service.submitGame("S1", { lessonId: "OTHER", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0 }, "en")).rejects.toMatchObject({ status: 404 });
+    await expect(service.submitGame("S1", { lessonId: "OTHER", game: "SORT", total: 7, firstTryCorrect: 7, retriedCorrect: 0, wrongTries: 0, hintsUsed: 0 }, "en")).rejects.toMatchObject({ status: 404 });
   });
 
   it("lists only the templates the game content can feed for the class band, with assigned flags", async () => {
@@ -231,9 +307,26 @@ describe("PlayService games and home", () => {
     db.gameResult.groupBy.mockResolvedValue([{ lessonId: "L1", game: "MATCH", _max: { stars: 3 } }]);
     db.activitySession.findMany.mockResolvedValue([{ lessonId: "L1", game: "SORT" }]);
     const list = await service.listGames("S1", "en");
-    expect(list.map((g) => g.game).sort()).toEqual(["EQUATION", "MATCH", "MEMORY", "SORT", "TRUE_FALSE"]);
+    expect(list.map((g) => g.game)).toEqual(["SORT", "EQUATION", "MATCH", "TRUE_FALSE", "MEMORY"]); // learning-value order; no oddOneOut content, so no ODD_ONE_OUT
     expect(list.find((g) => g.game === "MATCH")).toMatchObject({ bestStars: 3, assigned: false });
     expect(list.find((g) => g.game === "SORT")?.assigned).toBe(true);
+  });
+
+  it("with a sessionId, games and the list show only what the teacher published for that session, with points", async () => {
+    const { db, service } = gameSetup();
+    db.lesson.findMany.mockResolvedValue([{ id: "L1", titleEn: "Photosynthesis", titleAr: null, resources: [{ contentEn: gameContent, contentAr: null }] }]);
+    db.gameResult.groupBy.mockResolvedValue([]);
+    db.activitySession.findMany.mockResolvedValue([]);
+    db.activitySession.findFirst.mockResolvedValue({ id: "SE5", lessonId: "L1", game: "SORT", games: ["SORT", "MATCH"] });
+    const list = await service.listGames("S1", "en", "SE5");
+    expect(list.map((g) => [g.game, g.points])).toEqual([["SORT", 50], ["MATCH", 50]]);
+    expect(db.lesson.findMany.mock.calls[0][0].where).toMatchObject({ id: "L1" });
+    expect(db.activitySession.findFirst.mock.calls[0][0].where).toMatchObject({ id: "SE5", classId: "C1" });
+    expect(await service.game("S1", "L1", "SORT", "en", "SE5")).toMatchObject({ game: "SORT", pointsWeight: 50 });
+    await expect(service.game("S1", "L1", "MEMORY", "en", "SE5")).rejects.toMatchObject({ status: 404 }); // not published
+    await expect(service.game("S1", "L2", "SORT", "en", "SE5")).rejects.toMatchObject({ status: 404 }); // another lesson
+    db.activitySession.findFirst.mockResolvedValue(null);
+    await expect(service.listGames("S1", "en", "SE9")).rejects.toMatchObject({ status: 404 });
   });
 
   it("builds the home view: level 7 with 340 XP in, streak, badges and unlocked avatar", async () => {

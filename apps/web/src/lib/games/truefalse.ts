@@ -1,3 +1,5 @@
+import type { GameResult } from "./result";
+
 export interface Statement {
   text: string;
   isTrue: boolean;
@@ -10,13 +12,15 @@ export interface TrueFalseState {
   /** Answer given for the current statement, null until answered. */
   answered: boolean | null;
   correct: number;
+  wrongTries: number;
+  hintsUsed: number;
   finished: boolean;
 }
 
 export type TrueFalseAction = { type: "answer"; value: boolean } | { type: "next" } | { type: "timeUp" };
 
 export function initTrueFalse(statements: Statement[]): TrueFalseState {
-  return { statements, index: 0, answered: null, correct: 0, finished: statements.length === 0 };
+  return { statements, index: 0, answered: null, correct: 0, wrongTries: 0, hintsUsed: 0, finished: statements.length === 0 };
 }
 
 export function trueFalseReducer(state: TrueFalseState, action: TrueFalseAction): TrueFalseState {
@@ -25,7 +29,7 @@ export function trueFalseReducer(state: TrueFalseState, action: TrueFalseAction)
     case "answer": {
       if (state.answered !== null) return state;
       const right = state.statements[state.index].isTrue === action.value;
-      return { ...state, answered: action.value, correct: state.correct + (right ? 1 : 0) };
+      return { ...state, answered: action.value, correct: state.correct + (right ? 1 : 0), wrongTries: state.wrongTries + (right ? 0 : 1) };
     }
     case "next": {
       if (state.answered === null) return state;
@@ -37,6 +41,6 @@ export function trueFalseReducer(state: TrueFalseState, action: TrueFalseAction)
   }
 }
 
-export function trueFalseResult(state: TrueFalseState): { total: number; firstTryCorrect: number; retriedCorrect: number } {
-  return { total: Math.max(1, state.statements.length), firstTryCorrect: state.correct, retriedCorrect: 0 };
+export function trueFalseResult(state: TrueFalseState): GameResult {
+  return { total: Math.max(1, state.statements.length), firstTryCorrect: state.correct, retriedCorrect: 0, wrongTries: state.wrongTries, hintsUsed: state.hintsUsed };
 }

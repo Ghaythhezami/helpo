@@ -27,12 +27,13 @@ const game = { type: "matching", title: "Plant parts", instructions: "Match each
   sortBaskets: { yes: "Plants need", no: "Plants don't need" },
   sortItems: [["Sunlight", true], ["Water", true], ["Carbon dioxide", true], ["Soil minerals", true], ["Candy", false], ["Darkness", false], ["Plastic", false]].map(([label, belongsInYes]) => ({ label, belongsInYes })),
   equationTiles: ["carbon dioxide", "+", "water", "->", "glucose", "+", "oxygen"],
-  statements: [{ text: "Plants make their own food.", isTrue: true, explanation: "They use light." }, { text: "Roots make seeds.", isTrue: false, explanation: "Flowers make seeds." }, { text: "Leaves catch light.", isTrue: true, explanation: "Chlorophyll is in leaves." }, { text: "Plants eat soil.", isTrue: false, explanation: "They make food." }, { text: "Water goes up the stem.", isTrue: true, explanation: "Stems carry water." }] };
+  statements: [{ text: "Plants make their own food.", isTrue: true, explanation: "They use light." }, { text: "Roots make seeds.", isTrue: false, explanation: "Flowers make seeds." }, { text: "Leaves catch light.", isTrue: true, explanation: "Chlorophyll is in leaves." }, { text: "Plants eat soil.", isTrue: false, explanation: "They make food." }, { text: "Water goes up the stem.", isTrue: true, explanation: "Stems carry water." }],
+  oddOneOut: [{ items: ["Roots", "Stem", "Leaf", "Candy"], oddIndex: 3, explanation: "Candy is not a plant part." }, { items: ["Water", "Sunlight", "Plastic", "Air"], oddIndex: 2, explanation: "Plants do not need plastic." }, { items: ["Flower", "Seed", "Fruit", "Rock"], oddIndex: 3, explanation: "A rock is not part of a plant." }] };
 const cards = { cards: Array.from({ length: 8 }, (_, i) => ({ front: `Term ${i + 1}`, back: `Meaning of term ${i + 1}`, emoji: "🌿", tag: "concept", concept: "c", objectiveCode: "O1" })) };
 const res = (kind, content, extra = {}) => ({ id: `r-${kind}`, kind, status: "READY", error: null, content, contentLocale: "en", translations: { en: "ready", ar: "ready" }, updatedAt: now, version: 1, progress: 100, promptVersion: "v1", model: "m", tokensIn: 1, tokensOut: 1, ...extra });
 const lesson = {
   id: "l1", classId: "c1", className: "6B", title: "Photosynthesis: how plants make food", unitTitle: "Plants and energy", lessonNumber: 4, status: "READY", openChecks: 2, createdAt: now, averageScore: 0.74,
-  durationMin: 45, language: "English", standard: "NGSS MS-LS1-6", objectives: [{ code: "O1", text: "Understand that plants make food.", bloom: "understand", sourcePage: 4 }], sourceFileName: "Plants_Unit3.pdf", sourceChars: 9000, band: "NAVIGATOR", grade: 6,
+  durationMin: 45, language: "English", standard: "NGSS MS-LS1-6", objectives: [{ code: "O1", text: "Understand that plants make food.", bloom: "understand", sourcePage: 4 }], sourceFileName: "Plants_Unit3.pdf", sourceChars: 9000, band: process.env.LESSON_BAND || "NAVIGATOR", grade: 6,
   resources: [res("SLIDES", slides), res("WORKSHEET", worksheet), res("QUIZ", quiz), res("GAME", game), res("CARDS", cards)],
   checks: [
     { id: "k1", resource: "QUIZ", itemRef: "Q1", kind: "FACT_CHECK", message: "The key says False. Check the wording.", suggestion: "Plants make their own food.", sourcePage: 6, status: "OPEN" },
@@ -46,6 +47,7 @@ const results = { lessonId: "l1", sessionId: "se1", answered: 22, classSize: 24,
   mastery: [{ code: "O1", text: "Understand", bloom: "understand", value: 0.68 }, { code: "O2", text: "Remember", bloom: "remember", value: 0.85 }],
   questions: quiz.questions.map((q, i) => ({ index: i, id: q.id, prompt: q.prompt, objectiveCode: "O1", percent: 0.5 + i * 0.08 })), misconception: { questionIndex: 0, prompt: "x", percent: 0.4, note: "9 students chose True." },
   grid: students.map((s, i) => ({ participantId: `p${i}`, name: s.displayName, score: 0.7, cells: ["correct", "wrong", "correct", "none", "partial", "correct"] })), needsHelp: [{ participantId: "p1", studentId: "s1", name: "Omar K.", score: 0.4, missed: ["Q2"] }], notSubmitted: [{ studentId: "s2", name: "Mia L." }], gameInsights: [{ game: "MATCH", plays: 20, averageStars: 2.4 }], classGoal: { goalXp: 500, earnedXp: 380 } };
+const gamesPub = [{ game: "SORT", points: 50 }, { game: "EQUATION", points: 50 }];
 const live = { sessionId: "se1", type: "LIVE_QUIZ", game: null, lessonTitle: "Photosynthesis" };
 
 function mock(page, state) {
@@ -60,22 +62,30 @@ function mock(page, state) {
     if (p === "/classes" && method === "GET") return json([{ id: "c1", name: "6B", grade: 6, subject: "Science", band: "NAVIGATOR", studentCount: 24 }]);
     if (p === "/classes/c1") return json({ id: "c1", name: "6B", grade: 6, subject: "Science", band: "NAVIGATOR", studentCount: 4, settings: { pointsEnabled: true, teamsEnabled: false, soundsEnabled: false, celebrationsEnabled: true, weeklyGoalXp: 500 }, students, weekXp: 380, lessons: summaries });
     if (p === "/lessons" && method === "GET") return json(summaries);
+    if (p === "/lessons" && method === "POST") { state.gen = Date.now(); return json({ lessonId: "l9" }); }
+    if (p === "/lessons/l9" || p === "/lessons/l9/status") {
+      const step = Math.min(7, Math.floor((Date.now() - (state.gen || Date.now())) / 1500));
+      const order = ["SLIDES", "WORKSHEET", "QUIZ", "CARDS", "GAME"];
+      const status = step < 2 ? "ANALYZING" : step >= 7 ? "READY" : "GENERATING";
+      const resources = step < 2 ? [] : order.map((kind, i) => { const done = step - 2 > i; const working = step - 2 === i; return res(kind, done ? ({ SLIDES: slides, WORKSHEET: worksheet, QUIZ: quiz, CARDS: cards, GAME: game })[kind] : null, { status: done ? "READY" : working ? "WORKING" : "WAITING", progress: done ? 100 : working ? 55 : 0 }); });
+      return json({ ...lesson, id: "l9", status, resources, openChecks: 0, checks: [] });
+    }
     if (p === "/lessons/l1") return json(lesson);
     if (p === "/lessons/l1/results") return json(results);
     if (p === "/join/schools/riverside/classes") return json([{ classId: "c1", className: "6B", grade: 6, teacherName: "Alex Green", live: state.live ? live : null }]);
     if (p === "/join/classes/c1/students") return json(students.map((s) => ({ id: s.id, displayName: s.displayName })));
     if (p === "/join" && method === "POST") return json({ participantId: "pp", displayName: "Sara A.", sessionId: "se1", next: state.next });
     if (p.startsWith("/play/code/")) return json({ classId: "c1", className: "6B", grade: 6, teacherName: "Alex", live });
-    if (p === "/play/practice") return json(state.hubEmpty ? { className: "6B", open: [], lessons: [] } : { className: "6B", open: [live, { sessionId: "se2", type: "ASSIGNMENT", joinCode: "202020", lessonTitle: "The water cycle" }], lessons: ["Photosynthesis: how plants make food", "The water cycle", "Food chains", "States of matter", "Fractions", "Solar system"].map((title, i) => ({ lessonId: i === 0 ? "l1" : `l${i + 1}`, title, number: i + 1, quizQuestions: 10, games: ["MATCH", "MEMORY", "SORT", "EQUATION", "TRUE_FALSE"], bestStars: i % 4 })) });
+    if (p === "/play/practice") return json(state.hubEmpty ? { className: "6B", open: [], lessons: [] } : { className: "6B", open: [live, { sessionId: "se2", type: "ASSIGNMENT", joinCode: "202020", lessonTitle: "The water cycle" }], lessons: ["Photosynthesis: how plants make food", "The water cycle", "Food chains", "States of matter", "Fractions", "Solar system"].map((title, i) => ({ lessonId: i === 0 ? "l1" : `l${i + 1}`, title, number: i + 1, quizQuestions: 10, games: ["SORT", "EQUATION", "ODD_ONE_OUT", "MATCH", "TRUE_FALSE", "MEMORY"], bestStars: i % 4 })) });
     if (p === "/play/practice/l1/quiz" && method === "GET") return json({ lessonId: "l1", lessonTitle: "Photosynthesis", questions: quiz.questions.slice(0, 4).map((q) => ({ id: q.id, type: q.type, prompt: q.prompt, options: q.options.map((o) => o.text), pairs: null, timeLimitSec: 30 })) });
     if (p === "/play/practice/l1/quiz" && method === "POST") return json({ score: 0.75, correct: 3, total: 4, xp: 12, review: quiz.questions.slice(0, 4).map((q, i) => ({ questionId: q.id, correct: i !== 1, explanation: "Leaves hold chlorophyll.", correctAnswer: q.options.find((o) => o.correct).text })) });
     if (p === "/play/games") return json([{ lessonId: "l1", lessonTitle: "Photosynthesis", game: "MATCH", bestStars: 2, assigned: true }]);
     if (p.startsWith("/play/games/l1/")) return json({ lessonId: "l1", lessonTitle: "Photosynthesis", game: p.split("/").pop(), content: game, bestStars: 0 });
-    if (p === "/play/games/result") return json({ stars: 3, xp: 60, personalBest: true, totalXp: 400, level: 7, xpIntoLevel: 400, badgeUnlocked: null, classGoal: { goalXp: 500, earnedXp: 440 } });
-    if (p === "/play/me") return json({ displayName: "Sara A.", className: "6B", band: state.band || "NAVIGATOR", xp: 340, level: 7, levelTitle: "Plant Scout", xpIntoLevel: 340, xpForNextLevel: 500, streak: { days: 4, saversLeft: 1, message: "4-day streak" }, quests: [], badges: [], classGoal: { goalXp: 500, earnedXp: 380 }, live, journey: [], avatar: { items: [], background: "lavender", unlocked: [] }, settings: { pointsEnabled: true, teamsEnabled: false, soundsEnabled: false, celebrationsEnabled: true, weeklyGoalXp: 500 }, locale: "en" });
+    if (p === "/play/games/result") return json({ stars: 3, points: 46, xp: 60, personalBest: true, totalXp: 400, level: 7, xpIntoLevel: 400, badgeUnlocked: null, classGoal: { goalXp: 500, earnedXp: 440 } });
+    if (p === "/play/me") return json({ displayName: "Sara A.", className: "6B", band: state.band || process.env.LESSON_BAND || "NAVIGATOR", xp: 340, level: 7, levelTitle: "Plant Scout", xpIntoLevel: 340, xpForNextLevel: 500, streak: { days: 4, saversLeft: 1, message: "4-day streak" }, quests: [], badges: [], classGoal: { goalXp: 500, earnedXp: 380 }, live, journey: [], avatar: { items: [], background: "lavender", unlocked: [] }, settings: { pointsEnabled: true, teamsEnabled: false, soundsEnabled: false, celebrationsEnabled: true, weeklyGoalXp: 500 }, locale: "en" });
     if (p === "/play/sessions/se1" && method === "GET") return json({ sessionId: "se1", status: "LIVE", lessonTitle: "Photosynthesis", questionIndex: 3, questionCount: 10, question: { prompt: "True or false: plants get their food from the soil.", options: ["True", "False"], type: "true_false" }, myAnswer: state.answered ? { optionIndex: 1, text: null } : null, revealed: null });
     if (p.endsWith("/answers")) { state.answered = true; return json({ sessionId: "se1", status: "LIVE", lessonTitle: "Photosynthesis", questionIndex: 3, questionCount: 10, question: { prompt: "True or false: plants get their food from the soil.", options: ["True", "False"], type: "true_false" }, myAnswer: { optionIndex: 1, text: null }, revealed: null }); }
-    if (p.startsWith("/resources/") && p.endsWith("/share")) return json({ id: "se1", link: BASE + "/join?code=482913", qrSvg: "", isOpen: true, expiresAt: new Date(Date.now() + 86400000).toISOString(), leaderboard: "TEAMS", lessonId: "l1", type: "LIVE_QUIZ", game: null, status: "LOBBY", joinCode: "482913", namesHidden: true, currentQuestion: 0, questionCount: 6, revealed: false, joined: 0, classSize: 24, answeredCurrent: 0, notAnswered: [], question: null, distribution: null });
+    if (p.startsWith("/resources/") && p.endsWith("/share")) return json({ id: "se1", link: BASE + "/join?code=482913", qrSvg: "", isOpen: true, expiresAt: new Date(Date.now() + 86400000).toISOString(), leaderboard: "TEAMS", lessonId: "l1", type: "LIVE_QUIZ", game: null, games: gamesPub, status: "LOBBY", joinCode: "482913", namesHidden: true, currentQuestion: 0, questionCount: 6, revealed: false, joined: 0, classSize: 24, answeredCurrent: 0, notAnswered: [], question: null, distribution: null });
     if (p.endsWith("/locale")) return json({ ok: true });
     return json({}, 404);
   });
@@ -111,7 +121,6 @@ async function run(size, lang, fn, name, state = {}) {
     { name: "helpo_locale", value: lang, url: BASE },
     { name: "better-auth.session_token", value: "x", url: BASE },
   ]);
-  if (state.rail) await ctx.addInitScript((v) => localStorage.setItem("helpo:rail", v), state.rail);
   await ctx.addInitScript(() => { document.addEventListener('DOMContentLoaded', () => { const st = document.createElement('style'); st.textContent = 'nextjs-portal{display:none!important}'; document.head.appendChild(st); }); });
   const page = await ctx.newPage();
   await mock(page, state);
@@ -123,11 +132,6 @@ async function run(size, lang, fn, name, state = {}) {
     await page.screenshot({ path: `${dir}${name}-${lang}-${size.name}.png` });
     await scan(page, `${name} ${lang} ${size.name}`);
     if (process.env.EVAL) results_log.push(`EVAL ${name} ${lang} ${size.name}: ` + JSON.stringify(await page.evaluate(process.env.EVAL)));
-    if (size.w >= 1024 && name === "create" || name === "create-railcollapsed") {
-      const box = await page.locator("aside.rail").boundingBox();
-      const onRight = box.x > size.w / 2;
-      results_log.push(`${(lang === "ar") === onRight ? "PASS" : "FAIL"} rail side ${name} ${lang} ${size.name}: x=${Math.round(box.x)} w=${Math.round(box.width)}`);
-    }
   } catch (e) {
     results_log.push(`ERROR ${name} ${lang} ${size.name}: ${String(e.message).slice(0, 160)}`);
   }
@@ -140,13 +144,11 @@ async function hit(p, which) {
   if (!mobile) {
     if (which === "board") return p.locator(".ws-controls .tool", { hasText: /Whiteboard|السبورة/ }).click();
     if (which === "share") return p.locator(".ws-actions .btn:not(.sec)").click();
-    return p.locator(".ws-edit .btn", { hasText: /Results|النتائج/ }).click();
+    return p.locator(".ws-actions .btn", { hasText: /Results|النتائج/ }).click();
   }
   if (which === "board") return p.locator(".ws-bar .tool.mob").nth(2).click();
-  if (which === "share") return p.locator(".ws-bar .tool.mob").nth(3).click({ force: true });
-  await p.locator(".ws-bar .tool.mob").nth(1).click();
-  await p.waitForSelector(".app-dlg");
-  await p.locator(".app-dlg .btn", { hasText: /Results|النتائج/ }).first().click();
+  if (which === "share") return p.locator(".ws-bar .tool.mob.primary").click({ force: true });
+  await p.locator(".ws-bar .tool.mob", { hasText: /Results|النتائج/ }).click();
 }
 
 const screens = {
@@ -158,7 +160,7 @@ const screens = {
   workspace: async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-center .sl, .ws-center .doc", { timeout: 20000 }); },
   "ws-quiz": async (p) => { await p.goto(`${BASE}/app/lessons/l1?tab=quiz`); await p.waitForSelector(".ws-head"); await p.getByRole("tab").nth(2).click(); await p.waitForSelector(".ws-center .doc"); },
   "ws-game": async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head"); await p.getByRole("tab").nth(3).click(); await p.waitForSelector(".mg"); },
-  "ws-cards": async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head"); await p.getByRole("tab").nth(4).click(); await p.waitForSelector(".cards3"); },
+  "ws-cards": async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head"); await p.getByRole("tab").nth(4).click(); await p.waitForSelector(".cdk"); },
   "ws-worksheet": async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head"); await p.getByRole("tab").nth(1).click(); await p.waitForSelector(".doc"); },
   board: async (p) => {
     await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head");
@@ -169,6 +171,7 @@ const screens = {
     await p.mouse.up();
   },
   share: async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head"); await hit(p, "share"); await p.waitForSelector(".share-choices"); await p.locator(".share-choice").first().click(); await p.getByRole("button", { name: /Share anyway|شارك على أي حال/ }).click(); await p.waitForSelector(".share-code"); },
+  "share-choose": async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head"); await hit(p, "share"); await p.waitForSelector(".share-games"); },
   results: async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head"); await hit(p, "results"); await p.waitForSelector(".app-dlg .grid2"); },
   join: async (p) => { await p.goto(`${BASE}/join`); await p.waitForSelector(".gchips"); await p.locator(".gchips button").nth(4).click(); await p.waitForSelector(".ctiles button"); await p.locator(".ctiles button").first().click(); await p.waitForSelector(".ntiles button"); await p.locator(".ntiles button").first().click(); },
   quiz: async (p) => { await p.goto(`${BASE}/play/quiz/se1`); await p.waitForSelector(".qcard"); },
@@ -177,20 +180,23 @@ const screens = {
   sort: async (p) => { await p.goto(`${BASE}/play/games/l1/SORT`); await p.waitForSelector(".baskets"); },
   equation: async (p) => { await p.goto(`${BASE}/play/games/l1/EQUATION`); await p.waitForSelector(".eq"); },
   tf: async (p) => { await p.goto(`${BASE}/play/games/l1/TRUE_FALSE`); await p.waitForSelector(".qtf"); },
+  odd: async (p) => { await p.goto(`${BASE}/play/games/l1/ODD_ONE_OUT`); await p.waitForSelector(".board"); },
+  "gen-view": async (p) => { await p.goto(`${BASE}/app`); await p.waitForSelector(".create-main"); await p.locator("#prompt").fill("Photosynthesis for grade 6 with examples"); await p.getByRole("button", { name: /Make lesson kit|اصنع حقيبة/ }).click(); await p.waitForSelector(".gen-ovl"); await p.waitForTimeout(5200); },
+  drawer: async (p) => { await p.goto(`${BASE}/app`); await p.waitForSelector(".create"); const b = p.getByRole("button", { name: /Open the menu|افتح القائمة/ }); if (await b.count()) { await b.click(); await p.waitForSelector(".drawer-menu"); } },
   hub: async (p) => { await p.goto(`${BASE}/play`); await p.waitForSelector(".lescard"); },
   "hub-empty": async (p) => { await p.goto(`${BASE}/play`); await p.waitForSelector(".empty"); },
   practice: async (p) => { await p.goto(`${BASE}/play/practice/l1`); await p.waitForSelector(".qcard"); },
   "practice-result": async (p) => { await p.goto(`${BASE}/play/practice/l1`); await p.waitForSelector(".qcard"); for (let i = 0; i < 4; i++) { await p.locator(".qcard .ans").first().click(); await p.locator(".qcard .toolrow .btn.big").click(); } await p.waitForSelector(".rvl"); },
   "preview-quiz": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvw .qcard"); },
-  "preview-match": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(1).click(); await p.waitForSelector(".pvgame .board"); },
-  "preview-memory": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(2).click(); await p.waitForSelector(".memgrid"); },
-  "preview-sort": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(3).click(); await p.waitForSelector(".baskets"); },
-  "preview-equation": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(4).click(); await p.waitForSelector(".eq"); },
-  "preview-tf": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(5).click(); await p.waitForSelector(".qtf"); },
+  "preview-match": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(3).click(); await p.waitForSelector(".pvgame .board"); },
+  "preview-memory": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(5).click(); await p.waitForSelector(".memgrid"); },
+  "preview-sort": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(1).click(); await p.waitForSelector(".baskets"); },
+  "preview-equation": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(2).click(); await p.waitForSelector(".eq"); },
+  "preview-tf": async (p) => { await p.goto(`${BASE}/app/lessons/l1/preview`); await p.waitForSelector(".pvsw"); await p.locator(".pvsw button").nth(4).click(); await p.waitForSelector(".qtf"); },
   admin: async (p) => { await p.goto(`${BASE}/admin`); await p.waitForSelector(".admin", { timeout: 20000 }); },
   landing: async (p) => { await p.goto(`${BASE}/`); await p.waitForSelector(".demo-card"); },
   "login-demo": async (p) => { await p.goto(`${BASE}/login`); await p.waitForSelector(".demo-card"); },
-  win: async (p) => { await p.goto(`${BASE}/join`); await p.evaluate(() => sessionStorage.setItem("helpo:last-result", JSON.stringify({ game: "MATCH", lessonId: "l1", result: { stars: 3, xp: 60, personalBest: true, totalXp: 400, level: 7, xpIntoLevel: 400, badgeUnlocked: null, classGoal: { goalXp: 500, earnedXp: 440 } } }))); await p.goto(`${BASE}/play/win`); await p.waitForSelector(".wincard"); },
+  win: async (p) => { await p.goto(`${BASE}/join`); await p.evaluate(() => sessionStorage.setItem("helpo:last-result", JSON.stringify({ game: "MATCH", lessonId: "l1", result: { stars: 3, points: 46, xp: 60, personalBest: true, totalXp: 400, level: 7, xpIntoLevel: 400, badgeUnlocked: null, classGoal: { goalXp: 500, earnedXp: 440 } } }))); await p.goto(`${BASE}/play/win`); await p.waitForSelector(".wincard"); },
 };
 
 for (const [name, fn] of Object.entries(screens)) {

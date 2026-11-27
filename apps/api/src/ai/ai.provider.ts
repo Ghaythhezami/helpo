@@ -1,4 +1,4 @@
-import type { AiCheckOut, Band, Blueprint, Locale, Objective, RefinedPrompt, ReteachPlan, ResourceKind } from "@helpo/shared";
+import type { AiCheckOut, Band, Blueprint, Curriculum, Locale, Objective, RefinedPrompt, ReteachPlan, ResourceKind } from "@helpo/shared";
 import type { ResourceContent } from "./content";
 
 /** Everything a prompt needs about the lesson. Never contains student names. */
@@ -18,6 +18,8 @@ export interface LessonContext {
   blueprint?: Blueprint | null;
   /** Teacher instructions (prompt-only lessons are AI-written). */
   prompt?: string | null;
+  /** National curriculum the lesson follows; GENERAL (or absent) means none. */
+  curriculum?: Curriculum;
 }
 
 /** The translatable lesson-level texts. */

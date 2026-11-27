@@ -77,9 +77,10 @@ describe("DashboardService", () => {
       a.include?.sessions ? [lesson("L3", 3, { sessions: [{ id: "s" }] }), lesson("L2", 2), lesson("L1", 1)] : recent,
     );
     const d = await service.get(teacher, "ar");
-    expect(d.nextLesson?.id).toBe("L1"); // oldest untaught, not in the recent six: fetched on its own
-    expect(lessons.summary).toHaveBeenCalledWith(expect.objectContaining({ id: "L1" }), "ar");
-    expect(lessons.summaries).toHaveBeenCalledWith(recent, "ar");
+    expect(d.nextLesson?.id).toBe("L1"); // oldest untaught, not in the recent six
+    expect(lessons.summary).not.toHaveBeenCalled(); // no second 3-query summary call: ONE summaries() covers both
+    expect(lessons.summaries).toHaveBeenCalledTimes(1);
+    expect(lessons.summaries).toHaveBeenCalledWith([...recent, expect.objectContaining({ id: "L1" })], "ar");
     expect(d.recentLessons.map((l) => l.id)).toEqual(["L3", "L2"]);
 
     db.lesson.findMany.mockImplementation(async (a: { include?: { sessions?: unknown } }) => (a.include?.sessions ? [lesson("L3", 3, { sessions: [{ id: "s" }] }), lesson("L2", 2, { sessions: [{ id: "s" }] })] : recent));

@@ -57,12 +57,18 @@ describe("workspace states", () => {
     expect(screen.getByRole("button", { name: /Download/ })).toBeDisabled();
   });
 
-  it("opens the understood dialog without a blueprint and the results dialog from the edit panel", async () => {
+  it("opens the understood dialog without a blueprint and the results dialog from the header and from the phone bottom bar", async () => {
     await open(lesson({ blueprint: null }), { "GET /lessons/l1/results": () => ({ body: results }), "GET /classes/c1": () => ({ body: { students: [] } }) });
     await userEvent.click(screen.getByRole("button", { name: "What Nibras understood" }));
     expect(await screen.findByText(/once your file is read/)).toBeInTheDocument();
     await userEvent.keyboard("{Escape}");
-    await userEvent.click(screen.getByRole("button", { name: "Results" }));
+    const results_ = screen.getAllByRole("button", { name: "Results" });
+    expect(results_).toHaveLength(2); // the header and the phone bottom bar, never the navigation
+    await userEvent.click(results_[0]);
+    expect(await screen.findByText("What to do next")).toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByText("What to do next")).toBeNull());
+    await userEvent.click(results_[1]);
     expect(await screen.findByText("What to do next")).toBeInTheDocument();
   });
 });

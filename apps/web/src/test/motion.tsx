@@ -9,5 +9,6 @@ const make = (tag: string) => {
   C.displayName = `motion.${tag}`;
   return C;
 };
-export const motion = { div: make("div"), span: make("span") };
-export const useReducedMotion = () => true;
+export const motion = { div: make("div"), span: make("span"), g: make("g"), circle: make("circle"), path: make("path") };
+/** Tests render the static (reduced-motion) variant unless a test sets globalThis.__reduceMotion = false. */
+export const useReducedMotion = () => (globalThis as { __reduceMotion?: boolean }).__reduceMotion ?? true;

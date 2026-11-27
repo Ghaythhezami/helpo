@@ -9,6 +9,7 @@ import {
   dedupe,
   dropUngrounded,
   languageMatches,
+  postProcessGame,
   postProcessQuiz,
   postProcessSlides,
   postProcessWorksheet,
@@ -16,7 +17,7 @@ import {
 } from "./content";
 import { AiOutputError, AiRefusalError } from "./errors";
 import { PROMPT_VERSIONS } from "./prompts/index";
-import type { QuizContent, SlidesContent, WorksheetContent } from "@helpo/shared";
+import type { GameContent, QuizContent, SlidesContent, WorksheetContent } from "@helpo/shared";
 
 /**
  * One contract for the five generators (spec section 2): the kind, its Zod schema, the versioned prompt, and the
@@ -50,7 +51,7 @@ export const GENERATORS: Record<ResourceKind, Generator> = {
   WORKSHEET: make("WORKSHEET", (c) => postProcessWorksheet(c as WorksheetContent)),
   SLIDES: make("SLIDES", (c) => postProcessSlides(c as SlidesContent)),
   QUIZ: make("QUIZ", (c, rng) => postProcessQuiz(c as QuizContent, rng)),
-  GAME: make("GAME", (c) => c),
+  GAME: make("GAME", (c) => postProcessGame(c as GameContent)),
 };
 
 export const MAX_ATTEMPTS = 3;

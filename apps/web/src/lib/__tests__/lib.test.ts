@@ -160,7 +160,7 @@ describe("student helpers", () => {
     expect(tileArt("Something else")).toBeNull();
     const store: Record<string, string> = {};
     const storage = { setItem: (k: string, v: string) => (store[k] = v), getItem: (k: string) => store[k] ?? null };
-    saveLastResult({ game: "MATCH", lessonId: "l1", result: { stars: 3, xp: 60, personalBest: true, totalXp: 1, level: 1, xpIntoLevel: 1, badgeUnlocked: null, classGoal: { goalXp: 1, earnedXp: 1 } } }, storage);
+    saveLastResult({ game: "MATCH", lessonId: "l1", result: { stars: 3, points: 80, xp: 60, personalBest: true, totalXp: 1, level: 1, xpIntoLevel: 1, badgeUnlocked: null, classGoal: { goalXp: 1, earnedXp: 1 } } }, storage);
     expect(readLastResult(storage)?.result.stars).toBe(3);
   });
   it("routes a joined student to the quiz, or to the practice hub when idle", async () => {

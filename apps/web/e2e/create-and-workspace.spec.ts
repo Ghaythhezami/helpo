@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { createLessonKit, demoLogin } from "./support";
+import { createLessonKit, demoLogin, expectNoPageScroll } from "./support";
 
 const PROMPT = "Photosynthesis for grade 6, 45 minutes, focus on vocabulary";
 
@@ -39,6 +39,27 @@ test.describe("create a lesson kit and work in the workspace", () => {
     await expect(prompt).toHaveValue(PROMPT);
   });
 
+  test("the generation view locks the app, then the workspace opens", async () => {
+    await page.goto("/app");
+    await page.getByRole("textbox", { name: "Or describe your lesson" }).fill(`${PROMPT} (lock check)`);
+    await expect(page.getByLabel("Curriculum")).toHaveValue("GENERAL");
+    await page.getByRole("button", { name: "Make lesson kit" }).click();
+
+    const view = page.getByRole("dialog", { name: /Making|lesson kit/ });
+    await expect(view).toBeVisible();
+    // the rest of the app is inert: no nav, tabs or logo can be reached, and there is no background option
+    await expect(page.locator(".app-inert")).toHaveAttribute("inert", "");
+    await expect(view.getByRole("button", { name: "Cancel generation" })).toBeVisible();
+    await expect(page.getByRole("button", { name: /background/i })).toHaveCount(0);
+    await page.keyboard.press("Escape");
+    await expect(view).toBeVisible();
+
+    // finishing lifts the lock and opens the workspace
+    await expect(page).toHaveURL(/\/app\/lessons\/[^/]+$/);
+    await expect(page.getByRole("tablist", { name: "Resources" })).toBeVisible({ timeout: 60_000 });
+    await expect(page.locator(".app-inert")).not.toHaveAttribute("inert", "");
+  });
+
   test("Make lesson kit reaches READY with five resources and all five tabs render content", async () => {
     const lessonId = await createLessonKit(page, PROMPT);
     expect(lessonId).toMatch(/\S+/);
@@ -57,6 +78,46 @@ test.describe("create a lesson kit and work in the workspace", () => {
       await expect(panel).toContainText(content[name]);
       await expect(page.getByRole("heading", { name: /^Items \(\d+\)$/ })).toBeVisible();
     }
+  });
+
+  test("the top navigation replaces the side rail and never repeats the lesson's own actions", async () => {
+    const nav = page.getByRole("navigation", { name: "Menu" });
+    await expect(nav.getByRole("link", { name: "New lesson" })).toHaveAttribute("href", "/app");
+    await expect(nav.getByRole("button", { name: "My lessons" })).toBeVisible();
+    await expect(nav.getByRole("button", { name: "Classes" })).toBeVisible();
+    await expect(page.locator("aside.rail")).toHaveCount(0);
+    for (const name of ["Share", "Results", "Whiteboard", "Slides", "Quiz"]) await expect(nav.getByRole("button", { name })).toHaveCount(0);
+    // Share with class and Results live only in the workspace header
+    await expect(page.getByRole("button", { name: "Share with class" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Results" })).toHaveCount(1);
+    await page.getByRole("button", { name: /account menu/ }).click();
+    await expect(page.getByRole("button", { name: "العربية" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    for (const [width, height] of [[1440, 900], [1280, 720], [1024, 768], [390, 844], [360, 740]] as const) {
+      await page.setViewportSize({ width, height });
+      await expectNoPageScroll(page, `workspace ${width}x${height}`);
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByRole("button", { name: "Open the menu" }).click();
+    const drawer = page.getByRole("dialog", { name: "Menu" });
+    await expect(drawer.getByText("New lesson")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(drawer).toBeHidden();
+    await page.setViewportSize({ width: 1440, height: 900 });
+  });
+
+  test("the cards tab is a flip deck with piles, and a grid toggle", async () => {
+    await openTab(page, "Cards");
+    const card = page.getByRole("button", { name: /Card 1 of/ }).first();
+    await expect(card).toBeVisible();
+    await card.focus();
+    await page.keyboard.press("Space");
+    await expect(page.getByRole("button", { name: "Got it" })).toBeVisible();
+    await page.getByRole("button", { name: "Got it" }).click();
+    await page.getByRole("radio", { name: "Grid" }).click();
+    await expect(page.getByRole("link", { name: "Print cards grid (PDF)" })).toBeVisible();
+    await page.getByRole("radio", { name: "Deck" }).click();
   });
 
   test("editing a slide title saves a new version", async () => {
@@ -119,6 +180,14 @@ test.describe("create a lesson kit and work in the workspace", () => {
     await expect(choose.getByRole("button", { name: "Quiz" })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("heading", { name: /^Question 1 of \d+$/ })).toBeVisible();
     await expect(page.getByRole("main").getByRole("group").getByRole("button").first()).toBeVisible();
+
+    // thinking games come first: Sort it, then the sequence game
+    const names = await choose.getByRole("button").allInnerTexts();
+    expect(names[0]).toMatch(/Quiz/);
+    expect(names[1]).toMatch(/Sort it/);
+    await choose.getByRole("button", { name: "Sort it" }).click();
+    await expect(page.getByRole("button", { name: /Hint \((-5 points|free)\)/ }).first()).toBeVisible();
+    await expect(page.getByText(/Points: \d+/).first()).toBeVisible();
 
     await choose.getByRole("button", { name: "Match it" }).click();
     await expect(choose.getByRole("button", { name: "Match it" })).toHaveAttribute("aria-pressed", "true");

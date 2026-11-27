@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import type { z } from "zod";
-import { playableTemplates, type GameContent, type GameKind, type Locale, type PracticeQuiz, type PracticeResult, type PracticeSubmitBody, type QuizContent, type StudentPractice } from "@helpo/shared";
+import { playableTemplates, splitGamePoints, type GameContent, type GameKind, type Locale, type PracticeQuiz, type PracticeResult, type PracticeSubmitBody, type QuizContent, type StudentPractice } from "@helpo/shared";
 import { notFound } from "../common/problem";
 import { startOfDay } from "../common/time";
 import { contentOf, lessonTitle } from "../common/views";
 import { PrismaService } from "../prisma/prisma.service";
+import { sessionGames } from "../sessions/sessions.service";
 import { GamificationService } from "./gamification.service";
 import { gradeAnswer } from "./grading";
 import { DAILY_PRACTICE_XP_CAP_PER_LESSON, PRACTICE_XP_ATTEMPT, PRACTICE_XP_CORRECT, correctAnswerText, optionOrder, practiceReason, toPracticeQuestion } from "./practice";
@@ -39,11 +40,11 @@ export class PracticeService {
           classId: s.classId,
           OR: [
             { type: "LIVE_QUIZ", status: { in: ["LOBBY", "LIVE"] } },
-            { type: "ASSIGNMENT", status: { not: "ENDED" }, isOpen: true, OR: [{ expiresAt: null }, { expiresAt: { gt: now } }] },
+            { type: { in: ["ASSIGNMENT", "GAME"] }, status: { not: "ENDED" }, isOpen: true, OR: [{ expiresAt: null }, { expiresAt: { gt: now } }] },
           ],
         },
         orderBy: { createdAt: "desc" },
-        select: { id: true, type: true, joinCode: true, lesson: { select: { titleEn: true, titleAr: true } } },
+        select: { id: true, type: true, joinCode: true, game: true, games: true, lesson: { select: { titleEn: true, titleAr: true } } },
       }),
       this.prisma.lesson.findMany({
         where: practisable(s.classId),
@@ -55,7 +56,8 @@ export class PracticeService {
     const best = new Map(bests.map((b) => [b.lessonId, b._max.stars ?? 0]));
     return {
       className: s.classRoom.name,
-      open: sessions.map((x) => ({ sessionId: x.id, type: x.type, joinCode: x.joinCode, lessonTitle: lessonTitle(x.lesson, locale) })),
+      // `games` (the teacher's published games and their points) is an addition to the shared StudentPractice type
+      open: sessions.map((x) => ({ sessionId: x.id, type: x.type, joinCode: x.joinCode, lessonTitle: lessonTitle(x.lesson, locale), games: splitGamePoints(sessionGames(x) ?? []) })),
       lessons: lessons.map((l) => {
         const quiz = l.resources.find((r) => r.kind === "QUIZ");
         const game = l.resources.find((r) => r.kind === "GAME");

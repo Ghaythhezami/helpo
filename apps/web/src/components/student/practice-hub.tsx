@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { GAME_TEMPLATES, type GameKind, type StudentPractice } from "@helpo/shared";
-import { ArrowDownUp, CircleCheck, LayoutGrid, ListOrdered, NotebookPen, Radio, Shuffle, Star, type LucideIcon } from "lucide-react";
+import { GAME_KINDS, GAME_TEMPLATES, type GameKind, type StudentPractice } from "@helpo/shared";
+import { ArrowDownUp, CircleCheck, LayoutGrid, ListOrdered, NotebookPen, Radio, ScanSearch, Shuffle, Star, type LucideIcon } from "lucide-react";
 import { ApiError } from "@/lib/api";
 import { useI18n, type TFunction } from "@/lib/i18n";
 import { usePractice, useStudentHome } from "@/lib/queries";
@@ -11,7 +11,12 @@ import { Illus } from "@/components/ui/illus";
 import { Async, EmptyState } from "@/components/ui/states";
 
 /** One icon per game template (the templates carry the names; the pictures live here). */
-export const GAME_ICONS: Record<GameKind, LucideIcon> = { MATCH: Shuffle, MEMORY: LayoutGrid, SORT: ArrowDownUp, EQUATION: ListOrdered, TRUE_FALSE: CircleCheck };
+export const GAME_ICONS: Record<GameKind, LucideIcon> = { MATCH: Shuffle, MEMORY: LayoutGrid, SORT: ArrowDownUp, EQUATION: ListOrdered, TRUE_FALSE: CircleCheck, ODD_ONE_OUT: ScanSearch };
+
+/** Thinking games first (GAME_KINDS order), whatever order the API lists them in. */
+export function orderGames(games: readonly GameKind[]): GameKind[] {
+  return [...games].sort((a, b) => GAME_KINDS.indexOf(a) - GAME_KINDS.indexOf(b));
+}
 
 export function gameName(kind: GameKind, locale: string, t: TFunction): string {
   return locale === "ar" ? GAME_TEMPLATES[kind].nameAr : t(`game.${kind}` as "game.MATCH");
@@ -24,7 +29,7 @@ export function openHref(o: Open, lessons: StudentPractice["lessons"]): string |
   if (o.type === "LIVE_QUIZ") return `/play/quiz/${o.sessionId}`;
   if (o.type === "ASSIGNMENT") return `/play/self/${o.sessionId}?code=${o.joinCode}`;
   const lesson = lessons.find((l) => l.title === o.lessonTitle && l.games.length > 0);
-  return lesson ? `/play/games/${lesson.lessonId}/${lesson.games[0]}` : null;
+  return lesson ? `/play/games/${lesson.lessonId}/${orderGames(lesson.games)[0]}` : null;
 }
 
 function Stars({ n }: { n: number }) {
@@ -105,7 +110,7 @@ function Hub({ data }: { data: StudentPractice }) {
                 </div>
                 <div className="lacts">
                   {l.quizQuestions > 0 && <ButtonLink href={`/play/practice/${l.lessonId}`}>{t("practice.quiz", { n: l.quizQuestions })}</ButtonLink>}
-                  {l.games.map((g) => {
+                  {orderGames(l.games).map((g) => {
                     const Icon = GAME_ICONS[g];
                     return (
                       <ButtonLink key={g} variant="secondary" href={`/play/games/${l.lessonId}/${g}`}>

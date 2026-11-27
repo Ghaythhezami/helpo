@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import type { Locale, ResourceView, SessionTeacherView, ShareBody } from "@helpo/shared";
+import { playableTemplates, type GameContent, type GameKind, type Locale, type ResourceView, type SessionTeacherView, type ShareBody } from "@helpo/shared";
 import type { z } from "zod";
 import { AI_PROVIDER, type AiProvider, type RewriteAction } from "../ai/ai.provider";
 import { CONTENT_SCHEMAS, contentProblems, type ResourceContent } from "../ai/content";
@@ -105,8 +105,22 @@ export class ResourcesService {
       teacherId,
       { lessonId: r.lessonId, type: body.mode, game: body.game, dueAt: body.dueAt, namesHidden: true },
       locale,
-      { expiresInHours: body.expiresInHours, leaderboard: body.leaderboard },
+      { expiresInHours: body.expiresInHours, leaderboard: body.leaderboard, games: gameKind ? this.publishedGames(r, body, locale) : undefined },
     );
+  }
+
+  /**
+   * The games a share publishes (`games`: e.g. 2 of 6 when there are 10 minutes). Each must be playable with this lesson's
+   * game content and suit the class band; the 100 points are split among them (see splitGamePoints).
+   */
+  private publishedGames(r: { kind: string; contentEn: unknown; contentAr: unknown; lesson: { classRoom: { band: "EXPLORER" | "NAVIGATOR" | "STUDIO" } } }, body: z.infer<typeof ShareBody>, locale: Locale): GameKind[] | undefined {
+    if (!body.games?.length) return undefined;
+    const content = contentOf<GameContent>(r as never, locale).content;
+    const playable = content ? playableTemplates(content, r.lesson.classRoom.band) : [];
+    const unique = [...new Set(body.games)];
+    const missing = unique.filter((g) => !playable.includes(g));
+    if (missing.length) throw badRequest(`These games cannot be played with this lesson: ${missing.join(", ")}.`);
+    return unique;
   }
 
   async rewrite(teacherId: string, id: string, text: string, action: RewriteAction, locale: Locale, language?: string): Promise<{ text: string }> {

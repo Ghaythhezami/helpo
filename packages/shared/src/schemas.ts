@@ -46,7 +46,7 @@ export const BlueprintSchema = z.object({
   relations: z.array(z.object({ left: z.string(), right: z.string() })).describe("Pairs for matching"),
   commonMisconceptions: z.array(z.string()).describe("At most 5"),
   difficulty: z.enum(["easy", "medium", "hard"]),
-  suggestedGameType: z.enum(["matching", "sorting", "memory", "sequence", "truefalse_rush"]),
+  suggestedGameType: z.enum(["matching", "sorting", "memory", "sequence", "truefalse_rush", "odd_one_out"]),
 });
 export type Blueprint = z.infer<typeof BlueprintSchema>;
 /** @deprecated use BlueprintSchema */
@@ -121,7 +121,7 @@ export type Question = z.infer<typeof QuestionSchema>;
  * spec feeds every compatible template (GAME_TEMPLATES / playableTemplates) with no further AI calls.
  */
 export const GameContentSchema = z.object({
-  type: z.enum(["matching", "sorting", "memory", "sequence", "truefalse_rush"]),
+  type: z.enum(["matching", "sorting", "memory", "sequence", "truefalse_rush", "odd_one_out"]),
   title: z.string(),
   instructions: z.string(),
   timeLimitSec: z.number().int().nullable(),
@@ -131,6 +131,8 @@ export const GameContentSchema = z.object({
   sortItems: z.array(z.object({ label: z.string(), belongsInYes: z.boolean() })).describe("sorting: 6 to 10 items"),
   equationTiles: z.array(z.string()).describe("sequence: steps in the correct order, 4 to 8"),
   statements: z.array(z.object({ text: z.string(), isTrue: z.boolean(), explanation: z.string() })).describe("truefalse_rush: 6 to 10"),
+  oddOneOut: z.array(z.object({ items: z.array(z.string()), oddIndex: z.number().int(), explanation: z.string() }))
+    .describe("odd_one_out: 4 to 6 rounds of exactly 4 items; oddIndex points at the item that does not belong; explanation says why"),
 });
 export type GameContent = z.infer<typeof GameContentSchema>;
 
@@ -200,6 +202,8 @@ export const AddStudentsBody = z.object({
  */
 export const CreateLessonBody = z.object({
   classId: z.string().min(1),
+  /** National curriculum the lesson follows; steers vocabulary, standards and examples. */
+  curriculum: z.enum(["GENERAL", "AMERICAN", "BRITISH", "EGYPTIAN", "TUNISIAN"]).default("GENERAL"),
   title: z.string().trim().max(140).optional(),
   prompt: z.string().trim().min(10).max(4000).optional(),
   unitTitle: z.string().trim().max(140).optional(),
@@ -241,7 +245,9 @@ export const GenerateBody = z.object({
 /** POST /resources/:id/share → session with code, link and QR. */
 export const ShareBody = z.object({
   mode: z.enum(["LIVE_QUIZ", "GAME", "ASSIGNMENT"]),
-  game: z.enum(["MATCH", "SORT", "EQUATION", "MEMORY", "TRUE_FALSE"]).optional(),
+  game: z.enum(["MATCH", "SORT", "EQUATION", "MEMORY", "TRUE_FALSE", "ODD_ONE_OUT"]).optional(),
+  /** Games the teacher publishes with this share (e.g. 2 of 6 when there are 10 minutes). Points are split among them. */
+  games: z.array(z.enum(["MATCH", "SORT", "EQUATION", "MEMORY", "TRUE_FALSE", "ODD_ONE_OUT"])).min(1).max(6).optional(),
   dueAt: z.string().datetime().optional(),
   expiresInHours: z.number().int().min(1).max(24 * 14).default(24),
   leaderboard: z.enum(["OFF", "TEAMS", "INDIVIDUAL"]).default("TEAMS"),
@@ -286,7 +292,7 @@ export const ResolveCheckBody = z.object({
 export const CreateSessionBody = z.object({
   lessonId: z.string().min(1),
   type: z.enum(["LIVE_QUIZ", "GAME", "ASSIGNMENT"]),
-  game: z.enum(["MATCH", "SORT", "EQUATION", "MEMORY", "TRUE_FALSE"]).optional(),
+  game: z.enum(["MATCH", "SORT", "EQUATION", "MEMORY", "TRUE_FALSE", "ODD_ONE_OUT"]).optional(),
   dueAt: z.string().datetime().optional(),
   namesHidden: z.boolean().default(true),
 });
@@ -310,10 +316,12 @@ export const AnswerBody = z.object({
 export const GameResultBody = z.object({
   lessonId: z.string().min(1),
   sessionId: z.string().optional(),
-  game: z.enum(["MATCH", "SORT", "EQUATION", "MEMORY", "TRUE_FALSE"]),
+  game: z.enum(["MATCH", "SORT", "EQUATION", "MEMORY", "TRUE_FALSE", "ODD_ONE_OUT"]),
   total: z.number().int().min(1).max(40),
   firstTryCorrect: z.number().int().min(0).max(40),
   retriedCorrect: z.number().int().min(0).max(40),
+  wrongTries: z.number().int().min(0).max(200).default(0),
+  hintsUsed: z.number().int().min(0).max(40).default(0),
 });
 
 export const LocaleEnum = z.enum(["en", "ar"]);

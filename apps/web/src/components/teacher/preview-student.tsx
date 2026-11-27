@@ -11,7 +11,7 @@ import { useLesson } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Async, EmptyState } from "@/components/ui/states";
 import type { GameProps } from "@/components/student/game-bits";
-import { EquationGame, MatchGame, MemoryGame, SortGame, TrueFalseGame } from "@/components/student/games";
+import { EquationGame, MatchGame, MemoryGame, OddOneOutGame, SortGame, TrueFalseGame } from "@/components/student/games";
 import { GAME_ICONS, gameName } from "@/components/student/practice-hub";
 import { QuizRunner } from "@/components/student/quiz-runner";
 
@@ -115,6 +115,7 @@ function PreviewBody({ lesson }: { lesson: LessonDetail }) {
             {mode === "MEMORY" && <MemoryGame {...props} />}
             {mode === "SORT" && <SortGame {...props} />}
             {mode === "EQUATION" && <EquationGame {...props} />}
+            {mode === "ODD_ONE_OUT" && <OddOneOutGame {...props} />}
             {mode === "TRUE_FALSE" && <TrueFalseGame {...props} timed={ui.timers || lesson.band === "NAVIGATOR"} />}
           </div>
         )}

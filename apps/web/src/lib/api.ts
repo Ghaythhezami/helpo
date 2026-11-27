@@ -115,6 +115,44 @@ async function toProblem(res: Response): Promise<ApiError> {
   return error;
 }
 
+/* ----------------------------- dev request counter ----------------------------- */
+
+export interface RequestStats {
+  total: number;
+  byPath: Record<string, number>;
+  log: { t: number; method: string; path: string }[];
+  reset(): void;
+}
+
+declare global {
+  interface Window {
+    __nibrasRequests?: RequestStats;
+  }
+}
+
+/** Counts every api() call when NEXT_PUBLIC_DEBUG_REQUESTS=1 (and always under jest). A single boolean when off. */
+const COUNT_REQUESTS = process.env.NEXT_PUBLIC_DEBUG_REQUESTS === "1" || process.env.NODE_ENV === "test";
+const stats: RequestStats = {
+  total: 0,
+  byPath: {},
+  log: [],
+  reset() {
+    stats.total = 0;
+    stats.byPath = {};
+    stats.log = [];
+  },
+};
+
+export const getRequestStats = (): RequestStats => stats;
+export const resetRequestStats = (): void => stats.reset();
+
+function countRequest(method: string, path: string) {
+  if (typeof window !== "undefined") window.__nibrasRequests = stats;
+  stats.total += 1;
+  stats.byPath[path] = (stats.byPath[path] ?? 0) + 1;
+  stats.log.push({ t: Date.now(), method, path });
+}
+
 /** Same-origin JSON fetch. `path` starts with "/" and is relative to /api. */
 export async function api<T = void>(path: string, options: ApiOptions = {}): Promise<T> {
   const { method = options.body !== undefined || options.form ? "POST" : "GET", body, form, query, signal } = options;
@@ -125,6 +163,7 @@ export async function api<T = void>(path: string, options: ApiOptions = {}): Pro
     headers["Content-Type"] = "application/json";
     payload = JSON.stringify(body);
   }
+  if (COUNT_REQUESTS) countRequest(method, path);
   let res: Response;
   try {
     res = await fetch(`/api${withQuery(path, query)}`, { method, headers, body: payload, credentials: "same-origin", signal });
