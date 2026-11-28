@@ -119,7 +119,7 @@ export const LIMITS = {
   monthlyLessonQuota: 100, // per teacher, MONTHLY_LESSON_QUOTA
   scannedCharsPerPage: 50, // below → OCR fallback (Claude reads the PDF)
   cards: { min: 8, max: 15, frontWords: 12, backWords: 35 },
-  slides: { min: 8, max: 14, bullets: 5, bulletWords: 14 },
+  slides: { min: 8, max: 14, bullets: 5, bulletWords: 12 },
   quiz: { min: 5, max: 20, default: 10 },
   blueprint: { objectivesMin: 3, objectivesMax: 6, conceptsMin: 5, conceptsMax: 15, vocabularyMax: 15, misconceptionsMax: 5 },
   aiCallTimeoutMs: 120_000, // spec says 60 s for OpenAI; Claude long structured outputs need more

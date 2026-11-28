@@ -1,0 +1,162 @@
+PASS create en tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS create en mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,,nl-title compact
+PASS create en desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS create en laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:,chip-btn
+PASS create en mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,,nl-title compact
+PASS create en mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,,nl-title compact
+PASS create ar tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS create ar mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,
+PASS create ar desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS create ar laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS create ar mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS create ar mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,
+PASS create-railcollapsed en tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS create-railcollapsed en desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS create-railcollapsed en laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:,chip-btn
+PASS create-railcollapsed ar tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS create-railcollapsed ar desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS create-railcollapsed ar laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+ERROR workspace en tablet1024: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace en mobile320: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace en desktop: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace en laptop: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace en mobile390: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace en mobile360: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace ar tablet1024: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace ar mobile320: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace ar desktop: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace ar laptop: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace ar mobile390: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace ar mobile360: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace-railcollapsed en tablet1024: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace-railcollapsed en desktop: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace-railcollapsed en laptop: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace-railcollapsed ar tablet1024: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace-railcollapsed ar desktop: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+ERROR workspace-railcollapsed ar laptop: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.ws-center .sl, .ws-center .doc') to be visible[22m
+
+PASS gen-view en tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS gen-view en mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,,tool wide drawtoggle
+PASS gen-view en desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS gen-view en laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS gen-view en mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS gen-view en mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,
+PASS gen-view ar tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS gen-view ar mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,
+PASS gen-view ar desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS gen-view ar laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS gen-view ar mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS gen-view ar mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,
+PASS drawer en tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS drawer en mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,,nl-title compact
+PASS drawer en desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS drawer en laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:,chip-btn
+PASS drawer en mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,,nl-title compact
+PASS drawer en mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,,nl-title compact
+PASS drawer ar tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS drawer ar mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,
+PASS drawer ar desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS drawer ar laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS drawer ar mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS drawer ar mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,
+PASS win en tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS win en mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,,win-bloom
+PASS win en desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS win en laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS win en mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,,win-bloom
+PASS win en mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,,win-bloom
+PASS win ar tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS win ar mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,,win-bloom
+PASS win ar desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS win ar laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS win ar mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,,win-bloom
+PASS win ar mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,,win-bloom
+PASS match en tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS match en mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,
+PASS match en desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS match en laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS match en mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS match en mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,
+PASS match ar tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS match ar mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,
+PASS match ar desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS match ar laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS match ar mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS match ar mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,
+PASS sort en tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS sort en mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,
+PASS sort en desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS sort en laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS sort en mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS sort en mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,
+PASS sort ar tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS sort ar mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,
+PASS sort ar desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS sort ar laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS sort ar mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS sort ar mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,
+PASS odd en tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS odd en mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,
+PASS odd en desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS odd en laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS odd en mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS odd en mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,
+PASS odd ar tablet1024: scrollHeight 768/768 scrollWidth 1024/1024 wide:
+PASS odd ar mobile320: scrollHeight 568/568 scrollWidth 320/320 wide:,
+PASS odd ar desktop: scrollHeight 900/900 scrollWidth 1440/1440 wide:
+PASS odd ar laptop: scrollHeight 720/720 scrollWidth 1280/1280 wide:
+PASS odd ar mobile390: scrollHeight 844/844 scrollWidth 390/390 wide:,
+PASS odd ar mobile360: scrollHeight 740/740 scrollWidth 360/360 wide:,

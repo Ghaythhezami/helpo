@@ -3,6 +3,7 @@ import {
   BADGES,
   ObjectiveSchema,
   levelForXp,
+  migrateSlides,
   type BadgeKey,
   type CheckView,
   type ClassSettings,
@@ -77,6 +78,8 @@ export function contentOf<T = unknown>(r: Pick<Resource, "contentEn" | "contentA
 
 export function toResourceView(r: Resource, locale: Locale, lessonTranslations: Translations): ResourceView {
   const picked = contentOf<ResourceView["content"]>(r, locale);
+  // slides saved before slides.v2 get the new fields (null) and their text lifted into them
+  if (r.kind === "SLIDES") picked.content = migrateSlides(picked.content);
   const state = (has: boolean, l: Locale) => (has ? "ready" : lessonTranslations[l] === "working" ? "working" : "missing");
   return {
     id: r.id,

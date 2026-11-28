@@ -32,9 +32,11 @@ function candidateOf(raw: string): Candidate | null {
     clause = clause.slice(lead[0].length).trim();
     explicit = true;
   }
-  const kv = clause.match(/^([^:]{1,30}):\s*(.*)$/);
-  if (kv) {
-    const [, key, value] = kv;
+  // "Key: value" with a short key, found with indexOf rather than a backtracking regex.
+  const colon = clause.indexOf(":");
+  if (colon > 0 && colon <= 30) {
+    const key = clause.slice(0, colon);
+    const value = clause.slice(colon + 1);
     if (META_KEYS.test(key.trim())) return null;
     if (TOPIC_KEYS.test(key.trim()) || isMeta(key.trim())) {
       explicit = TOPIC_KEYS.test(key.trim());
@@ -63,6 +65,13 @@ export function shortTitle(prompt: string): string {
   const candidates = clauses.map(candidateOf).filter((c): c is Candidate => c !== null);
   const picked = candidates.find((c) => c.explicit) ?? candidates[0];
   const clause = picked?.text ?? (cleaned.split(/[.,;:\n!?]|\s[-–—]\s/)[0].trim() || cleaned);
-  const text = clause.length > 60 ? clause.slice(0, 60).replace(/\s+\S*$/, "") || clause.slice(0, 60) : clause;
+  const text = clause.length > 60 ? cutAtWord(clause, 60) : clause;
   return text ? text[0].toUpperCase() + text.slice(1) : "New lesson";
+}
+
+/** The first `max` characters, cut back to the last whole word (no backtracking regex). */
+function cutAtWord(text: string, max: number): string {
+  const cut = text.slice(0, max);
+  const space = cut.lastIndexOf(" ");
+  return space > 0 ? cut.slice(0, space).trimEnd() : cut;
 }

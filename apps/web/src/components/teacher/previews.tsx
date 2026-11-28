@@ -1,8 +1,11 @@
 "use client";
-import { useMemo, useReducer, useState, type ReactNode } from "react";
-import type { CheckView, GameContent, QuizContent, ResourceView, SlidesContent, WorksheetContent } from "@helpo/shared";
-import { Check } from "lucide-react";
-import { toLines, updateQuestion, updateSlide } from "@/lib/content-edit";
+import { useEffect, useMemo, useReducer, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { migrateSlides, type CheckView, type GameContent, type QuizContent, type ResourceView, type SlidesContent, type WorksheetContent } from "@helpo/shared";
+import { useReducedMotion } from "motion/react";
+import { Check, ChevronLeft, ChevronRight, Eye, EyeOff, Maximize2, Sparkles, X } from "lucide-react";
+import { toLines, updateQuestion } from "@/lib/content-edit";
+import { IS_TEST } from "@/lib/motion";
 import { initEquation } from "@/lib/games/equation";
 import { initMatch, matchMessageText, matchReducer } from "@/lib/games/match";
 import { useI18n } from "@/lib/i18n";
@@ -30,114 +33,335 @@ const inputStyle = { minHeight: 44, width: "100%", borderRadius: 12, border: "2p
 
 /* --------------------------------- slides --------------------------------- */
 
-/** One fixed template per layout; the AI picks the layout, never positions. */
-function SlideBody({ slide }: { slide: SlidesContent["slides"][number] }) {
-  const { t } = useI18n();
-  const emoji = slide.emoji ? <span className="slide-emoji" aria-hidden="true">{slide.emoji}</span> : null;
-  switch (slide.layout) {
-    case "title":
-      return (
-        <div className="slide-title">
-          {emoji}
-          <h4>{slide.title}</h4>
-          {slide.bullets[0] && <p>{slide.bullets[0]}</p>}
-        </div>
-      );
-    case "twoColumn": {
-      const half = Math.ceil(slide.bullets.length / 2);
-      return (
-        <>
-          <h4>{slide.title}</h4>
-          <div className="slide-cols">
-            <ul>{slide.bullets.slice(0, half).map((b, i) => <li key={i}>{b}</li>)}</ul>
-            <ul>{slide.bullets.slice(half).map((b, i) => <li key={i}>{b}</li>)}</ul>
-          </div>
-        </>
-      );
-    }
-    case "definition":
-      return (
-        <>
-          <h4>{emoji} {slide.title}</h4>
-          <p className="slide-def">{slide.bullets[0]}</p>
-          {slide.bullets.slice(1).map((b, i) => <p key={i}>{b}</p>)}
-        </>
-      );
-    case "process":
-      return (
-        <>
-          <h4>{slide.title}</h4>
-          <ol className="slide-steps">{slide.bullets.map((b, i) => <li key={i}><span className="n">{i + 1}</span>{b}</li>)}</ol>
-        </>
-      );
-    case "quizBreak":
-      return (
-        <div className="slide-title">
-          {emoji}
-          <h4>{slide.title}</h4>
-          <p className="chip">{t("preview.slide.quizBreak")}</p>
-        </div>
-      );
-    case "summary":
-      return (
-        <>
-          <h4>{emoji} {slide.title}</h4>
-          <ul className="slide-check">{slide.bullets.map((b, i) => <li key={i}><Check className="ic" aria-hidden="true" />{b}</li>)}</ul>
-        </>
-      );
-    default:
-      return (
-        <>
-          <h4>{emoji} {slide.title}</h4>
-          {slide.bullets.map((b, i) => <p key={i}>{b}</p>)}
-        </>
-      );
-  }
+type Slide = SlidesContent["slides"][number];
+type Fit = "normal" | "dense" | "tight";
+
+const nonEmpty = (list: (string | null | undefined)[] | null | undefined): string[] => (list ?? []).filter((x): x is string => typeof x === "string" && x.trim().length > 0);
+
+/** Visible text length of a slide: drives the type size so long slides shrink instead of overflowing. */
+export function slideTextLength(s: Slide): number {
+  const parts = [
+    s.title, s.subtitle, s.keyIdea, s.question, s.term, s.definition, s.example,
+    ...s.bullets, ...(s.options ?? []), ...(s.takeaways ?? []),
+    ...(s.steps ?? []).flatMap((x) => [x.title, x.detail]),
+    ...(s.columns ?? []).flatMap((c) => [c.heading, ...c.points]),
+  ];
+  return nonEmpty(parts).reduce((n, p) => n + p.length, 0);
 }
 
-export function SlidesPreview({ resource, checks, onSave, onOpenCheck, activeIndex, onIndex }: { resource: ResourceView; checks: CheckView[]; onSave: Save; onOpenCheck: (c: CheckView) => void; activeIndex?: number; onIndex?: (i: number) => void }) {
+const fitFor = (s: Slide): Fit => {
+  const n = slideTextLength(s);
+  return n > 420 ? "tight" : n > 260 ? "dense" : "normal";
+};
+
+const LETTERS = ["0", "1", "2", "3", "4", "5"] as const;
+
+/** Slide direction for the transition: "" on first paint (no animation), then "fwd" or "back". */
+function useSlideDirection(index: number): "" | "fwd" | "back" {
+  const [state, setState] = useState<{ prev: number; dir: "" | "fwd" | "back" }>({ prev: index, dir: "" });
+  const dir = state.prev === index ? state.dir : index > state.prev ? "fwd" : "back";
+  if (state.prev !== index) setState({ prev: index, dir });
+  return dir;
+}
+
+function QuizBody({ slide, head, revealed, onReveal }: { slide: Slide; head: ReactNode; revealed?: boolean; onReveal?: (v: boolean) => void }) {
   const { t } = useI18n();
-  const content = resource.content as SlidesContent;
+  const [local, setLocal] = useState(false);
+  const [picked, setPicked] = useState<number | null>(null);
+  const options = nonEmpty(slide.options).slice(0, 6);
+  const answer = slide.answerIndex;
+  const canReveal = answer !== null && answer >= 0 && answer < options.length;
+  const shown = canReveal && (revealed ?? local);
+  const toggle = () => {
+    setLocal(!shown);
+    onReveal?.(!shown);
+  };
+  return (
+    <>
+      {head}
+      {slide.question && <p className="nsl-q nsl-clamp">{slide.question}</p>}
+      {options.length > 0 && (
+        <div className="nsl-opts" role="group" aria-label={t("slide.options")} data-count={options.length}>
+          {options.map((o, i) => {
+            const state = shown ? (i === answer ? "correct" : "dim") : picked === i ? "picked" : undefined;
+            return (
+              <button key={i} type="button" className="nsl-opt" data-state={state} aria-pressed={picked === i} onClick={() => setPicked(picked === i ? null : i)}>
+                <span className="nsl-letter" aria-hidden="true">{t(`slide.letter.${LETTERS[i]}` as "slide.letter.0")}</span>
+                <span className="nsl-opt-t">{o}</span>
+                {state === "correct" && (
+                  <span className="nsl-ok"><Check className="ic" aria-hidden="true" />{t("slide.correct")}</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+      <div className="nsl-foot">
+        {canReveal && (
+          <button type="button" className="nsl-reveal" data-testid="slide-reveal" onClick={toggle}>
+            {shown ? <EyeOff className="ic" aria-hidden="true" /> : <Eye className="ic" aria-hidden="true" />}
+            {shown ? t("slide.hide") : t("slide.reveal")}
+          </button>
+        )}
+        <div className="nsl-explain nsl-clamp" aria-live="polite" data-open={shown && !!slide.keyIdea ? "1" : "0"}>
+          {shown && slide.keyIdea && (<><b>{t("slide.explanation")}</b> {slide.keyIdea}</>)}
+        </div>
+      </div>
+    </>
+  );
+}
+
+/**
+ * One purpose-built 16:9 template per layout; the AI picks the layout, never positions. Everything inside is sized in
+ * container units (cqw), so the same markup is the editor stage, the small card and the full-screen view.
+ * The quiz answer stays hidden until the teacher reveals it; the state belongs to the slide and resets when it changes.
+ */
+export function SlideBody({ slide, index, total, revealed, onReveal, wrapTitle }: {
+  slide: Slide;
+  index?: number;
+  total?: number;
+  revealed?: boolean;
+  onReveal?: (v: boolean) => void;
+  /** Lets the caller wrap the heading text (the AI-check flag button). */
+  wrapTitle?: (title: string) => ReactNode;
+}) {
+  const { t } = useI18n();
+  const wrap = (s: string): ReactNode => (wrapTitle ? wrapTitle(s) : s);
+  const label = index === undefined || total === undefined ? slide.title : t("slide.label", { n: index + 1, total, title: slide.title });
+  const bullets = nonEmpty(slide.bullets).slice(0, 5);
+  const columns = (slide.columns ?? []).slice(0, 2);
+  const steps = (slide.steps ?? []).filter((s) => s.title.trim() || s.detail.trim()).slice(0, 6);
+  const takeaways = nonEmpty(slide.takeaways).slice(0, 3);
+  const head = (text: string) => (
+    <div className="nsl-h"><h4 className="nsl-title">{wrap(text)}</h4></div>
+  );
+  const bulletsView = (
+    <>
+      {head(slide.title)}
+      {slide.keyIdea && <p className="nsl-key nsl-clamp">{slide.keyIdea}</p>}
+      <ul className="nsl-list">{bullets.map((b, i) => <li key={i}><span className="nsl-clamp">{b}</span></li>)}</ul>
+    </>
+  );
+
+  let body: ReactNode;
+  switch (slide.layout) {
+    case "title":
+      body = (
+        <div className="nsl-hero">
+          <h4 className="nsl-title nsl-hero-t">{wrap(slide.title)}</h4>
+          {slide.subtitle && <p className="nsl-chip">{slide.subtitle}</p>}
+          {slide.question && (
+            <div className="nsl-hook">
+              <Sparkles className="nsl-hook-ic" aria-hidden="true" />
+              <div><small>{t("slide.hook")}</small><p className="nsl-clamp">{slide.question}</p></div>
+            </div>
+          )}
+        </div>
+      );
+      break;
+    case "twoColumn":
+      body =
+        columns.length === 2 ? (
+          <>
+            {head(slide.title)}
+            {slide.keyIdea && <p className="nsl-key nsl-clamp">{slide.keyIdea}</p>}
+            <div className="nsl-cols">
+              {columns.map((c, i) => (
+                <section key={i} className="nsl-col">
+                  {c.heading && <h5>{c.heading}</h5>}
+                  <ul className="nsl-list">{nonEmpty(c.points).slice(0, 4).map((p, k) => <li key={k}><span className="nsl-clamp">{p}</span></li>)}</ul>
+                </section>
+              ))}
+              <span className="nsl-vs" aria-hidden="true">{t("slide.vs")}</span>
+            </div>
+          </>
+        ) : bulletsView;
+      break;
+    case "definition":
+      body =
+        slide.definition || slide.term ? (
+          <>
+            <div className="nsl-h"><h4 className="nsl-term">{wrap(slide.term || slide.title)}</h4></div>
+            {slide.definition && <p className="nsl-def">{slide.definition}</p>}
+            {slide.example && <div className="nsl-example"><small>{t("slide.example")}</small><p className="nsl-clamp">{slide.example}</p></div>}
+          </>
+        ) : bulletsView;
+      break;
+    case "process":
+      body =
+        steps.length > 0 ? (
+          <>
+            {head(slide.title)}
+            <ol className="nsl-steps" data-cols={steps.length > 4 ? 3 : steps.length}>
+              {steps.map((s, i) => (
+                <li key={i}>
+                  <span className="nsl-num">{i + 1}</span>
+                  {s.title.trim() && s.title.trim() !== String(i + 1) && <b className="nsl-step-t nsl-clamp">{s.title}</b>}
+                  {s.detail && <span className="nsl-step-d nsl-clamp">{s.detail}</span>}
+                </li>
+              ))}
+            </ol>
+          </>
+        ) : bulletsView;
+      break;
+    case "quizBreak":
+      body = <QuizBody key={`${slide.title}|${slide.question ?? ""}|${slide.answerIndex ?? ""}`} slide={slide} revealed={revealed} onReveal={onReveal} head={<>{head(slide.title)}<p className="nsl-chip nsl-tag">{t("slide.layout.quizBreak")}</p></>} />;
+      break;
+    case "summary":
+      body =
+        takeaways.length > 0 ? (
+          <>
+            {head(slide.title)}
+            <p className="nsl-over">{t("slide.takeaways")}</p>
+            <ol className="nsl-take">
+              {takeaways.map((x, i) => <li key={i}><span className="nsl-num">{i + 1}</span><span className="nsl-clamp">{x}</span></li>)}
+            </ol>
+            {slide.question && <div className="nsl-ticket"><b>{t("slide.exit")}</b><span className="nsl-clamp">{slide.question}</span></div>}
+          </>
+        ) : bulletsView;
+      break;
+    default:
+      body = bulletsView;
+  }
+
+  return (
+    <div className="nsl" role="group" aria-roledescription="slide" aria-label={label} data-testid="slide-frame" data-layout={slide.layout} data-fit={fitFor(slide)} data-emoji={slide.emoji ? "1" : "0"}>
+      <span className="nsl-band" aria-hidden="true" />
+      {slide.emoji && <span className="nsl-emoji" aria-hidden="true">{slide.emoji}</span>}
+      <div className="nsl-in">{body}</div>
+    </div>
+  );
+}
+
+/** The slide plus the direction-aware enter animation (CSS; off under reduced motion in CSS and here). */
+function SlideStage({ slide, index, total, wrapTitle }: { slide: Slide; index: number; total: number; wrapTitle?: (title: string) => ReactNode }) {
+  const dir = useSlideDirection(index);
+  const reduce = useReducedMotion();
+  return (
+    <div key={index} className="nsl-stage" data-dir={dir || undefined} data-motion={reduce || IS_TEST ? "off" : "on"}>
+      <SlideBody slide={slide} index={index} total={total} wrapTitle={wrapTitle} />
+    </div>
+  );
+}
+
+/** Full-viewport presenter: the same SlideBody, contained at 16:9, with keyboard and button navigation. */
+function PresentMode({ slides, index, onIndex, onClose, deckTitle }: { slides: Slide[]; index: number; onIndex: (i: number) => void; onClose: () => void; deckTitle: string }) {
+  const { t, dir } = useI18n();
+  const ref = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+  useEffect(() => {
+    closeRef.current = onClose;
+  });
+  const last = slides.length - 1;
+  const go = (i: number) => onIndex(Math.max(0, Math.min(last, i)));
+
+  useEffect(() => {
+    const el = ref.current;
+    const opener = document.activeElement as HTMLElement | null;
+    el?.focus();
+    let entered = false;
+    try {
+      void Promise.resolve(el?.requestFullscreen?.())
+        .then(() => { entered = !!document.fullscreenElement; })
+        .catch(() => undefined);
+    } catch {
+      /* fullscreen is optional */
+    }
+    const onFs = () => {
+      if (entered && !document.fullscreenElement) closeRef.current();
+    };
+    document.addEventListener("fullscreenchange", onFs);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFs);
+      if (document.fullscreenElement) void Promise.resolve(document.exitFullscreen?.()).catch(() => undefined);
+      opener?.focus?.();
+    };
+  }, []);
+
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const fwd = dir === "rtl" ? "ArrowLeft" : "ArrowRight";
+    const back = dir === "rtl" ? "ArrowRight" : "ArrowLeft";
+    if (e.key === "Tab") {
+      const items = Array.from(ref.current?.querySelectorAll<HTMLElement>("button:not([disabled])") ?? []);
+      if (items.length === 0) return;
+      const first = items[0];
+      const lastEl = items[items.length - 1];
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === ref.current)) {
+        e.preventDefault();
+        lastEl.focus();
+      } else if (!e.shiftKey && document.activeElement === lastEl) {
+        e.preventDefault();
+        first.focus();
+      }
+      return;
+    }
+    if ((e.key === " " || e.key === "Enter") && (e.target as HTMLElement).closest("button")) return;
+    let handled = true;
+    if (e.key === "Escape") onClose();
+    else if (e.key === fwd || e.key === "PageDown" || e.key === " ") go(index + 1);
+    else if (e.key === back || e.key === "PageUp") go(index - 1);
+    else if (e.key === "Home") go(0);
+    else if (e.key === "End") go(last);
+    else handled = false;
+    if (handled) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  const slide = slides[Math.min(index, last)];
+  return createPortal(
+    <div ref={ref} className="nsl-present" role="dialog" aria-modal="true" aria-label={t("slide.present.label", { title: deckTitle || slide.title })} tabIndex={-1} onKeyDown={onKeyDown}>
+      <button type="button" className="nsl-p-exit" data-testid="slide-exit" onClick={onClose}><X className="ic" aria-hidden="true" />{t("slide.exitFull")}</button>
+      <div className="nsl-p-stage"><SlideStage slide={slide} index={index} total={slides.length} /></div>
+      <div className="nsl-p-bar">
+        <button type="button" className="nsl-p-btn" aria-label={t("ws.prev")} disabled={index <= 0} onClick={() => go(index - 1)}><ChevronLeft className="ic flip" aria-hidden="true" /></button>
+        <b className="nsl-p-count" aria-live="polite"><bdi dir="ltr">{index + 1} / {slides.length}</bdi></b>
+        <button type="button" className="nsl-p-btn" aria-label={t("ws.next")} disabled={index >= last} onClick={() => go(index + 1)}><ChevronRight className="ic flip" aria-hidden="true" /></button>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+export function SlidesPreview({ resource, checks, onOpenCheck, activeIndex, onIndex }: { resource: ResourceView; checks: CheckView[]; onSave: Save; onOpenCheck: (c: CheckView) => void; activeIndex?: number; onIndex?: (i: number) => void }) {
+  const { t } = useI18n();
+  const content = useMemo(() => migrateSlides(resource.content as SlidesContent | null), [resource.content]);
+  const slides = content?.slides ?? [];
   const [localIndex, setLocalIndex] = useState(0);
-  const index = activeIndex ?? localIndex;
+  const [presenting, setPresenting] = useState(false);
+  const index = Math.min(activeIndex ?? localIndex, slides.length - 1);
   const setIndex = (i: number) => (onIndex ? onIndex(i) : setLocalIndex(i));
-  const [editing, setEditing] = useState(false);
-  const [title, setTitle] = useState("");
-  const [bullets, setBullets] = useState("");
-  const slide = content.slides[Math.min(index, content.slides.length - 1)];
-  if (!slide) return <p className="muted">{t("preview.empty")}</p>;
+  const slide = slides[index];
+  if (!content || !slide) return <p className="muted">{t("preview.empty")}</p>;
   const ref = `S${index + 1}`;
   const flagged = checks.some((c) => c.itemRef === ref && c.status === "OPEN");
 
   return (
     <div>
-      <p className="muted small">{content.deckTitle}</p>
-      <div className="sl" data-resource-id={resource.id} data-layout={slide.layout}>
-        {editing ? (
-          <div className="edit on" style={{ position: "relative", zIndex: 1 }}>
-            <label className="sr" htmlFor="slide-title">{t("preview.slide.title")}</label>
-            <input id="slide-title" value={title} onChange={(e) => setTitle(e.target.value)} style={inputStyle} />
-            <label className="sr" htmlFor="slide-bullets">{t("preview.slide.bullets")}</label>
-            <textarea id="slide-bullets" value={bullets} onChange={(e) => setBullets(e.target.value)} />
-            <div className="acts">
-              <Button size="sm" onClick={() => { onSave(updateSlide(content, index, { title: title.trim() || slide.title, bullets: toLines(bullets) })); setEditing(false); }}>{t("common.save")}</Button>
-              <Button size="sm" variant="secondary" onClick={() => setEditing(false)}>{t("common.cancel")}</Button>
-            </div>
-          </div>
-        ) : flagged ? (
-          <Flag checks={checks} itemRef={ref} onOpen={onOpenCheck}><SlideBody slide={slide} /></Flag>
-        ) : (
-          <SlideBody slide={slide} />
-        )}
+      <div className="nsl-bar" role="group" aria-label={t("slide.tools")}>
+        <p className="muted small">{content.deckTitle}</p>
+        <button type="button" className="nsl-present-btn" data-testid="slide-present" aria-haspopup="dialog" onClick={() => setPresenting(true)}>
+          <Maximize2 className="ic" aria-hidden="true" />{t("slide.present")}
+        </button>
+      </div>
+      <div className="nsl-wrap" data-resource-id={resource.id} data-layout={slide.layout}>
+        <SlideStage
+          slide={slide}
+          index={index}
+          total={slides.length}
+          wrapTitle={flagged ? (title) => <Flag checks={checks} itemRef={ref} onOpen={onOpenCheck}>{title}</Flag> : undefined}
+        />
       </div>
       <div className="thumbs" style={{ marginTop: 12 }} role="group" aria-label={t("resource.SLIDES")}>
-        {content.slides.map((s, i) => (
-          <button key={i} type="button" className="thumb" aria-pressed={i === index} onClick={() => { setIndex(i); setEditing(false); }}>
+        {slides.map((s, i) => (
+          <button key={i} type="button" className="thumb" aria-pressed={i === index} onClick={() => setIndex(i)}>
             S{i + 1} {s.title.length > 18 ? `${s.title.slice(0, 18)}…` : s.title}
           </button>
         ))}
       </div>
       {slide.speakerNotes && <p className="keyline small" style={{ marginTop: 12 }}><b>{t("preview.speakerNote")}</b> {slide.speakerNotes}</p>}
+      {presenting && <PresentMode slides={slides} index={index} onIndex={setIndex} onClose={() => setPresenting(false)} deckTitle={content.deckTitle} />}
     </div>
   );
 }

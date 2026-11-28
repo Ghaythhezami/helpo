@@ -1,8 +1,10 @@
 "use client";
 import Link from "next/link";
-import { BookOpen, FilePlus2, ShieldCheck, Users } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { useI18n } from "@/lib/i18n";
+import { SPRING } from "@/lib/motion";
+import { AnimatedIcon, type AnimatedIconName } from "@/components/ui/animated-icons";
 
 export interface NavProps {
   pathname: string;
@@ -13,22 +15,27 @@ export interface NavProps {
   onOpenClasses: () => void;
 }
 
-function Item({ icon, label, href, onClick, current }: { icon: ReactNode; label: string; href?: string; onClick?: () => void; current?: boolean }) {
+function Item({ icon, label, href, onClick, current }: { icon: AnimatedIconName; label: string; href?: string; onClick?: () => void; current?: boolean }) {
+  const reduce = useReducedMotion();
+  // Hover or focus plays the icon once (lucide-animated); the current item carries one shared pill that slides between items.
+  const [hot, setHot] = useState(false);
+  const hover = { onPointerEnter: () => setHot(true), onPointerLeave: () => setHot(false), onFocus: () => setHot(true), onBlur: () => setHot(false) };
   const body = (
     <>
-      <span className="ri-ic" aria-hidden="true">{icon}</span>
+      {current && <motion.span layoutId="nav-pill" className="nav-pill" aria-hidden="true" transition={reduce ? { duration: 0 } : SPRING.snappy} />}
+      <span className="ri-ic" aria-hidden="true"><AnimatedIcon name={icon} size={20} play={hot} /></span>
       <span className="ri-lbl">{label}</span>
     </>
   );
   if (href) {
     return (
-      <Link className="nav-item" href={href} aria-current={current ? "page" : undefined} onClick={onClick}>
+      <Link className="nav-item" href={href} aria-current={current ? "page" : undefined} onClick={onClick} {...hover}>
         {body}
       </Link>
     );
   }
   return (
-    <button type="button" className="nav-item" onClick={onClick}>
+    <button type="button" className="nav-item" onClick={onClick} {...hover}>
       {body}
     </button>
   );
@@ -47,10 +54,10 @@ export function TopNavItems({ pathname, isAdmin, onNavigate, onOpenLessons, onOp
   };
   return (
     <nav className="top-nav" aria-label={t("menu.label")}>
-      <Item icon={<FilePlus2 className="ic" />} label={t("nav.newLesson")} href="/app" current={pathname === "/app"} onClick={onNavigate} />
-      <Item icon={<BookOpen className="ic" />} label={t("menu.lessons")} onClick={done(onOpenLessons)} />
-      <Item icon={<Users className="ic" />} label={t("nav.classesShort")} onClick={done(onOpenClasses)} />
-      {isAdmin && <Item icon={<ShieldCheck className="ic" />} label={t("nav.admin")} href="/admin" current={pathname.startsWith("/admin")} onClick={onNavigate} />}
+      <Item icon="plus" label={t("nav.newLesson")} href="/app" current={pathname === "/app"} onClick={onNavigate} />
+      <Item icon="bookOpen" label={t("menu.lessons")} onClick={done(onOpenLessons)} />
+      <Item icon="users" label={t("nav.classesShort")} onClick={done(onOpenClasses)} />
+      {isAdmin && <Item icon="shieldCheck" label={t("nav.admin")} href="/admin" current={pathname.startsWith("/admin")} onClick={onNavigate} />}
     </nav>
   );
 }

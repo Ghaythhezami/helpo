@@ -125,7 +125,7 @@ test.describe("create a lesson kit and work in the workspace", () => {
     await expect(panel).toBeVisible();
     await expect(page.getByRole("button", { name: /^Versions \(v1\)/ })).toBeVisible();
 
-    const title = page.getByRole("textbox", { name: "Title" });
+    const title = page.getByRole("textbox", { name: "Title", exact: true });
     await title.fill("E2E edited slide title");
     await page.getByRole("button", { name: "Save changes" }).click();
 

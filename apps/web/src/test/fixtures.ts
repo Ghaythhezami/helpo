@@ -2,16 +2,19 @@ import type { ClassDetail, GameContent, LessonDetail, LessonSummary, ResourceVie
 
 const now = "2026-11-20T10:00:00.000Z";
 
+const blankSlide = { subtitle: null, keyIdea: null, bullets: [] as string[], columns: null, term: null, definition: null, example: null, steps: null, question: null, options: null, answerIndex: null, takeaways: null, speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: [] as string[] };
+
+/** A slides.v2 deck that uses every layout once. */
 export const slidesContent = {
   deckTitle: "Photosynthesis",
   slides: [
-    { layout: "title", title: "Photosynthesis", bullets: ["How plants make food"], speakerNotes: "Welcome.", imagePrompt: null, emoji: "x", objectiveCodes: ["O1"] },
-    { layout: "bullets", title: "What plants need", bullets: ["Sunlight", "Water"], speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: ["O1"] },
-    { layout: "twoColumn", title: "Two", bullets: ["a", "b", "c", "d"], speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: [] },
-    { layout: "definition", title: "Chlorophyll", bullets: ["Green part.", "More."], speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: [] },
-    { layout: "process", title: "Steps", bullets: ["One", "Two"], speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: [] },
-    { layout: "quizBreak", title: "Quick quiz", bullets: [], speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: [] },
-    { layout: "summary", title: "Remember", bullets: ["Light", "Water"], speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: [] },
+    { ...blankSlide, layout: "title", title: "Photosynthesis", subtitle: "How plants make food", question: "Where does a tree get its food?", speakerNotes: "Welcome.", emoji: "🌱", objectiveCodes: ["O1"] },
+    { ...blankSlide, layout: "bullets", title: "What plants need", keyIdea: "Plants need three things to make food", bullets: ["Sunlight", "Water"], emoji: "☀️", objectiveCodes: ["O1"] },
+    { ...blankSlide, layout: "twoColumn", title: "Two", keyIdea: "Both parts work together", columns: [{ heading: "Leaves", points: ["a", "b"] }, { heading: "Roots", points: ["c", "d"] }] },
+    { ...blankSlide, layout: "definition", title: "Chlorophyll", term: "Chlorophyll", definition: "Green part.", example: "More.", emoji: "🍃" },
+    { ...blankSlide, layout: "process", title: "Steps", steps: [{ title: "One", detail: "Light comes in" }, { title: "Two", detail: "Sugar is made" }] },
+    { ...blankSlide, layout: "quizBreak", title: "Quick quiz", question: "Which part catches light?", options: ["Leaf", "Root", "Stem"], answerIndex: 0, keyIdea: "Leaves hold the chlorophyll", emoji: "❓" },
+    { ...blankSlide, layout: "summary", title: "Remember", takeaways: ["Light", "Water", "Air"], question: "Name one thing a plant needs." },
   ],
 };
 

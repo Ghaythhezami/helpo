@@ -1,0 +1,90 @@
+/* v9 motion and polish. Loaded after v8. Every rule animates transform, opacity or stroke offset only; the last block turns it all off for prefers-reduced-motion. */
+
+/* ───────────── Spring easings (CSS linear(), sampled from a damped spring; see ux-upgrade-v7.md "v9") ───────────── */
+:root {
+  /* bounce 0.2, about 0.5 s: a firm settle with a hair of overshoot (press release, hover) */
+  --ease-spring-soft: linear(0, 0.081, 0.254, 0.446, 0.619, 0.757, 0.859, 0.929, 0.973, 0.998, 1.01, 1.015, 1.015, 1.013, 1.01, 1.007, 1.005, 1.003, 1.002, 1.001, 1, 1, 1, 1, 1, 1, 1);
+  /* bounce 0.45, about 0.7 s: playful, student wins only */
+  --ease-spring-pop: linear(0, 0.087, 0.287, 0.523, 0.742, 0.917, 1.036, 1.102, 1.126, 1.12, 1.097, 1.067, 1.039, 1.015, 0.998, 0.989, 0.984, 0.984, 0.987, 0.991, 0.994, 0.997, 1, 1.001, 1.002, 1.002, 1);
+}
+@keyframes v9-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ───────────── Primary actions: tactile press and a springy release ───────────── */
+.btn, .nav-item, .rbtn { transition-property: transform, box-shadow, background-color, color, filter; transition-duration: 0.45s, var(--dur-fast), var(--dur-fast), var(--dur-fast), var(--dur-fast); transition-timing-function: var(--ease-spring-soft), var(--ease-out), var(--ease-out), var(--ease-out), var(--ease-out); }
+.btn:active, .nav-item:active, .rbtn:active { transition-duration: var(--dur-press); transition-timing-function: var(--ease-out); }
+.btn:not(.sec):not(.ghost):not([aria-disabled="true"]):hover { filter: saturate(1.08) brightness(1.03); }
+
+/* ───────────── Top bar: depth, a sliding current pill, animated icons ───────────── */
+.app-head { background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.5) 70%, rgba(255, 255, 255, 0)); backdrop-filter: blur(10px) saturate(1.1); -webkit-backdrop-filter: blur(10px) saturate(1.1); }
+.nav-item { position: relative; isolation: isolate; }
+.nav-item[aria-current="page"] { background: transparent; box-shadow: none; }
+.nav-item:not([aria-current="page"]):hover { background: var(--soft); }
+.nav-pill { position: absolute; inset: 0; z-index: -1; border-radius: 999px; background: var(--grad); box-shadow: var(--btnsh, 0 8px 18px -8px rgba(91, 63, 217, 0.7)); }
+.nav-item .aicon { display: block; }
+.ri-ic { width: 22px; height: 22px; }
+@media (forced-colors: active) { .nav-pill { display: none; } }
+
+/* ───────────── Exits: dialogs, drawer, toast (160 ms, ease-in, faster than the entrance) ───────────── */
+@keyframes v9-ovl-out { to { opacity: 0; } }
+@keyframes v9-dlg-out { to { opacity: 0; transform: translateY(8px) scale(0.98); } }
+@keyframes v9-drawer-out { to { opacity: 0.4; transform: translateX(-28px); } }
+@keyframes v9-drawer-out-rtl { to { opacity: 0.4; transform: translateX(28px); } }
+.ovl.closing { animation: v9-ovl-out var(--dur-exit) var(--ease-in) forwards; pointer-events: none; }
+.ovl.closing .app-dlg { animation: v9-dlg-out var(--dur-exit) var(--ease-in) forwards; }
+.drawer-ovl.closing .app-dlg.drawer { animation: v9-drawer-out var(--dur-exit) var(--ease-in) forwards; }
+[dir="rtl"] .drawer-ovl.closing .app-dlg.drawer { animation-name: v9-drawer-out-rtl; }
+/* the toast is driven by motion (AnimatePresence): no CSS entrance or transition fighting it */
+.toast.mx, .toast.on.mx { animation: none; transition: none; opacity: 1; }
+
+/* ───────────── Generation view ───────────── */
+.gen-ovl { background: radial-gradient(70% 55% at 50% -5%, rgba(255, 216, 107, 0.22), transparent 70%), radial-gradient(120% 90% at 50% 0%, #ffffff 0%, var(--bg) 62%); }
+.gen-hero { filter: none; }
+.gen-hero::before { content: ""; position: absolute; inset: 8% 6% 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(96, 53, 207, 0.1), transparent); pointer-events: none; }
+.gen-hero svg { position: relative; }
+.gh-ground { fill: rgba(36, 24, 95, 0.16); }
+.gh-line-glow { fill: none; stroke: #ffd86b; stroke-width: 9; stroke-linecap: round; opacity: 0.22; }
+.gh-spark { fill: none; stroke: #fff; stroke-width: 4; stroke-linecap: round; opacity: 0.95; }
+.gh-ripple { fill: none; stroke: #f2b01e; stroke-width: 3; }
+.gh-node-shadow { fill: rgba(36, 24, 95, 0.16); }
+.gh-node.waiting .gh-ic { opacity: 0.65; }
+.gen-pct { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 1.9rem; }
+.gen-pct .ic { width: 1.5rem; height: 1.5rem; color: var(--ready); stroke-width: 3; animation: v9-pop 0.4s var(--ease-out) both; }
+@keyframes v9-pop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+.gen-now { min-height: 1.6em; margin: 0; max-width: 40ch; font-weight: 700; font-size: var(--fs-sm, 0.875rem); text-align: center; text-wrap: balance; }
+.gen-now span { display: inline-block; }
+.gen-step { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 8px 18px -16px rgba(36, 24, 95, 0.55); }
+.gen-step.working { box-shadow: 0 0 0 3px rgba(96, 53, 207, 0.12), 0 12px 24px -14px rgba(96, 53, 207, 0.55); }
+.gen-step.waiting .gs-ic { opacity: 0.75; }
+.gen-step .gs-ic .aicon, .gen-step .gs-ic .ic { width: 16px; height: 16px; display: block; }
+.gen-step.working .gs-ic .aicon { color: var(--pri); }
+.gen-step.done .gs-ic { animation: none; }
+@media (max-height: 700px) { .gen-now { display: none; } }
+@media (max-width: 859px) { .gen-now { font-size: 0.8125rem; } }
+
+/* ───────────── Games: calm feedback ───────────── */
+/* A miss is a soft amber halo that fades; nothing moves sideways, nothing turns red, no shame cue. */
+@keyframes v9-soft-miss { 0% { box-shadow: 0 0 0 0 rgba(253, 228, 163, 0); } 25% { box-shadow: 0 0 0 7px rgba(253, 228, 163, 0.95); } 100% { box-shadow: 0 0 0 0 rgba(253, 228, 163, 0); } }
+.sapp .tile.shake, .sapp .slot.shake { animation: v9-soft-miss 0.7s var(--ease-out) both; }
+@keyframes v9-match { 0% { transform: scale(0.97); } 55% { transform: scale(1.025); } 100% { transform: none; } }
+.sapp .tile.matched { animation: v9-match 0.5s var(--ease-spring-soft) both; }
+.sapp .slot.good { animation: v9-match 0.5s var(--ease-spring-soft) both; }
+.msg-in { display: inline-block; animation: v9-rise var(--dur-base) var(--ease-out) both; }
+
+/* ───────────── Win card: a bloom, then stars, then XP ───────────── */
+@keyframes v9-bloom { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); } 35% { opacity: 0.95; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.7); } }
+.win-bloom { position: absolute; left: 50%; top: 24%; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 216, 107, 0.85), rgba(255, 216, 107, 0)); pointer-events: none; opacity: 0; animation: v9-bloom 1.4s var(--ease-out) 0.15s both; }
+@keyframes v9-starglow { 0% { opacity: 0; transform: scale(0.4); } 40% { opacity: 1; } 100% { opacity: 0; transform: scale(1.5); } }
+.stars .star-earned { position: relative; }
+.stars .star-earned::after { content: ""; position: absolute; inset: -10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 200, 61, 0.65), transparent); opacity: 0; pointer-events: none; animation: v9-starglow 0.9s var(--ease-out) both; }
+.stars .star-earned:nth-child(1)::after { animation-delay: 0.52s; }
+.stars .star-earned:nth-child(2)::after { animation-delay: 0.74s; }
+.stars .star-earned:nth-child(3)::after { animation-delay: 0.96s; }
+
+/* ───────────── Reduced motion: movement becomes instant or opacity-only ───────────── */
+@media (prefers-reduced-motion: reduce) {
+  .btn, .nav-item, .rbtn { transition-duration: 0s; }
+  .ovl.closing, .ovl.closing .app-dlg, .drawer-ovl.closing .app-dlg.drawer { animation-duration: 1ms; }
+  .gen-pct .ic, .msg-in, .win-bloom, .stars .star-earned::after, .sapp .tile.matched, .sapp .slot.good { animation: none; }
+  .win-bloom, .stars .star-earned::after { display: none; }
+  .sapp .tile.shake, .sapp .slot.shake { animation: none; box-shadow: 0 0 0 4px rgba(253, 228, 163, 0.95); }
+}

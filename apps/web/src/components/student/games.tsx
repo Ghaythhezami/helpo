@@ -89,7 +89,7 @@ export function MatchGame({ content, seed, explorer, sound, onFinish, busy }: Ga
             </ul>
           </div>
         </div>
-        <p className="msg" role="status" aria-live="polite">{matchText(state.message, t)}</p>
+        <p className="msg" role="status" aria-live="polite"><span key={String(matchText(state.message, t))} className="msg-in">{matchText(state.message, t)}</span></p>
         <Tools explorer={explorer} onHint={() => dispatch({ type: "hint" })} />
         {state.roundDone && !state.finished && <DoneBox text={t("game.round.complete", { n: state.round + 1 })} cta={t("game.round.next", { n: state.round + 2 })} onClick={() => dispatch({ type: "nextRound" })} />}
         {state.finished && <DoneBox text={t("game.match.all", { n: state.pairs.length })} cta={t("game.results")} busy={busy} onClick={() => onFinish(matchResult(state))} />}
@@ -152,7 +152,7 @@ export function MemoryGame({ content, seed, explorer, sound, onFinish, busy }: G
             );
           })}
         </ul>
-        <p className="msg" role="status" aria-live="polite">{announce}</p>
+        <p className="msg" role="status" aria-live="polite"><span key={String(announce)} className="msg-in">{announce}</span></p>
         <Tools explorer={explorer} onHint={() => dispatch({ type: "hint" })} />
         {state.finished && <DoneBox text={t("game.memory.finished")} cta={t("game.results")} busy={busy} onClick={() => onFinish(memoryResult(state))} />}
       </div>
@@ -183,7 +183,7 @@ export function SortGame({ content, seed, explorer, sound, onFinish, busy }: Gam
   useBeep(sound, placed, 560);
 
   // Keyboard: with an item selected, 1 / 2 or the arrow keys (as drawn on screen) drop it in a basket.
-  const onKeyDown = (e: KeyboardEvent) => {
+  const onKeyDown = (e: { key: string; preventDefault(): void }) => {
     if (state.selected === null || state.finished) return;
     const rtl = dir === "rtl";
     const key: Record<string, Basket> = { "1": "yes", "2": "no", ArrowLeft: rtl ? "no" : "yes", ArrowRight: rtl ? "yes" : "no" };
@@ -192,6 +192,19 @@ export function SortGame({ content, seed, explorer, sound, onFinish, busy }: Gam
     e.preventDefault();
     place(basket);
   };
+  // Delegated keyboard handling: key presses come from the focused item buttons inside the board.
+  const boardRef = useRef<HTMLDivElement>(null);
+  const keyHandler = useRef(onKeyDown);
+  useEffect(() => {
+    keyHandler.current = onKeyDown;
+  });
+  useEffect(() => {
+    const board = boardRef.current;
+    if (!board) return;
+    const listener = (e: globalThis.KeyboardEvent) => keyHandler.current(e);
+    board.addEventListener("keydown", listener);
+    return () => board.removeEventListener("keydown", listener);
+  }, []);
 
   const dragged = dnd.drag ? state.items[dnd.drag.item] : null;
 
@@ -201,7 +214,7 @@ export function SortGame({ content, seed, explorer, sound, onFinish, busy }: Gam
         <div className="progress"><span>{t("game.sort.progress", { done, total })}</span></div>
         <PointChips xp={state.xp} result={sortResult(state)} explorer={explorer} />
       </div>
-      <div className="board" onKeyDown={onKeyDown}>
+      <div className="board" ref={boardRef}>
         <p className="muted" style={{ textAlign: "center", marginBottom: 12 }}>{t("game.sort.how")}</p>
         <ul className="bank" aria-label={t("game.sort.bank")}>
           {bank.map((i) => (
@@ -240,7 +253,7 @@ export function SortGame({ content, seed, explorer, sound, onFinish, busy }: Gam
             </motion.div>
           ))}
         </div>
-        <p className="msg" role="status" aria-live="polite">{localSort(state.message, baskets, t)}</p>
+        <p className="msg" role="status" aria-live="polite"><span key={String(localSort(state.message, baskets, t))} className="msg-in">{localSort(state.message, baskets, t)}</span></p>
         <Tools explorer={explorer} onHint={() => dispatch({ type: "hint" })} />
         {state.finished && <DoneBox text={t("game.sort.all", { n: total })} cta={t("game.results")} busy={busy} onClick={() => onFinish(sortResult(state))} />}
       </div>
@@ -412,7 +425,7 @@ export function EquationGame({ content, seed, explorer, sound, onFinish, busy }:
             />
           ))}
         </ul>
-        <p className="msg" role="status" aria-live="polite">{shown}</p>
+        <p className="msg" role="status" aria-live="polite"><span key={String(shown)} className="msg-in">{shown}</span></p>
         <div className="toolrow">
           <Button disabled={state.done} onClick={() => { setHeld(null); dispatch({ type: "check" }); }}><Check className="ic" aria-hidden="true" />{t("game.eq.check")}</Button>
           <Button variant="secondary" onClick={() => { setHeld(null); dispatch({ type: "reset" }); }}><ResetIcon />{t("game.eq.reset")}</Button>
@@ -498,7 +511,7 @@ export function OddOneOutGame({ content, seed, explorer, sound, onFinish, busy }
             );
           })}
         </ul>
-        <p className="msg" role="status" aria-live="polite">{oddText(state.message, round.items[round.odd], state.rounds.length, t)}</p>
+        <p className="msg" role="status" aria-live="polite"><span key={String(oddText(state.message, round.items[round.odd], state.rounds.length, t))} className="msg-in">{oddText(state.message, round.items[round.odd], state.rounds.length, t)}</span></p>
         {state.roundDone && (
           <div className="oddwhy">
             <b>{t("game.odd.why")}</b>

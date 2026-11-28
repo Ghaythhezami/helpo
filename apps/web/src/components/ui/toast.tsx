@@ -1,5 +1,7 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { DUR, EASE, IS_TEST } from "@/lib/motion";
 
 export interface ToastOptions {
   /** Shows an Undo button that runs this callback. */
@@ -31,6 +33,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [toast, setToast] = useState<ToastState | null>(null);
   const counter = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reduce = useReducedMotion();
+  const still = reduce || IS_TEST;
 
   const dismiss = useCallback(() => {
     if (timer.current) clearTimeout(timer.current);
@@ -60,8 +64,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={api}>
       {children}
       <div className="toast-region" role="status" aria-live="polite" aria-atomic="true">
-        {toast && (
-          <div className="toast on" key={toast.id}>
+        <AnimatePresence initial={false} mode="wait">
+          {toast && (
+          <motion.div
+            className="toast on mx"
+            key={toast.id}
+            style={{ x: "-50%" }}
+            initial={still ? false : { opacity: 0, y: 16, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={still ? undefined : { opacity: 0, y: 8, scale: 0.98, transition: { duration: DUR.exit, ease: EASE.in } }}
+            transition={{ duration: DUR.slow, ease: EASE.out }}
+          >
             <span>{toast.message}</span>
             {toast.undo && (
               <button
@@ -75,8 +88,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 <span className="sr"> {toast.message}</span>
               </button>
             )}
-          </div>
-        )}
+          </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );

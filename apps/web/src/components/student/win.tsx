@@ -9,7 +9,16 @@ import { ButtonLink } from "@/components/ui/button";
 import { Illus } from "@/components/ui/illus";
 import { Progress } from "@/components/ui/progress";
 import { Confetti, CountUp, Skeleton } from "@/components/ui/motion";
-import { SPRING } from "@/lib/motion";
+import { EASE, SPRING } from "@/lib/motion";
+
+/** Win choreography: mascot, title, stars, XP and the rest rise one after another (opacity only under reduced motion, nothing in tests). */
+function rise(delay: number, reduce: boolean | null) {
+  return {
+    initial: reduce ? false : { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.36, ease: EASE.out, delay },
+  } as const;
+}
 
 export function WinView() {
   const { t } = useI18n();
@@ -44,20 +53,28 @@ export function WinView() {
   return (
     <div className="winw">
       <div className="wincard">
-        {result.stars >= 1 && <Confetti />}
+        {result.stars >= 1 && <span className="win-bloom" aria-hidden="true" />}
+        {result.stars >= 1 && <Confetti pieces={12 + result.stars * 6} />}
         <Illus name="star-buddy" size={110} className="mascot" />
-        <h1>{t("win.title")}</h1>
-        <p className="muted" style={{ position: "relative" }}>{t(`game.${game}` as "game.MATCH")}</p>
+        <motion.h1 {...rise(0.12, reduce)}>{t("win.title")}</motion.h1>
+        <motion.p className="muted" style={{ position: "relative" }} {...rise(0.2, reduce)}>{t(`game.${game}` as "game.MATCH")}</motion.p>
         <div className="stars" role="img" aria-label={t("win.stars", { n: result.stars })}>
           {[1, 2, 3].map((n) => (
-            <motion.span key={n} initial={reduce ? false : { scale: 0.4, opacity: 0, rotate: -18 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} transition={reduce ? { duration: 0.1 } : { ...SPRING.playful, delay: 0.25 + 0.22 * n }} style={{ display: "inline-flex" }}>
+            <motion.span
+              key={n}
+              className={n <= result.stars ? "star-earned" : "star-open"}
+              initial={reduce ? false : n <= result.stars ? { scale: 0.4, opacity: 0, rotate: -18 } : { opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              transition={reduce ? { duration: 0.1 } : n <= result.stars ? { ...SPRING.playful, delay: 0.3 + 0.22 * n } : { duration: 0.3, delay: 0.3 + 0.22 * n }}
+              style={{ display: "inline-flex" }}
+            >
               <Star className="ic fill" aria-hidden="true" style={n <= result.stars ? { color: "#FFC83D", stroke: "#E8A100" } : { color: "#E4DAFF", stroke: "#C3B5F2" }} />
             </motion.span>
           ))}
         </div>
-        <p className="xpbig2"><CountUp value={result.xp} duration={0.9} format={(n) => `+${Math.round(n)} XP`} /></p>
-        {typeof result.points === "number" && <p className="ptsbig">{t("win.points", { points: result.points })}</p>}
-        {result.personalBest && <span className="st ready" style={{ position: "relative" }}>{t("win.best")}</span>}
+        <motion.p className="xpbig2" {...rise(0.3 + 0.22 * 3 + 0.1, reduce)}><CountUp value={result.xp} duration={0.9} delay={0.3 + 0.22 * 3 + 0.1} format={(n) => `+${Math.round(n)} XP`} /></motion.p>
+        {typeof result.points === "number" && <motion.p className="ptsbig" {...rise(1.2, reduce)}>{t("win.points", { points: result.points })}</motion.p>}
+        {result.personalBest && <motion.span className="st ready" style={{ position: "relative" }} {...rise(1.3, reduce)}>{t("win.best")}</motion.span>}
         <div className="winbar" hidden>
           <div className="l">
             <span><bdi dir="ltr">XP {before} → {result.xpIntoLevel}</bdi></span>

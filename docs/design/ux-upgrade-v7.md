@@ -133,3 +133,54 @@ All new motion animates `transform`, `opacity` or SVG stroke offset. Decorative 
 - The 21st catalogue and lucide-animated icons were not used.
 - Live-points counter in the games assumes a weight of 100; the server value (`GameResultView.points`, `StudentGame.pointsWeight`) is what the result screen shows.
 - Cross-device lock relies on the lessons list (a lesson still being made and created within 30 minutes); a lesson waiting at ANALYZED is not re-locked on its own.
+
+
+---
+
+## v9 motion and polish (2026-11-27)
+
+Brief: a tool-driven pass. The v8 pass applied the rules by hand; this one ran the skills and MCP servers and records what each produced.
+
+### Tool evidence
+
+| Tool | What was run | Outcome |
+|---|---|---|
+| `impeccable` (critique, before) | Read the critique playbook, ran `detect.mjs` on the owned files (0 findings), design review of the before frames in `apps/web/qa/motion-v9/before/`. The two-assessment sub-agent split was not used (degraded single-context run: this session was itself a sub-agent). | The lamp hero was flat (one glow, straight lines, no depth). Step icons were generic Lucide and static. The status circle and the mascot art doubled each other in every row. There was no completion moment (the view only faded). Dialogs, drawer and toast had no exits. The nav current item was a static fill. A miss in the games still used a sideways shake. The win card had one confetti and no sequence. |
+| `taste` | Direction. | Three words: calm, precise, alive. One signature move: the line of light from the lamp. Subtraction first (the duplicated per-row status line became one rotating line). Wins are the only place that may be playful; the wrong-answer cue is a soft amber halo. |
+| `emil-motion` | Purpose, duration, easing, origin, interruptibility. | 160 ms exits (ease-in), 300 ms entrances (ease-out), press 90 ms. Route move is origin-aware (end edge going deeper, start edge going back, mirrored in RTL). Springs only where interruptible (the nav pill, the lamp glow). The primary task (editor, quiz question) never moves. |
+| `motion` | Motion for React patterns, CSS `linear()` springs. | `AnimatePresence` for the toast (`mode="wait"`) and the rotating status line; `pathLength` and `strokeDashoffset` for the lines of light; `layoutId` for the nav pill. The skill's `generate-css-easing` tool is not exposed in this environment, so `--ease-spring-soft` and `--ease-spring-pop` were sampled from a damped spring with a small script (27 points each). |
+| MCP `lucide-animated` | `search_icons` for presentation, file, list, game, layers, check, sparkles, users, plus, shield, book; `get_icon` for layers; the registry JSON of layers, check, file-text, users, plus, shield-check and sparkles was read to take their animation (it needs only `motion`). | Found: sparkles, file-text, layers, check, users, plus, shield-check. Not in the library: presentation, gamepad, list-checks, book-open (it has chess pieces, book-text and bookmarks). `npx shadcn add` was not run (it could touch `package.json`). The icons are one local component, `components/ui/animated-icons.tsx`: the registry paths and variants as data, and the four missing icons animated in the same style from the Lucide path data. Used for the six generation steps and the nav. |
+| MCP `21st` | `get_inspiration` ("AI generation progress stepper, completion celebration") and `search` ("multi-step loader progress"). | Metadata only, no paid code fetched. Ideas adopted and adapted to our primitives: the spring progress line with a traveling dot (our line of light with a spark), icon-to-check morph and a pulsing active badge (our check that draws once, the ripple), a rotating status line (our cross-fading real status text). Nothing pasted. |
+| MCP `motion` | `search-motion-docs` for AnimatePresence exit and SVG path drawing. | The AnimatePresence docs and the "Exit animation" and "AnimatePresence modes" examples (MotionScore S) were used. The path-drawing query matched nothing; `pathLength` is documented on the motion component and was used as is. The MotionScore audit needs Motion+, which is not authorised here. |
+| UX KB (`kbq rules`) | "loading progress", "motion animation", "celebration children", "wrong answer feedback". | One continuous bar for a multi-step job, determinate progress, never a loop that implies false progress. Motion only when purposeful, compositor properties only, exits faster than entrances, reduced motion removes parallax and large moves and keeps opacity. Calm, non-blocking feedback at the point of action. |
+| `impeccable` (final gate) | `detect.mjs` on the changed files and CSS, then a review of the after frames. | See "Final gate" below. |
+
+### What changed
+
+| Area | Change |
+|---|---|
+| Generation hero | Four layers: a halo that scales with the real percent, a light cone that breathes, the lamp with a ground shadow, and the nodes. A line of light is drawn to each resource (`pathLength` with a soft glow underneath; a spark travels along it only while that resource works). Each node holds its own animated icon (looping while working), a ring with the live percent, and a ripple when done. |
+| Completion | The nodes pop in a 90 ms stagger, one light bloom opens from the lamp, the percent turns into a check, then the whole view eases out (scale 1.025, 320 ms) and the workspace is revealed. A timer backs the exit up, because animations do not complete in a hidden tab. Reduced motion: a 500 ms hold and no bloom. |
+| Status | One rotating, real status line (the existing `gen.doing.*` keys) cross-fades every 3.2 s with `AnimatePresence`. The polite live region still carries only the honest state. Rows rise in a short stagger. |
+| Step rows | The status circle shows the resource's own animated icon: it loops while working, the check draws once when done, and a still dimmed icon shows while waiting. |
+| Top bar | A frosted bar that fades out at its lower edge (no hard line). One shared pill slides to the current item (`layoutId`). Icons play once on hover and focus (New lesson plus, My lessons book, Classes users, Admin shield). |
+| Route transitions | The stage enters from the end edge going deeper and from the start edge going back (18 px plus fade, mirrored in RTL). Never on the first paint. A plain fade under reduced motion. |
+| Exits | Dialog and drawer play a 160 ms exit (class `closing`, then `onClose`); Esc, the backdrop and the close button share it. The toast leaves through `AnimatePresence`. Reduced motion and tests close at once. |
+| Buttons | Press 90 ms, a firm `linear()` spring on release, and primary hover adds a touch of saturation. |
+| Win card | A gold bloom, confetti scaled to the stars (18, 24 or 30 pieces, once), mascot then title then stars in a stagger, a glow on each earned star only, and `+XP` counting up after the last star. Wins only: no stars, no celebration. |
+| Games | A wrong answer is a soft amber halo that fades (no shake, no red, no shame cue). A correct match settles with a tiny spring. The feedback line rises in. |
+
+### Verification
+
+Numbers are in the final report of this pass. Frames: `apps/web/qa/motion-v9/before/` and `after/` (EN and AR, 1280x720, produced by `qa/motion-v9/capture.mjs`).
+
+### Final gate
+
+- `detect.mjs`: no findings on the TypeScript files. The CSS reported "bounce easing" for the two spring tokens. They stay on purpose: `--ease-spring-soft` overshoots about 1.5 percent (imperceptible; press release and a match settling) and `--ease-spring-pop` about 12 percent and is used only on the student win card (the `playful` spring in the design system). The teacher-side check pop uses plain ease-out.
+- Review: hierarchy, spacing rhythm and depth on the top bar and the generation view; AA contrast kept (the pill is the existing gradient behind white text); visible focus unchanged; RTL mirrored; no layout property animated (a test parses every `@keyframes`).
+
+### Not done or not verified
+
+- Route exits: the App Router unmounts the old page at once, so only the entrance is spatial. A real cross-fade needs the View Transitions API through the Next router (the `viewTransition` flag in `next.config.ts`, outside this pass).
+- The MotionScore audit still needs Motion+.
+- The slide previews and the item editor belong to the slides pass and were not touched.

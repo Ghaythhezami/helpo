@@ -1,6 +1,7 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { motion, useReducedMotion } from "motion/react";
 import { LogOut, Menu } from "lucide-react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -14,6 +15,7 @@ import { LanguageSwitch } from "@/components/ui/language-switch";
 import { Logo } from "@/components/ui/logo";
 import { ToastProvider } from "@/components/ui/toast";
 import { useMedia } from "@/lib/use-media";
+import { EASE, IS_TEST } from "@/lib/motion";
 import { ClassManager } from "./class-manager";
 import { LessonsDialog } from "./lessons-dialog";
 import { TopNavItems } from "./top-nav";
@@ -39,8 +41,9 @@ export function TeacherShell({ children }: { children: ReactNode }) {
 }
 
 function ShellInner({ children }: { children: ReactNode }) {
-  const { t } = useI18n();
+  const { t, dir } = useI18n();
   const pathname = usePathname();
+  const reduce = useReducedMotion();
   const router = useRouter();
   const queryClient = useQueryClient();
   const me = useMe();
@@ -56,6 +59,13 @@ function ShellInner({ children }: { children: ReactNode }) {
   const desktop = useMedia("(min-width: 1024px)");
   const menuButton = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Spatial route transition: going deeper (Create to a lesson) enters from the end edge, going back enters from the start edge.
+  // The very first paint never animates (no flash on load); reduced motion is a plain fade.
+  const depth = pathname.split("/").filter(Boolean).length;
+  const [route, setRoute] = useState({ path: pathname, depth, moved: false, forward: true });
+  if (route.path !== pathname) setRoute({ path: pathname, depth, moved: true, forward: depth >= route.depth });
+  const routeFrom = !route.moved || IS_TEST ? false : { opacity: 0, x: reduce ? 0 : (route.forward ? 1 : -1) * (dir === "rtl" ? -1 : 1) * 18 };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync from localStorage after mount
@@ -170,9 +180,9 @@ function ShellInner({ children }: { children: ReactNode }) {
       <ToastProvider>
         <SelectionContext.Provider value={selection}>
           <div className="app-body">
-            <main id="main" tabIndex={-1} className={`app-stage ${revealing ? "gen-reveal" : ""}`}>
+            <motion.main key={pathname} id="main" tabIndex={-1} className={`app-stage ${revealing ? "gen-reveal" : ""}`} initial={routeFrom} animate={{ opacity: 1, x: 0 }} transition={{ duration: reduce ? 0.12 : 0.3, ease: EASE.out }}>
               {children}
-            </main>
+            </motion.main>
           </div>
           {drawer && !desktop && (
             <Dialog title={t("menu.label")} onClose={() => setDrawer(false)} drawer>

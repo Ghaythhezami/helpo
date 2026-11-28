@@ -53,15 +53,43 @@ export type Blueprint = z.infer<typeof BlueprintSchema>;
 export const LessonBlueprintSchema = BlueprintSchema;
 export type LessonBlueprint = Blueprint;
 
-/** 7.3 Presentation: 8–14 slides, fixed layouts; the AI picks the layout, never positions pixels. */
+/**
+ * 7.3 Presentation (slides.v2): 8 to 14 slides, fixed layouts; the AI picks the layout, never positions pixels.
+ * Every field is present-or-null (structured outputs). Which fields a layout uses:
+ *  - title:      title, subtitle, question (the hook), emoji
+ *  - bullets:    title, keyIdea, bullets (at most 5)
+ *  - twoColumn:  title, keyIdea, columns (exactly 2)
+ *  - definition: term, definition, example (title is the term)
+ *  - process:    title, steps (2 to 6)
+ *  - quizBreak:  title, question, options (3 or 4), answerIndex (shown only on reveal), keyIdea (why, shown on reveal)
+ *  - summary:    title, takeaways (3), question (the exit ticket)
+ * Slides stored before v2 only have the v1 fields: use `migrateSlides` when reading.
+ */
 export const SlideLayout = z.enum(["title", "bullets", "twoColumn", "definition", "process", "quizBreak", "summary"]);
 export const SlideSchema = z.object({
   layout: SlideLayout,
   title: z.string(),
-  bullets: z.array(z.string()).describe("At most 5 bullets, at most 14 words each"),
-  speakerNotes: z.string(),
+  subtitle: z.string().nullable().describe("title layout: one short line such as the grade and topic; else null"),
+  keyIdea: z.string().nullable().describe("One bold line (at most 14 words) that carries the slide's main idea; on quizBreak it is the explanation shown after the reveal"),
+  bullets: z.array(z.string()).describe("bullets layout: at most 5 bullets of at most 12 words each; other layouts: an empty array"),
+  columns: z
+    .array(z.object({ heading: z.string(), points: z.array(z.string()).describe("2 to 4 short points") }))
+    .nullable()
+    .describe("twoColumn layout only: exactly 2 columns (compare and contrast); else null"),
+  term: z.string().nullable().describe("definition layout only: the vocabulary word"),
+  definition: z.string().nullable().describe("definition layout only: a plain-language meaning, at most 20 words"),
+  example: z.string().nullable().describe("definition layout only: one concrete everyday example"),
+  steps: z
+    .array(z.object({ title: z.string().describe("At most 5 words"), detail: z.string().describe("At most 14 words") }))
+    .nullable()
+    .describe("process layout only: 2 to 6 ordered steps; else null"),
+  question: z.string().nullable().describe("title: the hook question; quizBreak: the check question; summary: the exit-ticket question; else null"),
+  options: z.array(z.string()).nullable().describe("quizBreak only: 3 or 4 answer options; else null"),
+  answerIndex: z.number().int().nullable().describe("quizBreak only: zero-based index of the correct option; else null"),
+  takeaways: z.array(z.string()).nullable().describe("summary only: exactly 3 key takeaways of at most 14 words; else null"),
+  speakerNotes: z.string().describe("For the teacher: what to say, one question to ask, and one likely misconception to watch for"),
   imagePrompt: z.string().nullable().describe("Optional idea for an illustration; icons/emoji are used for now"),
-  emoji: z.string().nullable(),
+  emoji: z.string().nullable().describe("One emoji that fits the slide"),
   objectiveCodes: z.array(z.string()),
 });
 export const SlidesContentSchema = z.object({ deckTitle: z.string(), slides: z.array(SlideSchema) });

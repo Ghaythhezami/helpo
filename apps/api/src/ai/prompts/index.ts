@@ -2,7 +2,7 @@ import type { ResourceKind } from "@helpo/shared";
 import * as cards from "./cards.v1";
 import * as game from "./game.v2";
 import * as quiz from "./quiz.v1";
-import * as slides from "./slides.v1";
+import * as slides from "./slides.v2";
 import * as worksheet from "./worksheet.v1";
 
 export { cards, game, quiz, slides, worksheet };

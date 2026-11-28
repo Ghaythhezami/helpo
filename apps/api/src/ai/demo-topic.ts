@@ -136,8 +136,8 @@ export function promptConcepts(prompt: string | null | undefined): string[] {
   const m = (prompt ?? "").match(/key\s+(?:concepts?|ideas?|terms?|words?)\s*:\s*([^.\n]+)/i);
   if (!m) return [];
   return m[1]
-    .split(/\s*(?:,|;|\band\b)\s*/i)
-    .map((c) => c.replace(/^(?:the|a|an)\s+/i, "").trim())
+    .split(/[,;]|\band\b/i)
+    .map((c) => c.trim().replace(/^(?:the|a|an)\s+/i, "").trim())
     .filter((c) => c.length >= 3 && c.length <= 40)
     .map((c) => c[0].toUpperCase() + c.slice(1))
     .slice(0, 10);

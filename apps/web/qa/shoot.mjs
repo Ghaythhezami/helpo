@@ -10,12 +10,16 @@ fs.mkdirSync(OUT, { recursive: true });
 fs.mkdirSync(OUT.replace("out/", "mobile/"), { recursive: true });
 
 const now = new Date().toISOString();
+// slides.v2 deck (all seven layouts); qa/slides-v9/deck.json holds the full demo deck used by slides-shots.mjs
+const sl = (layout, title, extra = {}) => ({ layout, title, subtitle: null, keyIdea: null, bullets: [], columns: null, term: null, definition: null, example: null, steps: null, question: null, options: null, answerIndex: null, takeaways: null, speakerNotes: "Say it, then ask the class one question.", imagePrompt: null, emoji: null, objectiveCodes: ["O1"], ...extra });
 const slides = { deckTitle: "Photosynthesis", slides: [
-  { layout: "title", title: "Photosynthesis", bullets: ["How plants make their own food"], speakerNotes: "Welcome the class.", imagePrompt: null, emoji: "🌱", objectiveCodes: ["O1"] },
-  { layout: "bullets", title: "What plants need", bullets: ["Sunlight", "Water", "Carbon dioxide"], speakerNotes: "Ask what plants eat.", imagePrompt: null, emoji: "☀️", objectiveCodes: ["O1"] },
-  { layout: "process", title: "The steps", bullets: ["Roots take in water", "Leaves catch light", "Sugar is made"], speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: ["O2"] },
-  { layout: "definition", title: "Chlorophyll", bullets: ["The green part of the leaf that catches sunlight."], speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: ["O2"] },
-  { layout: "summary", title: "Remember", bullets: ["Plants make food", "They need light"], speakerNotes: "", imagePrompt: null, emoji: null, objectiveCodes: ["O1"] },
+  sl("title", "Photosynthesis", { subtitle: "Grade 6 science", question: "How do plants make their own food?", emoji: "🌱" }),
+  sl("bullets", "What plants need", { keyIdea: "Plants need three things.", bullets: ["Sunlight", "Water", "Carbon dioxide"], emoji: "☀️" }),
+  sl("process", "The steps", { steps: [{ title: "Roots", detail: "Take in water" }, { title: "Leaves", detail: "Catch light" }, { title: "Sugar", detail: "Is made" }], emoji: "🔁" }),
+  sl("definition", "Chlorophyll", { term: "Chlorophyll", definition: "The green part of the leaf that catches sunlight.", example: "It is why leaves look green." }),
+  sl("twoColumn", "In and out", { columns: [{ heading: "Takes in", points: ["Water", "Carbon dioxide"] }, { heading: "Makes", points: ["Glucose", "Oxygen"] }] }),
+  sl("quizBreak", "Think", { question: "What do plants make?", options: ["Sugar", "Soil", "Rain"], answerIndex: 0, keyIdea: "Plants make sugar.", emoji: "❓" }),
+  sl("summary", "Remember", { takeaways: ["Plants make food", "They need light", "They give out oxygen"], question: "What is photosynthesis?" }),
 ] };
 const worksheet = { title: "Photosynthesis worksheet", instructions: "Answer each question.", totalPoints: 12, sections: [
   { type: "mcq", heading: "Choose the answer", level: "core", objectiveCode: "O1", items: [{ prompt: "What do plants need to make food?", options: ["Light", "Candy", "Plastic"], answer: "Light", points: 2 }] },
@@ -157,7 +161,7 @@ const screens = {
   joincode: async (p) => { await p.goto(`${BASE}/join?code=395550`); await p.waitForSelector(".code-chip"); await p.fill("#join-name", "Sara A."); },
   joinnocode: async (p) => { await p.goto(`${BASE}/join`); await p.waitForSelector("#join-code"); },
   create: async (p) => { await p.goto(`${BASE}/app`); await p.waitForSelector(".create", { timeout: 20000 }); await p.waitForSelector(".prev-strip"); },
-  workspace: async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-center .sl, .ws-center .doc", { timeout: 20000 }); },
+  workspace: async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-center .nsl, .ws-center .doc", { timeout: 20000 }); },
   "ws-quiz": async (p) => { await p.goto(`${BASE}/app/lessons/l1?tab=quiz`); await p.waitForSelector(".ws-head"); await p.getByRole("tab").nth(2).click(); await p.waitForSelector(".ws-center .doc"); },
   "ws-game": async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head"); await p.getByRole("tab").nth(3).click(); await p.waitForSelector(".mg"); },
   "ws-cards": async (p) => { await p.goto(`${BASE}/app/lessons/l1`); await p.waitForSelector(".ws-head"); await p.getByRole("tab").nth(4).click(); await p.waitForSelector(".cdk"); },

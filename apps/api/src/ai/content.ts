@@ -42,19 +42,12 @@ export function worksheetItems(w: WorksheetContent) {
 }
 
 /** Business rules the structured-output subset cannot express. Returns problems; empty means fine. */
-export function contentProblems(kind: ResourceKind, content: ResourceContent, opts: { quizCount?: number } = {}): string[] {
+export function contentProblems(kind: ResourceKind, content: ResourceContent, opts: { quizCount?: number; objectiveCodes?: string[] } = {}): string[] {
   const out: string[] = [];
   switch (kind) {
-    case "SLIDES": {
-      const s = (content as SlidesContent).slides;
-      if (s.length < LIMITS.slides.min || s.length > LIMITS.slides.max) out.push(`Expected ${LIMITS.slides.min} to ${LIMITS.slides.max} slides, got ${s.length}.`);
-      s.forEach((x, i) => {
-        if (!x.title.trim()) out.push(`Slide ${i + 1} has no title.`);
-        if (x.bullets.length > LIMITS.slides.bullets) out.push(`Slide ${i + 1} has more than ${LIMITS.slides.bullets} bullets.`);
-        if (x.bullets.some((b) => words(b) > LIMITS.slides.bulletWords + 6)) out.push(`Slide ${i + 1} has a bullet that is too long.`);
-      });
+    case "SLIDES":
+      out.push(...slidesProblems(content as SlidesContent, opts.objectiveCodes));
       break;
-    }
     case "WORKSHEET": {
       const w = content as WorksheetContent;
       const items = worksheetItems(w);
@@ -108,6 +101,77 @@ export function contentProblems(kind: ResourceKind, content: ResourceContent, op
       break;
     }
   }
+  return out;
+}
+
+/** Words allowed in a bullet: the prompted limit plus a little slack (the prompt asks for the exact limit). */
+const BULLET_SLACK = 2;
+
+/**
+ * Slides rules (slides.v2): 8 to 14 slides, a title first and a summary last, at least one quizBreak, no repeated
+ * bullets, short bullets, known objective codes, and the fields each layout needs. `objectiveCodes` is optional
+ * (a lesson without objectives skips that check).
+ */
+export function slidesProblems(deck: SlidesContent, objectiveCodes?: string[]): string[] {
+  const out: string[] = [];
+  const s = deck.slides;
+  const L = LIMITS.slides;
+  if (s.length < L.min || s.length > L.max) out.push(`Expected ${L.min} to ${L.max} slides, got ${s.length}.`);
+  if (s.length && s[0].layout !== "title") out.push("The first slide must use the title layout.");
+  if (s.length && s[s.length - 1].layout !== "summary") out.push("The last slide must use the summary layout.");
+  if (!s.some((x) => x.layout === "quizBreak")) out.push("Add at least one quizBreak slide (a check for understanding).");
+  const known = objectiveCodes?.length ? new Set(objectiveCodes) : null;
+  const seen = new Map<string, number>();
+  const tooLong = (t: string) => words(t) > L.bulletWords + BULLET_SLACK;
+  s.forEach((x, i) => {
+    const n = `Slide ${i + 1}`;
+    if (!x.title.trim()) out.push(`${n} has no title.`);
+    if (x.bullets.length > L.bullets) out.push(`${n} has more than ${L.bullets} bullets.`);
+    if (x.bullets.some(tooLong)) out.push(`${n} has a bullet longer than ${L.bulletWords} words.`);
+    if (x.keyIdea && words(x.keyIdea) > L.bulletWords + 6) out.push(`${n} keyIdea is too long.`);
+    if (x.takeaways?.some((t) => words(t) > L.bulletWords + 6)) out.push(`${n} has a takeaway that is too long.`);
+    for (const b of x.bullets) {
+      const k = normalizeText(b);
+      if (!k) out.push(`${n} has an empty bullet.`);
+      else if (seen.has(k)) out.push(`${n} repeats a bullet from slide ${(seen.get(k) ?? 0) + 1}: "${b.trim().slice(0, 40)}".`);
+      else seen.set(k, i);
+    }
+    if (known) {
+      const bad = x.objectiveCodes.filter((c) => !known.has(c));
+      if (bad.length) out.push(`${n} lists unknown objective codes: ${bad.join(", ")}. Use only ${[...known].join(", ")}.`);
+    }
+    switch (x.layout) {
+      case "title":
+        if (!x.question?.trim()) out.push(`${n} (title) needs a hook question in "question".`);
+        break;
+      case "bullets":
+        if (!x.bullets.length) out.push(`${n} (bullets) needs at least one bullet.`);
+        break;
+      case "twoColumn":
+        if (x.columns?.length !== 2) out.push(`${n} (twoColumn) needs exactly 2 columns.`);
+        else if (x.columns.some((c) => !c.heading.trim() || c.points.length < 1 || c.points.length > L.bullets || c.points.some(tooLong))) out.push(`${n} (twoColumn) needs a heading and 1 to ${L.bullets} short points in each column.`);
+        break;
+      case "definition":
+        if (!x.term?.trim() || !x.definition?.trim()) out.push(`${n} (definition) needs a term and a definition.`);
+        break;
+      case "process":
+        if (!x.steps || x.steps.length < 2 || x.steps.length > 6) out.push(`${n} (process) needs 2 to 6 steps.`);
+        else if (x.steps.some((t) => !t.title.trim() || !t.detail.trim())) out.push(`${n} (process) has an empty step.`);
+        break;
+      case "quizBreak": {
+        const o = x.options ?? [];
+        if (!x.question?.trim()) out.push(`${n} (quizBreak) needs a question.`);
+        if (o.length < 3 || o.length > 4) out.push(`${n} (quizBreak) needs 3 or 4 options.`);
+        if (o.some((t) => !t.trim()) || new Set(o.map(normalizeText)).size !== o.length) out.push(`${n} (quizBreak) has an empty or repeated option.`);
+        if (x.answerIndex === null || x.answerIndex < 0 || x.answerIndex >= o.length) out.push(`${n} (quizBreak) needs answerIndex pointing at one option.`);
+        break;
+      }
+      case "summary":
+        if (x.takeaways?.length !== 3) out.push(`${n} (summary) needs exactly 3 takeaways.`);
+        if (!x.question?.trim()) out.push(`${n} (summary) needs an exit-ticket question in "question".`);
+        break;
+    }
+  });
   return out;
 }
 
@@ -275,8 +339,44 @@ export function postProcessWorksheet(w: WorksheetContent): WorksheetContent {
   return { ...w, title: w.title.trim(), instructions: w.instructions.trim(), totalPoints: total };
 }
 
-export function postProcessSlides(s: SlidesContent): SlidesContent {
-  return { ...s, slides: s.slides.map((x) => ({ ...x, title: x.title.trim(), bullets: x.bullets.slice(0, LIMITS.slides.bullets).map((b) => b.trim()) })) };
+const clean = (v: string | null): string | null => (v && v.trim() ? v.trim().replace(/\s+/g, " ") : null);
+
+/** Slides post-processing: trim every text, drop empty or repeated bullets, cap the lists, keep answerIndex inside the options. */
+export function postProcessSlides(deck: SlidesContent): SlidesContent {
+  const L = LIMITS.slides;
+  const slides = deck.slides.map((x) => {
+    const seen = new Set<string>();
+    const bullets = x.bullets
+      .map((b) => b.trim().replace(/\s+/g, " "))
+      .filter((b) => {
+        const k = normalizeText(b);
+        if (!k || seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      })
+      .slice(0, L.bullets);
+    const options = x.options ? x.options.map((o) => o.trim()).filter(Boolean).slice(0, 4) : null;
+    return {
+      ...x,
+      title: x.title.trim(),
+      subtitle: clean(x.subtitle),
+      keyIdea: clean(x.keyIdea),
+      bullets,
+      columns: x.columns ? x.columns.map((c) => ({ heading: c.heading.trim(), points: c.points.map((p) => p.trim()).filter(Boolean).slice(0, L.bullets) })) : null,
+      term: clean(x.term),
+      definition: clean(x.definition),
+      example: clean(x.example),
+      steps: x.steps ? x.steps.map((t) => ({ title: t.title.trim(), detail: t.detail.trim() })).slice(0, 6) : null,
+      question: clean(x.question),
+      options,
+      answerIndex: options && x.answerIndex !== null && x.answerIndex >= 0 && x.answerIndex < options.length ? x.answerIndex : null,
+      takeaways: x.takeaways ? x.takeaways.map((t) => t.trim()).filter(Boolean).slice(0, 3) : null,
+      speakerNotes: x.speakerNotes.trim(),
+      imagePrompt: clean(x.imagePrompt),
+      emoji: clean(x.emoji),
+    };
+  });
+  return { deckTitle: deck.deckTitle.trim(), slides };
 }
 
 /** Index of the correct option of a question (mcq / tf), or null. */
@@ -292,6 +392,21 @@ function indexOf(ref: string, prefix: string): number | null {
   return m ? Number(m[1]) - 1 : null;
 }
 
+/** The one text of a slide that a review check can read and replace: its first bullet, else the layout's main text. */
+function slideText(x: SlidesContent["slides"][number] | undefined): { get(): string | null; set(t: string): void } | null {
+  if (!x) return null;
+  if (x.bullets.length) return { get: () => x.bullets[0], set: (t) => void (x.bullets[0] = t) };
+  if (x.definition) return { get: () => x.definition, set: (t) => void (x.definition = t) };
+  if (x.question) return { get: () => x.question, set: (t) => void (x.question = t) };
+  const tk = x.takeaways;
+  if (tk?.length) return { get: () => tk[0], set: (t) => void (tk[0] = t) };
+  const pts = x.columns?.[0]?.points;
+  if (pts?.length) return { get: () => pts[0], set: (t) => void (pts[0] = t) };
+  const st = x.steps;
+  if (st?.length) return { get: () => st[0].detail, set: (t) => void (st[0].detail = t) };
+  return null;
+}
+
 /** The single text a check can replace for each resource kind. */
 export function getItemText(kind: ResourceKind, content: ResourceContent, ref: string): string | null {
   switch (kind) {
@@ -302,7 +417,7 @@ export function getItemText(kind: ResourceKind, content: ResourceContent, ref: s
     case "WORKSHEET":
       return worksheetItems(content as WorksheetContent)[indexOf(ref, "A") ?? -1]?.prompt ?? null;
     case "SLIDES":
-      return (content as SlidesContent).slides[indexOf(ref, "S") ?? -1]?.bullets[0] ?? null;
+      return slideText((content as SlidesContent).slides[indexOf(ref, "S") ?? -1])?.get() ?? null;
     case "CARDS":
       return (content as CardsContent).cards[indexOf(ref, "C") ?? -1]?.front ?? null;
     case "GAME":
@@ -324,7 +439,7 @@ export function setItemText(kind: ResourceKind, content: ResourceContent, ref: s
       worksheetItems(copy as WorksheetContent)[indexOf(ref, "A") ?? -1].prompt = text;
       break;
     case "SLIDES":
-      (copy as SlidesContent).slides[indexOf(ref, "S") ?? -1].bullets[0] = text;
+      slideText((copy as SlidesContent).slides[indexOf(ref, "S") ?? -1])?.set(text);
       break;
     case "CARDS":
       (copy as CardsContent).cards[indexOf(ref, "C") ?? -1].front = text;

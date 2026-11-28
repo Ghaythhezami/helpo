@@ -1,0 +1,658 @@
+{
+ "en": {
+  "deckTitle": "Photosynthesis: how plants make food",
+  "slides": [
+   {
+    "subtitle": "Grade 6 science - 45 minute lesson",
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": "What do you already know about photosynthesis?",
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "A friendly classroom illustration about Photosynthesis: how plants make food",
+    "emoji": "🌱",
+    "layout": "title",
+    "title": "Photosynthesis: how plants make food",
+    "speakerNotes": "Welcome the class and ask what they already know.",
+    "objectiveCodes": []
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "By the end, you will be able to do all of these.",
+    "bullets": [
+     "I can name the inputs and outputs of photosynthesis",
+     "I can explain how light, water and carbon dioxide are used to make...",
+     "I can complete the word equation for photosynthesis"
+    ],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "A friendly classroom illustration about What we will learn",
+    "emoji": "🎯",
+    "layout": "bullets",
+    "title": "What we will learn",
+    "speakerNotes": "Read the goals aloud. Students tick them off at the end.",
+    "objectiveCodes": [
+     "O1",
+     "O2",
+     "O3"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "Photosynthesis is the way plants use light to make their own food.",
+    "bullets": [
+     "Think of where you meet photosynthesis every day.",
+     "Find photosynthesis on page 2 of your notes."
+    ],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "A friendly classroom illustration about Photosynthesis",
+    "emoji": "💡",
+    "layout": "bullets",
+    "title": "Photosynthesis",
+    "speakerNotes": "Give one example of Photosynthesis before moving on.",
+    "objectiveCodes": [
+     "O1"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "Sunlight is the energy a plant captures to power photosynthesis.",
+    "bullets": [
+     "Think of where you meet sunlight every day.",
+     "Find sunlight on page 3 of your notes."
+    ],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "A friendly classroom illustration about Sunlight",
+    "emoji": "🔎",
+    "layout": "bullets",
+    "title": "Sunlight",
+    "speakerNotes": "Give one example of Sunlight before moving on.",
+    "objectiveCodes": [
+     "O2"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": "Chlorophyll",
+    "definition": "the green substance in leaves that captures light",
+    "example": "Find it on page 3 of your notes.",
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "A friendly classroom illustration about Chlorophyll",
+    "emoji": "📖",
+    "layout": "definition",
+    "title": "Chlorophyll",
+    "speakerNotes": "Give one example of Chlorophyll before moving on.",
+    "objectiveCodes": [
+     "O3"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": "Roots",
+    "definition": "the parts that take in water from the soil",
+    "example": "Find it on page 4 of your notes.",
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "A friendly classroom illustration about Roots",
+    "emoji": "📖",
+    "layout": "definition",
+    "title": "Roots",
+    "speakerNotes": "Give one example of Roots before moving on.",
+    "objectiveCodes": [
+     "O1"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": "Stomata",
+    "definition": "tiny holes in a leaf that let gases move in and out",
+    "example": "Find it on page 4 of your notes.",
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "A friendly classroom illustration about Stomata",
+    "emoji": "📖",
+    "layout": "definition",
+    "title": "Stomata",
+    "speakerNotes": "Give one example of Stomata before moving on.",
+    "objectiveCodes": [
+     "O2"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": [
+     {
+      "title": "Light arrives",
+      "detail": "The leaf catches sunlight."
+     },
+     {
+      "title": "Inputs come in",
+      "detail": "Water and carbon dioxide enter the plant."
+     },
+     {
+      "title": "Food is made",
+      "detail": "The plant makes glucose."
+     },
+     {
+      "title": "Oxygen leaves",
+      "detail": "Oxygen is released into the air."
+     }
+    ],
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "A friendly classroom illustration about The word equation",
+    "emoji": "☀️",
+    "layout": "process",
+    "title": "The word equation",
+    "speakerNotes": "Build the equation one tile at a time.",
+    "objectiveCodes": [
+     "O3"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "What goes in is not what comes out.",
+    "bullets": [],
+    "columns": [
+     {
+      "heading": "Plants take in",
+      "points": [
+       "Water",
+       "Carbon dioxide",
+       "Sunlight"
+      ]
+     },
+     {
+      "heading": "Plants make",
+      "points": [
+       "Glucose",
+       "Oxygen"
+      ]
+     }
+    ],
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "A friendly classroom illustration about Inputs and outputs",
+    "emoji": "⚖️",
+    "layout": "twoColumn",
+    "title": "Inputs and outputs",
+    "speakerNotes": "Draw the connections on the board.",
+    "objectiveCodes": [
+     "O2"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "Plants make glucose, a sugar, which is their food.",
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": "What do plants make during photosynthesis?",
+    "options": [
+     "Glucose (sugar)",
+     "Soil",
+     "Rain",
+     "Protein from the roots"
+    ],
+    "answerIndex": 0,
+    "takeaways": null,
+    "imagePrompt": null,
+    "emoji": "❓",
+    "layout": "quizBreak",
+    "title": "Think and talk",
+    "speakerNotes": "Pairs discuss for one minute, then share.",
+    "objectiveCodes": [
+     "O1"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "Roots take in water and the stem carries it up to the leaves.",
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": "Which part of a plant takes in water from the soil?",
+    "options": [
+     "Leaves",
+     "Roots",
+     "Flowers",
+     "Seeds"
+    ],
+    "answerIndex": 1,
+    "takeaways": null,
+    "imagePrompt": null,
+    "emoji": "❓",
+    "layout": "quizBreak",
+    "title": "Think and talk",
+    "speakerNotes": "Pairs discuss for one minute, then share.",
+    "objectiveCodes": [
+     "O2"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": "In one sentence, what is photosynthesis?",
+    "options": null,
+    "answerIndex": null,
+    "takeaways": [
+     "Photosynthesis: the way plants use light to make their own food",
+     "Sunlight: the energy a plant captures to power photosynthesis",
+     "Chlorophyll: the green substance in leaves that captures light"
+    ],
+    "imagePrompt": null,
+    "emoji": "✅",
+    "layout": "summary",
+    "title": "Summary",
+    "speakerNotes": "Ask students to say the summary in their own words.",
+    "objectiveCodes": [
+     "O1",
+     "O2",
+     "O3"
+    ]
+   }
+  ]
+ },
+ "ar": {
+  "deckTitle": "التمثيل الضوئي: كيف تصنع النباتات غذاءها",
+  "slides": [
+   {
+    "subtitle": "علوم الصف 6 - درس مدته 45 دقيقة",
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": "ماذا تعرف مسبقاً عن «التمثيل الضوئي»؟",
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "رسم صفّي لطيف عن التمثيل الضوئي: كيف تصنع النباتات غذاءها",
+    "emoji": "🌱",
+    "layout": "title",
+    "title": "التمثيل الضوئي: كيف تصنع النباتات غذاءها",
+    "speakerNotes": "رحّب بالصف واسأل عمّا يعرفونه مسبقاً.",
+    "objectiveCodes": []
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "في النهاية ستتمكن من كل هذه الأهداف.",
+    "bullets": [
+     "أستطيع أن تسمية مدخلات ومخرجات التمثيل الضوئي",
+     "أستطيع أن شرح كيف تُستخدم طاقة الضوء والماء وثاني أكسيد الكربون لصنع الجلوكوز",
+     "أستطيع أن إكمال المعادلة الكلامية للتمثيل الضوئي"
+    ],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "رسم صفّي لطيف عن ماذا سنتعلم",
+    "emoji": "🎯",
+    "layout": "bullets",
+    "title": "ماذا سنتعلم",
+    "speakerNotes": "اقرأ الأهداف بصوت عالٍ. يضع الطلاب علامة عليها في النهاية.",
+    "objectiveCodes": [
+     "O1",
+     "O2",
+     "O3"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "التمثيل الضوئي: العملية التي تستخدم بها النباتات الضوء لصنع غذائها.",
+    "bullets": [
+     "فكّر أين تقابل «التمثيل الضوئي» في حياتك اليومية.",
+     "ابحث عن «التمثيل الضوئي» في الصفحة 2 من ملاحظاتك."
+    ],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "رسم صفّي لطيف عن التمثيل الضوئي",
+    "emoji": "💡",
+    "layout": "bullets",
+    "title": "التمثيل الضوئي",
+    "speakerNotes": "أعطِ مثالاً واحداً على «التمثيل الضوئي» قبل الانتقال.",
+    "objectiveCodes": [
+     "O1"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "ضوء الشمس: الطاقة التي يلتقطها النبات لتشغيل التمثيل الضوئي.",
+    "bullets": [
+     "فكّر أين تقابل «ضوء الشمس» في حياتك اليومية.",
+     "ابحث عن «ضوء الشمس» في الصفحة 3 من ملاحظاتك."
+    ],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "رسم صفّي لطيف عن ضوء الشمس",
+    "emoji": "🔎",
+    "layout": "bullets",
+    "title": "ضوء الشمس",
+    "speakerNotes": "أعطِ مثالاً واحداً على «ضوء الشمس» قبل الانتقال.",
+    "objectiveCodes": [
+     "O2"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": "الكلوروفيل",
+    "definition": "المادة الخضراء في الأوراق التي تلتقط الضوء",
+    "example": "ابحث عنه في الصفحة 3 من ملاحظاتك.",
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "رسم صفّي لطيف عن الكلوروفيل",
+    "emoji": "📖",
+    "layout": "definition",
+    "title": "الكلوروفيل",
+    "speakerNotes": "أعطِ مثالاً واحداً على «الكلوروفيل» قبل الانتقال.",
+    "objectiveCodes": [
+     "O3"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": "الجذور",
+    "definition": "الأجزاء التي تمتص الماء من التربة",
+    "example": "ابحث عنه في الصفحة 4 من ملاحظاتك.",
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "رسم صفّي لطيف عن الجذور",
+    "emoji": "📖",
+    "layout": "definition",
+    "title": "الجذور",
+    "speakerNotes": "أعطِ مثالاً واحداً على «الجذور» قبل الانتقال.",
+    "objectiveCodes": [
+     "O1"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": "الثغور",
+    "definition": "فتحات صغيرة في الورقة تسمح بمرور الغازات إلى الداخل والخارج",
+    "example": "ابحث عنه في الصفحة 4 من ملاحظاتك.",
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "رسم صفّي لطيف عن الثغور",
+    "emoji": "📖",
+    "layout": "definition",
+    "title": "الثغور",
+    "speakerNotes": "أعطِ مثالاً واحداً على «الثغور» قبل الانتقال.",
+    "objectiveCodes": [
+     "O2"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": [
+     {
+      "title": "يصل الضوء",
+      "detail": "تلتقط الورقة ضوء الشمس."
+     },
+     {
+      "title": "تدخل المواد",
+      "detail": "يدخل الماء وثاني أكسيد الكربون إلى النبات."
+     },
+     {
+      "title": "يُصنع الغذاء",
+      "detail": "يصنع النبات الجلوكوز."
+     },
+     {
+      "title": "يخرج الأكسجين",
+      "detail": "يُطلق النبات الأكسجين في الهواء."
+     }
+    ],
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "رسم صفّي لطيف عن المعادلة الكلامية",
+    "emoji": "☀️",
+    "layout": "process",
+    "title": "المعادلة الكلامية",
+    "speakerNotes": "ابنِ المعادلة قطعة قطعة.",
+    "objectiveCodes": [
+     "O3"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "ما يدخل ليس هو ما يخرج.",
+    "bullets": [],
+    "columns": [
+     {
+      "heading": "ما يأخذه النبات",
+      "points": [
+       "الماء",
+       "ثاني أكسيد الكربون",
+       "ضوء الشمس"
+      ]
+     },
+     {
+      "heading": "ما يصنعه النبات",
+      "points": [
+       "الجلوكوز",
+       "الأكسجين"
+      ]
+     }
+    ],
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": null,
+    "options": null,
+    "answerIndex": null,
+    "takeaways": null,
+    "imagePrompt": "رسم صفّي لطيف عن المدخلات والمخرجات",
+    "emoji": "⚖️",
+    "layout": "twoColumn",
+    "title": "المدخلات والمخرجات",
+    "speakerNotes": "ارسم الروابط على السبورة.",
+    "objectiveCodes": [
+     "O2"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "تصنع النباتات الجلوكوز، وهو سكر يمثل غذاءها.",
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": "ماذا تصنع النباتات أثناء التمثيل الضوئي؟",
+    "options": [
+     "الجلوكوز (سكر)",
+     "التربة",
+     "المطر",
+     "بروتين من الجذور"
+    ],
+    "answerIndex": 0,
+    "takeaways": null,
+    "imagePrompt": null,
+    "emoji": "❓",
+    "layout": "quizBreak",
+    "title": "فكّر وتحدّث",
+    "speakerNotes": "يتناقش الطلاب في أزواج دقيقة واحدة ثم يشاركون.",
+    "objectiveCodes": [
+     "O1"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": "تمتص الجذور الماء وتنقله الساق إلى الأوراق.",
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": "أي جزء من النبات يمتص الماء من التربة؟",
+    "options": [
+     "الأوراق",
+     "الجذور",
+     "الأزهار",
+     "البذور"
+    ],
+    "answerIndex": 1,
+    "takeaways": null,
+    "imagePrompt": null,
+    "emoji": "❓",
+    "layout": "quizBreak",
+    "title": "فكّر وتحدّث",
+    "speakerNotes": "يتناقش الطلاب في أزواج دقيقة واحدة ثم يشاركون.",
+    "objectiveCodes": [
+     "O2"
+    ]
+   },
+   {
+    "subtitle": null,
+    "keyIdea": null,
+    "bullets": [],
+    "columns": null,
+    "term": null,
+    "definition": null,
+    "example": null,
+    "steps": null,
+    "question": "في جملة واحدة، ما «التمثيل الضوئي»؟",
+    "options": null,
+    "answerIndex": null,
+    "takeaways": [
+     "التمثيل الضوئي: العملية التي تستخدم بها النباتات الضوء لصنع غذائها",
+     "ضوء الشمس: الطاقة التي يلتقطها النبات لتشغيل التمثيل الضوئي",
+     "الكلوروفيل: المادة الخضراء في الأوراق التي تلتقط الضوء"
+    ],
+    "imagePrompt": null,
+    "emoji": "✅",
+    "layout": "summary",
+    "title": "الملخص",
+    "speakerNotes": "اطلب من الطلاب قول الملخص بأسلوبهم.",
+    "objectiveCodes": [
+     "O1",
+     "O2",
+     "O3"
+    ]
+   }
+  ]
+ }
+}

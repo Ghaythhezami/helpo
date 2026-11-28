@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { LessonDetail, ResourceKind, ResourceView } from "@helpo/shared";
-import { AlertTriangle, Check, Circle, Loader2, RotateCcw, X } from "lucide-react";
+import { AlertTriangle, RotateCcw, X } from "lucide-react";
 import { ApiError, api, errorMessage } from "@/lib/api";
 import { RESOURCE_ART } from "@/lib/checks";
 import { useI18n } from "@/lib/i18n";
@@ -11,7 +11,9 @@ import { qk, useLessonEvents } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { InlineConfirm } from "@/components/ui/confirm";
 import { Illus } from "@/components/ui/illus";
-import { GenerationHero, useTabVisible } from "./generation-hero";
+import { AnimatedIcon } from "@/components/ui/animated-icons";
+import { DUR, EASE, IS_TEST } from "@/lib/motion";
+import { GenerationHero, KIND_ICON, useTabVisible } from "./generation-hero";
 import { pipelineSteps } from "./making";
 
 /** The kit is made one resource after another, in this order (the API runs the same sequence). */
@@ -43,11 +45,20 @@ export function overallPercent(analysisDone: boolean, steps: GenerationStep[]): 
   return Math.round(analysis * 0.2 + rest * 0.8);
 }
 
-function StepIcon({ status, reduce }: { status: StepStatus; reduce: boolean }) {
-  if (status === "done") return <Check className="ic" aria-hidden="true" />;
+/** Rows rise in a short stagger when the view opens (nothing in tests, no movement under reduced motion). */
+function rowEnter(index: number, reduce: boolean) {
+  return {
+    initial: reduce || IS_TEST ? false : { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: DUR.enter, ease: EASE.out, delay: 0.12 + index * 0.05 },
+  } as const;
+}
+
+/** Status icon of a step: its own animated icon loops while working, the check draws once when done. */
+function StepIcon({ kind, status, analysis }: { kind: ResourceKind; status: StepStatus; analysis?: boolean }) {
   if (status === "failed") return <AlertTriangle className="ic" aria-hidden="true" />;
-  if (status === "working") return <Loader2 className={`ic ${reduce ? "" : "spin"}`} aria-hidden="true" />;
-  return <Circle className="ic" aria-hidden="true" />;
+  if (status === "done") return <AnimatedIcon name="check" size={16} play />;
+  return <AnimatedIcon name={analysis ? "sparkles" : KIND_ICON[kind]} size={16} loop={status === "working"} gap={1.2} />;
 }
 
 /** Real, rotating lines about what is happening for a step (keys gen.doing.KIND.0..2). Never tips, never filler. */
@@ -63,8 +74,25 @@ function NowLine({ kind, active, reduce }: { kind: ResourceKind; active: boolean
     const id = setInterval(() => setI((n) => (n + 1) % DOING_LINES), 3200);
     return () => clearInterval(id);
   }, [active, reduce, visible]);
-  if (!active) return null;
-  return <span className="gs-now small" aria-hidden="true">{t(`gen.doing.${kind}.${reduce ? 0 : i}` as "gen.doing.SLIDES.0")}</span>;
+  const line = active ? t(`gen.doing.${kind}.${reduce ? 0 : i}` as "gen.doing.SLIDES.0") : "";
+  const motionless = reduce || IS_TEST;
+  return (
+    <p className="gen-now muted" aria-hidden="true">
+      <AnimatePresence mode="wait" initial={false}>
+        {active && (
+          <motion.span
+            key={`${kind}-${i}`}
+            initial={motionless ? false : { opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={motionless ? undefined : { opacity: 0, y: -6, transition: { duration: DUR.exit, ease: EASE.in } }}
+            transition={{ duration: DUR.base, ease: EASE.out }}
+          >
+            {line}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </p>
+  );
 }
 
 /**
@@ -143,14 +171,27 @@ export function GenerationView({ lessonId, onFinished, onCancelled }: { lessonId
   const finished = (status === "READY" || status === "PARTIAL") && readyCount > 0;
   const percent = finished ? 100 : overallPercent(analysisDone, steps);
 
+  // Completion choreography: the nodes pop in a stagger and a light bloom opens (the hero), then the whole view eases out and
+  // the workspace is revealed. A timer backs the exit up (animations do not complete in a hidden tab). Reduced motion: a short hold.
+  const [leaving, setLeaving] = useState(false);
+  const release = useCallback(() => {
+    if (finishing.current) return;
+    finishing.current = true;
+    finishedCb.current(lessonId);
+  }, [lessonId]);
   useEffect(() => {
     if (!finished || finishing.current) return;
-    const id = setTimeout(() => {
-      finishing.current = true;
-      finishedCb.current(lessonId);
-    }, reduce ? 500 : 1100);
-    return () => clearTimeout(id);
-  }, [finished, lessonId, reduce]);
+    if (reduce) {
+      const id = setTimeout(release, 500);
+      return () => clearTimeout(id);
+    }
+    const out = setTimeout(() => setLeaving(true), 1500);
+    const safety = setTimeout(release, 2200);
+    return () => {
+      clearTimeout(out);
+      clearTimeout(safety);
+    };
+  }, [finished, reduce, release]);
 
   const stepLabel = (kind: ResourceKind) => (kind === "GAME" ? t("gen.games") : t(`resource.${kind}` as "resource.SLIDES"));
   const labels = Object.fromEntries(GENERATION_ORDER.map((k) => [k, stepLabel(k)])) as Record<ResourceKind, string>;
@@ -165,9 +206,10 @@ export function GenerationView({ lessonId, onFinished, onCancelled }: { lessonId
       aria-modal="true"
       aria-labelledby="gen-title"
       aria-describedby="gen-live"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: reduce ? 0.1 : 0.25 }}
+      initial={{ opacity: 0, scale: reduce ? 1 : 0.99 }}
+      animate={leaving ? { opacity: 0, scale: 1.025 } : { opacity: 1, scale: 1 }}
+      transition={leaving ? { duration: 0.32, ease: EASE.in } : { duration: reduce ? 0.1 : 0.3, ease: EASE.out }}
+      onAnimationComplete={() => leaving && release()}
     >
       <div className="gen-card">
         <div className="gen-left">
@@ -180,22 +222,23 @@ export function GenerationView({ lessonId, onFinished, onCancelled }: { lessonId
           <div className="gen-total" role="progressbar" aria-label={t("making.steps")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent}>
             <i style={{ transform: `scaleX(${percent / 100})` }} />
           </div>
+          <NowLine key={current?.kind ?? "none"} kind={current?.kind ?? "SLIDES"} active={!!current && !finished} reduce={reduce} />
         </div>
 
         <div className="gen-right">
           <ol className="gen-steps" aria-label={t("making.steps")}>
-            <li className={`gen-step ${analysisStatus}`}>
-              <span className="gs-ic"><StepIcon status={analysisStatus} reduce={reduce} /></span>
+            <motion.li className={`gen-step ${analysisStatus}`} {...rowEnter(0, reduce)}>
+              <span className="gs-ic"><StepIcon kind="SLIDES" status={analysisStatus} analysis /></span>
               <span className="gs-name">
                 <b>{t("gen.analysis")}</b>
                 <span className="muted small">
                   {analysisFailed ? t("gen.state.failed") : analysisDone ? t("gen.state.done") : activeAnalysis ? t(`making.step.${activeAnalysis.id}` as "making.step.upload") : t("gen.state.waiting")}
                 </span>
               </span>
-            </li>
-            {steps.map((s) => (
-              <li key={s.kind} className={`gen-step ${s.status}`} aria-current={s.status === "working" ? "step" : undefined}>
-                <span className="gs-ic"><StepIcon status={s.status} reduce={reduce} /></span>
+            </motion.li>
+            {steps.map((s, idx) => (
+              <motion.li key={s.kind} className={`gen-step ${s.status}`} aria-current={s.status === "working" ? "step" : undefined} {...rowEnter(idx + 1, reduce)}>
+                <span className="gs-ic"><StepIcon kind={s.kind} status={s.status} /></span>
                 <Illus name={RESOURCE_ART[s.kind]} size={28} className="gs-art" />
                 <span className="gs-name">
                   <b>{stepLabel(s.kind)}</b>
@@ -203,7 +246,6 @@ export function GenerationView({ lessonId, onFinished, onCancelled }: { lessonId
                     {t(`gen.state.${s.status}` as "gen.state.done")}
                     {s.status === "working" ? ` · ${Math.round(s.progress)}%` : ""}
                   </span>
-                  <NowLine kind={s.kind} active={s.status === "working"} reduce={reduce} />
                   {s.status === "working" && (
                     <span className="gs-bar" role="progressbar" aria-label={stepLabel(s.kind)} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(s.progress)}>
                       <i style={{ transform: `scaleX(${Math.max(0.04, s.progress / 100)})` }} />
@@ -216,7 +258,7 @@ export function GenerationView({ lessonId, onFinished, onCancelled }: { lessonId
                     {t("common.tryAgain")}
                   </Button>
                 )}
-              </li>
+              </motion.li>
             ))}
           </ol>
 

@@ -11,6 +11,7 @@ import type {
   QuizContent,
   ReteachPlan,
   ResourceKind,
+  Slide,
   SlidesContent,
   WorksheetContent,
 } from "@helpo/shared";
@@ -58,6 +59,79 @@ export function placeholderTranslate<T>(value: T, to: Locale): T {
   };
   return walk(value) as T;
 }
+
+/** First `n` words of a text, with an ellipsis when it was cut. */
+function cap(text: string, n: number): string {
+  const w = text.trim().split(/\s+/);
+  return w.length <= n ? text.trim() : `${w.slice(0, n).join(" ").replace(/[,;:]$/, "")}...`;
+}
+
+/** Strings for the v2 slide arc, per language (the Arabic set is hand-written for the plant lesson only). */
+interface SlideStrings {
+  hook: (title: string) => string;
+  iCan: (objective: string) => string;
+  goalsIdea: string;
+  everyday: (term: string) => string;
+  find: (term: string, page: number) => string;
+  conceptEmoji: string[];
+  image: (what: string) => string;
+  steps: { title: string; detail: string }[];
+  compareTitle: string;
+  compareIdea: string;
+  columns: { heading: string; points: string[] }[];
+  exit: (term: string) => string;
+}
+
+/** The topic part of a lesson title: "Photosynthesis: how plants make food" -> "Photosynthesis". */
+const topicOf = (title: string) => title.split(/[:：]/)[0].trim() || title;
+
+const lowerFirstChar = (t: string) => (t ? t[0].toLowerCase() + t.slice(1) : t);
+
+const SLIDE_EN: SlideStrings = {
+  hook: (title) => `What do you already know about ${topicOf(title).toLowerCase()}?`,
+  iCan: (o) => cap(`I can ${lowerFirstChar(o.trim().replace(/\.$/, ""))}`, 13),
+  goalsIdea: "By the end, you will be able to do all of these.",
+  everyday: (term) => `Think of where you meet ${term.toLowerCase()} every day.`,
+  find: (term, page) => `Find ${term.toLowerCase()} on page ${page} of your notes.`,
+  conceptEmoji: ["💡", "🔎"],
+  image: (what) => `A friendly classroom illustration about ${what}`,
+  steps: [
+    { title: "Light arrives", detail: "The leaf catches sunlight." },
+    { title: "Inputs come in", detail: "Water and carbon dioxide enter the plant." },
+    { title: "Food is made", detail: "The plant makes glucose." },
+    { title: "Oxygen leaves", detail: "Oxygen is released into the air." },
+  ],
+  compareTitle: "Inputs and outputs",
+  compareIdea: "What goes in is not what comes out.",
+  columns: [
+    { heading: "Plants take in", points: ["Water", "Carbon dioxide", "Sunlight"] },
+    { heading: "Plants make", points: ["Glucose", "Oxygen"] },
+  ],
+  exit: (term) => `In one sentence, what is ${term.toLowerCase()}?`,
+};
+
+const SLIDE_AR: SlideStrings = {
+  hook: (title) => `ماذا تعرف مسبقاً عن «${topicOf(title)}»؟`,
+  iCan: (o) => cap(`أستطيع أن ${o.trim().replace(/\.$/, "")}`, 13),
+  goalsIdea: "في النهاية ستتمكن من كل هذه الأهداف.",
+  everyday: (term) => `فكّر أين تقابل «${term}» في حياتك اليومية.`,
+  find: (term, page) => `ابحث عن «${term}» في الصفحة ${page} من ملاحظاتك.`,
+  conceptEmoji: ["💡", "🔎"],
+  image: (what) => `رسم صفّي لطيف عن ${what}`,
+  steps: [
+    { title: "يصل الضوء", detail: "تلتقط الورقة ضوء الشمس." },
+    { title: "تدخل المواد", detail: "يدخل الماء وثاني أكسيد الكربون إلى النبات." },
+    { title: "يُصنع الغذاء", detail: "يصنع النبات الجلوكوز." },
+    { title: "يخرج الأكسجين", detail: "يُطلق النبات الأكسجين في الهواء." },
+  ],
+  compareTitle: "المدخلات والمخرجات",
+  compareIdea: "ما يدخل ليس هو ما يخرج.",
+  columns: [
+    { heading: "ما يأخذه النبات", points: ["الماء", "ثاني أكسيد الكربون", "ضوء الشمس"] },
+    { heading: "ما يصنعه النبات", points: ["الجلوكوز", "الأكسجين"] },
+  ],
+  exit: (term) => `في جملة واحدة، ما «${term}»؟`,
+};
 
 /** Boilerplate strings for the demo kit builders, per language. */
 interface Strings {
@@ -390,7 +464,11 @@ export class DemoAiProvider implements AiProvider {
         (copy as QuizContent).questions.forEach((q) => (q.prompt = simplifyText(q.prompt)));
         break;
       case "SLIDES":
-        (copy as SlidesContent).slides.forEach((s) => (s.bullets = s.bullets.map(simplifyText)));
+        (copy as SlidesContent).slides.forEach((s) => {
+          s.bullets = s.bullets.map(simplifyText);
+          if (s.definition) s.definition = simplifyText(s.definition);
+          if (s.takeaways) s.takeaways = s.takeaways.map(simplifyText);
+        });
         break;
       case "CARDS":
         (copy as CardsContent).cards.forEach((c) => (c.back = simplifyText(c.back)));
@@ -484,24 +562,35 @@ export class DemoAiProvider implements AiProvider {
     return ctx.objectives.length ? ctx.objectives[i % ctx.objectives.length].code : `O${(i % 3) + 1}`;
   }
 
+  /** The v2 teaching arc: hook, goals, concepts, definitions, process, compare, two checks, summary with an exit ticket. */
   private slides(ctx: LessonContext, topic: Topic, S: Strings): SlidesContent {
-    const mk = (layout: SlidesContent["slides"][number]["layout"], title: string, bullets: string[], speakerNotes: string, codes: string[], emoji: string | null = null) => ({
-      layout, title, bullets, speakerNotes, imagePrompt: null, emoji, objectiveCodes: codes,
-    });
-    const slides: SlidesContent["slides"] = [
-      mk("title", ctx.title, [S.gradeScience(ctx.grade), S.minutes(ctx.durationMin)], S.welcome, [], topic.plants ? "🌱" : "📘"),
-      mk("bullets", S.learnTitle, ctx.objectives.length ? ctx.objectives.map((o) => o.text) : S.fallbackObjectives(ctx.title), S.learnNote, ctx.objectives.map((o) => o.code)),
+    const D = ctx.locale === "ar" && topic.plants ? SLIDE_AR : SLIDE_EN;
+    const T = topic.terms;
+    const blank = { subtitle: null, keyIdea: null, bullets: [] as string[], columns: null, term: null, definition: null, example: null, steps: null, question: null, options: null, answerIndex: null, takeaways: null, imagePrompt: null, emoji: null as string | null };
+    const mk = (layout: Slide["layout"], title: string, speakerNotes: string, codes: string[], extra: Partial<Slide> = {}): Slide => ({ ...blank, layout, title, speakerNotes, objectiveCodes: codes, ...extra });
+    const goals = ctx.objectives.length ? ctx.objectives.map((o) => D.iCan(o.text)) : S.fallbackObjectives(ctx.title).map((o) => D.iCan(o));
+    const slides: Slide[] = [
+      mk("title", ctx.title, S.welcome, [], { subtitle: `${S.gradeScience(ctx.grade)} - ${S.minutes(ctx.durationMin)}`, question: D.hook(ctx.title), emoji: topic.plants ? "🌱" : "📘", imagePrompt: D.image(ctx.title) }),
+      mk("bullets", S.learnTitle, S.learnNote, ctx.objectives.map((o) => o.code), { bullets: goals.slice(0, 5), keyIdea: D.goalsIdea, emoji: "🎯", imagePrompt: D.image(S.learnTitle) }),
     ];
-    topic.terms.slice(0, 6).forEach((t, i) => {
-      slides.push(mk("definition", t.term, [S.termBullet(t.term, t.def), S.findPage(t.page)], S.termNote(t.term), [this.code(ctx, i)]));
+    T.slice(0, 2).forEach((t, i) => {
+      slides.push(mk("bullets", t.term, S.termNote(t.term), [this.code(ctx, i)], { keyIdea: cap(S.termIs(t.term, t.def), 18), bullets: [D.everyday(t.term), D.find(t.term, t.page)], emoji: D.conceptEmoji[i % D.conceptEmoji.length], imagePrompt: D.image(t.term) }));
     });
-    slides.push(
-      topic.plants
-        ? mk("process", S.equationTitle, S.equationBullets, S.equationNote, [this.code(ctx, 2)], "☀️")
-        : mk("twoColumn", S.puttingTitle, topic.terms.slice(6, 9).map((t) => `${t.term}: ${t.def}`), S.puttingNote, [this.code(ctx, 1)]),
-    );
-    slides.push(mk("quizBreak", S.thinkTitle, [topic.questions[9].prompt], S.thinkNote, [this.code(ctx, 0)], "❓"));
-    slides.push(mk("summary", S.summaryTitle, topic.terms.slice(0, 3).map((t) => `${t.term}: ${t.def}`), S.summaryNote, ctx.objectives.map((o) => o.code)));
+    T.slice(2, 5).forEach((t, i) => {
+      slides.push(mk("definition", t.term, S.termNote(t.term), [this.code(ctx, i + 2)], { term: t.term, definition: cap(t.def, 20), example: S.findPage(t.page), emoji: "📖", imagePrompt: D.image(t.term) }));
+    });
+    if (topic.plants) {
+      slides.push(mk("process", S.equationTitle, S.equationNote, [this.code(ctx, 2)], { steps: D.steps, emoji: "☀️", imagePrompt: D.image(S.equationTitle) }));
+      slides.push(mk("twoColumn", D.compareTitle, S.puttingNote, [this.code(ctx, 1)], { keyIdea: D.compareIdea, columns: D.columns, emoji: "⚖️", imagePrompt: D.image(D.compareTitle) }));
+    } else {
+      slides.push(mk("twoColumn", S.puttingTitle, S.puttingNote, [this.code(ctx, 1)], { keyIdea: D.compareIdea, columns: T.slice(5, 7).map((t) => ({ heading: t.term, points: [cap(t.def, 12), S.findPage(t.page)] })), emoji: "⚖️", imagePrompt: D.image(S.puttingTitle) }));
+    }
+    const mcqs = topic.questions.filter((q) => q.type === "mcq" && q.options.length >= 3 && q.answerIndex !== null);
+    mcqs.slice(0, 2).forEach((q, i) => {
+      const options = q.options.slice(0, 4).map((o) => cap(o, 14));
+      slides.push(mk("quizBreak", S.thinkTitle, S.thinkNote, [this.code(ctx, i)], { question: q.prompt, options, answerIndex: Math.min(q.answerIndex ?? 0, options.length - 1), keyIdea: cap(q.explanation, 18), emoji: "❓", imagePrompt: null }));
+    });
+    slides.push(mk("summary", S.summaryTitle, S.summaryNote, ctx.objectives.map((o) => o.code), { takeaways: T.slice(0, 3).map((t) => cap(`${t.term}: ${t.def}`, 16)), question: D.exit(T[0].term), emoji: "✅", imagePrompt: null }));
     return { deckTitle: ctx.title, slides };
   }
 

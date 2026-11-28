@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { Locale, ResourceKind } from "@helpo/shared";
+import { migrateSlides, type Locale, type ResourceKind } from "@helpo/shared";
 import { ProblemException, badRequest, notFound } from "../common/problem";
 import { contentOf, lessonTitle } from "../common/views";
 import { PrismaService } from "../prisma/prisma.service";
@@ -54,7 +54,7 @@ export class ExportService {
       throw new ProblemException(422, "Arabic PDF is not available yet", "Nibras cannot lay out Arabic in PDF files yet. Export this resource as Word (DOCX) for Arabic, or switch to English for a PDF.");
     }
     const title = lessonTitle(r.lesson, exportLocale);
-    const input = { kind: r.kind, title, locale: exportLocale, content: picked.content, includeKey };
+    const input = { kind: r.kind, title, locale: exportLocale, content: r.kind === "SLIDES" ? migrateSlides(picked.content) : picked.content, includeKey };
     const buffer = format === "pptx" ? await buildPptx(input) : format === "docx" ? await buildDocx(input) : await buildPdf(input);
     return { buffer, filename: exportFilename(title, r.kind, format), mime: MIME[format] };
   }

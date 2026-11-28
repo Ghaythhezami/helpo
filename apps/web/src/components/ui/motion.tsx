@@ -8,17 +8,17 @@ import { DUR, EASE, IS_TEST } from "@/lib/motion";
  * (so assistive tech, tests and reduced-motion users never see a wrong number); the count is a
  * visual flourish only and is skipped under prefers-reduced-motion.
  */
-export function CountUp({ value, format = (n) => String(Math.round(n)), duration = 0.8 }: { value: number; format?: (n: number) => string; duration?: number }) {
+export function CountUp({ value, format = (n) => String(Math.round(n)), duration = 0.8, delay = 0 }: { value: number; format?: (n: number) => string; duration?: number; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const reduce = useReducedMotion();
   useEffect(() => {
     const node = ref.current;
     if (!node || reduce || IS_TEST) return;
-    const controls = animate(0, value, { duration, ease: EASE.out, onUpdate: (v) => void (node.textContent = format(v)) });
+    const controls = animate(0, value, { duration, delay, ease: EASE.out, onUpdate: (v) => void (node.textContent = format(v)) });
     return () => controls.stop();
     // format is a pure formatter; only a new value restarts the count
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, reduce, duration]);
+  }, [value, reduce, duration, delay]);
   return <span ref={ref} style={{ fontVariantNumeric: "tabular-nums" }}>{format(value)}</span>;
 }
 

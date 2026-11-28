@@ -11,6 +11,8 @@ import "@/styles/v7.css";
 import "@/styles/v8.css";
 import "@/styles/v8-games.css";
 import "@/styles/v8-cards.css";
+import "@/styles/v9-slides.css";
+import "@/styles/v9-motion.css";
 import { layoutMetadata } from "@/lib/meta";
 import { Providers } from "./providers";
 

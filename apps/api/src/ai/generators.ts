@@ -39,7 +39,7 @@ const make = (kind: ResourceKind, postProcess: (c: ResourceContent, rng?: () => 
   promptVersion: PROMPT_VERSIONS[kind],
   postProcess,
   validate: (out, ctx, opts) => {
-    const problems = contentProblems(kind, out, { quizCount: opts.quizCount });
+    const problems = contentProblems(kind, out, { quizCount: opts.quizCount, objectiveCodes: ctx.objectives.map((o) => o.code) });
     const language = ctx.blueprint?.language ?? ctx.locale;
     if (!languageMatches(collectTexts(out), language)) problems.push(`The text must be written in the language "${language}".`);
     return problems;

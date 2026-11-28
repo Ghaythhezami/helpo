@@ -1,0 +1,224 @@
+/* v9 slides: one purpose-built 16:9 template per layout (.nsl family), used by the editor stage and the full-screen presenter.
+   Everything inside the frame is sized in container units (cqw) so a slide scales cleanly at any size; type steps down with
+   data-fit (normal, dense, tight) and long text is line-clamped. Animates transform and opacity only. See docs/design/DESIGN_SYSTEM.md. */
+
+/* ───────────── Frame ───────────── */
+.nsl-wrap { position: relative; }
+.nsl {
+  --nsl-h: 46dvh;
+  --f-body: 2.5cqw;
+  --f-title: 4.6cqw;
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 16 / 9;
+  width: min(100%, calc(var(--nsl-h) * 16 / 9));
+  margin-inline: auto;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  isolation: isolate;
+  text-align: start;
+  color: var(--ink);
+  background: radial-gradient(110% 90% at 100% 0%, var(--soft) 0%, rgba(235, 226, 253, 0) 58%), linear-gradient(160deg, #fff 0%, #faf8ff 100%);
+  box-shadow: var(--e2), inset 0 0 0 1px var(--line);
+}
+[dir="rtl"] .nsl { background: radial-gradient(110% 90% at 0% 0%, var(--soft) 0%, rgba(235, 226, 253, 0) 58%), linear-gradient(160deg, #fff 0%, #faf8ff 100%); }
+.nsl[data-fit="dense"] { --f-body: 2.1cqw; --f-title: 3.9cqw; }
+.nsl[data-fit="tight"] { --f-body: 1.8cqw; --f-title: 3.3cqw; }
+.nsl[data-emoji="1"] { --eo: 10cqw; }
+/* The workspace caps the slide the same way the old frame was capped: 46dvh, 36dvh on short or narrow screens. */
+.tapp .ws-center .nsl { --nsl-h: 46dvh; }
+@media (max-width: 700px), (max-height: 760px) {
+  .tapp .ws-center .nsl { --nsl-h: 36dvh; }
+}
+.nsl *, .nsl *::before, .nsl *::after { box-sizing: border-box; }
+[dir="rtl"] .nsl * { letter-spacing: 0; }
+.nsl h4, .nsl h5, .nsl p, .nsl ul, .nsl ol, .nsl small { margin: 0; }
+.nsl .ic { width: 1.15em; height: 1.15em; flex: none; stroke-width: 2.6; }
+
+.nsl-band { position: absolute; inset-block: 0; inset-inline-start: 0; width: 1.5cqw; background: var(--pri); z-index: 1; }
+.nsl-emoji {
+  position: absolute; z-index: 2; inset-block-start: 3.2cqw; inset-inline-end: 3.6cqw;
+  width: 8cqw; height: 8cqw; display: grid; place-items: center;
+  border-radius: 2.4cqw; background: var(--soft); font-size: 4.6cqw; line-height: 1;
+  box-shadow: var(--e1), inset 0 0 0 1px var(--line);
+}
+.nsl-in {
+  position: absolute; inset: 0; display: flex; flex-direction: column; gap: 1.8cqw; min-height: 0; overflow: hidden;
+  padding-block: 4cqw 3.4cqw; padding-inline: 6.8cqw 5.4cqw;
+}
+.nsl-h { flex: none; padding-inline-end: var(--eo, 0); }
+.nsl-clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+.nsl-title {
+  font: 700 var(--f-title) / 1.12 var(--font-fredoka), var(--font-nunito), sans-serif; color: var(--ink); text-wrap: balance;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere;
+}
+.nsl .mk { font: inherit; text-align: start; }
+/* Arabic marks sit above and below the line: a taller line box stops the line-clamp from clipping them. */
+[dir="rtl"] .nsl-title, [dir="rtl"] .nsl-hero-t { line-height: 1.7; }
+[dir="rtl"] .nsl-step-t, [dir="rtl"] .nsl-clamp { line-height: 1.55; }
+
+/* ───────────── Shared parts ───────────── */
+.nsl-key {
+  flex: none; font-size: calc(var(--f-body) * 1.12); font-weight: 800; line-height: 1.3;
+  background: var(--soft); border-inline-start: 0.7cqw solid var(--pri); border-radius: 1.2cqw; padding: 1cqw 1.8cqw;
+}
+.nsl-list { list-style: none; padding: 0; display: grid; gap: 1.2cqw; min-height: 0; overflow: hidden; font-size: var(--f-body); font-weight: 700; line-height: 1.3; }
+.nsl-list li { display: grid; grid-template-columns: auto 1fr; gap: 1.4cqw; align-items: start; min-width: 0; }
+.nsl-list li::before { content: ""; width: 1.3cqw; height: 1.3cqw; margin-top: 0.5em; border-radius: 50%; background: var(--pri); }
+.nsl-chip {
+  align-self: flex-start; display: inline-flex; padding: 0.7cqw 2cqw; border-radius: var(--r-pill); background: var(--soft);
+  font-size: var(--f-body); font-weight: 800; color: var(--ink);
+}
+.nsl-tag { margin-top: -0.6cqw; font-size: calc(var(--f-body) * 0.72); padding: 0.4cqw 1.6cqw; }
+.nsl-over { font-size: calc(var(--f-body) * 0.7); font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink2); }
+.nsl-num {
+  position: relative; z-index: 1; flex: none; width: 5.2cqw; height: 5.2cqw; border-radius: 50%; display: grid; place-items: center;
+  background: var(--pri); color: #fff; font: 700 calc(var(--f-body) * 1.2) / 1 var(--font-fredoka), var(--font-nunito), sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ───────────── title: hero ───────────── */
+.nsl-hero { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 2cqw; }
+.nsl-hero-t { font-size: calc(var(--f-title) * 1.55); -webkit-line-clamp: 3; line-clamp: 3; padding-inline-end: var(--eo, 0); }
+.nsl-hook {
+  display: flex; gap: 1.6cqw; align-items: flex-start; padding: 1.6cqw 2.2cqw; border-radius: 1.8cqw; background: #fff;
+  border-inline-start: 0.7cqw solid var(--pri); box-shadow: var(--e2);
+}
+.nsl-hook-ic { flex: none; width: 3.4cqw; height: 3.4cqw; color: var(--pri); }
+.nsl-hook small { display: block; font-size: calc(var(--f-body) * 0.7); font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink2); }
+.nsl-hook p { font-size: calc(var(--f-body) * 1.15); font-weight: 800; line-height: 1.3; -webkit-line-clamp: 3; line-clamp: 3; }
+
+/* ───────────── twoColumn ───────────── */
+.nsl-cols { position: relative; flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2.4cqw; }
+.nsl-col { min-height: 0; display: flex; flex-direction: column; overflow: hidden; border-radius: 1.8cqw; background: #fff; box-shadow: var(--e1), inset 0 0 0 1px var(--line); }
+.nsl-col h5 { flex: none; padding: 1cqw 1.8cqw; background: var(--pri); color: #fff; font: 700 calc(var(--f-body) * 1.05) / 1.2 var(--font-fredoka), var(--font-nunito), sans-serif; }
+.nsl-col:nth-child(2) h5 { background: var(--ink); }
+.nsl-col .nsl-list { padding: 1.4cqw 1.8cqw; }
+.nsl-vs {
+  position: absolute; z-index: 2; inset-inline-start: 50%; top: 50%; width: 4.6cqw; height: 4.6cqw; margin-inline-start: -2.3cqw; margin-top: -2.3cqw;
+  display: grid; place-items: center; border-radius: 50%; background: #fff; color: var(--pri); box-shadow: var(--e2), inset 0 0 0 0.3cqw var(--pri);
+  font: 800 1.5cqw / 1 var(--font-nunito), sans-serif; text-transform: uppercase;
+}
+
+/* ───────────── definition ───────────── */
+.nsl[data-layout="definition"] .nsl-in { justify-content: center; }
+.nsl-term { font: 700 calc(var(--f-title) * 1.5) / 1.08 var(--font-fredoka), var(--font-nunito), sans-serif; color: var(--pri); text-wrap: balance; overflow-wrap: anywhere; }
+.nsl-def { font-size: calc(var(--f-body) * 1.25); font-weight: 700; line-height: 1.35; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
+.nsl-example { padding: 1.5cqw 2cqw; border-radius: 1.8cqw; background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); }
+.nsl-example small { display: block; margin-bottom: 0.4cqw; font-size: calc(var(--f-body) * 0.7); font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink2); }
+.nsl-example p { font-size: var(--f-body); font-weight: 700; line-height: 1.35; -webkit-line-clamp: 3; line-clamp: 3; }
+
+/* ───────────── process ───────────── */
+.nsl-steps { list-style: none; padding: 0; margin-block: auto !important; display: grid; row-gap: 2.6cqw; grid-template-columns: repeat(3, 1fr); }
+.nsl-steps[data-cols="1"] { grid-template-columns: 1fr; }
+.nsl-steps[data-cols="2"] { grid-template-columns: repeat(2, 1fr); }
+.nsl-steps[data-cols="4"] { grid-template-columns: repeat(4, 1fr); }
+.nsl-steps li { position: relative; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 0.8cqw; padding-inline: 1cqw; text-align: center; }
+.nsl-steps li::before { content: ""; position: absolute; inset-inline: 0; top: 2.5cqw; height: 0.4cqw; background: rgba(96, 53, 207, 0.3); }
+.nsl-steps[data-cols="1"] li::before { display: none; }
+.nsl-steps li:last-child::before { inset-inline-end: 50%; }
+.nsl-steps[data-cols="2"] li:nth-child(2n + 1)::before, .nsl-steps[data-cols="3"] li:nth-child(3n + 1)::before, .nsl-steps[data-cols="4"] li:nth-child(4n + 1)::before { inset-inline-start: 50%; }
+.nsl-steps[data-cols="2"] li:nth-child(2n)::before, .nsl-steps[data-cols="3"] li:nth-child(3n)::before, .nsl-steps[data-cols="4"] li:nth-child(4n)::before { inset-inline-end: 50%; }
+.nsl-steps .nsl-num { box-shadow: 0 0 0 0.9cqw #fff, var(--e1); }
+.nsl-step-t { font-size: var(--f-body); font-weight: 800; line-height: 1.2; }
+.nsl-step-d { font-size: calc(var(--f-body) * 0.86); font-weight: 600; line-height: 1.3; color: var(--ink2); -webkit-line-clamp: 3; line-clamp: 3; }
+
+/* ───────────── quizBreak ───────────── */
+.nsl-q { flex: none; font-size: calc(var(--f-body) * 1.3); font-weight: 800; line-height: 1.25; -webkit-line-clamp: 3; line-clamp: 3; }
+.nsl-opts { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.4cqw; align-content: start; }
+.nsl-opts[data-count="3"] { grid-template-columns: 1fr; }
+.nsl-opt {
+  position: relative; min-height: 44px; min-width: 0; display: flex; align-items: center; gap: 1.4cqw; padding: 0.7cqw 1.4cqw; overflow: hidden;
+  border: 2px solid var(--field-line, #8777c4); border-radius: 1.6cqw; background: #fff; color: var(--ink); cursor: pointer;
+  font: 700 var(--f-body) / 1.25 var(--font-nunito), sans-serif; text-align: start;
+  transition: opacity var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.nsl-opt:hover { background: var(--soft); }
+.nsl-letter { flex: none; width: 3.6cqw; height: 3.6cqw; min-width: 24px; min-height: 24px; display: grid; place-items: center; border-radius: 50%; background: var(--soft); color: var(--ink); font: 800 calc(var(--f-body) * 0.9) / 1 var(--font-fredoka), var(--font-nunito), sans-serif; }
+.nsl-opt-t { flex: 1; min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+.nsl-opt[data-state="picked"] { border-color: var(--pri); background: var(--soft); box-shadow: 0 0 0 0.3cqw var(--pri); }
+.nsl-opt[data-state="correct"] { border-color: var(--ready); background: var(--ready-bg); box-shadow: 0 0 0 0.3cqw var(--ready); }
+.nsl-opt[data-state="correct"] .nsl-letter { background: var(--ready); color: #fff; }
+.nsl-opt[data-state="dim"] { opacity: 0.7; background: #f8f5ff; border-color: var(--line); cursor: default; }
+.nsl-ok { flex: none; display: inline-flex; align-items: center; gap: 0.5cqw; margin-inline-start: auto; font-size: calc(var(--f-body) * 0.8); font-weight: 800; color: var(--ready); }
+.nsl-foot { flex: none; display: flex; align-items: center; gap: 1.6cqw; min-height: 44px; }
+.nsl-reveal {
+  flex: none; min-height: 44px; display: inline-flex; align-items: center; gap: 0.8cqw; padding-inline: max(14px, 2.2cqw); border: 0; border-radius: var(--r-pill);
+  background: var(--pri); color: #fff; cursor: pointer; font: 800 max(14px, calc(var(--f-body) * 0.9)) / 1 var(--font-nunito), sans-serif;
+  box-shadow: var(--e1); transition: filter var(--dur-fast) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.tapp .nsl .nsl-reveal, .nsl .nsl-reveal .ic { color: #fff; }
+.nsl-reveal:hover { filter: brightness(1.08); }
+.nsl-reveal:active { transform: scale(0.97); }
+/* On phones and short screens the editor slide is too small for 44 px option tiles inside a fixed 16:9 box: the quiz slide
+   grows with its content instead (the workspace panel scrolls, the page never does). Present mode keeps the full 16:9. */
+@media (max-width: 700px), (max-height: 760px) {
+  .nsl-wrap .nsl[data-layout="quizBreak"] { aspect-ratio: auto; min-height: var(--nsl-h); }
+  .nsl-wrap .nsl[data-layout="quizBreak"] .nsl-in { position: relative; inset: auto; min-height: inherit; }
+}
+.nsl-explain { flex: 1; min-width: 0; font-size: calc(var(--f-body) * 0.95); font-weight: 700; line-height: 1.3; }
+.nsl-explain[data-open="1"] { padding: 0.9cqw 1.6cqw; border-radius: 1.4cqw; background: var(--soft); border-inline-start: 0.6cqw solid var(--pri); -webkit-line-clamp: 3; line-clamp: 3; }
+
+/* ───────────── summary ───────────── */
+.nsl-take { list-style: none; padding: 0; flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8cqw; }
+.nsl-take li { min-width: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 1cqw; padding: 1.6cqw; border-radius: 1.8cqw; background: #fff; box-shadow: var(--e1), inset 0 0 0 1px var(--line); font-size: var(--f-body); font-weight: 700; line-height: 1.3; }
+.nsl-take .nsl-num { width: 4cqw; height: 4cqw; font-size: calc(var(--f-body) * 1); }
+.nsl-take .nsl-clamp { -webkit-line-clamp: 4; line-clamp: 4; }
+.nsl-ticket { flex: none; display: flex; align-items: center; gap: 1.6cqw; padding: 1.1cqw 2cqw; border-radius: 1.6cqw; background: var(--ink); color: #fff; font-size: calc(var(--f-body) * 0.95); font-weight: 700; line-height: 1.3; }
+.nsl-ticket b { flex: none; padding: 0.4cqw 1.4cqw; border-radius: var(--r-pill); background: #ffd86b; color: var(--ink); font-weight: 800; }
+.nsl-ticket .nsl-clamp { min-width: 0; }
+
+/* ───────────── focus ───────────── */
+.nsl button:focus-visible, .nsl-present-btn:focus-visible { outline: var(--focus-ring, 3px solid var(--pri)); outline-offset: var(--focus-offset, 3px); }
+@media (forced-colors: active) {
+  .nsl-opt[data-state="correct"] { border: 4px solid Highlight; }
+  .nsl-opt[data-state="dim"] { opacity: 1; border-style: dashed; }
+}
+
+/* ───────────── Toolbar (above the editor slide) ───────────── */
+.nsl-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); min-height: 44px; margin-bottom: var(--sp-1); }
+.nsl-bar p { margin: 0; min-width: 0; }
+.nsl-present-btn {
+  flex: none; min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding-inline: 16px; border: 2px solid var(--field-line, #8777c4); border-radius: var(--r-pill);
+  background: #fff; color: var(--ink); cursor: pointer; font: 800 var(--fs-sm) / 1 var(--font-nunito), sans-serif;
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.nsl-present-btn:hover { background: var(--soft); }
+.nsl-present-btn:active { transform: scale(0.97); }
+.nsl-present-btn .ic { width: 18px; height: 18px; }
+
+/* ───────────── Transition between slides (transform and opacity only) ───────────── */
+.nsl-stage { width: 100%; }
+@keyframes nsl-enter { from { opacity: 0; transform: translateX(var(--nsl-dx, 12px)); } to { opacity: 1; transform: none; } }
+.nsl-stage[data-dir] { --nsl-dx: 12px; animation: nsl-enter var(--dur-slow) var(--ease-out) both; }
+.nsl-stage[data-dir="back"] { --nsl-dx: -12px; }
+[dir="rtl"] .nsl-stage[data-dir="fwd"] { --nsl-dx: -12px; }
+[dir="rtl"] .nsl-stage[data-dir="back"] { --nsl-dx: 12px; }
+.nsl-stage[data-motion="off"] { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .nsl-stage, .nsl-stage[data-dir] { animation: none; }
+  .nsl-opt, .nsl-reveal, .nsl-present-btn { transition: none; }
+}
+
+/* ───────────── Presenter (full viewport) ───────────── */
+.nsl-present {
+  position: fixed; inset: 0; z-index: 2000; display: grid; grid-template-rows: auto 1fr auto; justify-items: center; gap: var(--sp-3); padding: var(--sp-4);
+  background: radial-gradient(90% 70% at 50% 0%, #3a2a85 0%, var(--ink) 72%); color: #fff; outline: none;
+}
+.nsl-present .nsl { --nsl-h: calc(100dvh - 176px); box-shadow: var(--e3); }
+.nsl-p-stage { width: 100%; min-height: 0; display: grid; place-items: center; }
+.nsl-p-exit, .nsl-p-btn {
+  min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid rgba(255, 255, 255, 0.6); border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.12); color: #fff; cursor: pointer; font: 800 var(--fs-sm) / 1 var(--font-nunito), sans-serif;
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.nsl-p-exit { justify-self: end; padding-inline: 18px; }
+.nsl-p-exit .ic, .nsl-p-btn .ic { width: 20px; height: 20px; }
+.nsl-p-btn { width: 48px; height: 48px; padding: 0; }
+.nsl-p-exit:hover, .nsl-p-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
+.nsl-p-exit:active, .nsl-p-btn:active:not(:disabled) { transform: scale(0.97); }
+.nsl-p-btn:disabled { opacity: 0.45; cursor: default; }
+.nsl-p-exit:focus-visible, .nsl-p-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.nsl-p-bar { display: flex; align-items: center; gap: var(--sp-4); }
+.nsl-p-count { min-width: 5ch; text-align: center; font: 800 var(--fs-md) / 1 var(--font-nunito), sans-serif; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .nsl-p-exit, .nsl-p-btn { transition: none; } }
